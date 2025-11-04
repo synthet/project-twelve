@@ -1,0 +1,32 @@
+# Cursor Rules for Unity C# Project
+
+## Project Context
+This is a Unity C# project (Unity 2022.3.0f1 or later). The project uses standard Unity conventions and structure.
+
+## Coding Standards
+- Use C# coding conventions (PascalCase for public members, camelCase for private members)
+- Follow Unity's MonoBehaviour patterns
+- Use meaningful variable and method names
+- Add XML documentation comments for public APIs
+- Keep scripts modular and focused on single responsibilities
+
+## Unity-Specific Guidelines
+- When creating new scripts, inherit from MonoBehaviour for component-based scripts
+- Use [SerializeField] for private fields that should be visible in the Inspector
+- Use [Header], [Tooltip], and [Range] attributes to improve Inspector usability
+- Prefer using Unity's built-in components and systems when possible
+- Use Time.deltaTime for frame-rate independent movement
+- Cache component references in Awake/Start rather than accessing them every frame
+
+## File Organization
+- Place scripts in `Assets/Scripts/` directory
+- Organize scripts by feature/component
+- Use namespaces to organize related code
+
+## Best Practices
+- Avoid Update() loops when possible; use events or coroutines instead
+- Use object pooling for frequently instantiated objects
+- Keep scripts focused on a single responsibility
+- Use ScriptableObjects for data-driven design
+- Follow Unity's performance best practices
+

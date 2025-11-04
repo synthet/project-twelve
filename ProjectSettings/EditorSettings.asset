@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!159 &1
+EditorSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_SerializationMode: 2
+  m_LineEndingsForNewScripts: 0
+  m_DefaultBehaviorMode: 1
+  m_PrefabMode: 1
+  m_AssetPipeline: 1
+  m_CacheServerMode: 0
+  m_CacheServerEndpoint: 
+  m_CacheServerNamespacePrefix: default
+  m_CacheServerEnableUpload: 1
+  m_CacheServerEnableAuth: 0
+  m_CacheServerEnableUploadTls12: 0
+  m_EnableTextureStreamingInEditMode: 1
+  m_EnableTextureStreamingInPlayMode: 1
+  m_AsyncShaderCompilation: 1
+  m_CachingShaderPreprocessor: 1
+  m_PrefabModeAllowAutoSave: 1
+  m_EnterPlayModeOptionsEnabled: 0
+  m_EnterPlayModeOptions: 0
+  m_SerializationMode: 2
+  m_AssetPipelineMode: 0
+  spritePackerMode: 5
+  spritePackerPaddingPower: 1
+  etwStackTraceCaptureLimit: 40
+  etwProfilerCaptureLimit: 40
+  assetPipelineMode: 0
+  cacheServerMode: 0
+  cacheServerEndpoint: 
+  cacheServerEnableUpload: 1
+  m_ProjectGenerationIncludedExtensions: txt;xml;fnt;cd;asmdef;asmref
+  m_ProjectGenerationRootNamespace: 
+  m_EnableTextureStreamingInEditMode: 1
+  m_EnableTextureStreamingInPlayMode: 1
+  m_SerializationMode: 2
+  m_LineEndingsForNewScripts: 0
+  m_DefaultBehaviorMode: 1
+  m_PrefabMode: 1
+  m_EnterPlayModeOptionsEnabled: 0
+  m_EnterPlayModeOptions: 0
+  externalScriptEditor: 
+  serializationMode: 2
+  lineEndingsForNewScripts: 0
+  defaultBehaviorMode: 1
+  prefabMode: 1
+  spritePackerMode: 5
+  etwStackTraceCaptureLimit: 40
+  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
+  m_AssetPipelineMode: 0
+  m_CacheServerMode: 0
+  m_CacheServerEnableAuth: 0
+  m_CacheServerEnableUploadTls12: 0
+  m_CacheServerNamespacePrefix: default
+  m_CacheServerEndpoint: 
+  m_EnableTextureStreamingInEditMode: 1
+  m_EnableTextureStreamingInPlayMode: 1
+  m_AsyncShaderCompilation: 1
+  m_CachingShaderPreprocessor: 1
+  m_PrefabModeAllowAutoSave: 1
+  m_EnterPlayModeOptionsEnabled: 0
+  m_EnterPlayModeOptions: 0
+  cloudProjectId: 
+  CloudProjectId: 
+  cloudEnabled: 0
+  legacyClampBlendShapeWeights: 0
+  virtualTexturingSupportEnabled: 0
