@@ -72,7 +72,7 @@ public class MouseControlledObject : MonoBehaviour
         currentTile = hexTile;
         
         // Set target position
-        targetPosition = hexTile.transform.position + Vector3.up * 0.5f; // Slightly above the tile
+        targetPosition = hexTile.transform.position + Vector3.up * 0.75f; // Slightly above the tile
         isMoving = true;
     }
     
