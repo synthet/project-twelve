@@ -1,32 +1,323 @@
-# Cursor Rules for Unity C# Project
+# Cursor Rules — Unity C# (2022.3+)
 
-## Project Context
-This is a Unity C# project (Unity 2022.3.0f1 or later). The project uses standard Unity conventions and structure.
+> Purpose: Make Cursor generate **compilable, editor-friendly, and performant** Unity C# code with minimal hand-fixing. Treat this as a living spec.
 
-## Coding Standards
-- Use C# coding conventions (PascalCase for public members, camelCase for private members)
-- Follow Unity's MonoBehaviour patterns
-- Use meaningful variable and method names
-- Add XML documentation comments for public APIs
-- Keep scripts modular and focused on single responsibilities
+---
 
-## Unity-Specific Guidelines
-- When creating new scripts, inherit from MonoBehaviour for component-based scripts
-- Use [SerializeField] for private fields that should be visible in the Inspector
-- Use [Header], [Tooltip], and [Range] attributes to improve Inspector usability
-- Prefer using Unity's built-in components and systems when possible
-- Use Time.deltaTime for frame-rate independent movement
-- Cache component references in Awake/Start rather than accessing them every frame
+## 0) High‑Level Directives for Cursor
 
-## File Organization
-- Place scripts in `Assets/Scripts/` directory
-- Organize scripts by feature/component
-- Use namespaces to organize related code
+* **Target**: Unity 2022.3 LTS or later, .NET Standard 2.1 (or project default).
+* **Code must compile** on first try in an empty project after creating folders below.
+* **Prefer built‑ins** (Unity components/events, ScriptableObjects, Addressables, Input System) before custom systems.
+* **Never add packages** silently; list them under *Packages* so a human can install.
+* **No magic singletons** unless explicitly requested. Use DI-friendly patterns or service locators.
+* **Avoid Update() churn**—prefer events, coroutines, InvokeRepeating, or Unity callbacks.
+* **Use `Time.deltaTime` for time-based motion**; `Time.fixedDeltaTime` for physics; `Time.unscaledDeltaTime` when pausing/time manipulation is needed.
+* **Cache components** in `Awake`/`Start`; avoid `GetComponent` in loops; use `TryGetComponent` when null is expected.
+* **Guard editor-only APIs** with `#if UNITY_EDITOR` and `#endif`; ensure editor code never compiles in builds.
+* **Separate runtime vs. editor scripts** in folders and with asmdefs.
+* **Thread safety**: Unity APIs are main-thread only; document thread usage for async operations.
 
-## Best Practices
-- Avoid Update() loops when possible; use events or coroutines instead
-- Use object pooling for frequently instantiated objects
-- Keep scripts focused on a single responsibility
-- Use ScriptableObjects for data-driven design
-- Follow Unity's performance best practices
+---
 
+## 1) Default Project Structure
+
+```
+Assets/
+  Scripts/
+    Core/
+    Gameplay/
+    UI/
+    Systems/
+    Data/
+    Editor/
+  ScriptableObjects/
+  Prefabs/
+  Scenes/
+  Settings/
+```
+
+* Create **assembly definitions** per top-level folder (`Core`, `Gameplay`, `UI`, `Systems`, `Editor`).
+* `Editor` asmdef references runtime asmdefs and is marked `include platforms: Editor` only.
+
+---
+
+## 2) Coding Standards (C# + Unity)
+
+* **Naming**: `PascalCase` for public members/types, `camelCase` for private fields; prefix private serialized fields with `[SerializeField] private`.
+* **XML docs** on public APIs and ScriptableObject definitions; include `<param>` and `<returns>` tags.
+* **Namespaces**: `Company.Product.Module` (e.g., `Acme.RPG.UI`); avoid deep nesting (max 3-4 levels).
+* **Attributes**: Use `[Header]`, `[Tooltip]`, `[Range]`, `[Min]`, `[Max]`, `[SerializeField]` liberally for inspector clarity.
+* **Unity Lifecycle**: Only implement used messages (`Awake`, `Start`, `OnEnable`, `OnDisable`, `OnDestroy`, `OnApplicationPause`, etc.).
+* **Nullability**: enable nullable context in asmdef (`/nullable enable`) when possible; otherwise use defensive checks with null-conditional operators (`?.`, `??`).
+* **Events**: prefer `UnityEvent` for inspector wiring; C# events (`Action`, `EventHandler`) for code-only; always unsubscribe in `OnDisable`/`OnDestroy`.
+* **Coroutines**: Stop coroutines in `OnDisable` or `OnDestroy`; store `Coroutine` reference if stopping early.
+* **Serialization**: Use `[SerializeField]` for private fields shown in inspector; `[HideInInspector]` to hide public fields; `[System.Serializable]` for nested classes/structs.
+* **Logging**: Use `Debug.Log*` sparingly; gate noisy logs with a `bool verboseLogging` or compile symbol `DEV_LOGS`; use `Debug.LogWarning` for recoverable issues, `Debug.LogError` for critical failures.
+
+---
+
+## 3) Unity-Specific Patterns
+
+* **ScriptableObjects** for data/config (stats, item defs, curve sets, input bindings). Provide `CreateAssetMenu` with clear menu paths.
+* **Object Pooling** via `UnityEngine.Pool.ObjectPool<T>` or a simple pool component; dispose pools in `OnDestroy`.
+* **Addressables** for dynamically loaded assets; expose labels in inspector; always release handles (`Release`/`ReleaseInstance`).
+* **New Input System** (com.unity.inputsystem): generate `PlayerInput` actions; no legacy Input unless requested; use `InputAction.CallbackContext` for event-driven input.
+* **Physics**: non-alloc queries (`RaycastNonAlloc`, `OverlapSphereNonAlloc`), `FixedUpdate` for forces, `Rigidbody.MovePosition/Rotation` for kinematic motion; prefer `Physics2D` for 2D games.
+* **UI**: Use UI Toolkit when requested; otherwise Unity UI (uGUI). Avoid `Find()` at runtime; reference via inspector or use `GetComponentInParent`/`GetComponentInChildren` sparingly.
+* **Scenes**: Use `SceneManager.LoadSceneAsync` with `allowSceneActivation` for loading screens; unload scenes with `UnloadSceneAsync` to free memory.
+* **Timers**: Use `InvokeRepeating`/`Invoke` for simple delays; `Coroutine` with `WaitForSeconds`/`WaitForSecondsRealtime` for complex timing; `UniTask` (if package installed) for async timing.
+
+---
+
+## 4) Performance Checklist (apply before responding)
+
+* ❏ No per-frame `GetComponent`/`FindObjectOfType`/`GameObject.Find`/`Transform.Find`.
+* ❏ No LINQ/allocations in `Update`/`FixedUpdate`/hot paths; prefer `for` loops over `foreach` where possible.
+* ❏ Use `List<T>.Clear()` and object reuse where appropriate; cache arrays/collections.
+* ❏ Mark fields `readonly` when possible; use `const` for compile-time constants.
+* ❏ Batch gizmo drawing behind `#if UNITY_EDITOR`; use `Gizmos.Draw*` sparingly.
+* ❏ For heavy tasks, consider `C# Job System`/`Burst` (if scope allows) — otherwise note as future enhancement.
+* ❏ Use `StringBuilder` for string concatenation in loops; avoid `string.Format` in hot paths.
+* ❏ Cache `Camera.main` or reference via inspector; avoid repeated `Camera.main` calls.
+* ❏ Use `CompareTag` instead of `tag == "string"` for performance.
+* ❏ Prefer `SetActive(false)` over `Destroy` for temporary deactivation when objects will be reused.
+
+---
+
+## 5) Error Handling & State Safety
+
+* **Guard nulls** for optional references; log meaningful errors once; use null-conditional operators (`?.`, `??`) where appropriate.
+* **Lifecycle-safe**: unsubscribe in `OnDisable`; dispose in `OnDestroy`; check `this != null` before accessing in callbacks.
+* **Coroutines**: check component enabled state before yield loops; handle `MonoBehaviour` destruction during coroutine execution.
+* **Async**: If using `async`, avoid `Task.Run` for Unity APIs; use `await UniTask` (if package installed) or document that `await` is for non-Unity work; never await Unity APIs on background threads.
+* **Validation**: Use `[Conditional("UNITY_EDITOR")]` for editor-only validation; validate `RequiredReference` attributes in `Awake`/`OnValidate`.
+* **Exception handling**: Catch specific exceptions; log stack traces for debugging; avoid swallowing exceptions silently.
+
+---
+
+## 6) Testing & Validation
+
+* Create **PlayMode tests** for behaviours relying on scene; **EditMode tests** for pure logic.
+* Provide a minimal **Test Scene** under `Assets/Scenes/Tests` when adding a system.
+* For algorithmic code, add an **EditMode** test with NUnit `[Test]`.
+
+---
+
+## 7) Packages (declare, don't auto-install)
+
+* `com.unity.inputsystem` (Input System) — if player controls are required.
+* `com.unity.addressables` — for dynamic asset loading.
+* `com.unity.textmeshpro` — for UI text (preferred over Text component).
+* `com.unity.test-framework` — for Edit/Play mode tests.
+* Optional: 
+  * `com.cysharp.unitask` for async patterns (better than `Task` for Unity).
+  * `com.unity.collections`, `com.unity.jobs`, `com.unity.burst` for DOTS/Jobs when justified.
+  * `com.unity.mathematics` for high-performance math (when Burst is used).
+  * `com.unity.localization` for i18n support.
+  * `com.unity.analytics` for analytics (if needed).
+
+When a feature depends on a package, **list the package** at top of the response and gate sample code with `#if` directives or comments indicating package dependency.
+
+---
+
+## 8) Assembly Definitions (guidance)
+
+* One asmdef per major folder; reference graph should be **acyclic** (Core → Gameplay/UI/Systems, not circular).
+* Runtime asmdefs **must not** reference `Editor` asmdefs.
+* Turn on **unsafe** only when strictly necessary; document why.
+* Enable **override references** to include `Unity.InputSystem`, `Unity.Addressables`, etc. when needed.
+* Set **API Compatibility Level** to `.NET Standard 2.1` (or match project settings).
+* Enable **nullable reference types** (`/nullable enable`) in asmdef for better null safety.
+* Use **Assembly Version** to control versioning if needed.
+
+---
+
+## 9) File Templates (Cursor should generate like this)
+
+### 9.1 MonoBehaviour Component
+
+```csharp
+using UnityEngine;
+
+namespace Acme.RPG.Gameplay
+{
+    /// <summary>
+    /// Handles player movement using the new Input System.
+    /// </summary>
+    public sealed class PlayerMover : MonoBehaviour
+    {
+        [Header("Movement")]
+        [SerializeField] private float moveSpeed = 5f;
+
+        private CharacterController controller;
+        private Vector3 velocity;
+
+        private void Awake()
+        {
+            controller = GetComponent<CharacterController>();
+        }
+
+        private void Update()
+        {
+            // Input should be provided by another system or PlayerInput hook.
+            Vector2 input = Vector2.zero; // TODO: inject or set from input layer
+            Vector3 move = new Vector3(input.x, 0f, input.y);
+            controller.Move(move * (moveSpeed * Time.deltaTime));
+        }
+    }
+}
+```
+
+### 9.2 ScriptableObject Data
+
+```csharp
+using UnityEngine;
+
+namespace Acme.RPG.Data
+{
+    [CreateAssetMenu(menuName = "Acme/Stats/CharacterStats", fileName = "CharacterStats")]
+    public sealed class CharacterStats : ScriptableObject
+    {
+        [Min(1)] public int level = 1;
+        [Min(0)] public float maxHealth = 100f;
+        [Min(0)] public float attackPower = 10f;
+    }
+}
+```
+
+### 9.3 Object Pool (generic wrapper)
+
+```csharp
+using UnityEngine;
+using UnityEngine.Pool;
+
+namespace Acme.RPG.Core
+{
+    public sealed class PooledSpawner : MonoBehaviour
+    {
+        [SerializeField] private GameObject prefab;
+        [SerializeField] private int defaultCapacity = 16;
+        [SerializeField] private int maxSize = 128;
+
+        private ObjectPool<GameObject> pool;
+
+        private void Awake()
+        {
+            pool = new ObjectPool<GameObject>(
+                createFunc: () => Instantiate(prefab),
+                actionOnGet: go => go.SetActive(true),
+                actionOnRelease: go => go.SetActive(false),
+                actionOnDestroy: go => Destroy(go),
+                collectionCheck: false, defaultCapacity, maxSize);
+        }
+
+        public GameObject Get() => pool.Get();
+        public void Release(GameObject go) => pool.Release(go);
+    }
+}
+```
+
+---
+
+## 10) Generation Heuristics & Review Checklist
+
+When Cursor writes or edits code, it must include:
+
+1. **Imports** (`using` statements) and **namespaces**.
+2. **SerializeField** for inspector-tuned private fields.
+3. Minimal **comments** describing intent; XML docs for public APIs.
+4. **TODO hooks** where integration with input/UI/Addressables is expected.
+5. **Editor guards** for tooling (`#if UNITY_EDITOR`).
+6. An **example usage** (prefab setup or scene steps) in a short note.
+
+**Self-check before finalizing**:
+
+* ❏ Does it reference any package not listed?
+* ❏ Does it use legacy Input? (avoid unless requested)
+* ❏ Any Update loops doing work that could be event-driven?
+* ❏ Are allocations avoided in hot paths?
+* ❏ Are lifecycles (`OnEnable`/`OnDisable`) handling subscriptions?
+
+---
+
+## 11) Documentation & Comments
+
+* Provide a short **README snippet** when adding a new system: purpose, setup steps, dependencies.
+* Public classes/methods: XML docs summarizing behavior and parameters.
+
+---
+
+## 12) Editor Tooling (optional section Cursor may add)
+
+* Place custom inspectors and editor windows under `Assets/Scripts/Editor` and `#if UNITY_EDITOR` guards.
+* For inspectors, prefer `SerializedObject/SerializedProperty` to keep prefab overrides intact.
+* Use `MenuItem` for tools; keep them deterministic and undo-friendly.
+
+---
+
+## 13) Scene & Prefab Guidance
+
+* Keep **prefabs** small and composable; avoid deep nesting.
+* Expose key references via inspector; avoid `Find` calls at runtime.
+* Provide **sample prefab** setup instructions when introducing components.
+
+---
+
+## 14) CI & Warnings
+
+* Treat compiler warnings as errors in CI (if present); locally, keep zero warnings in new code.
+* Avoid API marked `[Obsolete]` unless migration is impossible—document rationale.
+
+---
+
+## 15) PR / Diff Expectations (for AI-generated changes)
+
+* Summarize intent of change and testing steps.
+* Note any new assets, scenes, or packages to add.
+* If refactor touches multiple files, include a **migration note** (e.g., renames, namespace moves).
+
+---
+
+## 16) Request Formats (how to ask Cursor)
+
+* **Create a component**: "Create `HealthSystem` MonoBehaviour in `Acme.RPG.Gameplay`, with `[SerializeField]` maxHealth, currentHealth; public `TakeDamage(float)`, `Heal(float)`, UnityEvents `OnDamaged`, `OnDied`. Include sample prefab setup."
+* **Make a ScriptableObject**: "Create `DamageType` SO with enum + multiplier map; add CreateAssetMenu."
+* **Add pooling**: "Wrap projectile prefab with pooled spawner and sample fire method; no Update polling—use event trigger."
+* **Editor tool**: "Custom inspector for `Quest` SO with reorderable steps; `#if UNITY_EDITOR`."
+
+---
+
+## 17) Non‑Goals (what not to do by default)
+
+* No hidden global singletons or static state holding scene references.
+* No Resources folder reliance (prefer Addressables or direct references).
+* No heavy reflection or runtime codegen.
+* No blocking I/O on main thread (use `async`/`await` or coroutines).
+* No `MonoBehaviour.Update()` for polling (use events or coroutines).
+* No `GameObject.Find()` or `FindObjectOfType()` at runtime (use inspector references).
+* No `SendMessage`/`BroadcastMessage` (use events or direct references).
+
+---
+
+## 18) Quick Snippet: Event-Driven Tick
+
+```csharp
+public interface ITickable { void Tick(float dt); }
+// A central driver can call Tick on registered systems from one Update loop.
+```
+
+---
+
+## 19) Additional Best Practices
+
+* **Structs vs Classes**: Use structs for small, value-type data (Vector3, Color, etc.); classes for larger objects with identity.
+* **IDisposable**: Implement `IDisposable` for types holding native resources (e.g., Addressable handles); dispose in `OnDestroy`.
+* **Attributes**: Use `[RequireComponent]` to ensure dependencies; `[DisallowMultipleComponent]` for singleton-like components.
+* **Prefab Variants**: Prefer prefab variants over prefab nesting for composition.
+* **Scene Management**: Use additive scene loading for modular level design; avoid loading/unloading entire scenes frequently.
+* **Profiling**: Add `Profiler.BeginSample`/`EndSample` blocks for custom profiling markers in development builds.
+
+---
+
+**End of rules. Keep responses concise but complete; include setup steps and any required asmdef/package notes.**
