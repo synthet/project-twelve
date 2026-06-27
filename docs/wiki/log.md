@@ -7,3 +7,4 @@
 * **Cleanup**: Documented the removal of unrelated demo artifacts from the barebone sandbox prototype.
 * **Conflict resolution**: Verified README and wiki concept files for conflict markers, kept the OKF bundle structure, and normalized concept frontmatter status fields.
 * **Conflict verification**: Rechecked the repeated README/wiki conflict report; the local branch is not in a merge state and the affected files contain no conflict markers.
+* **Master alignment**: Restored the master-branch README/wiki text for the reported conflict files and kept the OKF support pages as additive documentation.
