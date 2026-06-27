@@ -211,15 +211,30 @@ public sealed class SandboxWorld : MonoBehaviour
     private void RefreshLoadedChunks()
     {
         Vector2Int centerChunk = GetCenterChunk();
-        for (int x = centerChunk.x - loadRadiusInChunks; x <= centerChunk.x + loadRadiusInChunks; x++)
+        foreach (Vector2Int coord in GetChunksInLoadRange(centerChunk, loadRadiusInChunks))
         {
-            for (int y = centerChunk.y - loadRadiusInChunks; y <= centerChunk.y + loadRadiusInChunks; y++)
-            {
-                EnsureRenderer(new Vector2Int(x, y));
-            }
+            EnsureRenderer(coord);
         }
 
         UnloadDistantRenderers(centerChunk);
+    }
+
+    /// <summary>
+    /// Enumerates the chunk coordinates that should be loaded and visible around the player's chunk.
+    /// The load window is a square of side (2 * loadRadius + 1) chunks centered on the player, so
+    /// chunk streaming is bounded to a predictable neighborhood regardless of world size. A negative
+    /// radius is clamped to zero, which loads only the center chunk.
+    /// </summary>
+    public static IEnumerable<Vector2Int> GetChunksInLoadRange(Vector2Int centerChunk, int loadRadius)
+    {
+        int radius = Mathf.Max(0, loadRadius);
+        for (int x = centerChunk.x - radius; x <= centerChunk.x + radius; x++)
+        {
+            for (int y = centerChunk.y - radius; y <= centerChunk.y + radius; y++)
+            {
+                yield return new Vector2Int(x, y);
+            }
+        }
     }
 
     private Vector2Int GetCenterChunk()
@@ -236,17 +251,8 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void UnloadDistantRenderers(Vector2Int centerChunk)
     {
-        int unloadRadius = loadRadiusInChunks + Mathf.Max(0, unloadPaddingInChunks);
-        List<Vector2Int> renderersToUnload = new List<Vector2Int>();
-        foreach (Vector2Int coord in renderers.Keys)
-        {
-            int distanceX = Mathf.Abs(coord.x - centerChunk.x);
-            int distanceY = Mathf.Abs(coord.y - centerChunk.y);
-            if (distanceX > unloadRadius || distanceY > unloadRadius)
-            {
-                renderersToUnload.Add(coord);
-            }
-        }
+        List<Vector2Int> renderersToUnload = new List<Vector2Int>(
+            GetRenderersToUnload(renderers.Keys, centerChunk, loadRadiusInChunks, unloadPaddingInChunks));
 
         foreach (Vector2Int coord in renderersToUnload)
         {
@@ -259,6 +265,31 @@ public sealed class SandboxWorld : MonoBehaviour
             else
             {
                 DestroyImmediate(chunkRenderer.gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Selects the currently loaded chunk coordinates that fall outside the unload window and should
+    /// be released. The unload window is intentionally larger than the load window by an unload
+    /// padding, creating hysteresis so chunks at the load edge are not thrashed (loaded and unloaded)
+    /// by small player movements. Distance uses the Chebyshev (square) metric to match the square
+    /// load window; negative radii and padding are clamped to zero.
+    /// </summary>
+    public static IEnumerable<Vector2Int> GetRenderersToUnload(
+        IEnumerable<Vector2Int> loadedCoords,
+        Vector2Int centerChunk,
+        int loadRadius,
+        int unloadPadding)
+    {
+        int unloadRadius = Mathf.Max(0, loadRadius) + Mathf.Max(0, unloadPadding);
+        foreach (Vector2Int coord in loadedCoords)
+        {
+            int distanceX = Mathf.Abs(coord.x - centerChunk.x);
+            int distanceY = Mathf.Abs(coord.y - centerChunk.y);
+            if (distanceX > unloadRadius || distanceY > unloadRadius)
+            {
+                yield return coord;
             }
         }
     }

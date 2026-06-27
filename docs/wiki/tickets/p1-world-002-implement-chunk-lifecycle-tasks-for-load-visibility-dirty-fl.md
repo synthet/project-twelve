@@ -1,7 +1,7 @@
 ---
 id: P1-WORLD-002
 title: "[P1-WORLD-002] Implement chunk lifecycle tasks for load, visibility, dirty flags, and unload."
-status: open
+status: implemented
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: null
@@ -87,7 +87,26 @@ As a developer or reviewer working on the P1 milestone, I want to implement chun
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
 - [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Implementation:** Extracted the chunk lifecycle selection policy into two pure helpers in
+  `Assets/Scripts/Sandbox/SandboxWorld.cs`: `GetChunksInLoadRange` (the square load window centered
+  on the player's chunk) and `GetRenderersToUnload` (loaded coordinates beyond the padded unload
+  window). `RefreshLoadedChunks` and `UnloadDistantRenderers` now drive load/unload from those
+  helpers, keeping streaming bounded to a predictable neighborhood with hysteresis at the edge. Newly
+  loaded chunks request both render and collider rebuilds, and the two dirty flags remain independent.
+- **Spec:** Added the "Chunk Lifecycle Contract (P1-WORLD-002)" section to
+  `docs/wiki/world-and-chunk-data.md` documenting the load window, padded unload window with
+  hysteresis, and the independent render/collider dirty-flag rules.
+- **Verification:** `SandboxWorld_LoadRange*`, `SandboxWorld_Unload*`, and
+  `SandboxChunk_*DirtyFlags*` / `SandboxChunk_NewlyLoadedChunk*` EditMode tests in
+  `Assets/Tests/EditMode/SandboxCoreTests.cs` cover the square load window, zero/negative radius,
+  padded unload selection, edge hysteresis, the empty-loaded case, newly loaded rebuild requests,
+  and independent dirty-flag toggling. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.
