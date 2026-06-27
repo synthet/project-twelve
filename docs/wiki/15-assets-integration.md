@@ -115,6 +115,75 @@ Rotation metadata should live beside the tile/entity state rather than inside th
 - [ ] Rotation metadata is specified for any rotatable solid tile, including collision and lighting behavior.
 - [ ] Markdown docs and canonical sources are updated when workflow or architecture changes.
 
+## Practical Terraria-like asset intake guide
+
+Use this checklist when evaluating, importing, or commissioning pixel-art assets for the prototype. The goal is to keep Terraria-like content visually coherent while preserving ProjectTwelve's data-driven renderer and registry seams.
+
+### Expected asset categories
+
+| Category | Examples | Import notes | Runtime notes |
+|----------|----------|--------------|---------------|
+| Tiles and tilesets | dirt, grass, stone, ores, platforms, background walls, props | Prefer uniform grid sheets using the project base tile size, commonly 16×16 or 32×32 pixels. Slice as Multiple sprites and assign stable logical IDs. | Foreground, wall, overlay, and liquid layers should stay separate so collision, lighting, and saving do not infer behavior from art. |
+| Characters, NPCs, and enemies | player body sheets, town NPCs, slimes, bats, bosses | Keep a consistent PPU with terrain, with pivots at feet or center of mass and sockets for tools, hands, muzzle points, or equipment. | Entity visuals map to named animation states and explicit hitboxes; gameplay must not depend on SpriteRenderer bounds. |
+| Items, tools, and weapons | icons, drops, swords, pickaxes, projectiles | Inventory icons may live in UI atlases; world drops and held tools should use world PPU and authored pivots. | Item definitions reference icon, drop, held, projectile, and VFX sprites separately when needed. |
+| VFX and particles | dust puffs, hit sparks, explosions, mining debris, torch flame | Use small pixel sprites or compact sprite strips, Point filtering, short lifetimes, and palette-compatible colors. | Treat effects as presentation by default; gameplay effects should be triggered by simulation events. |
+| UI and HUD | hearts, mana stars, inventory slots, buttons, icons | Keep UI atlases separate when scale, nine-slice, or compression settings differ from world art. | UI assets should reference item and registry IDs rather than duplicating authoritative item data. |
+| Audio hooks | footsteps, swings, mining hits, pickups, damage sounds | Author event markers alongside animation clips or data event tracks. | Animation Events may request audio and VFX, but simulation commands own damage, tile edits, and item use. |
+
+### Sprite-sheet layouts and pixel-art conventions
+
+- Prefer grid sheets for tiles and deterministic frame indexing; use strip sheets for compact single-action animations when that is easier for artists.
+- Keep source PNGs lossless, with transparency preserved and no anti-aliased edges unless the asset is intentionally non-pixel-art.
+- Keep a shared palette and outline language across biomes, entities, items, and UI. Limited palettes, intentional dithering, and one-pixel outlines improve readability against busy terrain.
+- Disable mipmaps for gameplay sprites unless a background or special scaled asset intentionally needs them.
+- Avoid mixing 16×16 and 32×32 tile art in the same world layer unless the import preset and PPU policy make their in-game size explicit.
+- Use padding and extrusion before atlas packing to prevent camera-scale seams and neighboring-color bleeding.
+
+### Suggested animation baselines
+
+| Action | Typical frames | Typical playback | Notes |
+|--------|----------------|------------------|-------|
+| Idle | 2–4 | 6–12 FPS, loop | Subtle breathing, blink, or tool bob only; avoid noisy idle motion. |
+| Walk | 6–8 | 10–15 FPS, loop | Place audio events on foot-down frames if footsteps are audible. |
+| Run | 4–8 | 12–18 FPS, loop | Can reuse walk poses with faster timing if silhouette remains readable. |
+| Jump/fall | 2–4 | State-held or short transition | Use separate airborne and falling poses when vertical velocity changes readability. |
+| Attack/tool swing | 3–6 | 10–15 FPS, non-loop | Event tracks can request swing SFX, particles, and screen shake; damage timing stays simulation-owned. |
+| Hurt | 1–3 | Short non-loop | Often paired with tint flash or knockback presentation. |
+| Death | 6–10 | 8–12 FPS, non-loop | Keep final frame or spawn debris/drops through gameplay state. |
+
+### Unity import and setup workflow
+
+1. Import source PNGs as `Sprite (2D and UI)` with Multiple sprite mode for sheets.
+2. Set the shared PPU, Point filter mode, no mipmaps for gameplay sprites, and no lossy compression for first-party pixel art.
+3. Slice sheets in Sprite Editor using grid settings that match the authored tile/frame size.
+4. Create Tile Palette assets for terrain and wall workflows, then paint test scenes on separate Tilemap layers.
+5. Use RuleTile or equivalent autotiling rules for connected terrain, edges, corners, random variants, and animated tiles, but keep the selected tile ID and metadata compatible with the registry model.
+6. Configure TilemapCollider2D per solid tile layer, combine with CompositeCollider2D for static terrain, and keep triggers or item pickups on separate physics layers.
+7. Pack sprites into domain-specific Sprite Atlases such as terrain, walls, liquids, entities, items, effects, and UI.
+8. Create Animation Clips and Animator Controllers only as Unity presentation assets; mirror state IDs, frame durations, events, and sockets in data definitions where determinism or portability matters.
+9. Use Animation Events or data event tracks for audio/VFX synchronization, with gameplay-critical effects validated by simulation code.
+10. If URP 2D lighting is enabled, keep normal maps optional and profile light counts, shadow casters, particle overdraw, and atlas batching on target hardware.
+
+### Licensing and asset-pack intake
+
+| Source type | Examples | Intake requirement |
+|-------------|----------|--------------------|
+| CC0 / public domain packs | Kenney-style platformer sprites, public-domain weapon/tree packs | Record source URL, license name, retrieval date, and any optional attribution text in project asset metadata or docs. |
+| Unity Asset Store packages | Free or paid templates, tilesets, complete survival-sandbox kits | Treat files as governed by the Unity Asset Store EULA; do not redistribute raw package contents outside allowed project use. |
+| Itch.io or independent packs | Paid dungeon tilesets, UI packs, VFX sheets | Store proof of license and note whether commercial use, modification, redistribution, and attribution are allowed. |
+| Open-source repositories | Sample clones, tools, importers, map converters | Verify code and art licenses independently; do not assume repository code license covers bundled art. |
+
+Before adding a third-party art pack to version control, create a small intake note that captures license, source, intended folders, import settings, PPU, atlas target, and whether Git LFS is required for large binaries.
+
+### Performance and version-control guardrails
+
+- Favor atlases to reduce draw calls, but split atlases by loading domain so one biome or UI set does not force unrelated content into memory.
+- Profile tile collider rebuilds, particle counts, 2D light counts, and overdraw before scaling content volume.
+- Use simple colliders for items and actors; reserve polygon physics shapes for cases where box/capsule shapes are insufficient.
+- Keep generated Unity `.meta` files with their assets so GUID references remain stable.
+- Use Git LFS or another large-file strategy for source art, PSD/ASE files, large sprite sheets, audio, and marketplace packages when repository size becomes a concern.
+- Prefer lowercase, separator-based names such as `core_tile_dirt_00`, `core_player_walk_03`, and `core_item_pickaxe_iron_icon`; avoid spaces and machine-specific paths.
+
 ## See also
 
 - [Rendering](04-rendering.md) — chunk-local Tilemap/custom-mesh rendering decisions.
