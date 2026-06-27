@@ -21,3 +21,7 @@ Future inventory should be data-driven and registry-backed. Tile placement shoul
 ## Enemies and Pathfinding
 
 Enemy movement should use chunk-aware navigation. Basic enemies can query solid tiles directly; advanced platformer pathfinding needs jump height, fall distance, doors, ladders, and terrain edits that invalidate paths.
+
+## Source Alignment
+
+This page defines gameplay boundaries for future work and should stay aligned with player, inventory, item, enemy, and pathfinding source changes.

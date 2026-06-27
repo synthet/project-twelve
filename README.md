@@ -36,7 +36,7 @@ ProjectTwelve/
 ## Design Documents
 
 - [Unity 2D Sandbox Architecture Plan](docs/terraria-like-unity-design.md) is the product-level technical design.
-- [LLM Wiki Structure](docs/wiki/index.md) expands the design into implementation-facing pages for future LLM-assisted work.
+- [LLM Wiki Structure](docs/wiki/index.md) is an OKF-style knowledge bundle that expands the design into implementation-facing pages for future LLM-assisted work.
 
 ## Current Barebone Scope
 

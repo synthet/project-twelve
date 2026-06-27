@@ -25,3 +25,7 @@ The prototype currently generates terrain height from noise, then fills grass, d
 ## Saving Strategy
 
 Save chunks independently with a format version, seed, generation settings, dirty chunk data, entity state, inventories, time of day, and global events. Untouched chunks can be regenerated from the seed; edited chunks need persisted diffs or complete chunk payloads.
+
+## Source Alignment
+
+This page records the intended generation/save pipeline and should stay synchronized with any changes to procedural generation or persistence code.

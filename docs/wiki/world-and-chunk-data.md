@@ -29,3 +29,7 @@ A world is a sparse dictionary of chunks keyed by chunk coordinate. Each chunk i
 - Keep chunk data serializable without requiring Unity scene objects.
 - Mutating a tile must mark the owning chunk dirty for all affected subsystems.
 - Neighboring chunks should be dirtied when edits affect shared borders, lighting, liquids, or merged collision.
+
+## Source Alignment
+
+This page is derived from the design document chunking model and the current `SandboxWorld`, `SandboxChunk`, and `SandboxTile` scripts.

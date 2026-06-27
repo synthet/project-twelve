@@ -24,3 +24,7 @@ The barebone implementation uses chunk-local `BoxCollider2D` components for soli
 - Rebuild only changed chunks and eventually changed mesh regions.
 - Hide internal faces if the project moves from 2D quads to thicker geometry.
 - Add a material/shader path that samples tile light or vertex colors.
+
+## Source Alignment
+
+This page reflects the current chunk-local mesh/collider prototype and the design document recommendation to avoid a single global destructible-world collider.

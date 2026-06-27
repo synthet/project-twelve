@@ -32,3 +32,7 @@ Systems outside that slice should be represented in documentation before they be
 - No generated demo scene clutter.
 - No committed IDE-generated Unity solution files.
 - No production implementation for inventories, enemies, liquids, multiplayer, or modding until their interfaces are designed.
+
+## Source Alignment
+
+This page summarizes the product intent from the sandbox architecture design and keeps implementation scope intentionally smaller than the full-game vision.

@@ -21,3 +21,7 @@ Liquids should use a grid simulation with active cells. Each liquid tile stores 
 ## Simulation Budget
 
 Simulation systems should update by dirty region and distance from active players. Avoid full-world passes in `Update`.
+
+## Source Alignment
+
+This page documents future simulation direction only. Lighting and liquids should not be treated as production-complete until source files implement them.

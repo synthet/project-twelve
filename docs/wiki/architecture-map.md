@@ -39,3 +39,7 @@ flowchart TD
 - Prefer small, explicit data structures over hidden scene state.
 - Do not add demo-only systems unless they directly prove a sandbox milestone.
 - Keep render, collider, lighting, and save dirty states separable as the project grows.
+
+## Source Alignment
+
+This page maps current code ownership to the chunk-first design. If implementation changes, update this map alongside the relevant source files.

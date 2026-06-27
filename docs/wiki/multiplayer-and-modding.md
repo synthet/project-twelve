@@ -17,3 +17,7 @@ The target model is server-authoritative. Clients send input and tile-edit reque
 ## Modding
 
 Content should move toward registries keyed by stable string IDs for tiles, items, entities, biomes, and recipes. ScriptableObjects or JSON can describe gameplay properties while code implements behavior hooks.
+
+## Source Alignment
+
+This page captures target architecture for future multiplayer and modding; current prototype code is not yet networked or mod-enabled.
