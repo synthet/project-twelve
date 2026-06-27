@@ -1,4 +1,13 @@
 {
-  "_comment": "Project MCP servers for Claude Code. Define stdio/SSE servers here; keep secrets in env, never inline. Use project-twelve-* names and prefer compact search+dispatch tool surfaces.",
+  "_comment": "Project MCP servers for Claude Code. Unity MCP relay paths are machine-local — copy _unityMcpTemplate into mcpServers and set RELAY_PATH + UNITY_PROJECT_PATH, or use Edit > Project Settings > AI > Unity MCP > Integrations in the Editor.",
+  "_unityMcpTemplate": {
+    "project-twelve-unity-mcp": {
+      "command": "RELAY_PATH",
+      "args": ["--mcp"],
+      "env": {
+        "UNITY_PROJECT_PATH": "ABSOLUTE_PATH_TO_THIS_REPO"
+      }
+    }
+  },
   "mcpServers": {}
 }

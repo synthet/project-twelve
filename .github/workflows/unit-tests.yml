@@ -51,7 +51,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: .
-          unityVersion: 6000.2.10f1
+          unityVersion: 6000.5.1f1
           testMode: EditMode
           artifactsPath: test-results
           githubToken: ${{ secrets.GITHUB_TOKEN }}

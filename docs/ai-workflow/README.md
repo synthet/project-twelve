@@ -8,4 +8,7 @@ ProjectTwelve follows a lightweight spec-first loop adapted from `synthet-code-f
 4. **Test and fix** — run the relevant commands from `AGENTS.md`; document environment limitations when Unity is unavailable.
 5. **PR-ready** — review `git status --short`, summarize changes, cite tests, and note any follow-up work.
 
+## Unity MCP
+When the Unity Editor is open, agents can call Editor tools (scenes, assets, console) through [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). Setup: `AGENTS.md` → **Unity MCP (Editor bridge)**. Package: `com.unity.ai.assistant` in `Packages/manifest.json`.
+
 See `.agent/SAFETY.md` for hard safety rules and `.agent/AGENT_INFRA_INVENTORY.md` for the adopted agent infrastructure.

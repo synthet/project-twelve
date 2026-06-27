@@ -184,7 +184,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
     private static Material GetDefaultMaterial()
     {
-        Shader shader = Shader.Find("Sprites/Default");
+        Shader shader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default")
+            ?? Shader.Find("Sprites/Default");
         return new Material(shader != null ? shader : Shader.Find("Unlit/Color"));
     }
 }

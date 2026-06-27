@@ -8,7 +8,7 @@ This page translates current Unity 2D asset practices into ProjectTwelve require
 
 ## Research baseline
 
-ProjectTwelve targets Unity 6.0.2+ for the prototype. The external baseline below is from Unity documentation and should be rechecked when upgrading the Unity editor or 2D packages.
+ProjectTwelve targets Unity 6.0.5.1f1 with URP 2D for the prototype. The external baseline below is from Unity documentation and should be rechecked when upgrading the Unity editor or 2D packages.
 
 | Topic | Unity baseline | ProjectTwelve requirement |
 |-------|----------------|----------------------------|
@@ -192,9 +192,9 @@ Before adding a third-party art pack to version control, create a small intake n
 - [Collision & Physics](05-collision-physics.md) — collider rebuild implications for rotated solids.
 - [Multiplayer & Modding](multiplayer-and-modding.md) — content-pack and registry boundaries.
 
-[^unity-sprite-import]: Unity Manual, Sprite texture import settings: <https://docs.unity3d.com/6000.4/Documentation/Manual/texture-type-sprite.html>
+[^unity-sprite-import]: Unity Manual, Sprite texture import settings: <https://docs.unity3d.com/6000.5/Documentation/Manual/texture-type-sprite.html>
 [^unity-sprite-atlas]: Unity Manual, Sprite Atlas: <https://docs.unity3d.com/2020.1/Documentation/Manual/class-SpriteAtlas.html>
-[^unity-sprite-renderer]: Unity Manual, Sprite Renderer component reference: <https://docs.unity3d.com/6000.0/Documentation/Manual/sprite/renderer/sprite-renderer-reference.html>
+[^unity-sprite-renderer]: Unity Manual, Sprite Renderer component reference: <https://docs.unity3d.com/6000.5/Documentation/Manual/sprite/renderer/sprite-renderer-reference.html>
 [^unity-sprite-animation]: Unity Learn, Introduction to Sprite Animations: <https://learn.unity.com/tutorial/introduction-to-sprite-animations>
 [^unity-sprite-resolver]: Unity 2D Animation package manual, Sprite Resolver component: <https://docs.unity3d.com/Packages/com.unity.2d.animation%403.0/manual/SRComponent.html>
 [^unity-rigidbody2d]: Unity Manual, Introduction to Rigidbody 2D: <https://docs.unity3d.com/6000.5/Documentation/Manual/2d-physics/rigidbody/introduction-to-rigidbody-2d.html>

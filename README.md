@@ -4,12 +4,12 @@ A Unity C# project for prototyping a Terraria-like 2D sandbox with chunked world
 
 ## Requirements
 
-- Unity Editor 6.0.2 or later
+- Unity Editor 6.0.5.1f1 with **Universal Render Pipeline (URP) 2D**
 - JetBrains Rider 2023.3 or later, or another Unity-compatible C# editor
 
 ## Setup
 
-1. Open this project in Unity Editor 6.0.2 or later.
+1. Open this project in Unity Editor 6.0.5.1f1.
 2. Unity will regenerate solution and project files on first open.
 3. Open the regenerated solution in Rider or your preferred editor.
 4. Open `Assets/Scene.unity` and press Play for the runnable sandbox prototype.

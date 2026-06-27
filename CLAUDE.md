@@ -14,10 +14,11 @@ This repository adopts the reusable agent practices from `synthet-code-framework
 | `Assets/Scripts/Sandbox/SandboxPlayerController.cs` | Prototype player movement and mouse tile editing. |
 | `Assets/Scripts/Sandbox/SandboxSaveData.cs` | Serializable world/chunk/tile save records. |
 | `docs/wiki/` | Open architecture and implementation reference. |
+| `com.unity.ai.assistant` | [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html) editor bridge; configure via Edit → Project Settings → AI → Unity MCP. |
 
 ## Commands
 ```bash
-# Requires Unity Editor 6.0.2+ in PATH.
+# Requires Unity Editor 6.0.5.1f1 in PATH.
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
 Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 

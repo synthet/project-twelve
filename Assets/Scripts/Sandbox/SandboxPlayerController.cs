@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public sealed class SandboxPlayerController : MonoBehaviour
@@ -15,6 +16,14 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private BoxCollider2D playerCollider;
     private Camera mainCamera;
 
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction leftMouseAction;
+    private InputAction rightMouseAction;
+    private InputAction pointerPositionAction;
+    private InputAction saveAction;
+    private InputAction loadAction;
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -23,13 +32,48 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
         if (world == null)
         {
-            world = FindObjectOfType<SandboxWorld>();
+            world = FindAnyObjectByType<SandboxWorld>();
         }
 
         if (world != null)
         {
             world.SetPlayerTarget(transform);
         }
+
+        CreateInputActions();
+    }
+
+    private void OnEnable()
+    {
+        moveAction?.Enable();
+        jumpAction?.Enable();
+        leftMouseAction?.Enable();
+        rightMouseAction?.Enable();
+        pointerPositionAction?.Enable();
+        saveAction?.Enable();
+        loadAction?.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction?.Disable();
+        jumpAction?.Disable();
+        leftMouseAction?.Disable();
+        rightMouseAction?.Disable();
+        pointerPositionAction?.Disable();
+        saveAction?.Disable();
+        loadAction?.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        moveAction?.Dispose();
+        jumpAction?.Dispose();
+        leftMouseAction?.Dispose();
+        rightMouseAction?.Dispose();
+        pointerPositionAction?.Dispose();
+        saveAction?.Dispose();
+        loadAction?.Dispose();
     }
 
     private void Update()
@@ -41,33 +85,35 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        body.velocity = new Vector2(horizontal * moveSpeed, body.velocity.y);
+        float horizontal = moveAction?.ReadValue<float>() ?? 0f;
+        body.linearVelocity = new Vector2(horizontal * moveSpeed, body.linearVelocity.y);
     }
 
     private void HandleJump()
     {
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        if (jumpAction != null && jumpAction.WasPressedThisFrame() && IsGrounded())
         {
-            body.velocity = new Vector2(body.velocity.x, jumpVelocity);
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpVelocity);
         }
     }
 
     private void HandleTileEditing()
     {
-        if (world == null || mainCamera == null)
+        if (world == null || mainCamera == null || pointerPositionAction == null)
         {
             return;
         }
 
-        bool remove = Input.GetMouseButtonDown(0);
-        bool place = Input.GetMouseButtonDown(1);
+        bool remove = leftMouseAction != null && leftMouseAction.WasPressedThisFrame();
+        bool place = rightMouseAction != null && rightMouseAction.WasPressedThisFrame();
         if (!remove && !place)
         {
             return;
         }
 
-        Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pointer = pointerPositionAction.ReadValue<Vector2>();
+        Vector3 mouseScreen = new Vector3(pointer.x, pointer.y, -mainCamera.transform.position.z);
+        Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(mouseScreen);
         Vector2Int tile = world.WorldPositionToTile(mouseWorld);
         Vector3 center = world.TileToWorldCenter(tile.x, tile.y);
         if (Vector2.Distance(transform.position, center) > editRange)
@@ -78,7 +124,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
         world.SetTile(tile.x, tile.y, remove ? SandboxTileIds.Air : placeTileId);
     }
 
-
     private void HandleSaveLoadShortcuts()
     {
         if (world == null)
@@ -87,17 +132,35 @@ public sealed class SandboxPlayerController : MonoBehaviour
         }
 
         string path = Path.Combine(Application.persistentDataPath, saveFileName);
-        if (Input.GetKeyDown(KeyCode.F5))
+        if (saveAction != null && saveAction.WasPressedThisFrame())
         {
             world.SaveToPath(path);
             Debug.Log($"Saved sandbox world to {path}");
         }
 
-        if (Input.GetKeyDown(KeyCode.F9))
+        if (loadAction != null && loadAction.WasPressedThisFrame())
         {
             world.LoadFromPath(path);
             Debug.Log($"Loaded sandbox world from {path}");
         }
+    }
+
+    private void CreateInputActions()
+    {
+        moveAction = new InputAction("Move", InputActionType.Value);
+        moveAction.AddCompositeBinding("1DAxis")
+            .With("Negative", "<Keyboard>/a")
+            .With("Positive", "<Keyboard>/d");
+        moveAction.AddCompositeBinding("1DAxis")
+            .With("Negative", "<Keyboard>/leftArrow")
+            .With("Positive", "<Keyboard>/rightArrow");
+
+        jumpAction = new InputAction("Jump", InputActionType.Button, "<Keyboard>/space");
+        leftMouseAction = new InputAction("RemoveTile", InputActionType.Button, "<Mouse>/leftButton");
+        rightMouseAction = new InputAction("PlaceTile", InputActionType.Button, "<Mouse>/rightButton");
+        pointerPositionAction = new InputAction("Pointer", InputActionType.Value, "<Mouse>/position");
+        saveAction = new InputAction("Save", InputActionType.Button, "<Keyboard>/f5");
+        loadAction = new InputAction("Load", InputActionType.Button, "<Keyboard>/f9");
     }
 
     private bool IsGrounded()

@@ -5,7 +5,7 @@ ProjectTwelve is a Unity 2D sandbox prototype. This repo adopts the reusable age
 
 ## Commands
 ```bash
-# Open/build in Unity Editor 6.0.2+; Unity regenerates solution files.
+# Open/build in Unity Editor 6.0.5.1f1; Unity regenerates solution files.
 # Batch-mode edit validation (requires Unity installed in the environment):
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
 
@@ -18,9 +18,25 @@ python3 scripts/check_markdown_links.py
 
 ## MCP servers
 - Define project MCP servers in [`.mcp.json`](.mcp.json); keep secrets in environment variables only.
-- Prefer a compact `search` + `dispatch` surface over exposing many raw tools.
 - Use project-scoped names such as `project-twelve-*`.
-- Local Cursor MCP config should be untracked at `.cursor/mcp.json`.
+- Local Cursor MCP config should be untracked at [`.cursor/mcp.json`](.cursor/mcp.json); copy from [`.cursor/mcp.example.json`](.cursor/mcp.example.json) when setting up a new machine.
+
+### Unity MCP (Editor bridge)
+Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). This project declares `com.unity.ai.assistant` in `Packages/manifest.json`.
+
+**One-time setup (per machine):**
+1. Open the project in Unity 6.0.5.1f1 and let Package Manager resolve `com.unity.ai.assistant`.
+2. Go to **Edit → Project Settings → AI → Unity MCP** and confirm **Unity Bridge** is **Running** (green). Unity installs the relay binary to `%USERPROFILE%\.unity\relay\relay_win.exe` on first Editor start.
+3. Under **Integrations**, select **Cursor** (or Claude Code) and click **Configure** (recommended). Or copy [`.cursor/mcp.example.json`](.cursor/mcp.example.json) to `.cursor/mcp.json`, set `RELAY_PATH` and `UNITY_PROJECT_PATH`, then restart Cursor.
+4. On first connect, approve the pending client under **Pending Connections** in Unity MCP settings.
+
+**Before each session:** Unity Editor open on this project with the MCP bridge **Running**.
+
+**Smoke test:** ask the agent to read Unity console messages (e.g. via `Unity_ReadConsole`).
+
+**Multi-instance:** set `UNITY_PROJECT_PATH` to this repo root when several Editors are open. See [Get started with Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-get-started.html).
+
+**Requirements:** Unity 6+, Unity AI trial or subscription for Assistant features.
 
 ## Common workflow
 Use a spec-first flow for non-trivial changes: clarify scope, plan, implement, test, then prepare a PR summary. Keep changes focused and cite the relevant docs or code in handoff notes.
