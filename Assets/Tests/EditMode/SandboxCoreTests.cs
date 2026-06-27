@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -81,5 +82,92 @@ public sealed class SandboxCoreTests
     public void SandboxChunk_IsLocalInBoundsMatchesChunkSize(int localX, int localY, bool expected)
     {
         Assert.AreEqual(expected, SandboxChunk.IsLocalInBounds(localX, localY));
+    }
+
+    [Test]
+    public void SandboxWorld_InteriorEditTouchesNoNeighborChunks()
+    {
+        CollectionAssert.IsEmpty(SandboxWorld.GetBorderNeighborChunks(Vector2Int.zero, 5, 5));
+    }
+
+    [TestCase(0, 5, -1, 0)]
+    [TestCase(31, 5, 1, 0)]
+    [TestCase(5, 0, 0, -1)]
+    [TestCase(5, 31, 0, 1)]
+    public void SandboxWorld_EdgeEditTouchesSingleNeighborChunk(int localX, int localY, int neighborX, int neighborY)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>(
+            SandboxWorld.GetBorderNeighborChunks(Vector2Int.zero, localX, localY));
+
+        Assert.AreEqual(1, neighbors.Count);
+        Assert.AreEqual(new Vector2Int(neighborX, neighborY), neighbors[0]);
+    }
+
+    [Test]
+    public void SandboxWorld_CornerEditTouchesTwoOrthogonalNeighborChunks()
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>(
+            SandboxWorld.GetBorderNeighborChunks(new Vector2Int(2, 3), 0, 0));
+
+        CollectionAssert.AreEquivalent(
+            new[] { new Vector2Int(1, 3), new Vector2Int(2, 2) },
+            neighbors);
+    }
+
+    [Test]
+    public void SandboxWorld_BorderEditMarksLoadedNeighborForRebuild()
+    {
+        Vector2Int editedCoord = Vector2Int.zero;
+        Vector2Int neighborCoord = new Vector2Int(-1, 0);
+        SandboxChunk neighbor = new SandboxChunk(neighborCoord);
+        neighbor.NeedsRenderRebuild = false;
+        neighbor.NeedsColliderRebuild = false;
+
+        var loadedChunks = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { editedCoord, new SandboxChunk(editedCoord) },
+            { neighborCoord, neighbor },
+        };
+
+        SandboxWorld.MarkBorderNeighborsDirty(loadedChunks, editedCoord, 0, 5);
+
+        Assert.IsTrue(neighbor.NeedsRenderRebuild);
+        Assert.IsTrue(neighbor.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxWorld_InteriorEditLeavesNeighborsClean()
+    {
+        Vector2Int editedCoord = Vector2Int.zero;
+        Vector2Int neighborCoord = new Vector2Int(-1, 0);
+        SandboxChunk neighbor = new SandboxChunk(neighborCoord);
+        neighbor.NeedsRenderRebuild = false;
+        neighbor.NeedsColliderRebuild = false;
+
+        var loadedChunks = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { editedCoord, new SandboxChunk(editedCoord) },
+            { neighborCoord, neighbor },
+        };
+
+        SandboxWorld.MarkBorderNeighborsDirty(loadedChunks, editedCoord, 5, 5);
+
+        Assert.IsFalse(neighbor.NeedsRenderRebuild);
+        Assert.IsFalse(neighbor.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxWorld_BorderEditDoesNotGenerateUnloadedNeighbor()
+    {
+        Vector2Int editedCoord = Vector2Int.zero;
+        var loadedChunks = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { editedCoord, new SandboxChunk(editedCoord) },
+        };
+
+        SandboxWorld.MarkBorderNeighborsDirty(loadedChunks, editedCoord, 0, 5);
+
+        Assert.AreEqual(1, loadedChunks.Count);
+        Assert.IsFalse(loadedChunks.ContainsKey(new Vector2Int(-1, 0)));
     }
 }
