@@ -1,25 +1,13 @@
-# Open Knowledge Base — Index
+# LLM Wiki — Index
 
-This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It
-captures architectural intent, implementation boundaries, design decisions, and future work in a
-durable format that can be read by contributors, maintainers, tools, or assistants without depending
-on prompt-only context.
+This wiki is the working knowledge base for the Unity 2D sandbox project, organized so an LLM (or
+human) can locate architectural intent, implementation boundaries, and future work without
+rereading the full design document each time.
 
-The knowledge base currently holds **two complementary page sets**. They overlap on purpose — read
-whichever fits your task, and cross-reference the other.
+It currently holds **two complementary page sets**. They overlap on purpose — read whichever fits
+your task, and cross-reference the other.
 
-## Knowledge format
-
-Each page should stay useful outside of any single chat or tool session:
-
-- Start from project facts, decisions, and invariants rather than instructions to a specific assistant.
-- Prefer stable headings, concise tables, diagrams, and cross-links over prompt text.
-- Capture open tasks as implementation-ready work items with scope, acceptance criteria, and
-  validation notes.
-- Link back to canonical sources when a page summarizes a larger design document.
-- Avoid private tool names, session-specific assumptions, or copy/paste prompt templates in the wiki.
-
-## A. Prototype-aligned knowledge pages
+## A. Prototype-aligned wiki
 
 Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working
 on the current prototype.
@@ -32,7 +20,7 @@ on the current prototype.
 6. [Generation and Saving](generation-and-saving.md)
 7. [Gameplay Systems](gameplay-systems.md)
 8. [Multiplayer and Modding](multiplayer-and-modding.md)
-9. [Roadmap and Tasks](roadmap-and-tasks.md)
+9. [Roadmap and LLM Task Prompts](roadmap-and-llm-prompts.md)
 
 ## B. Detailed subsystem reference (numbered)
 
@@ -57,7 +45,6 @@ when you need the *why* and the pitfalls, not just the *what*.
 | 12 | [Modding & Content](12-modding.md) | Registries, data-driven content, Addressables |
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
-| — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
 
@@ -71,7 +58,7 @@ when you need the *why* and the pitfalls, not just the *what*.
 | Generation & saving | [Generation and Saving](generation-and-saving.md) | [07 Generation](07-procedural-generation.md), [11 Saving & Loading](11-saving-loading.md) |
 | Gameplay / pathfinding | [Gameplay Systems](gameplay-systems.md) | [09 Pathfinding](09-pathfinding.md) |
 | Multiplayer & modding | [Multiplayer and Modding](multiplayer-and-modding.md) | [10 Multiplayer](10-multiplayer.md), [12 Modding](12-modding.md) |
-| Roadmap | [Roadmap and Tasks](roadmap-and-tasks.md) | [14 Roadmap](14-roadmap.md) |
+| Roadmap | [Roadmap and LLM Task Prompts](roadmap-and-llm-prompts.md) | [14 Roadmap](14-roadmap.md) |
 
 ## Cross-cutting invariants
 
@@ -94,6 +81,6 @@ These hold across the whole project; individual pages may add more.
 
 Both page sets expand the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md)
 (canonical plan), with a long-form companion in
-[`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a
-knowledge page and the design document disagree, treat the design document as the product-level
-source of truth and update the stale page or call out the follow-up explicitly.
+[`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a wiki
+page and the design document disagree, treat the design document as the product-level source of
+truth and the wiki as the implementation-facing index.
