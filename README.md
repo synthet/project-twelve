@@ -27,7 +27,7 @@ ProjectTwelve/
 │       └── SandboxWorld.cs         # Chunk loading, generation, and tile edits
 ├── docs/
 │   ├── terraria-like-unity-design.md
-│   └── wiki/                       # LLM-facing implementation wiki
+│   └── wiki/                       # open implementation knowledge base
 ├── Packages/
 └── ProjectSettings/
 ```
@@ -36,7 +36,7 @@ ProjectTwelve/
 
 - [Unity 2D Sandbox Architecture Plan](docs/terraria-like-unity-design.md) is the product-level technical design.
 - [Detailed Design Reference](docs/terraria-like-unity-design-detailed.md) is a long-form companion with extended code sketches and comparison tables.
-- [LLM Wiki](docs/wiki/README.md) expands the design into implementation-facing pages for future LLM-assisted work. It holds two complementary page sets: a prototype-aligned wiki and a deeper numbered subsystem reference (see the wiki index).
+- [Open Knowledge Base](docs/wiki/README.md) expands the design into implementation-facing pages for contributors and automation. It holds two complementary page sets: a prototype-aligned wiki and a deeper numbered subsystem reference (see the wiki index).
 - [Architecture Blueprint](docs/wiki/architecture-blueprint.md) is a text translation of the visual blueprint canvas (10 figures), cross-linked to the wiki.
 
 ## Current Barebone Scope

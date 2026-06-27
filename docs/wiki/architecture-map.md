@@ -23,7 +23,7 @@ flowchart TD
 | Rendering/collision | `SandboxChunkRenderer` | Build visible tile quads and local collision shapes from chunk data. |
 | Player controls | `SandboxPlayerController` | Move, jump, and request valid tile edits. |
 
-## LLM Editing Guidance
+## Editing Guidance
 
 - Keep gameplay code aligned with the design document's chunk-first architecture.
 - Prefer small, explicit data structures over hidden scene state.

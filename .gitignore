@@ -161,3 +161,19 @@ $RECYCLE.BIN/
 # Optional: Uncomment if you wish to ignore the asset store tools plugin
 # ============================================
 # /[Aa]ssets/AssetStoreTools*
+# ============================================
+# Agent and local automation config
+# ============================================
+secrets.json
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+.cursor/mcp.json
+.agent/scratch/*
+!.agent/scratch/.gitkeep
+.agent-memory/raw-sessions/*
+!.agent-memory/raw-sessions/.gitkeep
+.agent-memory/dreams/*
+!.agent-memory/dreams/.gitkeep
+.agent-runs/
