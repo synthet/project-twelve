@@ -5,6 +5,7 @@ description: Chunk, tile, coordinate, and mutation conventions for world data.
 resource: ../terraria-like-unity-design.md
 tags: [unity, chunks, tiles, data, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # World and Chunk Data

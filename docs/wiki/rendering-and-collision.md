@@ -5,6 +5,7 @@ description: Chunk-local mesh rendering and collision strategy for destructible 
 resource: ../terraria-like-unity-design.md
 tags: [unity, rendering, collision, chunks, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Rendering and Collision

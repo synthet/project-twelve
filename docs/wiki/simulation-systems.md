@@ -5,6 +5,7 @@ description: Future tile-based lighting, liquid simulation, and simulation budge
 resource: ../terraria-like-unity-design.md
 tags: [unity, lighting, liquids, simulation, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Lighting, Liquids, and Simulation

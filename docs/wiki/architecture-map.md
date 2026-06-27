@@ -5,6 +5,7 @@ description: Runtime layer map and ownership boundaries for the sandbox prototyp
 resource: ../terraria-like-unity-design.md
 tags: [unity, sandbox, architecture, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Architecture Map

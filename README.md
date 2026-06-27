@@ -23,6 +23,7 @@ ProjectTwelve/
 │   └── Scripts/
 │       ├── SandboxChunk.cs         # Chunk data and dirty flags
 │       ├── SandboxChunkRenderer.cs # Chunk mesh and collider rebuilds
+│       ├── SandboxPlayerController.cs # Basic movement and tile editing
 │       ├── SandboxTile.cs          # Tile state and IDs
 │       └── SandboxWorld.cs         # Chunk loading, generation, and tile edits
 ├── docs/

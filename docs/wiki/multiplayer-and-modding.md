@@ -5,6 +5,7 @@ description: Server-authoritative multiplayer and data-driven modding direction.
 resource: ../terraria-like-unity-design.md
 tags: [unity, multiplayer, modding, registries, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Multiplayer and Modding

@@ -5,6 +5,7 @@ description: Procedural generation passes and chunk-based save/load direction.
 resource: ../terraria-like-unity-design.md
 tags: [unity, generation, persistence, chunks, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Generation and Saving

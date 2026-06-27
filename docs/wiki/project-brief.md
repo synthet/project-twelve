@@ -5,6 +5,7 @@ description: Vision, prototype scope, and non-goals for the Unity 2D sandbox.
 resource: ../terraria-like-unity-design.md
 tags: [unity, sandbox, scope, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Project Brief

@@ -5,6 +5,7 @@ description: Player, inventory, item, enemy, and pathfinding boundaries for futu
 resource: ../terraria-like-unity-design.md
 tags: [unity, gameplay, inventory, pathfinding, okf]
 timestamp: 2026-06-27T00:00:00Z
+status: active
 ---
 
 # Gameplay Systems
