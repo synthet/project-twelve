@@ -87,7 +87,20 @@ As a developer or reviewer working on the P1 milestone, I want to specify determ
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
 - [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Implementation:** Extracted terrain generation from `SandboxWorld` into the pure,
+  deterministic `SandboxTerrainGenerator` struct (`Assets/Scripts/Sandbox/SandboxTerrainGenerator.cs`);
+  `SandboxWorld.GenerateChunk` now delegates to it via `CreateTerrainGenerator()`.
+- **Spec:** Added the "Deterministic Generation Contract (P1-GEN-001)" section to
+  `docs/wiki/generation-and-saving.md` documenting the generation inputs, outputs, and invariant.
+- **Verification:** Golden-seed EditMode tests in `Assets/Tests/EditMode/SandboxCoreTests.cs`
+  cover same-seed/same-coord identical output, column layering, surface vs. underground light
+  seeds, and seed-sensitivity. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.

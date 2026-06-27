@@ -170,4 +170,83 @@ public sealed class SandboxCoreTests
         Assert.AreEqual(1, loadedChunks.Count);
         Assert.IsFalse(loadedChunks.ContainsKey(new Vector2Int(-1, 0)));
     }
+
+    private static SandboxTerrainGenerator GoldenGenerator(int seed = 1337)
+    {
+        return new SandboxTerrainGenerator(
+            seed: seed,
+            surfaceHeight: 28,
+            terrainAmplitude: 8,
+            terrainFrequency: 0.06f,
+            dirtDepth: 8);
+    }
+
+    [TestCase(0, 0)]
+    [TestCase(2, 3)]
+    [TestCase(-1, -1)]
+    [TestCase(-4, 5)]
+    public void SandboxTerrainGenerator_SameSeedAndCoordProduceIdenticalTiles(int chunkX, int chunkY)
+    {
+        Vector2Int coord = new Vector2Int(chunkX, chunkY);
+
+        SandboxChunk first = GoldenGenerator().GenerateChunk(coord);
+        SandboxChunk second = GoldenGenerator().GenerateChunk(coord);
+
+        for (int x = 0; x < SandboxChunk.Size; x++)
+        {
+            for (int y = 0; y < SandboxChunk.Size; y++)
+            {
+                SandboxTile a = first.GetLocalTile(x, y);
+                SandboxTile b = second.GetLocalTile(x, y);
+                Assert.AreEqual(a.id, b.id, $"id mismatch at {x},{y}");
+                Assert.AreEqual(a.light, b.light, $"light mismatch at {x},{y}");
+            }
+        }
+    }
+
+    [Test]
+    public void SandboxTerrainGenerator_GeneratesColumnLayersFromSurfaceDownward()
+    {
+        SandboxTerrainGenerator generator = GoldenGenerator();
+        const int worldX = 0;
+        int height = generator.GetSurfaceHeight(worldX);
+
+        Assert.AreEqual(SandboxTileIds.Air, generator.GetGeneratedTileId(height + 1, height));
+        Assert.AreEqual(SandboxTileIds.Grass, generator.GetGeneratedTileId(height, height));
+        Assert.AreEqual(SandboxTileIds.Dirt, generator.GetGeneratedTileId(height - 1, height));
+        Assert.AreEqual(SandboxTileIds.Dirt, generator.GetGeneratedTileId(height - generator.DirtDepth + 1, height));
+        Assert.AreEqual(SandboxTileIds.Stone, generator.GetGeneratedTileId(height - generator.DirtDepth, height));
+        Assert.AreEqual(SandboxTileIds.Stone, generator.GetGeneratedTileId(height - 100, height));
+    }
+
+    [Test]
+    public void SandboxTerrainGenerator_SurfaceTilesAreFullyLitAndUndergroundTilesAreDim()
+    {
+        SandboxTerrainGenerator generator = GoldenGenerator();
+        int height = generator.GetSurfaceHeight(0);
+
+        Assert.AreEqual((byte)15, generator.GenerateTile(height, height).light);
+        Assert.AreEqual((byte)4, generator.GenerateTile(height - 1, height).light);
+    }
+
+    [Test]
+    public void SandboxTerrainGenerator_DifferentSeedsProduceDifferentWorlds()
+    {
+        SandboxChunk a = GoldenGenerator(1337).GenerateChunk(Vector2Int.zero);
+        SandboxChunk b = GoldenGenerator(9001).GenerateChunk(Vector2Int.zero);
+
+        bool foundDifference = false;
+        for (int x = 0; x < SandboxChunk.Size && !foundDifference; x++)
+        {
+            for (int y = 0; y < SandboxChunk.Size && !foundDifference; y++)
+            {
+                if (a.GetLocalTile(x, y).id != b.GetLocalTile(x, y).id)
+                {
+                    foundDifference = true;
+                }
+            }
+        }
+
+        Assert.IsTrue(foundDifference, "Distinct seeds should not generate identical chunks.");
+    }
 }

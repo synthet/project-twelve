@@ -315,45 +315,19 @@ public sealed class SandboxWorld : MonoBehaviour
         chunk.NeedsColliderRebuild = true;
     }
 
+    /// <summary>
+    /// Builds the deterministic generator from the current world generation settings.
+    /// Generation depends only on these inputs and the chunk coordinate, so the same
+    /// settings reproduce identical chunks across runs.
+    /// </summary>
+    public SandboxTerrainGenerator CreateTerrainGenerator()
+    {
+        return new SandboxTerrainGenerator(seed, surfaceHeight, terrainAmplitude, terrainFrequency, dirtDepth);
+    }
+
     private SandboxChunk GenerateChunk(Vector2Int chunkCoord)
     {
-        SandboxChunk chunk = new SandboxChunk(chunkCoord);
-
-        for (int localX = 0; localX < SandboxChunk.Size; localX++)
-        {
-            int worldX = chunkCoord.x * SandboxChunk.Size + localX;
-            int height = GetSurfaceHeight(worldX);
-
-            for (int localY = 0; localY < SandboxChunk.Size; localY++)
-            {
-                int worldY = chunkCoord.y * SandboxChunk.Size + localY;
-                int tileId = GetGeneratedTileId(worldY, height);
-                chunk.Tiles[localX, localY] = new SandboxTile(tileId, worldY >= height ? (byte)15 : (byte)4);
-            }
-        }
-
-        return chunk;
-    }
-
-    private int GetSurfaceHeight(int worldX)
-    {
-        float noise = Mathf.PerlinNoise((worldX + seed) * terrainFrequency, seed * 0.001f);
-        return surfaceHeight + Mathf.RoundToInt((noise - 0.5f) * terrainAmplitude * 2f);
-    }
-
-    private int GetGeneratedTileId(int worldY, int height)
-    {
-        if (worldY > height)
-        {
-            return SandboxTileIds.Air;
-        }
-
-        if (worldY == height)
-        {
-            return SandboxTileIds.Grass;
-        }
-
-        return worldY > height - dirtDepth ? SandboxTileIds.Dirt : SandboxTileIds.Stone;
+        return CreateTerrainGenerator().GenerateChunk(chunkCoord);
     }
 
     private static int FloorDiv(int value, int divisor)
