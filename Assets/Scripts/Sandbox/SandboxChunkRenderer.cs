@@ -4,9 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public sealed class SandboxChunkRenderer : MonoBehaviour
 {
-    private static readonly Color DirtColor = new Color(0.45f, 0.26f, 0.12f);
-    private static readonly Color GrassColor = new Color(0.22f, 0.58f, 0.18f);
-    private static readonly Color StoneColor = new Color(0.42f, 0.42f, 0.45f);
+    private const int TileAtlasColumns = 4;
+
+    private static readonly Rect DirtUv = GetAtlasUv(0);
+    private static readonly Rect GrassUv = GetAtlasUv(1);
+    private static readonly Rect StoneUv = GetAtlasUv(2);
+    private static readonly Rect CopperOreUv = GetAtlasUv(3);
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -22,6 +25,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
         List<Color> colors = new List<Color>();
 
         for (int x = 0; x < SandboxChunk.Size; x++)
@@ -34,7 +38,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     continue;
                 }
 
-                AddTileQuad(vertices, triangles, colors, x, y, tileSize, GetTileColor(tile));
+                AddTileQuad(vertices, triangles, uvs, colors, x, y, tileSize, GetTileUv(tile), GetTileLightColor(tile));
             }
         }
 
@@ -48,6 +52,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         mesh.Clear();
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
+        mesh.SetUVs(0, uvs);
         mesh.SetColors(colors);
         mesh.RecalculateBounds();
 
@@ -109,7 +114,16 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         }
     }
 
-    private static void AddTileQuad(List<Vector3> vertices, List<int> triangles, List<Color> colors, int x, int y, float tileSize, Color color)
+    private static void AddTileQuad(
+        List<Vector3> vertices,
+        List<int> triangles,
+        List<Vector2> uvs,
+        List<Color> colors,
+        int x,
+        int y,
+        float tileSize,
+        Rect uv,
+        Color color)
     {
         int start = vertices.Count;
         float left = x * tileSize;
@@ -121,6 +135,11 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         vertices.Add(new Vector3(right, bottom, 0f));
         vertices.Add(new Vector3(right, top, 0f));
         vertices.Add(new Vector3(left, top, 0f));
+
+        uvs.Add(new Vector2(uv.xMin, uv.yMin));
+        uvs.Add(new Vector2(uv.xMax, uv.yMin));
+        uvs.Add(new Vector2(uv.xMax, uv.yMax));
+        uvs.Add(new Vector2(uv.xMin, uv.yMax));
 
         triangles.Add(start);
         triangles.Add(start + 2);
@@ -135,24 +154,32 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         colors.Add(color);
     }
 
-    private static Color GetTileColor(SandboxTile tile)
+    private static Rect GetTileUv(SandboxTile tile)
     {
-        Color baseColor;
         switch (tile.id)
         {
             case SandboxTileIds.Grass:
-                baseColor = GrassColor;
-                break;
+                return GrassUv;
             case SandboxTileIds.Stone:
-                baseColor = StoneColor;
-                break;
+                return StoneUv;
+            case SandboxTileIds.CopperOre:
+                return CopperOreUv;
             default:
-                baseColor = DirtColor;
-                break;
+                return DirtUv;
         }
+    }
 
+    private static Color GetTileLightColor(SandboxTile tile)
+    {
         float light = Mathf.Clamp01(tile.light / 15f);
-        return baseColor * Mathf.Lerp(0.35f, 1f, light);
+        float brightness = Mathf.Lerp(0.35f, 1f, light);
+        return new Color(brightness, brightness, brightness, 1f);
+    }
+
+    private static Rect GetAtlasUv(int column)
+    {
+        float tileWidth = 1f / TileAtlasColumns;
+        return new Rect(column * tileWidth, 0f, tileWidth, 1f);
     }
 
     private static Material GetDefaultMaterial()
