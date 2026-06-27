@@ -267,6 +267,108 @@ public sealed class SandboxCoreTests
         CollectionAssert.AreEquivalent(new[] { dirtyA, dirtyB }, selected);
     }
 
+    [Test]
+    public void SandboxWorld_LoadRangeCoversSquareWindowAroundCenter()
+    {
+        Vector2Int center = new Vector2Int(5, -3);
+
+        List<Vector2Int> loaded = new List<Vector2Int>(
+            SandboxWorld.GetChunksInLoadRange(center, 1));
+
+        CollectionAssert.AreEquivalent(
+            new[]
+            {
+                new Vector2Int(4, -4), new Vector2Int(5, -4), new Vector2Int(6, -4),
+                new Vector2Int(4, -3), new Vector2Int(5, -3), new Vector2Int(6, -3),
+                new Vector2Int(4, -2), new Vector2Int(5, -2), new Vector2Int(6, -2),
+            },
+            loaded);
+    }
+
+    [Test]
+    public void SandboxWorld_LoadRangeWithZeroRadiusLoadsOnlyCenterChunk()
+    {
+        Vector2Int center = new Vector2Int(2, 7);
+
+        List<Vector2Int> loaded = new List<Vector2Int>(
+            SandboxWorld.GetChunksInLoadRange(center, 0));
+
+        CollectionAssert.AreEqual(new[] { center }, loaded);
+    }
+
+    [Test]
+    public void SandboxWorld_LoadRangeClampsNegativeRadiusToCenterOnly()
+    {
+        Vector2Int center = new Vector2Int(-1, -1);
+
+        List<Vector2Int> loaded = new List<Vector2Int>(
+            SandboxWorld.GetChunksInLoadRange(center, -4));
+
+        CollectionAssert.AreEqual(new[] { center }, loaded);
+    }
+
+    [Test]
+    public void SandboxWorld_UnloadSelectsOnlyChunksBeyondPaddedRange()
+    {
+        Vector2Int center = Vector2Int.zero;
+        Vector2Int withinPadding = new Vector2Int(2, 0);
+        Vector2Int onPaddingBoundary = new Vector2Int(2, 2);
+        Vector2Int beyondPadding = new Vector2Int(3, 0);
+        var loaded = new[] { center, withinPadding, onPaddingBoundary, beyondPadding };
+
+        List<Vector2Int> unload = new List<Vector2Int>(
+            SandboxWorld.GetRenderersToUnload(loaded, center, loadRadius: 1, unloadPadding: 1));
+
+        CollectionAssert.AreEqual(new[] { beyondPadding }, unload);
+    }
+
+    [Test]
+    public void SandboxWorld_UnloadHysteresisKeepsEdgeChunkLoaded()
+    {
+        // A chunk exactly at loadRadius + unloadPadding stays loaded; a small player move that
+        // pushes it one chunk past the boundary is what finally unloads it.
+        Vector2Int edgeChunk = new Vector2Int(0, 2);
+
+        List<Vector2Int> keptAtBoundary = new List<Vector2Int>(
+            SandboxWorld.GetRenderersToUnload(new[] { edgeChunk }, Vector2Int.zero, loadRadius: 1, unloadPadding: 1));
+        List<Vector2Int> unloadedAfterMove = new List<Vector2Int>(
+            SandboxWorld.GetRenderersToUnload(new[] { edgeChunk }, new Vector2Int(0, -1), loadRadius: 1, unloadPadding: 1));
+
+        CollectionAssert.IsEmpty(keptAtBoundary);
+        CollectionAssert.AreEqual(new[] { edgeChunk }, unloadedAfterMove);
+    }
+
+    [Test]
+    public void SandboxWorld_UnloadKeepsAllChunksWhenNoneAreLoaded()
+    {
+        CollectionAssert.IsEmpty(new List<Vector2Int>(
+            SandboxWorld.GetRenderersToUnload(new Vector2Int[0], Vector2Int.zero, 3, 1)));
+    }
+
+    [Test]
+    public void SandboxChunk_NewlyLoadedChunkRequestsRenderAndColliderRebuild()
+    {
+        SandboxChunk chunk = new SandboxChunk(new Vector2Int(4, 4));
+
+        Assert.IsTrue(chunk.NeedsRenderRebuild);
+        Assert.IsTrue(chunk.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxChunk_RenderAndColliderDirtyFlagsToggleIndependently()
+    {
+        SandboxChunk chunk = CleanChunk(Vector2Int.zero);
+
+        chunk.NeedsRenderRebuild = true;
+        Assert.IsTrue(chunk.NeedsRenderRebuild);
+        Assert.IsFalse(chunk.NeedsColliderRebuild);
+
+        chunk.NeedsRenderRebuild = false;
+        chunk.NeedsColliderRebuild = true;
+        Assert.IsFalse(chunk.NeedsRenderRebuild);
+        Assert.IsTrue(chunk.NeedsColliderRebuild);
+    }
+
     private static SandboxTerrainGenerator GoldenGenerator(int seed = 1337)
     {
         return new SandboxTerrainGenerator(
