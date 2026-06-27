@@ -71,4 +71,15 @@ public sealed class SandboxCoreTests
     {
         Assert.AreEqual(new Vector2Int(expectedLocalX, expectedLocalY), SandboxWorld.WorldToLocalCoord(x, y));
     }
+
+    [TestCase(0, 0, true)]
+    [TestCase(31, 31, true)]
+    [TestCase(-1, 0, false)]
+    [TestCase(0, -1, false)]
+    [TestCase(32, 0, false)]
+    [TestCase(0, 32, false)]
+    public void SandboxChunk_IsLocalInBoundsMatchesChunkSize(int localX, int localY, bool expected)
+    {
+        Assert.AreEqual(expected, SandboxChunk.IsLocalInBounds(localX, localY));
+    }
 }

@@ -7,11 +7,12 @@ This repository adopts the reusable agent practices from `synthet-code-framework
 ## Architecture
 | Module / component | Role |
 |--------------------|------|
-| `Assets/Scripts/SandboxTile.cs` | Tile IDs and tile state. |
-| `Assets/Scripts/SandboxChunk.cs` | Fixed-size chunk data and dirty flags. |
-| `Assets/Scripts/SandboxWorld.cs` | Chunk loading, procedural generation, and tile edits. |
-| `Assets/Scripts/SandboxChunkRenderer.cs` | Chunk mesh/collider rebuilds. |
-| `Assets/Scripts/SandboxPlayerController.cs` | Prototype player movement and mouse tile editing. |
+| `Assets/Scripts/Sandbox/SandboxTile.cs` | Tile IDs and tile state. |
+| `Assets/Scripts/Sandbox/SandboxChunk.cs` | Fixed-size chunk data and dirty flags. |
+| `Assets/Scripts/Sandbox/SandboxWorld.cs` | Chunk loading, procedural generation, tile edits, and save/load. |
+| `Assets/Scripts/Sandbox/SandboxChunkRenderer.cs` | Chunk mesh/collider rebuilds. |
+| `Assets/Scripts/Sandbox/SandboxPlayerController.cs` | Prototype player movement and mouse tile editing. |
+| `Assets/Scripts/Sandbox/SandboxSaveData.cs` | Serializable world/chunk/tile save records. |
 | `docs/wiki/` | Open architecture and implementation reference. |
 
 ## Commands
