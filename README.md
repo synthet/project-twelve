@@ -31,6 +31,10 @@ ProjectTwelve/
 - `Assets/Scripts/HexTile.cs` - Individual hex tile component with highlighting support
 - `Assets/Scripts/MouseControlledObject.cs` - Object that can be moved by clicking on hex tiles with the mouse
 
+## Design Documents
+
+- [Unity 2D Sandbox Architecture Plan](docs/terraria-like-unity-design.md) - Technical plan for evolving the project toward a Terraria-like 2D sandbox, including chunked world data, rendering, physics, lighting, liquids, saving, multiplayer, modding, testing, and roadmap guidance.
+
 ## Requirements
 
 - Unity Editor 6.0.2 or later
