@@ -25,6 +25,11 @@ public sealed class SandboxPlayerController : MonoBehaviour
         {
             world = FindObjectOfType<SandboxWorld>();
         }
+
+        if (world != null)
+        {
+            world.SetPlayerTarget(transform);
+        }
     }
 
     private void Update()

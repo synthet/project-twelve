@@ -14,6 +14,7 @@ public sealed class SandboxWorld : MonoBehaviour
     [Header("Chunk Loading")]
     [SerializeField] private Transform playerTarget;
     [SerializeField] private int loadRadiusInChunks = 3;
+    [SerializeField] private int unloadPaddingInChunks = 1;
     [SerializeField] private float chunkRefreshInterval = 0.5f;
 
     [Header("Rendering")]
@@ -27,6 +28,11 @@ public sealed class SandboxWorld : MonoBehaviour
 
     public float TileSize => tileSize;
     public int Seed => seed;
+
+    public void SetPlayerTarget(Transform target)
+    {
+        playerTarget = target;
+    }
 
     private void Start()
     {
@@ -90,6 +96,12 @@ public sealed class SandboxWorld : MonoBehaviour
             pair.Value.MarkClean();
         }
 
+        string directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
         File.WriteAllText(path, JsonUtility.ToJson(saveData, true));
     }
 
@@ -149,15 +161,55 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void RefreshLoadedChunks()
     {
-        Vector2Int centerChunk = playerTarget == null
-            ? Vector2Int.zero
-            : WorldToChunkCoord(Mathf.FloorToInt(playerTarget.position.x / tileSize), Mathf.FloorToInt(playerTarget.position.y / tileSize));
-
+        Vector2Int centerChunk = GetCenterChunk();
         for (int x = centerChunk.x - loadRadiusInChunks; x <= centerChunk.x + loadRadiusInChunks; x++)
         {
             for (int y = centerChunk.y - loadRadiusInChunks; y <= centerChunk.y + loadRadiusInChunks; y++)
             {
                 EnsureRenderer(new Vector2Int(x, y));
+            }
+        }
+
+        UnloadDistantRenderers(centerChunk);
+    }
+
+    private Vector2Int GetCenterChunk()
+    {
+        if (playerTarget == null)
+        {
+            return Vector2Int.zero;
+        }
+
+        return WorldToChunkCoord(
+            Mathf.FloorToInt(playerTarget.position.x / tileSize),
+            Mathf.FloorToInt(playerTarget.position.y / tileSize));
+    }
+
+    private void UnloadDistantRenderers(Vector2Int centerChunk)
+    {
+        int unloadRadius = loadRadiusInChunks + Mathf.Max(0, unloadPaddingInChunks);
+        List<Vector2Int> renderersToUnload = new List<Vector2Int>();
+        foreach (Vector2Int coord in renderers.Keys)
+        {
+            int distanceX = Mathf.Abs(coord.x - centerChunk.x);
+            int distanceY = Mathf.Abs(coord.y - centerChunk.y);
+            if (distanceX > unloadRadius || distanceY > unloadRadius)
+            {
+                renderersToUnload.Add(coord);
+            }
+        }
+
+        foreach (Vector2Int coord in renderersToUnload)
+        {
+            SandboxChunkRenderer chunkRenderer = renderers[coord];
+            renderers.Remove(coord);
+            if (Application.isPlaying)
+            {
+                Destroy(chunkRenderer.gameObject);
+            }
+            else
+            {
+                DestroyImmediate(chunkRenderer.gameObject);
             }
         }
     }
