@@ -1,7 +1,7 @@
 ---
 id: P1-RENDER-001
 title: "[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior."
-status: open
+status: implemented
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: null
@@ -87,7 +87,22 @@ As a developer or reviewer working on the P1 milestone, I want to specify and im
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
 - [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Implementation:** Extracted the rebuild selection policy into the pure
+  `SandboxWorld.GetChunksNeedingRebuild` helper (`Assets/Scripts/Sandbox/SandboxWorld.cs`).
+  `RebuildDirtyChunks` now drives rebuilds from that selection, so only visible chunks whose
+  own render/collider dirty flags are set are rebuilt; unrelated clean chunks and loaded-but-not-visible
+  chunks are never touched.
+- **Spec:** Added the "Chunk-Local Render Rebuild Contract (P1-RENDER-001)" section to
+  `docs/wiki/rendering-and-collision.md` documenting the selection inputs, rules, and invariants.
+- **Verification:** `SandboxWorld_RebuildSelection*` EditMode tests in
+  `Assets/Tests/EditMode/SandboxCoreTests.cs` cover visible-dirty, collider-only-dirty,
+  visible-clean, dirty-but-offscreen, missing-chunk, and mixed-set selection. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.

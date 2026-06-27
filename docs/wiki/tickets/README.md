@@ -16,7 +16,7 @@
 | P1-EDIT-001 | [[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point.](p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md) | open | Pending creation |
 | P1-GEN-001 | [[P1-GEN-001] Specify deterministic terrain generation inputs and outputs.](p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md) | open | Pending creation |
 | P1-QA-001 | [[P1-QA-001] Package the prototype vertical-slice demo checklist.](p1-qa-001-package-the-prototype-vertical-slice-demo-checklist.md) | open | Pending creation |
-| P1-RENDER-001 | [[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior.](p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md) | open | Pending creation |
+| P1-RENDER-001 | [[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior.](p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md) | implemented | Pending creation |
 | P1-WORLD-001 | [[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates.](p1-world-001-specify-deterministic-world-chunk-and-local-coordinate-conve.md) | open | Pending creation |
 | P1-WORLD-002 | [[P1-WORLD-002] Implement chunk lifecycle tasks for load, visibility, dirty flags, and unload.](p1-world-002-implement-chunk-lifecycle-tasks-for-load-visibility-dirty-fl.md) | open | Pending creation |
 | P2-AI-001 | [[P2-AI-001] Specify enemy spawn and pathfinding rules.](p2-ai-001-specify-enemy-spawn-and-pathfinding-rules.md) | open | Pending creation |

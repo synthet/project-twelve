@@ -24,6 +24,7 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
+    private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
     private float nextChunkRefreshTime;
 
     public float TileSize => tileSize;
@@ -264,12 +265,31 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void RebuildDirtyChunks()
     {
-        foreach (KeyValuePair<Vector2Int, SandboxChunkRenderer> pair in renderers)
+        rebuildScratch.Clear();
+        rebuildScratch.AddRange(GetChunksNeedingRebuild(renderers.Keys, chunks));
+        foreach (Vector2Int coord in rebuildScratch)
         {
-            SandboxChunk chunk = GetOrCreateChunk(pair.Key);
-            if (chunk.NeedsRenderRebuild || chunk.NeedsColliderRebuild)
+            renderers[coord].Rebuild(chunks[coord], tileSize, tileMaterial);
+        }
+    }
+
+    /// <summary>
+    /// Selects the visible chunks that need a render or collider rebuild this frame.
+    /// Only currently visible (renderer-backed) coordinates are considered, and a chunk is
+    /// returned solely when its own dirty flags are set, so a rebuild never touches an
+    /// unrelated clean chunk or a loaded-but-not-visible chunk. This bounds rebuild cost to
+    /// the chunks a player can actually see and has actually edited.
+    /// </summary>
+    public static IEnumerable<Vector2Int> GetChunksNeedingRebuild(
+        IEnumerable<Vector2Int> visibleChunks,
+        IReadOnlyDictionary<Vector2Int, SandboxChunk> loadedChunks)
+    {
+        foreach (Vector2Int coord in visibleChunks)
+        {
+            if (loadedChunks.TryGetValue(coord, out SandboxChunk chunk)
+                && (chunk.NeedsRenderRebuild || chunk.NeedsColliderRebuild))
             {
-                pair.Value.Rebuild(chunk, tileSize, tileMaterial);
+                yield return coord;
             }
         }
     }
