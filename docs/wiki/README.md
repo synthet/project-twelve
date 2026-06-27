@@ -49,6 +49,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 12 | [Modding & Content](12-modding.md) | Registries, data-driven content, Addressables |
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
+| 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
@@ -63,6 +64,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | Generation & saving | [Generation and Saving](generation-and-saving.md) | [07 Generation](07-procedural-generation.md), [11 Saving & Loading](11-saving-loading.md) |
 | Gameplay / pathfinding | [Gameplay Systems](gameplay-systems.md) | [09 Pathfinding](09-pathfinding.md) |
 | Multiplayer & modding | [Multiplayer and Modding](multiplayer-and-modding.md) | [10 Multiplayer](10-multiplayer.md), [12 Modding](12-modding.md) |
+| Asset integration | — | [15 Asset Integration Requirements](15-assets-integration.md) |
 | Roadmap | [Roadmap and Tasks](roadmap-and-tasks.md) | [14 Roadmap](14-roadmap.md) |
 
 ## Cross-cutting invariants
