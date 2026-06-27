@@ -1,53 +1,52 @@
-# ProjectTwelve - Unity C# Project
+# ProjectTwelve - Unity 2D Sandbox Prototype
 
-A Unity C# project configured for JetBrains Rider IDE.
-
-## Setup
-
-1. Open this project in Unity Editor 6.0.2 or later
-2. Unity will automatically regenerate the `.sln` and `.csproj` files on first open
-3. In Unity, go to `Edit > Preferences > External Tools`
-4. Set `External Script Editor` to your JetBrains Rider installation path (e.g., `C:\Users\<YourUsername>\AppData\Local\JetBrains\Toolbox\apps\Rider\ch-0\<version>\bin\rider64.exe`)
-5. Open the regenerated `.sln` file in Rider, or double-click any `.cs` script to open it in Rider automatically
-
-**Note:** The `.sln` and `.csproj` files included in this project are templates. Unity will regenerate them when you open the project, which is normal and expected behavior.
-
-## Project Structure
-
-```
-ProjectTwelve/
-├── Assets/
-│   ├── Scene.unity                 # Minimal default scene (camera + light)
-│   └── Scripts/
-│       └── PlayerController.cs      # Basic player movement script
-├── ProjectSettings/                 # Unity project configuration
-├── Packages/                        # Package dependencies
-├── docs/                            # Design docs and engineering wiki
-└── README.md                        # This file
-```
-
-This is intentionally a **barebone** project. The earlier hexagonal-grid "Hello World" demo
-(HexGrid/HexTile/MouseControlledObject/SceneSetup) has been removed so the repo is a clean
-starting point for the 2D sandbox engine described in the design docs.
-
-### Scripts
-
-- `Assets/Scripts/PlayerController.cs` - Basic player movement script that handles input using Unity's Input system (arrow keys or WASD). Placeholder controller; the sandbox uses manual tile collision (see the wiki).
-
-## Design Documents
-
-- [Engineering Wiki](docs/wiki/README.md) - Navigable, cross-linked knowledge base (architecture, data models, chunking, rendering, lighting, liquids, generation, pathfinding, multiplayer, persistence, modding, tooling, roadmap, glossary).
-- [Architecture Blueprint](docs/wiki/architecture-blueprint.md) - Text translation of the visual blueprint canvas (10 figures).
-- [Unity 2D Sandbox Architecture Plan](docs/terraria-like-unity-design.md) - Canonical, concise technical plan.
-- [Detailed Design Reference](docs/terraria-like-unity-design-detailed.md) - Long-form companion with extended code sketches and tables.
+A Unity C# project for prototyping a Terraria-like 2D sandbox with chunked world data, procedural terrain generation, chunk-local rendering, and basic tile editing.
 
 ## Requirements
 
 - Unity Editor 6.0.2 or later
-- JetBrains Rider 2023.3 or later (recommended for Unity 6 support)
+- JetBrains Rider 2023.3 or later, or another Unity-compatible C# editor
 
-## Getting Started
+## Setup
 
-The project includes a basic `PlayerController` script that handles player movement using arrow keys or WASD. The script uses Unity's built-in `Input.GetAxis()` method for smooth movement input.
+1. Open this project in Unity Editor 6.0.2 or later.
+2. Unity will regenerate solution and project files on first open.
+3. Open the regenerated solution in Rider or your preferred editor.
+4. Open `Assets/Scene.unity` for the barebone sandbox scene.
 
-For the planned 2D sandbox engine — chunked world data, custom lighting and liquids, procedural generation, collision, pathfinding, multiplayer, persistence, and modding — start with the [Engineering Wiki](docs/wiki/README.md) and follow the [Roadmap](docs/wiki/14-roadmap.md).
+## Project Structure
+
+```text
+ProjectTwelve/
+├── Assets/
+│   ├── Scene.unity                 # Minimal sandbox scene
+│   └── Scripts/
+│       ├── SandboxChunk.cs         # Chunk data and dirty flags
+│       ├── SandboxChunkRenderer.cs # Chunk mesh and collider rebuilds
+│       ├── SandboxTile.cs          # Tile state and IDs
+│       └── SandboxWorld.cs         # Chunk loading, generation, and tile edits
+├── docs/
+│   ├── terraria-like-unity-design.md
+│   └── wiki/                       # LLM-facing implementation wiki
+├── Packages/
+└── ProjectSettings/
+```
+
+## Design Documents
+
+- [Unity 2D Sandbox Architecture Plan](docs/terraria-like-unity-design.md) is the product-level technical design.
+- [Detailed Design Reference](docs/terraria-like-unity-design-detailed.md) is a long-form companion with extended code sketches and comparison tables.
+- [LLM Wiki](docs/wiki/README.md) expands the design into implementation-facing pages for future LLM-assisted work. It holds two complementary page sets: a prototype-aligned wiki and a deeper numbered subsystem reference (see the wiki index).
+- [Architecture Blueprint](docs/wiki/architecture-blueprint.md) is a text translation of the visual blueprint canvas (10 figures), cross-linked to the wiki.
+
+## Current Barebone Scope
+
+The project intentionally keeps only sandbox-relevant prototype assets:
+
+- Sparse, chunked world data.
+- Simple procedural terrain.
+- Chunk mesh rendering with vertex colors.
+- Chunk-local collision rebuilds.
+- Basic player movement and mouse tile editing scripts.
+
+The previous hex-grid click demo and generated scene artifacts have been removed so the repository stays focused on the sandbox prototype.

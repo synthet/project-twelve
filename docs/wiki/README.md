@@ -1,30 +1,36 @@
-# Project Twelve — Engineering Wiki
+# LLM Wiki — Index
 
-This wiki is the navigable, LLM-friendly knowledge base for evolving **Project Twelve**
-into a *Terraria*/*Starbound*-style 2D sandbox in Unity. It is derived from and
-elaborates on the design documents:
+This wiki is the working knowledge base for the Unity 2D sandbox project, organized so an LLM (or
+human) can locate architectural intent, implementation boundaries, and future work without
+rereading the full design document each time.
 
-- [Unity 2D Sandbox Architecture Plan](../terraria-like-unity-design.md) — canonical, concise plan.
-- [Detailed Design Reference](../terraria-like-unity-design-detailed.md) — long-form companion.
+It currently holds **two complementary page sets**. They overlap on purpose — read whichever fits
+your task, and cross-reference the other.
 
-The wiki reorganizes that material into focused, cross-linked pages. Each page is
-self-contained and front-loaded with the decisions and invariants an agent needs
-before touching code, so you can load a single page to work on one subsystem.
+## A. Prototype-aligned wiki
 
-## How to use this wiki (for humans and agents)
+Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working
+on the current prototype.
 
-- **Start at the relevant subsystem page**, not the design doc — pages here are scoped and link out.
-- Every page opens with a **Status / Decisions / Invariants** block. Treat invariants as
-  hard constraints; if a change violates one, update the page in the same commit.
-- **See also** links at the bottom of each page wire the graph together. Follow them
-  instead of re-deriving context.
-- The [Glossary](glossary.md) defines shared terms (chunk, tile, lightmap, diff, etc.).
+1. [Project Brief](project-brief.md)
+2. [Architecture Map](architecture-map.md)
+3. [World and Chunk Data](world-and-chunk-data.md)
+4. [Rendering and Collision](rendering-and-collision.md)
+5. [Lighting, Liquids, and Simulation](simulation-systems.md)
+6. [Generation and Saving](generation-and-saving.md)
+7. [Gameplay Systems](gameplay-systems.md)
+8. [Multiplayer and Modding](multiplayer-and-modding.md)
+9. [Roadmap and LLM Task Prompts](roadmap-and-llm-prompts.md)
 
-## Page index
+## B. Detailed subsystem reference (numbered)
+
+A deeper, decision-oriented reference. Each page opens with a **Status / Decisions / Invariants**
+block and ends with **See also** links, so a single page is enough to work one subsystem. Use this
+when you need the *why* and the pitfalls, not just the *what*.
 
 | # | Page | Scope |
 |---|------|-------|
-| 00 | [Overview & Principles](00-overview.md) | Goals, scope, guiding principles, current repo state |
+| 00 | [Overview & Principles](00-overview.md) | Goals, scope, guiding principles |
 | 01 | [Architecture](01-architecture.md) | System decomposition, ownership, data flow |
 | 02 | [Data Models](02-data-models.md) | `Tile`, `Chunk`, `World`, `Entity`, `Inventory`, coordinates |
 | 03 | [Chunking](03-chunking.md) | Chunk size, load/unload, dirty flags, streaming |
@@ -42,32 +48,39 @@ before touching code, so you can load a single page to work on one subsystem.
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
 
+### How the two sets correspond
+
+| Topic | Set A (prototype) | Set B (reference) |
+|-------|-------------------|-------------------|
+| World/chunk/tile data | [World and Chunk Data](world-and-chunk-data.md) | [02 Data Models](02-data-models.md), [03 Chunking](03-chunking.md) |
+| Rendering & collision | [Rendering and Collision](rendering-and-collision.md) | [04 Rendering](04-rendering.md), [05 Collision & Physics](05-collision-physics.md) |
+| Lighting & liquids | [Simulation Systems](simulation-systems.md) | [06 Lighting](06-lighting.md), [08 Liquids](08-liquids.md) |
+| Generation & saving | [Generation and Saving](generation-and-saving.md) | [07 Generation](07-procedural-generation.md), [11 Saving & Loading](11-saving-loading.md) |
+| Gameplay / pathfinding | [Gameplay Systems](gameplay-systems.md) | [09 Pathfinding](09-pathfinding.md) |
+| Multiplayer & modding | [Multiplayer and Modding](multiplayer-and-modding.md) | [10 Multiplayer](10-multiplayer.md), [12 Modding](12-modding.md) |
+| Roadmap | [Roadmap and LLM Task Prompts](roadmap-and-llm-prompts.md) | [14 Roadmap](14-roadmap.md) |
+
 ## Cross-cutting invariants
 
-These hold across the whole project. Individual pages may add more.
+These hold across the whole project; individual pages may add more.
 
-1. **Chunk-local everything.** Rendering, colliders, lighting, and fluids are rebuilt
-   per-chunk. No subsystem may take a global rebuild cost on a single tile edit.
-   See [Chunking](03-chunking.md).
-2. **Separate dirty flags per subsystem.** A tile edit sets independent
-   render/collider/light/fluid dirty flags; subsystems consume them on their own cadence.
-3. **Deterministic generation.** The world is reproducible from `seed` + generation
-   settings; saves only persist diffs from the generated baseline where practical.
-   See [Saving & Loading](11-saving-loading.md).
-4. **Server-authoritative.** In multiplayer the server owns canonical world state; clients
-   request edits and receive deltas. See [Multiplayer](10-multiplayer.md).
-5. **Data-driven content.** Tiles/items/biomes/recipes come from registries keyed by stable
-   string IDs, not hard-coded enums. See [Modding & Content](12-modding.md).
-6. **No engine lock-in at the seams.** Tile-diff, chunk subscription, validation, and save
-   logic stay independent of any specific networking package or render backend.
+1. **Chunk-local everything.** Rendering, colliders, lighting, and fluids are rebuilt per-chunk. No
+   subsystem may take a global rebuild cost on a single tile edit.
+2. **Separate dirty flags per subsystem.** A tile edit sets independent render/collider/light/fluid
+   flags; subsystems consume them on their own cadence.
+3. **Deterministic generation.** The world is reproducible from `seed` + generation settings; saves
+   persist diffs from the generated baseline where practical.
+4. **Server-authoritative.** In multiplayer the server owns canonical world state; clients request
+   edits and receive deltas.
+5. **Data-driven content.** Tiles/items/biomes/recipes come from registries keyed by stable string
+   IDs, not hard-coded enums.
+6. **No engine lock-in at the seams.** Tile-diff, chunk subscription, validation, and save logic stay
+   independent of any specific networking package or render backend.
 
-## Current repository state
+## Source of truth
 
-The repo is a **barebone Unity project**, intentionally stripped of the earlier
-hexagonal-grid demo. What exists today:
-
-- `Assets/Scripts/PlayerController.cs` — minimal input-driven movement (placeholder).
-- `Assets/Scene.unity` — default scene (Main Camera + Directional Light only).
-
-None of the sandbox systems below are implemented yet; this wiki is the build plan.
-Follow the [Roadmap](14-roadmap.md) for sequencing.
+Both page sets expand the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md)
+(canonical plan), with a long-form companion in
+[`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a wiki
+page and the design document disagree, treat the design document as the product-level source of
+truth and the wiki as the implementation-facing index.
