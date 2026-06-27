@@ -70,6 +70,54 @@ public sealed class SandboxWorld : MonoBehaviour
         Vector2Int local = WorldToLocalCoord(x, y);
         chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId));
         EnsureRenderer(chunkCoord);
+        MarkBorderNeighborsDirty(chunks, chunkCoord, local.x, local.y);
+    }
+
+    /// <summary>
+    /// Returns the face-adjacent chunk coordinates whose border is touched by an edit at the
+    /// given local coordinate. Interior edits touch no neighbor; an edge edit touches one neighbor
+    /// and a corner edit touches two (the orthogonal chunks sharing that tile's exposed faces).
+    /// </summary>
+    public static IEnumerable<Vector2Int> GetBorderNeighborChunks(Vector2Int chunkCoord, int localX, int localY)
+    {
+        if (localX == 0)
+        {
+            yield return new Vector2Int(chunkCoord.x - 1, chunkCoord.y);
+        }
+        else if (localX == SandboxChunk.Size - 1)
+        {
+            yield return new Vector2Int(chunkCoord.x + 1, chunkCoord.y);
+        }
+
+        if (localY == 0)
+        {
+            yield return new Vector2Int(chunkCoord.x, chunkCoord.y - 1);
+        }
+        else if (localY == SandboxChunk.Size - 1)
+        {
+            yield return new Vector2Int(chunkCoord.x, chunkCoord.y + 1);
+        }
+    }
+
+    /// <summary>
+    /// Flags every loaded face-adjacent neighbor of a border edit for render and collider rebuilds.
+    /// Unloaded neighbors are skipped so editing never forces speculative chunk generation; they
+    /// rebuild from current data when they next load.
+    /// </summary>
+    public static void MarkBorderNeighborsDirty(
+        IReadOnlyDictionary<Vector2Int, SandboxChunk> loadedChunks,
+        Vector2Int chunkCoord,
+        int localX,
+        int localY)
+    {
+        foreach (Vector2Int neighborCoord in GetBorderNeighborChunks(chunkCoord, localX, localY))
+        {
+            if (loadedChunks.TryGetValue(neighborCoord, out SandboxChunk neighbor))
+            {
+                neighbor.NeedsRenderRebuild = true;
+                neighbor.NeedsColliderRebuild = true;
+            }
+        }
     }
 
 
