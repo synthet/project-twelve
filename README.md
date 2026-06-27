@@ -50,3 +50,14 @@ The project intentionally keeps only sandbox-relevant prototype assets:
 - Basic player movement and mouse tile editing scripts.
 
 The previous hex-grid click demo and generated scene artifacts have been removed so the repository stays focused on the sandbox prototype.
+
+## Continuous Integration
+
+GitHub Actions runs the Unity EditMode unit-test suite on pushes to `main`, pull requests, and manual workflow dispatches via `.github/workflows/unit-tests.yml`.
+
+The workflow uses GameCI's Unity Test Runner. It skips the Unity execution step when no Unity license secret is configured, which keeps pull requests from failing before CI credentials are installed. Configure either `UNITY_LICENSE` for a personal license file or `UNITY_SERIAL` for a serial-based license to enable test execution. If using a serial-based license, also configure:
+
+- `UNITY_EMAIL`
+- `UNITY_PASSWORD`
+
+Local test coverage starts in `Assets/Tests/EditMode` and currently validates core tile, chunk, and coordinate-conversion behavior.
