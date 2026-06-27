@@ -38,6 +38,7 @@ public sealed class SandboxWorld : MonoBehaviour
     private void Start()
     {
         RefreshLoadedChunks();
+        RebuildDirtyChunks();
     }
 
     private void Update()

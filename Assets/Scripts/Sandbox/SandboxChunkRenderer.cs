@@ -56,7 +56,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         mesh.SetColors(colors);
         mesh.RecalculateBounds();
 
-        meshRenderer.sharedMaterial = material != null ? material : GetDefaultMaterial();
+        meshRenderer.sharedMaterial = ResolveMaterial(material);
         RebuildColliders(chunk, tileSize);
         chunk.NeedsRenderRebuild = false;
         chunk.NeedsColliderRebuild = false;
@@ -180,6 +180,26 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     {
         float tileWidth = 1f / TileAtlasColumns;
         return new Rect(column * tileWidth, 0f, tileWidth, 1f);
+    }
+
+    private static Material ResolveMaterial(Material material)
+    {
+        if (material != null && material.shader != null && material.shader.isSupported)
+        {
+            return material;
+        }
+
+        Material fallback = GetDefaultMaterial();
+        if (material != null && material.HasProperty("_MainTex"))
+        {
+            Texture mainTex = material.GetTexture("_MainTex");
+            if (mainTex != null && fallback.HasProperty("_MainTex"))
+            {
+                fallback.SetTexture("_MainTex", mainTex);
+            }
+        }
+
+        return fallback;
     }
 
     private static Material GetDefaultMaterial()
