@@ -58,7 +58,6 @@ when you need the *why* and the pitfalls, not just the *what*.
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
-| — | [Spec-Driven Development Tickets](tickets/README.md) | Open-knowledge markdown tickets linked to GitHub project issue tracking |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
 
