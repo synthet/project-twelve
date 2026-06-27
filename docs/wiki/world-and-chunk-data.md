@@ -4,6 +4,56 @@
 
 A world is a sparse dictionary of chunks keyed by chunk coordinate. Each chunk is 32×32 tiles. World tile coordinates are converted into chunk coordinates and local coordinates with floor division and positive modulo so negative world positions work predictably.
 
+## Coordinate Conversion Contract (P1-WORLD-001)
+
+World tile coordinates are integer `(x, y)` positions over the whole world. Every world coordinate
+maps to exactly one chunk coordinate plus an in-chunk local coordinate, and that mapping is
+invertible. `S` below is the chunk side length `SandboxChunk.Size` (currently `32`).
+
+### Formulas
+
+| Conversion | Helper | Formula |
+| --- | --- | --- |
+| World → chunk | `SandboxWorld.WorldToChunkCoord(x, y)` | `floor(x / S)`, `floor(y / S)` |
+| World → local | `SandboxWorld.WorldToLocalCoord(x, y)` | `((x mod S) + S) mod S`, same for `y` |
+| Chunk + local → world | `SandboxWorld.ChunkLocalToWorld(chunk, lx, ly)` | `chunk.x * S + lx`, `chunk.y * S + ly` |
+
+Chunk selection uses **floor** division rather than C#'s truncating `/` so the chunk index stays
+monotonic across the origin. Local selection uses a **positive** modulo so the result is always a
+valid array index in `[0, S - 1]`, never negative.
+
+### Invariants
+
+- **Local range.** `WorldToLocalCoord` always returns coordinates in `[0, S - 1]`; the result is
+  always in bounds for `SandboxChunk.IsLocalInBounds`.
+- **Exact round trip.** For any world coordinate `p`,
+  `ChunkLocalToWorld(WorldToChunkCoord(p), WorldToLocalCoord(p)) == p`.
+- **Determinism.** The conversions depend only on their inputs and `S`; they are pure static
+  functions with no per-instance or frame state.
+
+### Boundary cases
+
+| World `(x, y)` | Chunk | Local | Note |
+| --- | --- | --- | --- |
+| `(0, 0)` | `(0, 0)` | `(0, 0)` | Origin. |
+| `(31, 31)` | `(0, 0)` | `(31, 31)` | Last tile of the origin chunk. |
+| `(32, 0)` | `(1, 0)` | `(0, 0)` | First tile of the next chunk. |
+| `(-1, -1)` | `(-1, -1)` | `(31, 31)` | One tile below/left of origin wraps to the high corner of the negative chunk. |
+| `(-32, -32)` | `(-1, -1)` | `(0, 0)` | First tile of the `(-1, -1)` chunk. |
+| `(-33, 64)` | `(-2, 2)` | `(31, 0)` | Mixed-sign coordinates. |
+
+### Float position helpers and limits
+
+`SandboxWorld.WorldPositionToTile` (`floor(worldPosition / tileSize)`) and `TileToWorldCenter`
+(`(tile + 0.5) * tileSize`) convert between Unity world-space `Vector2` positions and integer tile
+coordinates for input and rendering. They depend on the instance `tileSize`.
+
+The integer conversions are exact only within the precision of `float`: `WorldToChunkCoord` divides
+through `float`, so beyond roughly ±16 million tiles (the `float` integer-exact range) chunk
+selection can lose precision. That far exceeds prototype world bounds and is recorded here as a
+known limitation; a future task can switch to integer-only floor division if very large worlds are
+required.
+
 ## Tile Fields
 
 | Field | Purpose now | Future use |

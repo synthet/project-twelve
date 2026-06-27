@@ -1,7 +1,7 @@
 ---
 id: P1-WORLD-001
 title: "[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates."
-status: open
+status: implemented
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: null
@@ -87,7 +87,31 @@ As a developer or reviewer working on the P1 milestone, I want to specify determ
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
+- [x] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Spec:** Added the "Coordinate Conversion Contract (P1-WORLD-001)" section to
+  `docs/wiki/world-and-chunk-data.md` documenting the world ↔ chunk ↔ local formulas, the
+  round-trip and local-range invariants, a boundary-case table (origin, positive, negative,
+  and chunk-boundary positions), and the `float`-precision limit of the integer conversions.
+- **Implementation:** Added the pure static inverse helper
+  `SandboxWorld.ChunkLocalToWorld(chunkCoord, localX, localY)` that closes the round trip with
+  the existing `WorldToChunkCoord` / `WorldToLocalCoord`, plus XML-doc on all three helpers
+  describing the floor-division / positive-modulo rationale. No behavior of the existing
+  conversions changed.
+- **Verification:** EditMode tests in `Assets/Tests/EditMode/SandboxCoreTests.cs` cover the
+  inverse mapping (`SandboxWorld_ChunkLocalToWorldInvertsSplit`), the exact world↔chunk↔local
+  round trip across origin/positive/negative/boundary positions
+  (`SandboxWorld_WorldChunkLocalRoundTripIsExact`), and the local-coordinate in-bounds invariant
+  (`SandboxWorld_WorldToLocalCoordAlwaysWithinChunkBounds`). These complement the existing
+  `SandboxWorld_WorldToChunkCoordUsesFloorDivision` and
+  `SandboxWorld_WorldToLocalCoordWrapsNegativeCoordinates` cases. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **Follow-up / non-goal:** Large-world precision beyond the `float` integer-exact range
+  (~±16M tiles) is recorded as a known limitation in the spec; switching to integer-only floor
+  division is deferred until very large worlds are required.
+- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.
