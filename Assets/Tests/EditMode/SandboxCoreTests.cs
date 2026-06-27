@@ -84,6 +84,51 @@ public sealed class SandboxCoreTests
         Assert.AreEqual(expected, SandboxChunk.IsLocalInBounds(localX, localY));
     }
 
+    [TestCase(0, 0, 0, 0, 0, 0)]
+    [TestCase(0, 0, 31, 31, 31, 31)]
+    [TestCase(1, 0, 0, 0, 32, 0)]
+    [TestCase(-1, -1, 31, 31, -1, -1)]
+    [TestCase(-1, -1, 0, 0, -32, -32)]
+    [TestCase(-2, 2, 31, 0, -33, 64)]
+    public void SandboxWorld_ChunkLocalToWorldInvertsSplit(
+        int chunkX, int chunkY, int localX, int localY, int expectedWorldX, int expectedWorldY)
+    {
+        Vector2Int world = SandboxWorld.ChunkLocalToWorld(new Vector2Int(chunkX, chunkY), localX, localY);
+
+        Assert.AreEqual(new Vector2Int(expectedWorldX, expectedWorldY), world);
+    }
+
+    [TestCase(0, 0)]
+    [TestCase(31, 31)]
+    [TestCase(32, 0)]
+    [TestCase(-1, -1)]
+    [TestCase(-32, -32)]
+    [TestCase(-33, 64)]
+    [TestCase(-100000, 100000)]
+    public void SandboxWorld_WorldChunkLocalRoundTripIsExact(int worldX, int worldY)
+    {
+        Vector2Int chunkCoord = SandboxWorld.WorldToChunkCoord(worldX, worldY);
+        Vector2Int local = SandboxWorld.WorldToLocalCoord(worldX, worldY);
+
+        Vector2Int roundTripped = SandboxWorld.ChunkLocalToWorld(chunkCoord, local.x, local.y);
+
+        Assert.AreEqual(new Vector2Int(worldX, worldY), roundTripped);
+    }
+
+    [TestCase(-64, -1)]
+    [TestCase(-33, 0)]
+    [TestCase(-1, 31)]
+    [TestCase(0, 0)]
+    [TestCase(31, 31)]
+    [TestCase(64, 0)]
+    public void SandboxWorld_WorldToLocalCoordAlwaysWithinChunkBounds(int worldX, int worldY)
+    {
+        Vector2Int local = SandboxWorld.WorldToLocalCoord(worldX, worldY);
+
+        Assert.IsTrue(SandboxChunk.IsLocalInBounds(local.x, local.y),
+            $"Local coordinate {local} for world ({worldX},{worldY}) must be a valid chunk index.");
+    }
+
     [Test]
     public void SandboxWorld_InteriorEditTouchesNoNeighborChunks()
     {

@@ -198,14 +198,39 @@ public sealed class SandboxWorld : MonoBehaviour
         return new Vector3((x + 0.5f) * tileSize, (y + 0.5f) * tileSize, 0f);
     }
 
+    /// <summary>
+    /// Maps a world tile coordinate to the chunk that owns it using floor division by
+    /// <see cref="SandboxChunk.Size"/>. Floor (not truncating) division keeps the chunk index
+    /// monotonic across the origin so negative world coordinates resolve to the correct chunk
+    /// (for example world x = -1 belongs to chunk x = -1, not chunk x = 0).
+    /// </summary>
     public static Vector2Int WorldToChunkCoord(int x, int y)
     {
         return new Vector2Int(FloorDiv(x, SandboxChunk.Size), FloorDiv(y, SandboxChunk.Size));
     }
 
+    /// <summary>
+    /// Maps a world tile coordinate to its local coordinate inside the owning chunk using positive
+    /// modulo by <see cref="SandboxChunk.Size"/>. The result is always in the range
+    /// [0, <see cref="SandboxChunk.Size"/> - 1] even for negative world coordinates, so it is always
+    /// a valid array index (for example world x = -1 maps to local x = Size - 1).
+    /// </summary>
     public static Vector2Int WorldToLocalCoord(int x, int y)
     {
         return new Vector2Int(Mod(x, SandboxChunk.Size), Mod(y, SandboxChunk.Size));
+    }
+
+    /// <summary>
+    /// Inverse of <see cref="WorldToChunkCoord"/> and <see cref="WorldToLocalCoord"/>: reconstructs
+    /// the world tile coordinate from a chunk coordinate and an in-chunk local coordinate. For any
+    /// world coordinate the round trip is exact, i.e.
+    /// <c>ChunkLocalToWorld(WorldToChunkCoord(p), WorldToLocalCoord(p)) == p</c>. Callers are
+    /// expected to pass a local coordinate in [0, <see cref="SandboxChunk.Size"/> - 1]; values
+    /// outside that range still map linearly but no longer correspond to the given chunk.
+    /// </summary>
+    public static Vector2Int ChunkLocalToWorld(Vector2Int chunkCoord, int localX, int localY)
+    {
+        return new Vector2Int(chunkCoord.x * SandboxChunk.Size + localX, chunkCoord.y * SandboxChunk.Size + localY);
     }
 
     private void RefreshLoadedChunks()
