@@ -12,19 +12,39 @@ A Unity C# project for prototyping a Terraria-like 2D sandbox with chunked world
 1. Open this project in Unity Editor 6.0.2 or later.
 2. Unity will regenerate solution and project files on first open.
 3. Open the regenerated solution in Rider or your preferred editor.
-4. Open `Assets/Scene.unity` for the barebone sandbox scene.
+4. Open `Assets/Scene.unity` and press Play for the runnable sandbox prototype.
+
+## Running the Prototype
+
+`Assets/Scene.unity` is a self-contained vertical slice. Pressing Play spawns the
+player above procedurally generated terrain; chunks stream in around it and the camera
+follows. Controls:
+
+| Input | Action |
+|-------|--------|
+| `A` / `D` or `←` / `→` | Move left / right |
+| `Space` | Jump (when grounded) |
+| Left mouse button | Break the tile under the cursor (within edit range) |
+| Right mouse button | Place a tile under the cursor (within edit range) |
+| `F5` / `F9` | Save / load the world to `Application.persistentDataPath` |
 
 ## Project Structure
 
 ```text
 ProjectTwelve/
 ├── Assets/
-│   ├── Scene.unity                 # Minimal sandbox scene
+│   ├── Scene.unity                 # Runnable sandbox scene (player + camera + world)
+│   ├── Materials/                  # Shared tile and player materials
 │   └── Scripts/
-│       ├── SandboxChunk.cs         # Chunk data and dirty flags
-│       ├── SandboxChunkRenderer.cs # Chunk mesh and collider rebuilds
-│       ├── SandboxTile.cs          # Tile state and IDs
-│       └── SandboxWorld.cs         # Chunk loading, generation, and tile edits
+│       └── Sandbox/
+│           ├── SandboxChunk.cs            # Chunk data and dirty flags
+│           ├── SandboxChunkRenderer.cs    # Chunk mesh and collider rebuilds
+│           ├── SandboxTile.cs             # Tile state and IDs
+│           ├── SandboxTerrainGenerator.cs # Deterministic terrain generation
+│           ├── SandboxWorld.cs            # Chunk loading, generation, and tile edits
+│           ├── SandboxPlayerController.cs # Movement, jump, and mouse tile editing
+│           ├── SandboxCameraFollow.cs     # Camera follow for the player
+│           └── SandboxSaveData.cs         # Serializable save records
 ├── docs/
 │   ├── terraria-like-unity-design.md
 │   └── wiki/                       # open implementation knowledge base
@@ -47,7 +67,7 @@ The project intentionally keeps only sandbox-relevant prototype assets:
 - Simple procedural terrain.
 - Chunk mesh rendering with vertex colors.
 - Chunk-local collision rebuilds.
-- Basic player movement and mouse tile editing scripts.
+- A playable scene wiring the player, camera follow, and world together.
 
 The previous hex-grid click demo and generated scene artifacts have been removed so the repository stays focused on the sandbox prototype.
 
