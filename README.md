@@ -55,9 +55,8 @@ The previous hex-grid click demo and generated scene artifacts have been removed
 
 GitHub Actions runs the Unity EditMode unit-test suite on pushes to `main`, pull requests, and manual workflow dispatches via `.github/workflows/unit-tests.yml`.
 
-The workflow uses GameCI's Unity Test Runner and requires Unity licensing credentials to be configured as repository secrets before it can execute in GitHub-hosted runners:
+The workflow uses GameCI's Unity Test Runner. It skips the Unity execution step when no Unity license secret is configured, which keeps pull requests from failing before CI credentials are installed. Configure either `UNITY_LICENSE` for a personal license file or `UNITY_SERIAL` for a serial-based license to enable test execution. If using a serial-based license, also configure:
 
-- `UNITY_LICENSE`
 - `UNITY_EMAIL`
 - `UNITY_PASSWORD`
 
