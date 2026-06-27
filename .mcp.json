@@ -1,0 +1,4 @@
+{
+  "_comment": "Project MCP servers for Claude Code. Define stdio/SSE servers here; keep secrets in env, never inline. Use project-twelve-* names and prefer compact search+dispatch tool surfaces.",
+  "mcpServers": {}
+}
