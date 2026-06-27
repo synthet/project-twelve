@@ -171,6 +171,102 @@ public sealed class SandboxCoreTests
         Assert.IsFalse(loadedChunks.ContainsKey(new Vector2Int(-1, 0)));
     }
 
+    private static SandboxChunk CleanChunk(Vector2Int coord)
+    {
+        SandboxChunk chunk = new SandboxChunk(coord);
+        chunk.NeedsRenderRebuild = false;
+        chunk.NeedsColliderRebuild = false;
+        return chunk;
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionIncludesVisibleDirtyChunk()
+    {
+        Vector2Int coord = new Vector2Int(1, 2);
+        SandboxChunk chunk = CleanChunk(coord);
+        chunk.NeedsRenderRebuild = true;
+        var loaded = new Dictionary<Vector2Int, SandboxChunk> { { coord, chunk } };
+
+        List<Vector2Int> selected = new List<Vector2Int>(
+            SandboxWorld.GetChunksNeedingRebuild(new[] { coord }, loaded));
+
+        CollectionAssert.AreEqual(new[] { coord }, selected);
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionIncludesColliderOnlyDirtyChunk()
+    {
+        Vector2Int coord = new Vector2Int(3, 4);
+        SandboxChunk chunk = CleanChunk(coord);
+        chunk.NeedsColliderRebuild = true;
+        var loaded = new Dictionary<Vector2Int, SandboxChunk> { { coord, chunk } };
+
+        List<Vector2Int> selected = new List<Vector2Int>(
+            SandboxWorld.GetChunksNeedingRebuild(new[] { coord }, loaded));
+
+        CollectionAssert.AreEqual(new[] { coord }, selected);
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionSkipsVisibleCleanChunk()
+    {
+        Vector2Int coord = new Vector2Int(0, 0);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk> { { coord, CleanChunk(coord) } };
+
+        CollectionAssert.IsEmpty(
+            new List<Vector2Int>(SandboxWorld.GetChunksNeedingRebuild(new[] { coord }, loaded)));
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionSkipsDirtyChunkThatIsNotVisible()
+    {
+        Vector2Int visibleCoord = new Vector2Int(0, 0);
+        Vector2Int offscreenCoord = new Vector2Int(9, 9);
+        SandboxChunk offscreen = CleanChunk(offscreenCoord);
+        offscreen.NeedsRenderRebuild = true;
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { visibleCoord, CleanChunk(visibleCoord) },
+            { offscreenCoord, offscreen },
+        };
+
+        CollectionAssert.IsEmpty(
+            new List<Vector2Int>(SandboxWorld.GetChunksNeedingRebuild(new[] { visibleCoord }, loaded)));
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionSkipsVisibleCoordWithNoLoadedChunk()
+    {
+        Vector2Int coord = new Vector2Int(2, 2);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>();
+
+        CollectionAssert.IsEmpty(
+            new List<Vector2Int>(SandboxWorld.GetChunksNeedingRebuild(new[] { coord }, loaded)));
+    }
+
+    [Test]
+    public void SandboxWorld_RebuildSelectionPicksOnlyDirtyVisibleChunksFromMixedSet()
+    {
+        Vector2Int dirtyA = new Vector2Int(0, 0);
+        Vector2Int dirtyB = new Vector2Int(1, 0);
+        Vector2Int clean = new Vector2Int(0, 1);
+        SandboxChunk chunkA = CleanChunk(dirtyA);
+        chunkA.NeedsRenderRebuild = true;
+        SandboxChunk chunkB = CleanChunk(dirtyB);
+        chunkB.NeedsColliderRebuild = true;
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { dirtyA, chunkA },
+            { dirtyB, chunkB },
+            { clean, CleanChunk(clean) },
+        };
+
+        List<Vector2Int> selected = new List<Vector2Int>(
+            SandboxWorld.GetChunksNeedingRebuild(new[] { dirtyA, dirtyB, clean }, loaded));
+
+        CollectionAssert.AreEquivalent(new[] { dirtyA, dirtyB }, selected);
+    }
+
     private static SandboxTerrainGenerator GoldenGenerator(int seed = 1337)
     {
         return new SandboxTerrainGenerator(
