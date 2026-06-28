@@ -56,7 +56,12 @@ def git_ref_exists(ref: str) -> bool:
     return result.returncode == 0
 
 
-def resolve_push_base() -> str | None:
+def resolve_push_base(explicit_base_ref: str | None = None) -> str | None:
+    if explicit_base_ref:
+        if git_ref_exists(explicit_base_ref):
+            return explicit_base_ref
+        print(f"warning: --base-ref {explicit_base_ref!r} was not found; trying fallbacks", file=sys.stderr)
+
     upstream = git_result("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
     if upstream.returncode == 0 and upstream.stdout.strip():
         return upstream.stdout.strip().splitlines()[0]
@@ -117,7 +122,11 @@ def main() -> int:
     group.add_argument(
         "--push",
         action="store_true",
-        help="Check commits ahead of upstream — use before push.",
+        help="Check commits ahead of an upstream/base ref — use before push.",
+    )
+    parser.add_argument(
+        "--base-ref",
+        help="Optional base ref for --push comparisons, useful in CI checkouts without an upstream.",
     )
     args = parser.parse_args()
 
@@ -127,7 +136,7 @@ def main() -> int:
         return 0
 
     if args.push:
-        base_ref = resolve_push_base()
+        base_ref = resolve_push_base(args.base_ref)
         if base_ref:
             files = run_git("diff", "--name-only", f"{base_ref}...HEAD")
         else:
