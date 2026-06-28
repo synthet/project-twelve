@@ -1,3 +1,16 @@
+---
+type: concept
+title: Visual integration
+description: Sandbox tile mapping, avatar factory, and catalog touchpoints for rendering terrain and characters
+resource: docs/wiki/visual-integration.md
+tags:
+  - rendering
+  - visuals
+  - catalogs
+  - characters
+timestamp: 2026-06-28T00:00:00Z
+---
+
 # Visual integration
 
 > **Status:** Terrain autotiling and player avatar presentation use project-owned code under `Assets/Scripts/Visual/`.

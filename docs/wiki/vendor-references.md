@@ -1,9 +1,21 @@
+---
+type: reference
+title: Vendor references (licensed art upstream)
+description: Upstream packs, import paths, and integration guarantees for Pixel Hero Maker and TileEngine
+resource: docs/wiki/vendor-references.md
+tags:
+  - assets
+  - vendors
+  - hippogames
+  - third-party
+timestamp: 2026-06-28T00:00:00Z
+---
+
 # Vendor references (licensed art upstream)
 
-> **Status:** Reference notes for the licensed packs mounted in the private
-> [project-twelve-assets](https://github.com/synthet/project-twelve-assets) submodule (`Assets/_Licensed/`).
-> **Why public:** Pack names and upstream links are documentation only — the licensed **files**
-> (art, prefabs, generated catalogs) live in the private submodule, never in this repo.
+> **Status:** Reference documentation for vendor packs (Pixel Hero Maker, TileEngine).
+> **Decisions:** Vendor names and upstream links are documentation; licensed files live in private submodule.
+> **Invariants:** Simulation owns IDs; vendor sprites resolve at render/compose time only.
 
 Both packs ship from the same publisher, **Hippo** (`hippogamesunity`), so they share a support
 Discord and issue tracker.
