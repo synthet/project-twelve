@@ -46,6 +46,41 @@ def run_git(*args: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
+def run_git_optional(*args: str) -> list[str]:
+    """Like run_git but returns [] instead of exiting when the command fails."""
+    result = subprocess.run(
+        ["git", *args],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+    return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+
+def resolve_push_base() -> str:
+    """Resolve the ref to diff the current branch against for --push checks.
+
+    Prefers the configured upstream so local pre-push checks compare against the
+    tracked branch. CI pull-request builds check out a detached merge ref with no
+    upstream (``git rev-parse @{u}`` fails), so fall back to the remote's default
+    branch before finally degrading to the previous commit.
+    """
+    upstream = run_git_optional("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    if upstream:
+        return upstream[0]
+
+    for candidate in ("origin/HEAD", "origin/master", "origin/main"):
+        if run_git_optional("rev-parse", "--verify", "--quiet", f"{candidate}^{{commit}}"):
+            return candidate
+
+    if run_git_optional("rev-parse", "--verify", "--quiet", "HEAD~1^{commit}"):
+        return "HEAD~1"
+    return "HEAD"
+
+
 def path_is_blocked(file_path: str, blocked_roots: list[str]) -> str | None:
     normalized = file_path.replace("\\", "/")
     for root in blocked_roots:
@@ -98,9 +133,8 @@ def main() -> int:
         return 0
 
     if args.push:
-        upstream = run_git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-        upstream_ref = upstream[0] if upstream else "origin/HEAD"
-        files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
+        base_ref = resolve_push_base()
+        files = run_git("diff", "--name-only", f"{base_ref}...HEAD")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")
     else:
