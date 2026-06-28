@@ -1,4 +1,21 @@
+---
+type: guide
+title: Paid and licensed assets (private submodule)
+description: Workflow for managing and checking paid Asset Store content in project-twelve-assets
+resource: docs/PAID_ASSETS.md
+tags:
+  - assets
+  - licensing
+  - git-submodule
+  - security
+timestamp: 2026-06-28T00:00:00Z
+---
+
 # Paid and licensed assets (private submodule)
+
+> **Status:** Paid/licensed content segregated into private `project-twelve-assets` submodule.
+> **Decisions:** Submodule pointer and blocker manifest (manifest, guard script) live in public repo; licensed files never do.
+> **Invariants:** `Assets/_Licensed` is a git submodule; check_paid_assets.py guards the public tree.
 
 Paid Unity Asset Store packages and third-party marketplace art **must not** be committed to the public [project-twelve](https://github.com/synthet/project-twelve) repository. Licensed content lives in the private submodule repo [project-twelve-assets](https://github.com/synthet/project-twelve-assets), mounted at `Assets/_Licensed/`.
 
@@ -22,7 +39,7 @@ Import paths are read from `Assets/_Licensed/config/visual-import.txt` in the su
 
 ## What stays in the assets submodule
 
-- Licensed source art under `Assets/_Licensed/PixelFantasy/`
+- Licensed source art under `Assets/_Licensed/PixelHeroes/`
 - Generated catalogs under `Assets/_Licensed/Settings/Visual/`
 - Vendor import paths in `Assets/_Licensed/config/visual-import.txt`
 
@@ -55,7 +72,7 @@ python3 scripts/check_paid_assets.py --staged   # before commit
 python3 scripts/check_paid_assets.py --push     # before push
 ```
 
-The guard blocks direct licensed imports into the public repo (`Assets/PixelFantasy/`, copied submodule files under `Assets/_Licensed/`, legacy catalog paths in main).
+The guard blocks direct licensed imports into the public repo (`Assets/PixelHeroes/`, copied submodule files under `Assets/_Licensed/`, legacy catalog paths in main).
 
 Optional local hook:
 
