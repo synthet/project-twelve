@@ -197,9 +197,29 @@ public sealed class AutotileVisualTests
             new Vector2(0.5f, 0f),
             16f);
 
+        AssertSpriteQuadSpansTileCell(x, y, tileSize, sprite);
+    }
+
+    [Test]
+    public void CenterPivotSpriteBounds_SpanFullTileCell()
+    {
+        const float tileSize = 1f;
+        const int x = 3;
+        const int y = 7;
+        Sprite sprite = Sprite.Create(
+            new Texture2D(16, 16),
+            new Rect(0, 0, 16, 16),
+            new Vector2(0.5f, 0.5f),
+            16f);
+
+        AssertSpriteQuadSpansTileCell(x, y, tileSize, sprite);
+    }
+
+    private static void AssertSpriteQuadSpansTileCell(int x, int y, float tileSize, Sprite sprite)
+    {
         Bounds bounds = sprite.bounds;
-        float anchorX = (x + 0.5f) * tileSize;
-        float anchorY = y * tileSize;
+        float anchorX = x * tileSize - bounds.min.x;
+        float anchorY = y * tileSize - bounds.min.y;
         float left = anchorX + bounds.min.x;
         float right = anchorX + bounds.max.x;
         float bottom = anchorY + bounds.min.y;

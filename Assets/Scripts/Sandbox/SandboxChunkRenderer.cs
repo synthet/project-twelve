@@ -319,8 +319,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float zOffset)
     {
         Bounds bounds = sprite.bounds;
-        float anchorX = (x + 0.5f) * tileSize;
-        float anchorY = y * tileSize;
+        float anchorX = x * tileSize - bounds.min.x;
+        float anchorY = y * tileSize - bounds.min.y;
 
         float left = anchorX + bounds.min.x;
         float right = anchorX + bounds.max.x;
