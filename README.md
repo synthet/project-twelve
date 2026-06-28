@@ -9,10 +9,20 @@ A Unity C# project for prototyping a Terraria-like 2D sandbox with chunked world
 
 ## Setup
 
-1. Open this project in Unity Editor 6.0.5.1f1.
-2. Unity will regenerate solution and project files on first open.
-3. Open the regenerated solution in Rider or your preferred editor.
-4. Open `Assets/Scene.unity` and press Play for the runnable sandbox prototype.
+1. Clone the repository. For full visuals (autotiles, avatars, monsters), include the private assets submodule:
+
+   ```bash
+   git clone --recurse-submodules https://github.com/synthet/project-twelve.git
+   ```
+
+   Code-only clone (no licensed art): use a normal `git clone`, then run `git submodule update --init --recursive` after you have access to [project-twelve-assets](https://github.com/synthet/project-twelve-assets).
+
+2. Open this project in Unity Editor 6.0.5.1f1.
+3. Unity will regenerate solution and project files on first open.
+4. Open the regenerated solution in Rider or your preferred editor.
+5. Open `Assets/Scene.unity` and press Play for the runnable sandbox prototype.
+
+Licensed content mounts at `Assets/_Licensed/` (git submodule). See [Paid assets policy](docs/PAID_ASSETS.md) and [Visual setup](docs/VISUAL_SETUP.md).
 
 ## Running the Prototype
 
@@ -33,18 +43,13 @@ follows. Controls:
 ```text
 ProjectTwelve/
 ├── Assets/
+│   ├── _Licensed/                  # Git submodule → project-twelve-assets (private)
 │   ├── Scene.unity                 # Runnable sandbox scene (player + camera + world)
 │   ├── Materials/                  # Shared tile and player materials
 │   └── Scripts/
-│       └── Sandbox/
-│           ├── SandboxChunk.cs            # Chunk data and dirty flags
-│           ├── SandboxChunkRenderer.cs    # Chunk mesh and collider rebuilds
-│           ├── SandboxTile.cs             # Tile state and IDs
-│           ├── SandboxTerrainGenerator.cs # Deterministic terrain generation
-│           ├── SandboxWorld.cs            # Chunk loading, generation, and tile edits
-│           ├── SandboxPlayerController.cs # Movement, jump, and mouse tile editing
-│           ├── SandboxCameraFollow.cs     # Camera follow for the player
-│           └── SandboxSaveData.cs         # Serializable save records
+│       ├── Sandbox/                # World, chunks, player, rendering
+│       ├── Visual/                 # Autotile, character, monster presentation
+│       └── Integration/            # Avatar factory, import config
 ├── docs/
 │   ├── terraria-like-unity-design.md
 │   └── wiki/                       # open implementation knowledge base

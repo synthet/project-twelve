@@ -20,6 +20,12 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private float horizontalInput;
 
+    /// <summary>True when tile probes under the player collider hit solid world tiles.</summary>
+    public bool IsGrounded => CheckGrounded();
+
+    /// <summary>Current rigidbody velocity (world units per second).</summary>
+    public Vector2 Velocity => body != null ? body.linearVelocity : Vector2.zero;
+
 #if ENABLE_INPUT_SYSTEM
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -105,7 +111,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (!WasJumpPressed() || !IsGrounded())
+        if (!WasJumpPressed() || !IsGrounded)
         {
             return;
         }
@@ -352,11 +358,16 @@ public sealed class SandboxPlayerController : MonoBehaviour
     }
 #endif
 
-    private bool IsGrounded()
+    private bool CheckGrounded()
     {
+        if (playerCollider == null || world == null)
+        {
+            return false;
+        }
+
         Bounds bounds = playerCollider.bounds;
         Vector2 leftFoot = new Vector2(bounds.min.x + 0.05f, bounds.min.y - 0.05f);
         Vector2 rightFoot = new Vector2(bounds.max.x - 0.05f, bounds.min.y - 0.05f);
-        return world != null && (world.IsSolidAtWorldPosition(leftFoot) || world.IsSolidAtWorldPosition(rightFoot));
+        return world.IsSolidAtWorldPosition(leftFoot) || world.IsSolidAtWorldPosition(rightFoot);
     }
 }

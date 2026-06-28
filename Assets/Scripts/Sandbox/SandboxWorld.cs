@@ -20,6 +20,7 @@ public sealed class SandboxWorld : MonoBehaviour
     [Header("Rendering")]
     [SerializeField] private SandboxChunkRenderer chunkRendererPrefab;
     [SerializeField] private Material tileMaterial;
+    [SerializeField] private SandboxTileVisualCatalog tileVisualCatalog;
     [SerializeField] private float tileSize = 1f;
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
@@ -326,7 +327,12 @@ public sealed class SandboxWorld : MonoBehaviour
         rebuildScratch.AddRange(GetChunksNeedingRebuild(renderers.Keys, chunks));
         foreach (Vector2Int coord in rebuildScratch)
         {
-            renderers[coord].Rebuild(chunks[coord], tileSize, tileMaterial);
+            renderers[coord].Rebuild(
+                chunks[coord],
+                tileSize,
+                tileMaterial,
+                tileVisualCatalog,
+                LookupLoadedTile);
         }
     }
 
@@ -405,6 +411,18 @@ public sealed class SandboxWorld : MonoBehaviour
     private SandboxChunk GenerateChunk(Vector2Int chunkCoord)
     {
         return CreateTerrainGenerator().GenerateChunk(chunkCoord);
+    }
+
+    private SandboxTile LookupLoadedTile(int worldX, int worldY)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(worldX, worldY);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            return default;
+        }
+
+        Vector2Int local = WorldToLocalCoord(worldX, worldY);
+        return chunk.GetLocalTile(local.x, local.y);
     }
 
     private static int FloorDiv(int value, int divisor)

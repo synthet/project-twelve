@@ -12,7 +12,9 @@ This repository adopts the reusable agent practices from `synthet-code-framework
 | `Assets/Scripts/Sandbox/SandboxWorld.cs` | Chunk loading, procedural generation, tile edits, and save/load. |
 | `Assets/Scripts/Sandbox/SandboxChunkRenderer.cs` | Chunk mesh/collider rebuilds. |
 | `Assets/Scripts/Sandbox/SandboxPlayerController.cs` | Prototype player movement and mouse tile editing. |
-| `Assets/Scripts/Sandbox/SandboxSaveData.cs` | Serializable world/chunk/tile save records. |
+| `Assets/Scripts/Visual/` | Autotile, character, creature, monster, and effect presentation systems. |
+| `Assets/_Licensed/` | Git submodule → private licensed art and visual catalogs (`project-twelve-assets`). |
+| `Assets/Scripts/Integration/PlayerAvatarFactory.cs` | Spawns player avatars without vendor script references. |
 | `docs/wiki/` | Open architecture and implementation reference. |
 | `com.unity.ai.assistant` | [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html) editor bridge; configure via Edit → Project Settings → AI → Unity MCP. |
 
@@ -33,6 +35,7 @@ python3 scripts/check_markdown_links.py
 - Keep public interfaces stable unless docs and callers are updated together.
 - Use minimal diffs; avoid unrelated refactors and broad formatting changes.
 - Commit no secrets. Use `.env`, `.env.*`, `secrets.json`, or local editor settings for credentials and machine-local configuration.
+- Never commit licensed Asset Store content into the **public** repo. Licensed art lives in the `Assets/_Licensed` submodule (`docs/PAID_ASSETS.md`). Run `python3 scripts/check_paid_assets.py --staged` before commits.
 - Never modify `.git/config` or introduce non-standard git extensions.
 
 ## Documentation

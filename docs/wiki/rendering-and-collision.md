@@ -38,6 +38,10 @@ colliders are rebuilt alongside the mesh through the same dirty-flag path. This 
 transparent for a prototype. If tile counts grow, replace run-merged colliders with larger
 merged rectangles or manual tile collision.
 
+## Autotiled terrain visuals
+
+Sandbox chunk meshes resolve autotile sprites through `SandboxTileVisualCatalog`, `AutotileResolver`, and `AutotileMaskBuilder`. See [Visual integration](visual-integration.md).
+
 ## Future Rendering Tasks
 
 - Add texture atlas coordinates instead of color-only quads.

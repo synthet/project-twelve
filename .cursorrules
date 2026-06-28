@@ -290,6 +290,7 @@ When Cursor writes or edits code, it must include:
 
 ## 17) Non‑Goals (what not to do by default)
 
+* **No paid/licensed Asset Store assets in git** — paths in `config/paid-assets.local-only.txt` are local-only; never stage, commit, or push them. See `docs/PAID_ASSETS.md` and run `python3 scripts/check_paid_assets.py` before commits.
 * No hidden global singletons or static state holding scene references.
 * No Resources folder reliance (prefer Addressables or direct references).
 * No heavy reflection or runtime codegen.

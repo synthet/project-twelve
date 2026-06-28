@@ -49,6 +49,7 @@ Never modify `.git/config` or add non-standard git extensions. If a worktree is 
 - **Code style:** match the surrounding C# style; prefer explicit access modifiers and serialized private fields for Inspector settings.
 - **Architecture:** keep world data, rendering, player input, and persistence concerns separated unless an explicit contract change is documented.
 - **Security:** secrets belong in `secrets.json`, `.env`, or environment variables; never commit tokens, service keys, or machine-specific paths.
+- **Paid/licensed assets:** licensed content lives in the private `project-twelve-assets` repo as git submodule `Assets/_Licensed/`. Never commit licensed blobs into the public repo. Policy in `docs/PAID_ASSETS.md`. Run `python3 scripts/check_paid_assets.py --staged` or `--push` before commit/push.
 - **Change control:** make minimal diffs, include tests or validation notes for behavior changes, and avoid drive-by reformatting.
 - **Documentation:** update `README.md`, `docs/wiki/`, or `docs/CANONICAL_SOURCES.md` when changing architecture, workflows, or public conventions.
 
@@ -58,6 +59,8 @@ Never modify `.git/config` or add non-standard git extensions. If a worktree is 
 | Unity validation | Batch-mode project load | Unity project root | `Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log` |
 | EditMode tests | Unity EditMode test suite | Unity Test Framework | `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log` |
 | Markdown links | Docs link checker | `docs/`, `README.md`, agent docs | `python3 scripts/check_markdown_links.py` |
+| Paid assets guard | Block licensed paths in public repo | `config/paid-assets.local-only.example.txt` | `python3 scripts/check_paid_assets.py --staged` (commit) or `--push` |
+| Visual catalog regen | Submodule catalog generator | `scripts/generate_visual_catalogs.py` | `python3 scripts/generate_visual_catalogs.py` |
 
 ## AI workspace assets
 | Asset | Location |
@@ -68,3 +71,4 @@ Never modify `.git/config` or add non-standard git extensions. If a worktree is 
 | Agent inventory | `.agent/AGENT_INFRA_INVENTORY.md` |
 | Workflow index | `docs/ai-workflow/README.md` |
 | Canonical sources | `docs/CANONICAL_SOURCES.md` |
+| Paid asset policy | `docs/PAID_ASSETS.md` |

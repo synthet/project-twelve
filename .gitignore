@@ -161,6 +161,41 @@ $RECYCLE.BIN/
 # Optional: Uncomment if you wish to ignore the asset store tools plugin
 # ============================================
 # /[Aa]ssets/AssetStoreTools*
+
+# ============================================
+# Bought Asset Store assets (local only)
+# Keep in sync with config/paid-assets.local-only.txt — see docs/PAID_ASSETS.md
+# Licensed content lives in the Assets/_Licensed git submodule (project-twelve-assets).
+# ============================================
+# Direct licensed imports into the public repo (never commit)
+/[Aa]ssets/[Pp]ixel[Ff]antasy/
+/[Aa]ssets/[Pp]ixel[Ff]antasy.meta
+/[Aa]ssets/[Pp]ixel[Ff]antasy/**/*.meta
+# Submodule content copied as regular files into main (never commit)
+/[Aa]ssets/_[Ll]icensed/PixelFantasy/
+/[Aa]ssets/_[Ll]icensed/PixelFantasy.meta
+/[Aa]ssets/_[Ll]icensed/PixelFantasy/**/*.meta
+/[Aa]ssets/_[Ll]icensed/Settings/
+/[Aa]ssets/_[Ll]icensed/Settings.meta
+/[Aa]ssets/_[Ll]icensed/config/
+/[Aa]ssets/_[Ll]icensed/config.meta
+# Legacy catalog location in main repo
+/[Aa]ssets/[Ss]ettings/[Vv]isual/AutotileCatalog.asset
+/[Aa]ssets/[Ss]ettings/[Vv]isual/AutotileCatalog.asset.meta
+/[Aa]ssets/[Ss]ettings/[Vv]isual/CharacterLayerCatalog.asset
+/[Aa]ssets/[Ss]ettings/[Vv]isual/CharacterLayerCatalog.asset.meta
+/[Aa]ssets/[Ss]ettings/[Vv]isual/MonsterVisualCatalog.asset
+/[Aa]ssets/[Ss]ettings/[Vv]isual/MonsterVisualCatalog.asset.meta
+
+# Local machine config (paths to licensed imports — never commit)
+config/paid-assets.local-only.txt
+config/visual-import.local-only.txt
+config/local-only/
+
+# Optional local-only notes
+docs/wiki/pixelfantasy/
+docs/CLEAN_ROOM_VISUAL_SPEC.md
+
 # ============================================
 # Agent and local automation config
 # ============================================
