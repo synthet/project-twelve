@@ -225,6 +225,97 @@ public sealed class SandboxCoreTests
     }
 
     [Test]
+    public void SandboxWorld_ApplyTileEditWritesTileDataAndRaisesDirtyFlags()
+    {
+        Vector2Int coord = Vector2Int.zero;
+        SandboxChunk chunk = CleanChunk(coord);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk> { { coord, chunk } };
+
+        SandboxWorld.ApplyTileEdit(loaded, chunk, 5, 7, new SandboxTile(SandboxTileIds.Stone));
+
+        Assert.AreEqual(SandboxTileIds.Stone, chunk.GetLocalTile(5, 7).id);
+        Assert.IsTrue(chunk.NeedsRenderRebuild);
+        Assert.IsTrue(chunk.NeedsColliderRebuild);
+        Assert.IsTrue(chunk.IsDirty);
+        Assert.IsTrue(chunk.HasEdits);
+    }
+
+    [Test]
+    public void SandboxWorld_ApplyTileEditBreakingSetsTileToAir()
+    {
+        Vector2Int coord = Vector2Int.zero;
+        SandboxChunk chunk = new SandboxChunk(coord);
+        chunk.SetLocalTile(5, 7, new SandboxTile(SandboxTileIds.Dirt));
+        var loaded = new Dictionary<Vector2Int, SandboxChunk> { { coord, chunk } };
+
+        SandboxWorld.ApplyTileEdit(loaded, chunk, 5, 7, new SandboxTile(SandboxTileIds.Air));
+
+        Assert.AreEqual(SandboxTileIds.Air, chunk.GetLocalTile(5, 7).id);
+        Assert.IsFalse(chunk.GetLocalTile(5, 7).IsSolid);
+    }
+
+    [Test]
+    public void SandboxWorld_ApplyCentralEditLeavesNeighborsClean()
+    {
+        Vector2Int coord = Vector2Int.zero;
+        Vector2Int neighborCoord = new Vector2Int(-1, 0);
+        SandboxChunk chunk = CleanChunk(coord);
+        SandboxChunk neighbor = CleanChunk(neighborCoord);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { coord, chunk },
+            { neighborCoord, neighbor },
+        };
+
+        SandboxWorld.ApplyTileEdit(loaded, chunk, 5, 5, new SandboxTile(SandboxTileIds.Dirt));
+
+        Assert.IsFalse(neighbor.NeedsRenderRebuild);
+        Assert.IsFalse(neighbor.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxWorld_ApplyBorderEditDirtiesLoadedNeighbor()
+    {
+        Vector2Int coord = Vector2Int.zero;
+        Vector2Int neighborCoord = new Vector2Int(-1, 0);
+        SandboxChunk chunk = CleanChunk(coord);
+        SandboxChunk neighbor = CleanChunk(neighborCoord);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { coord, chunk },
+            { neighborCoord, neighbor },
+        };
+
+        SandboxWorld.ApplyTileEdit(loaded, chunk, 0, 5, new SandboxTile(SandboxTileIds.Dirt));
+
+        Assert.AreEqual(SandboxTileIds.Dirt, chunk.GetLocalTile(0, 5).id);
+        Assert.IsTrue(neighbor.NeedsRenderRebuild);
+        Assert.IsTrue(neighbor.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxWorld_ApplyTileEditOutOfBoundsChangesNothing()
+    {
+        Vector2Int coord = Vector2Int.zero;
+        Vector2Int neighborCoord = new Vector2Int(-1, 0);
+        SandboxChunk chunk = CleanChunk(coord);
+        SandboxChunk neighbor = CleanChunk(neighborCoord);
+        var loaded = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { coord, chunk },
+            { neighborCoord, neighbor },
+        };
+
+        SandboxWorld.ApplyTileEdit(loaded, chunk, -1, 5, new SandboxTile(SandboxTileIds.Dirt));
+
+        Assert.IsFalse(chunk.NeedsRenderRebuild);
+        Assert.IsFalse(chunk.NeedsColliderRebuild);
+        Assert.IsFalse(chunk.IsDirty);
+        Assert.IsFalse(neighbor.NeedsRenderRebuild);
+        Assert.IsFalse(neighbor.NeedsColliderRebuild);
+    }
+
+    [Test]
     public void SandboxWorld_RebuildSelectionIncludesVisibleDirtyChunk()
     {
         Vector2Int coord = new Vector2Int(1, 2);

@@ -87,7 +87,25 @@ As a developer or reviewer working on the P1 milestone, I want to specify tile e
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
 - [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Implementation:** Routed `SandboxWorld.SetTile` through a new pure static choke point
+  `SandboxWorld.ApplyTileEdit` (`Assets/Scripts/Sandbox/SandboxWorld.cs`). The choke point writes
+  tile data, raises the owning chunk's render/collider dirty and edit-tracking flags, and dirties
+  loaded face-adjacent border neighbors, while `SetTile` keeps the Unity-facing chunk resolution and
+  renderer creation. Place and break both flow through `SetTile` (break writes
+  `SandboxTileIds.Air`).
+- **Spec:** Added the "Tile Edit Choke Point (P1-EDIT-001)" section to
+  `docs/wiki/world-and-chunk-data.md` documenting the edit flow, side effects, the deliberate
+  `LoadFromPath` bypass, and out-of-bounds handling.
+- **Verification:** EditMode tests in `Assets/Tests/EditMode/SandboxCoreTests.cs`
+  (`SandboxWorld_Apply*Edit*`) cover central edits, border edits that dirty a loaded neighbor,
+  breaking a tile to air, central edits leaving neighbors clean, and out-of-bounds edits changing
+  nothing. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.

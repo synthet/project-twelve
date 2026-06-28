@@ -13,8 +13,8 @@
 | P0-SPEC-004 | [[P0-SPEC-004] Define project quality gates.](p0-spec-004-define-project-quality-gates.md) | open | Pending creation |
 | P0-SPEC-005 | [[P0-SPEC-005] Identify architectural risks and spike candidates.](p0-spec-005-identify-architectural-risks-and-spike-candidates.md) | open | Pending creation |
 | P1-COLL-001 | [[P1-COLL-001] Specify prototype collision rules for solid tiles and player movement.](p1-coll-001-specify-prototype-collision-rules-for-solid-tiles-and-player.md) | open | Pending creation |
-| P1-EDIT-001 | [[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point.](p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md) | open | Pending creation |
-| P1-GEN-001 | [[P1-GEN-001] Specify deterministic terrain generation inputs and outputs.](p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md) | open | Pending creation |
+| P1-EDIT-001 | [[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point.](p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md) | implemented | Pending creation |
+| P1-GEN-001 | [[P1-GEN-001] Specify deterministic terrain generation inputs and outputs.](p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md) | implemented | Pending creation |
 | P1-QA-001 | [[P1-QA-001] Package the prototype vertical-slice demo checklist.](p1-qa-001-package-the-prototype-vertical-slice-demo-checklist.md) | open | Pending creation |
 | P1-RENDER-001 | [[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior.](p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md) | implemented | Pending creation |
 | P1-WORLD-001 | [[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates.](p1-world-001-specify-deterministic-world-chunk-and-local-coordinate-conve.md) | implemented | Pending creation |
