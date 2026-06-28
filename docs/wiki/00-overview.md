@@ -15,6 +15,8 @@ okf_version: 0.1
 > **Invariants:** See [cross-cutting invariants](README.md#cross-cutting-invariants).
 > **Baseline:** The consolidated genre/prototype/non-goals statement is the
 > [Baseline Scope Statement](baseline-scope.md).
+> **Ownership:** Per-subsystem owner, spec status, dependencies, and review cadence live in the
+> [Spec Ownership Registry](spec-ownership.md).
 
 ## What we are building
 

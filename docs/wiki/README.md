@@ -45,6 +45,9 @@ Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start
 
 A deeper, decision-oriented reference. Each page opens with a **Status / Decisions / Invariants** block and ends with **See also** links, so a single page is enough to work one subsystem. Use this when you need the *why* and the pitfalls, not just the *what*.
 
+> **Ownership & status:** every page below has an owner, spec status, dependencies, and review
+> cadence in the [Spec Ownership Registry](spec-ownership.md).
+
 | # | Page | Scope |
 |---|------|-------|
 | 00 | [Overview & Principles](00-overview.md) | Goals, scope, guiding principles |
@@ -64,6 +67,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
 | — | [Baseline Scope Statement](baseline-scope.md) | Consolidated P0 baseline: core genre, prototype target, non-goals, key terminology |
+| — | [Spec Ownership Registry](spec-ownership.md) | Owner, spec status, dependencies, and review cadence for every subsystem page |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |

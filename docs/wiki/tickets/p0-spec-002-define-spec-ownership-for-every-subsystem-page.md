@@ -1,11 +1,17 @@
 ---
 id: P0-SPEC-002
+type: Feature Spec
 title: "[P0-SPEC-002] Define spec ownership for every subsystem page."
-status: open
+description: Assign every subsystem page an owner, spec status, dependencies, and review cadence via a single spec ownership registry.
+resource: wiki/tickets/p0-spec-002-define-spec-ownership-for-every-subsystem-page.md
+tags: [wiki, ticket, P0, spec, ownership]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: in_progress
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/21"
-github_issue_status: created
+github_issue_status: claimed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"
@@ -20,8 +26,22 @@ This ticket captures the shared product, engineering, QA, and documentation know
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
-- **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
+- **Issue:** [#21](https://github.com/synthet/project-twelve/issues/21) (claimed; assigned to @synthet).
+- **Backlink requirement:** The GitHub issue body links back to this markdown ticket.
+
+## Deliverable
+
+A new [Spec Ownership Registry](../spec-ownership.md) (`docs/wiki/spec-ownership.md`) assigns every
+subsystem page an **owner** (recorded as a durable DRI role plus the current person), a **spec
+status** (`Baseline` / `Draft` / `Stub`), explicit **upstream dependencies**, and a **review
+cadence**. The registry covers the numbered subsystem reference (Set B, `00`–`15`), the
+prototype-aligned pages (Set A), and the cross-cutting P0 pages, and defines the status/cadence
+vocabularies plus a maintenance contract for adding new pages. The wiki index
+([`README.md`](../README.md)) and [`00-overview.md`](../00-overview.md) cross-link the registry,
+satisfying the "wiki index includes current status and cross-links" verification.
+
+The referenced spec pages required no contract change: `spec-driven-development-tasks.md` and
+`00-overview.md` keep their contracts; `00-overview.md` only gains an ownership cross-link.
 
 ## User story
 
@@ -85,9 +105,18 @@ As a developer or reviewer working on the P0 milestone, I want to define spec ow
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] GitHub issue URL is recorded in this ticket (#21).
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Spec references have been reviewed and updated if needed (no contract change; `00-overview.md` gains an ownership cross-link).
+- [x] Acceptance criteria have been validated — every subsystem page has an owner, status, dependencies, and review cadence in `spec-ownership.md`; the wiki index cross-links it.
+- [x] Verification evidence is attached or linked (see Exit evidence below).
+- [x] Follow-up tasks are created for deferred scope, defects, or open risks (none deferred; ownership for non-wiki visual specs is governed by `docs/CANONICAL_SOURCES.md`).
+
+## Exit evidence
+
+- **Deliverable:** `docs/wiki/spec-ownership.md` (new); cross-links added in `docs/wiki/README.md`
+  and `docs/wiki/00-overview.md`.
+- **Verification commands:**
+  - `python scripts/okf_lint.py --profile project docs/wiki`
+  - `python3 scripts/check_markdown_links.py`
+  - `python3 scripts/check_paid_assets.py --staged`
