@@ -2,7 +2,7 @@
 
 This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
 
-The knowledge base currently holds **two complementary page sets**. They overlap on purpose — read whichever fits your task, and cross-reference the other.
+The knowledge base currently holds **three complementary page sets**. They overlap on purpose — read whichever fits your task, and cross-reference the others.
 
 ## Knowledge format
 
@@ -54,7 +54,16 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
 
-### How the two sets correspond
+## C. Visual presentation
+
+Project-owned rendering and avatar systems. Local source art paths are configured per machine — see [Visual setup](../VISUAL_SETUP.md).
+
+| Page | Scope |
+|------|-------|
+| [Visual integration](visual-integration.md) | Sandbox tile mapping, avatar factory, catalog touchpoints |
+| [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
+
+### How the page sets correspond
 
 | Topic | Set A (prototype) | Set B (reference) |
 |-------|-------------------|-------------------|
@@ -65,6 +74,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | Gameplay / pathfinding | [Gameplay Systems](gameplay-systems.md) | [09 Pathfinding](09-pathfinding.md) |
 | Multiplayer & modding | [Multiplayer and Modding](multiplayer-and-modding.md) | [10 Multiplayer](10-multiplayer.md), [12 Modding](12-modding.md) |
 | Asset integration | — | [15 Asset Integration Requirements](15-assets-integration.md) |
+| Visual presentation | [Visual integration](visual-integration.md) | [Visual setup](../VISUAL_SETUP.md) |
 | Roadmap | [Roadmap and Tasks](roadmap-and-tasks.md) | [14 Roadmap](14-roadmap.md) |
 
 ## Cross-cutting invariants

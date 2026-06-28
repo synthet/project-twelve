@@ -1,3 +1,32 @@
 {
-  "mcpServers": {}
+  "_comment": "Copy to .cursor/mcp.json (gitignored) and replace RELAY_PATH with your platform relay binary. Unity installs the relay to ~/.unity/relay/ when the Editor starts with com.unity.ai.assistant. Prefer Edit > Project Settings > AI > Unity MCP > Integrations > Configure for Cursor when available.",
+  "mcpServers": {
+    "project-twelve-unity-mcp": {
+      "command": "RELAY_PATH",
+      "args": ["--mcp"],
+      "env": {
+        "UNITY_PROJECT_PATH": "ABSOLUTE_PATH_TO_THIS_REPO"
+      }
+    },
+    "project-twelve-ingame-mcp": {
+      "_note": "Requires the game running in Play Mode or a desktop build. Binds to 127.0.0.1 only.",
+      "url": "http://127.0.0.1:8765/mcp",
+      "type": "http"
+    }
+  },
+  "_optionalServers": {
+    "project-twelve-github": {
+      "_note": "Requires GITHUB_PERSONAL_ACCESS_TOKEN env var",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "project-twelve-subagent-orchestrator": {
+      "_note": "Sibling subagent-orchestrator repo; see docs/EXTERNAL_CLI_REVIEWS.md"
+    }
+  },
+  "_platformRelayPaths": {
+    "windows": "%USERPROFILE%\\.unity\\relay\\relay_win.exe",
+    "macosAppleSilicon": "~/.unity/relay/relay_mac_arm64.app/Contents/MacOS/relay_mac_arm64",
+    "macosIntel": "~/.unity/relay/relay_mac_x64.app/Contents/MacOS/relay_mac_x64",
+    "linux": "~/.unity/relay/relay_linux"
+  }
 }

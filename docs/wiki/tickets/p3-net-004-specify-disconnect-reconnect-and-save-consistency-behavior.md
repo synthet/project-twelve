@@ -4,8 +4,8 @@ title: "[P3-NET-004] Specify disconnect/reconnect and save consistency behavior.
 status: open
 phase: "Phase P3 — Networking alpha"
 github_project: "https://github.com/users/synthet/projects/2"
-github_issue: null
-github_issue_status: pending-creation
+github_issue: "https://github.com/synthet/project-twelve/issues/43"
+github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/multiplayer-and-modding.md"

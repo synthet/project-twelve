@@ -4,8 +4,8 @@ title: "[P5-PLAT-001] Complete platform, input, resolution, and performance cert
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"
-github_issue: null
-github_issue_status: pending-creation
+github_issue: "https://github.com/synthet/project-twelve/issues/52"
+github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/13-tooling-testing.md"

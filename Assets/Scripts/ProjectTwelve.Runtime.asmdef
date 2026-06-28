@@ -1,13 +1,32 @@
 {
+
     "name": "ProjectTwelve.Runtime",
-    "references": [],
+
+    "references": [
+
+        "Unity.2D.Animation.Runtime",
+
+        "Unity.InputSystem"
+
+    ],
+
     "includePlatforms": [],
+
     "excludePlatforms": [],
+
     "allowUnsafeCode": false,
+
     "overrideReferences": false,
+
     "precompiledReferences": [],
+
     "autoReferenced": true,
+
     "defineConstraints": [],
+
     "versionDefines": [],
+
     "noEngineReferences": false
+
 }
+

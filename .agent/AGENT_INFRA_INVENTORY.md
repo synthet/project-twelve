@@ -1,12 +1,40 @@
-# Agent Infrastructure Inventory
+# Agent infrastructure inventory — ProjectTwelve
 
-| Area | Path | Purpose |
-|------|------|---------|
-| Agent contract | `AGENTS.md` | Build/test commands, safety contract, MCP conventions. |
-| Assistant orientation | `CLAUDE.md` | Project architecture, commands, and development guidelines. |
-| MCP config | `.mcp.json` | Project-scoped Claude Code MCP server definitions. |
-| Cursor MCP example | `.cursor/mcp.example.json` | Template for untracked local Cursor MCP config. |
-| Safety rules | `.agent/SAFETY.md` | Secret handling, git hygiene, and Unity asset safety. |
-| Workflow docs | `docs/ai-workflow/README.md` | Spec-plan-implement-test-PR loop for agents. |
-| Canonical sources | `docs/CANONICAL_SOURCES.md` | Authority map for code and documentation changes. |
-| Markdown link check | `scripts/check_markdown_links.py` | Lightweight local validation for Markdown links. |
+**Last reviewed:** 2026-06-28. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+
+Keep this table current as the single catalog of every agent-facing asset. `.claude/` is canonical;
+`.cursor/` is generated from it.
+
+| Path | Purpose | Scope | Status |
+|------|---------|-------|--------|
+| [CLAUDE.md](../CLAUDE.md) | Human + agent orientation, backlog, architecture | project | active |
+| [AGENTS.md](../AGENTS.md) | MCP config, tool surface, coding-agent contract | agents, MCP | active |
+| [.agent/SAFETY.md](SAFETY.md) | Secrets, artifacts, git hygiene, MCP/external-review safety | governance | active |
+| [.agent/PROJECT_GUIDE.md](PROJECT_GUIDE.md) | Navigation for `.agent/` | docs | active |
+| [.agent/INFRA_QUICKSTART.md](INFRA_QUICKSTART.md) | One-page checklist | diagnostics | active |
+| [.agent/COMMANDS.md](COMMANDS.md) | Verified command quick reference | testing | active |
+| [.agent/SKILL_CHANGE_AST10_REVIEW.md](SKILL_CHANGE_AST10_REVIEW.md) | PR checklist guarding skill drift | governance | active |
+| [.agent/ai_edit_spec.md](ai_edit_spec.md) | Minimal-diff editing conventions | coding | active |
+| [.agent/subagents/README.md](subagents/README.md) | Logical roles ↔ subagents; allowed/forbidden edits | coding | active |
+| [.agent/workflows/*.md](workflows/) | Reusable SDLC + safety playbooks | workflow | active |
+| [.claude/commands/*.md](../.claude/commands/) | Slash commands | workflow | active |
+| [.claude/skills/*/SKILL.md](../.claude/skills/) | Skills | coding | active |
+| [.claude/agents/*.md](../.claude/agents/) | Subagents | coding | active |
+| [.claude/rules/*.md](../.claude/rules/) | Always-on rules | governance | active |
+| [.cursor/](../.cursor/) | Generated mirror of `.claude/` + `mcp.example.json` | mirror | generated |
+| [.agent-memory/](../.agent-memory/) | Project memory (log → dream → promote) | memory | active |
+| [.cursorrules](../.cursorrules) | Supplementary Unity C# coding spec | coding | active |
+| [docs/CANONICAL_SOURCES.md](../docs/CANONICAL_SOURCES.md) | Authority map | governance | active |
+| [docs/WIKI_SCHEMA.md](../docs/WIKI_SCHEMA.md) | Wiki taxonomy & maintenance | docs | active |
+| [docs/project/00-backlog-workflow.md](../docs/project/00-backlog-workflow.md) | Wiki-ticket backlog contract | workflow | active |
+| [docs/PAID_ASSETS.md](../docs/PAID_ASSETS.md) | Licensed asset submodule policy | governance | active |
+| [docs/ai-workflow/README.md](../docs/ai-workflow/README.md) | Asset map + SDLC loop | workflow | active |
+| [scripts/check_paid_assets.py](../scripts/check_paid_assets.py) | Block licensed paths on commit/push | governance | active |
+| [scripts/check_markdown_links.py](../scripts/check_markdown_links.py) | Markdown link checker | docs | active |
+| [scripts/sync_assistant_trees.py](../scripts/sync_assistant_trees.py) | Regenerate `.cursor/` from `.claude/` | agents | active |
+
+## Drift watchlist
+
+- **`.cursor/` mirror:** regenerate via `python scripts/sync_assistant_trees.py` after editing `.claude/`.
+- **MCP tool inventory:** regenerate the `<!-- BEGIN/END MCP TOOL INVENTORY -->` block in `AGENTS.md` when tools change.
+- **Skills:** any skill/command/agent change ships both trees in the same PR.

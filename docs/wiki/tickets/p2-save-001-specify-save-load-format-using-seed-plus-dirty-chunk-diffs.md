@@ -4,8 +4,8 @@ title: "[P2-SAVE-001] Specify save/load format using seed plus dirty chunk diffs
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
-github_issue: null
-github_issue_status: pending-creation
+github_issue: "https://github.com/synthet/project-twelve/issues/38"
+github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/generation-and-saving.md"

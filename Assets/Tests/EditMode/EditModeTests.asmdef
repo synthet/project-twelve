@@ -1,7 +1,8 @@
 {
     "name": "ProjectTwelve.EditModeTests",
     "references": [
-        "ProjectTwelve.Runtime"
+        "ProjectTwelve.Runtime",
+        "ProjectTwelve.RuntimeMcp"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

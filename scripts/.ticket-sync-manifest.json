@@ -1,0 +1,256 @@
+{
+  "issues": {
+    "P0-SPEC-001": {
+      "number": 20,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/20"
+    },
+    "P0-SPEC-002": {
+      "number": 21,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/21"
+    },
+    "P0-SPEC-003": {
+      "number": 22,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/22"
+    },
+    "P0-SPEC-004": {
+      "number": 23,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/23"
+    },
+    "P0-SPEC-005": {
+      "number": 24,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/24"
+    },
+    "P1-COLL-001": {
+      "number": 25,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/25"
+    },
+    "P1-EDIT-001": {
+      "number": 26,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/26"
+    },
+    "P1-GEN-001": {
+      "number": 27,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/27"
+    },
+    "P1-QA-001": {
+      "number": 28,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/28"
+    },
+    "P1-RENDER-001": {
+      "number": 29,
+      "state": "CLOSED",
+      "url": "https://github.com/synthet/project-twelve/issues/29"
+    },
+    "P1-WORLD-001": {
+      "number": 30,
+      "state": "CLOSED",
+      "url": "https://github.com/synthet/project-twelve/issues/30"
+    },
+    "P1-WORLD-002": {
+      "number": 31,
+      "state": "CLOSED",
+      "url": "https://github.com/synthet/project-twelve/issues/31"
+    },
+    "P2-AI-001": {
+      "number": 32,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/32"
+    },
+    "P2-DATA-001": {
+      "number": 33,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/33"
+    },
+    "P2-FLUID-001": {
+      "number": 34,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/34"
+    },
+    "P2-GEN-001": {
+      "number": 35,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/35"
+    },
+    "P2-INV-001": {
+      "number": 36,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/36"
+    },
+    "P2-LIGHT-001": {
+      "number": 37,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/37"
+    },
+    "P2-SAVE-001": {
+      "number": 38,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/38"
+    },
+    "P2-TOOL-001": {
+      "number": 39,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/39"
+    },
+    "P3-NET-001": {
+      "number": 40,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/40"
+    },
+    "P3-NET-002": {
+      "number": 41,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/41"
+    },
+    "P3-NET-003": {
+      "number": 42,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/42"
+    },
+    "P3-NET-004": {
+      "number": 43,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/43"
+    },
+    "P4-CONTENT-001": {
+      "number": 44,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/44"
+    },
+    "P4-MOD-001": {
+      "number": 45,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/45"
+    },
+    "P4-PERF-001": {
+      "number": 46,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/46"
+    },
+    "P4-QA-001": {
+      "number": 47,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/47"
+    },
+    "P4-UX-001": {
+      "number": 48,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/48"
+    },
+    "P5-DOC-001": {
+      "number": 49,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/49"
+    },
+    "P5-LAUNCH-001": {
+      "number": 50,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/50"
+    },
+    "P5-MIG-001": {
+      "number": 51,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/51"
+    },
+    "P5-PLAT-001": {
+      "number": 52,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/52"
+    },
+    "P5-REL-001": {
+      "number": 53,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/53"
+    }
+  },
+  "project_items": {
+    "P0-SPEC-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/20",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz6Y"
+    },
+    "P0-SPEC-002": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/21",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz7I"
+    },
+    "P0-SPEC-003": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/22",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz7k"
+    },
+    "P0-SPEC-004": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/23",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz8s"
+    },
+    "P0-SPEC-005": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/24",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz9M"
+    },
+    "P1-COLL-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/25",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz90"
+    },
+    "P1-EDIT-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/26",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz-s"
+    },
+    "P1-GEN-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/27",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxCz_o"
+    },
+    "P1-QA-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/28",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0AM"
+    },
+    "P1-RENDER-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/29",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0A4"
+    },
+    "P1-WORLD-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/30",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Bk"
+    },
+    "P1-WORLD-002": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/31",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Ck"
+    },
+    "P2-AI-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/32",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0DM"
+    },
+    "P2-DATA-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/33",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Do"
+    },
+    "P2-FLUID-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/34",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0EQ"
+    },
+    "P2-GEN-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/35",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Ew"
+    },
+    "P2-INV-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/36",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0FE"
+    },
+    "P2-LIGHT-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/37",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0FY"
+    },
+    "P2-SAVE-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/38",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0HM"
+    },
+    "P3-NET-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/40",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0QY"
+    }
+  }
+}

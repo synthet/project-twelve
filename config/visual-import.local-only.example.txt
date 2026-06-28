@@ -1,0 +1,13 @@
+# Optional machine override — copy to config/visual-import.local-only.txt (gitignored).
+# Default paths come from Assets/_Licensed/config/visual-import.txt in the assets submodule.
+# Use this file only when your layout differs from the team submodule convention.
+
+# avatar_prefab=Assets/_Licensed/<pack>/Prefabs/Character.prefab
+# hero_sprites_root=Assets/_Licensed/<pack>/Sprites
+# hero_extra_layer=Assets/_Licensed/<pack>/Sprites/Hair
+# tile_sprites_root=Assets/_Licensed/<pack>/Tiles
+# monster_prefabs_root=Assets/_Licensed/<pack>/Monsters
+
+# Optional: extra demo script type names stripped from avatar prefabs at runtime.
+# strip_demo_script_type=CharacterControls
+# strip_demo_script_type.1=CharacterController2D

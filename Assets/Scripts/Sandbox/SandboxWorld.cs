@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 public sealed class SandboxWorld : MonoBehaviour
 {
     [Header("World Generation")]
@@ -20,6 +21,7 @@ public sealed class SandboxWorld : MonoBehaviour
     [Header("Rendering")]
     [SerializeField] private SandboxChunkRenderer chunkRendererPrefab;
     [SerializeField] private Material tileMaterial;
+    [SerializeField] private SandboxTileVisualCatalog tileVisualCatalog;
     [SerializeField] private float tileSize = 1f;
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
@@ -30,6 +32,22 @@ public sealed class SandboxWorld : MonoBehaviour
     public float TileSize => tileSize;
     public int Seed => seed;
 
+    /// <summary>Number of chunks with active renderers.</summary>
+    public int LoadedChunkCount => renderers.Count;
+
+    /// <summary>Returns the current player world position when a player target is assigned.</summary>
+    public bool TryGetPlayerWorldPosition(out Vector2 position)
+    {
+        if (playerTarget == null)
+        {
+            position = default;
+            return false;
+        }
+
+        position = playerTarget.position;
+        return true;
+    }
+
     public void SetPlayerTarget(Transform target)
     {
         playerTarget = target;
@@ -38,6 +56,7 @@ public sealed class SandboxWorld : MonoBehaviour
     private void Start()
     {
         RefreshLoadedChunks();
+        RebuildDirtyChunks();
     }
 
     private void Update()
@@ -357,7 +376,12 @@ public sealed class SandboxWorld : MonoBehaviour
         rebuildScratch.AddRange(GetChunksNeedingRebuild(renderers.Keys, chunks));
         foreach (Vector2Int coord in rebuildScratch)
         {
-            renderers[coord].Rebuild(chunks[coord], tileSize, tileMaterial);
+            renderers[coord].Rebuild(
+                chunks[coord],
+                tileSize,
+                tileMaterial,
+                tileVisualCatalog,
+                LookupLoadedTile);
         }
     }
 
@@ -436,6 +460,18 @@ public sealed class SandboxWorld : MonoBehaviour
     private SandboxChunk GenerateChunk(Vector2Int chunkCoord)
     {
         return CreateTerrainGenerator().GenerateChunk(chunkCoord);
+    }
+
+    private SandboxTile LookupLoadedTile(int worldX, int worldY)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(worldX, worldY);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            return default;
+        }
+
+        Vector2Int local = WorldToLocalCoord(worldX, worldY);
+        return chunk.GetLocalTile(local.x, local.y);
     }
 
     private static int FloorDiv(int value, int divisor)

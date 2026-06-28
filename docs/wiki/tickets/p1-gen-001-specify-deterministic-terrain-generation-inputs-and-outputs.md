@@ -4,8 +4,8 @@ title: "[P1-GEN-001] Specify deterministic terrain generation inputs and outputs
 status: open
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
-github_issue: null
-github_issue_status: pending-creation
+github_issue: "https://github.com/synthet/project-twelve/issues/27"
+github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/generation-and-saving.md"

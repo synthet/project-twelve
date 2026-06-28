@@ -12,7 +12,7 @@ This page keeps near-term prototype work in an open knowledge format: milestones
 
 **Validation notes**
 
-- Open `Assets/Scene.unity` in Unity Editor 6.0.2 or later.
+- Open `Assets/Scene.unity` in Unity Editor 6.0.5.1f1.
 - Run batch-mode project validation when Unity is available.
 - Confirm no unrelated demo assets or generated scene artifacts are introduced.
 

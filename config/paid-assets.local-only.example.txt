@@ -1,0 +1,19 @@
+# Copy to config/paid-assets.local-only.txt (gitignored).
+# One repo-relative path per line. Lines starting with # are ignored.
+# Licensed content lives in the Assets/_Licensed git submodule — see docs/PAID_ASSETS.md.
+
+# Direct licensed imports into the public repo (never commit)
+Assets/PixelFantasy/
+Assets/PixelFantasy.meta
+
+# Submodule content copied as regular files into main (never commit)
+Assets/_Licensed/PixelFantasy/
+Assets/_Licensed/PixelFantasy.meta
+
+# Legacy catalog location in main repo
+Assets/Settings/Visual/AutotileCatalog.asset
+Assets/Settings/Visual/AutotileCatalog.asset.meta
+Assets/Settings/Visual/CharacterLayerCatalog.asset
+Assets/Settings/Visual/CharacterLayerCatalog.asset.meta
+Assets/Settings/Visual/MonsterVisualCatalog.asset
+Assets/Settings/Visual/MonsterVisualCatalog.asset.meta

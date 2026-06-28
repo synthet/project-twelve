@@ -25,4 +25,5 @@ public static class SandboxTileIds
     public const int Dirt = 1;
     public const int Grass = 2;
     public const int Stone = 3;
+    public const int CopperOre = 4;
 }

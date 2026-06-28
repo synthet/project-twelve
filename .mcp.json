@@ -1,4 +1,22 @@
 {
-  "_comment": "Project MCP servers for Claude Code. Define stdio/SSE servers here; keep secrets in env, never inline. Use project-twelve-* names and prefer compact search+dispatch tool surfaces.",
+  "_comment": "Project MCP servers for Claude Code. Copy templates into mcpServers and set env vars. Secrets via env only.",
+  "_unityMcpTemplate": {
+    "project-twelve-unity-mcp": {
+      "command": "RELAY_PATH",
+      "args": ["--mcp"],
+      "env": {
+        "UNITY_PROJECT_PATH": "ABSOLUTE_PATH_TO_THIS_REPO"
+      }
+    }
+  },
+  "_githubMcpTemplate": {
+    "project-twelve-github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  },
+  "_subagentOrchestratorNote": "Optional sibling repo MCP for external CLI reviews. See docs/EXTERNAL_CLI_REVIEWS.md. Project key: project-twelve-subagent-orchestrator",
   "mcpServers": {}
 }
