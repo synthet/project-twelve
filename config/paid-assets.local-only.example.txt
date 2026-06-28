@@ -3,12 +3,12 @@
 # Licensed content lives in the Assets/_Licensed git submodule — see docs/PAID_ASSETS.md.
 
 # Direct licensed imports into the public repo (never commit)
-Assets/PixelFantasy/
-Assets/PixelFantasy.meta
+Assets/PixelHeroes/
+Assets/PixelHeroes.meta
 
 # Submodule content copied as regular files into main (never commit)
-Assets/_Licensed/PixelFantasy/
-Assets/_Licensed/PixelFantasy.meta
+Assets/_Licensed/PixelHeroes/
+Assets/_Licensed/PixelHeroes.meta
 
 # Legacy catalog location in main repo
 Assets/Settings/Visual/AutotileCatalog.asset

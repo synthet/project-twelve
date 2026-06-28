@@ -79,6 +79,7 @@ Project-owned rendering and avatar systems. Local source art paths are configure
 | Page | Scope |
 |------|-------|
 | [Visual integration](visual-integration.md) | Sandbox tile mapping, avatar factory, catalog touchpoints |
+| [Vendor references](vendor-references.md) | Upstream licensed packs (Pixel Hero Maker, TileEngine) |
 | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
 
 ### How the page sets correspond

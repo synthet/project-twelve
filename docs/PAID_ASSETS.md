@@ -22,7 +22,7 @@ Import paths are read from `Assets/_Licensed/config/visual-import.txt` in the su
 
 ## What stays in the assets submodule
 
-- Licensed source art under `Assets/_Licensed/PixelFantasy/`
+- Licensed source art under `Assets/_Licensed/PixelHeroes/`
 - Generated catalogs under `Assets/_Licensed/Settings/Visual/`
 - Vendor import paths in `Assets/_Licensed/config/visual-import.txt`
 
@@ -55,7 +55,7 @@ python3 scripts/check_paid_assets.py --staged   # before commit
 python3 scripts/check_paid_assets.py --push     # before push
 ```
 
-The guard blocks direct licensed imports into the public repo (`Assets/PixelFantasy/`, copied submodule files under `Assets/_Licensed/`, legacy catalog paths in main).
+The guard blocks direct licensed imports into the public repo (`Assets/PixelHeroes/`, copied submodule files under `Assets/_Licensed/`, legacy catalog paths in main).
 
 Optional local hook:
 

@@ -61,3 +61,4 @@ See [Visual setup](../VISUAL_SETUP.md) for machine configuration and import menu
 - [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md)
 - [Rendering and Collision](rendering-and-collision.md)
 - [Asset integration requirements](15-assets-integration.md)
+- [Vendor references](vendor-references.md) — upstream packs (Pixel Hero Maker, TileEngine)

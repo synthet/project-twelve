@@ -187,6 +187,7 @@ Before adding a third-party art pack to version control, create a small intake n
 ## See also
 
 - [Visual integration](visual-integration.md) — sandbox tile mapping and avatar presentation.
+- [Vendor references](vendor-references.md) — upstream licensed packs (Pixel Hero Maker, TileEngine).
 - [Rendering](04-rendering.md) — chunk-local Tilemap/custom-mesh rendering decisions.
 - [Data Models](02-data-models.md) — compact tile metadata and runtime IDs.
 - [Modding & Content](12-modding.md) — registries, stable string IDs, and external assets.
