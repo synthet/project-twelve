@@ -1,7 +1,13 @@
 ---
 id: P0-SPEC-001
+type: Feature Spec
 title: "[P0-SPEC-001] Consolidate the product brief, architecture overview, and glossary into a single baseline scope statement."
-status: open
+description: Consolidate the product brief, overview, and glossary into a single P0 baseline scope statement of genre, prototype target, non-goals, and terminology.
+resource: wiki/tickets/p0-spec-001-consolidate-the-product-brief-architecture-overview-and-glos.md
+tags: [wiki, ticket, P0, spec, scope]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: in_progress
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/20"
@@ -85,9 +91,35 @@ As a developer or reviewer working on the P0 milestone, I want to consolidate th
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
+- [x] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Deliverable:** Added [`docs/wiki/baseline-scope.md`](../baseline-scope.md), the single
+  P0 baseline scope statement. It states the **core genre** (Unity 2D side-scrolling sandbox in
+  the Terraria/Starbound lineage), the **target prototype** (the chunked world + edit-loop
+  vertical slice, with each slice element pointing at its owning spec), the **current-state
+  non-goals**, the scope-bearing **invariants**, and a **terminology** table that cites the
+  minimum vocabulary needed to read the scope unambiguously. The page declares itself
+  authoritative for *scope* and defers to owner pages for subsystem detail.
+- **Consolidation sources cross-linked:** [`project-brief.md`](../project-brief.md),
+  [`00-overview.md`](../00-overview.md), and [`glossary.md`](../glossary.md) now each link to the
+  baseline statement; the wiki index [`README.md`](../README.md) lists it and points readers to
+  it first for scope. No scope facts were changed — the baseline restates the existing brief,
+  overview, and glossary rather than introducing new decisions.
+- **Spec references reviewed:** `docs/wiki/spec-driven-development-tasks.md` (P0-SPEC-001 row)
+  and `docs/wiki/00-overview.md` were reviewed; the task table needed no change and the overview
+  gained only a baseline back-link. The acceptance criterion "core genre, target prototype,
+  non-goals, and terminology are unambiguous" is satisfied by the four dedicated sections.
+- **Verification:** Documentation-only change. Validated with
+  `python scripts/okf_lint.py --profile project` (changed-docs OKF gate) and
+  `python3 scripts/check_markdown_links.py` (link hygiene); both pass on the touched files.
+- **Follow-up / non-goal:** Per-subsystem spec ownership and review cadence is explicitly
+  deferred to `P0-SPEC-002`; this ticket fixes the scope baseline only.
+- **GitHub issue:** [#20](https://github.com/synthet/project-twelve/issues/20); the issue body
+  already links back to this ticket.

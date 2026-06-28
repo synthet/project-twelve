@@ -17,7 +17,7 @@ okf_version: 0.1
 
 | ID | Ticket | Status | GitHub issue |
 |----|--------|--------|--------------|
-| P0-SPEC-001 | [[P0-SPEC-001] Consolidate the product brief, architecture overview, and glossary into a single baseline scope statement.](p0-spec-001-consolidate-the-product-brief-architecture-overview-and-glos.md) | open | [#20](https://github.com/synthet/project-twelve/issues/20) |
+| P0-SPEC-001 | [[P0-SPEC-001] Consolidate the product brief, architecture overview, and glossary into a single baseline scope statement.](p0-spec-001-consolidate-the-product-brief-architecture-overview-and-glos.md) | in_progress | [#20](https://github.com/synthet/project-twelve/issues/20) |
 | P0-SPEC-002 | [[P0-SPEC-002] Define spec ownership for every subsystem page.](p0-spec-002-define-spec-ownership-for-every-subsystem-page.md) | open | [#21](https://github.com/synthet/project-twelve/issues/21) |
 | P0-SPEC-003 | [[P0-SPEC-003] Establish the task schema and ID conventions in the backlog.](p0-spec-003-establish-the-task-schema-and-id-conventions-in-the-backlog.md) | open | [#22](https://github.com/synthet/project-twelve/issues/22) |
 | P0-SPEC-004 | [[P0-SPEC-004] Define project quality gates.](p0-spec-004-define-project-quality-gates.md) | open | [#23](https://github.com/synthet/project-twelve/issues/23) |
