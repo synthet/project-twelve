@@ -16,7 +16,7 @@ ProjectTwelve renders terrain, player avatars, and monsters from catalogs under 
    git submodule update --init --recursive
    ```
 
-2. Open the project in Unity 6.0.5.1f1. Import paths load from `Assets/_Licensed/config/visual-import.txt` automatically.
+2. Open the **repository root** (the clone folder) in Unity 6.0.5.1f1. Import paths load from `Assets/_Licensed/config/visual-import.txt` automatically.
 
 3. If catalogs are missing or stale, regenerate them:
    - **ProjectTwelve → Visual → Import Autotile Catalog from Local Source**

@@ -41,7 +41,7 @@ follows. Controls:
 ## Project Structure
 
 ```text
-ProjectTwelve/
+project-twelve/                     # Git repo root and Unity -projectPath
 ├── Assets/
 │   ├── _Licensed/                  # Git submodule → project-twelve-assets (private)
 │   ├── Scene.unity                 # Runnable sandbox scene (player + camera + world)

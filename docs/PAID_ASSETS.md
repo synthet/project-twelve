@@ -29,7 +29,7 @@ git clone --recurse-submodules https://github.com/synthet/project-twelve.git
 git submodule update --init --recursive
 ```
 
-Import paths are read from `Assets/_Licensed/config/visual-import.txt` in the submodule. Optional machine override: copy [`config/visual-import.local-only.example.txt`](../config/visual-import.local-only.example.txt) to `config/visual-import.local-only.txt` (gitignored).
+Import paths are read from `Assets/_Licensed/config/visual-import.txt` in the submodule. License intake notes (source URLs, retrieval dates, folder mapping) live in `Assets/_Licensed/docs/LICENSE-INTAKE.md` in the assets repo. Optional machine override: copy [`config/visual-import.local-only.example.txt`](../config/visual-import.local-only.example.txt) to `config/visual-import.local-only.txt` (gitignored).
 
 ## What stays in the public repo
 
