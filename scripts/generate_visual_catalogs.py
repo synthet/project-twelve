@@ -11,12 +11,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SUBMODULE_ROOT = REPO_ROOT / "Assets" / "_Licensed"
 CONFIG_PATH = SUBMODULE_ROOT / "config" / "visual-import.txt"
 OUTPUT_DIR = SUBMODULE_ROOT / "Settings" / "Visual"
-
-AUTOTILE_SCRIPT_GUID = "a1b2c3d4e5f6478990abcdef12345678"
-CHARACTER_LAYER_SCRIPT_GUID = "b2c3d4e5f6474890abcdef1234567890"
-MONSTER_VISUAL_SCRIPT_GUID = "c3d4e5f678904890abcdef12345678901"
+SCRIPTS_ROOT = REPO_ROOT / "Assets" / "Scripts"
 
 EXCLUDED_PREFABS_FOLDER = "Common/Prefabs"
+GUID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 
 
 def read_config() -> dict[str, str]:
@@ -33,8 +31,26 @@ def read_config() -> dict[str, str]:
 def read_guid(meta_path: Path) -> str:
     for line in meta_path.read_text(encoding="utf-8").splitlines():
         if line.startswith("guid: "):
-            return line.split("guid: ", 1)[1].strip()
+            guid = line.split("guid: ", 1)[1].strip()
+            validate_guid(guid, meta_path)
+            return guid
     raise ValueError(f"guid not found in {meta_path}")
+
+
+def validate_guid(guid: str, source: Path) -> None:
+    if not GUID_PATTERN.match(guid):
+        raise ValueError(
+            f"Invalid Unity GUID in {source}: '{guid}' "
+            f"(expected exactly 32 lowercase hex characters)"
+        )
+
+
+def read_script_guid(relative_script_path: str) -> str:
+    meta_path = SCRIPTS_ROOT / relative_script_path
+    meta_path = meta_path.with_suffix(meta_path.suffix + ".meta")
+    if not meta_path.is_file():
+        raise FileNotFoundError(f"Missing script meta: {meta_path}")
+    return read_guid(meta_path)
 
 
 def read_sprite_file_ids(meta_path: Path) -> list[int]:
@@ -58,6 +74,7 @@ def unity_ref(file_id: int, guid: str) -> str:
 
 
 def write_meta(asset_path: Path, guid: str) -> None:
+    validate_guid(guid, asset_path)
     meta = (
         "fileFormatVersion: 2\n"
         f"guid: {guid}\n"
@@ -69,6 +86,13 @@ def write_meta(asset_path: Path, guid: str) -> None:
         "  assetBundleVariant: \n"
     )
     asset_path.with_suffix(asset_path.suffix + ".meta").write_text(meta, encoding="utf-8")
+
+
+def read_or_create_catalog_guid(asset_path: Path) -> str:
+    meta_path = asset_path.with_suffix(asset_path.suffix + ".meta")
+    if meta_path.is_file():
+        return read_guid(meta_path)
+    return uuid.uuid4().hex
 
 
 def generate_autotile_catalog(tiles_root: str) -> None:
@@ -96,7 +120,8 @@ def generate_autotile_catalog(tiles_root: str) -> None:
                 f"    customRules: []"
             )
 
-    catalog_guid = uuid.uuid4().hex
+    catalog_guid = read_or_create_catalog_guid(OUTPUT_DIR / "AutotileCatalog.asset")
+    autotile_script_guid = read_script_guid("Visual/Tiles/AutotileCatalog.cs")
     asset_path = OUTPUT_DIR / "AutotileCatalog.asset"
     asset_path.parent.mkdir(parents=True, exist_ok=True)
     yaml = (
@@ -111,7 +136,7 @@ def generate_autotile_catalog(tiles_root: str) -> None:
         "  m_GameObject: {fileID: 0}\n"
         "  m_Enabled: 1\n"
         "  m_EditorHideFlags: 0\n"
-        f"  m_Script: {{fileID: 11500000, guid: {AUTOTILE_SCRIPT_GUID}, type: 3}}\n"
+        f"  m_Script: {{fileID: 11500000, guid: {autotile_script_guid}, type: 3}}\n"
         "  m_Name: AutotileCatalog\n"
         "  m_EditorClassIdentifier: ProjectTwelve.Runtime::ProjectTwelve.Visual.Tiles.AutotileCatalog\n"
         "  groundTilesets:\n"
@@ -166,7 +191,8 @@ def generate_character_layer_catalog(sprites_root: str, extra_roots: list[str]) 
         if extra_path.is_dir():
             add_layer_dir(extra_path)
 
-    catalog_guid = uuid.uuid4().hex
+    catalog_guid = read_or_create_catalog_guid(OUTPUT_DIR / "CharacterLayerCatalog.asset")
+    character_layer_script_guid = read_script_guid("Visual/Characters/CharacterLayerCatalog.cs")
     asset_path = OUTPUT_DIR / "CharacterLayerCatalog.asset"
     yaml = (
         "%YAML 1.1\n"
@@ -180,7 +206,7 @@ def generate_character_layer_catalog(sprites_root: str, extra_roots: list[str]) 
         "  m_GameObject: {fileID: 0}\n"
         "  m_Enabled: 1\n"
         "  m_EditorHideFlags: 0\n"
-        f"  m_Script: {{fileID: 11500000, guid: {CHARACTER_LAYER_SCRIPT_GUID}, type: 3}}\n"
+        f"  m_Script: {{fileID: 11500000, guid: {character_layer_script_guid}, type: 3}}\n"
         "  m_Name: CharacterLayerCatalog\n"
         "  m_EditorClassIdentifier: ProjectTwelve.Runtime::ProjectTwelve.Visual.Characters.CharacterLayerCatalog\n"
         "  layers:\n"
@@ -212,7 +238,8 @@ def generate_monster_catalog(monsters_root: str) -> None:
             f"    prefab: {unity_ref(100100000, prefab_guid)}"
         )
 
-    catalog_guid = uuid.uuid4().hex
+    catalog_guid = read_or_create_catalog_guid(OUTPUT_DIR / "MonsterVisualCatalog.asset")
+    monster_visual_script_guid = read_script_guid("Visual/Monsters/MonsterVisualCatalog.cs")
     asset_path = OUTPUT_DIR / "MonsterVisualCatalog.asset"
     yaml = (
         "%YAML 1.1\n"
@@ -226,7 +253,7 @@ def generate_monster_catalog(monsters_root: str) -> None:
         "  m_GameObject: {fileID: 0}\n"
         "  m_Enabled: 1\n"
         "  m_EditorHideFlags: 0\n"
-        f"  m_Script: {{fileID: 11500000, guid: {MONSTER_VISUAL_SCRIPT_GUID}, type: 3}}\n"
+        f"  m_Script: {{fileID: 11500000, guid: {monster_visual_script_guid}, type: 3}}\n"
         "  m_Name: MonsterVisualCatalog\n"
         "  m_EditorClassIdentifier: ProjectTwelve.Runtime::ProjectTwelve.Visual.Monsters.MonsterVisualCatalog\n"
         "  entries:\n"

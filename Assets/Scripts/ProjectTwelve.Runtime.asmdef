@@ -4,7 +4,7 @@
 
     "references": [
 
-        "Unity.2D.Animation",
+        "Unity.2D.Animation.Runtime",
 
         "Unity.InputSystem"
 
