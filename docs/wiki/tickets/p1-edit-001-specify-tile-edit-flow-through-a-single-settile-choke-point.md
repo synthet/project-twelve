@@ -7,11 +7,11 @@ resource: wiki/tickets/p1-edit-001-specify-tile-edit-flow-through-a-single-setti
 tags: [wiki, ticket, P1, edit]
 timestamp: 2026-06-28T00:00:00Z
 okf_version: 0.1
-status: open
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/26"
-github_issue_status: created
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/world-and-chunk-data.md"
@@ -92,7 +92,7 @@ As a developer or reviewer working on the P1 milestone, I want to specify tile e
 ## Exit evidence checklist
 
 - [x] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [x] Spec references have been reviewed and updated if needed.
 - [x] Acceptance criteria have been validated.
 - [x] Verification evidence is attached or linked.
@@ -115,5 +115,5 @@ As a developer or reviewer working on the P1 milestone, I want to specify tile e
   nothing. Run with:
   `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
 - **GitHub issue:** [#26](https://github.com/synthet/project-twelve/issues/26), recorded in the
-  front matter. The backlink from the issue body to this ticket is not yet confirmed, so that box
-  remains open.
+  front matter; the issue body links back to this ticket. Implementation is merged into `master`
+  and the issue is closed as completed.

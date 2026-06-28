@@ -7,11 +7,11 @@ resource: wiki/tickets/p0-spec-002-define-spec-ownership-for-every-subsystem-pag
 tags: [wiki, ticket, P0, spec, ownership]
 timestamp: 2026-06-28T00:00:00Z
 okf_version: 0.1
-status: in_progress
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/21"
-github_issue_status: claimed
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"
