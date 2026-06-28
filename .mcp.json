@@ -1,5 +1,5 @@
 {
-  "_comment": "Project MCP servers for Claude Code. Unity MCP relay paths are machine-local — copy _unityMcpTemplate into mcpServers and set RELAY_PATH + UNITY_PROJECT_PATH, or use Edit > Project Settings > AI > Unity MCP > Integrations in the Editor.",
+  "_comment": "Project MCP servers for Claude Code. Copy templates into mcpServers and set env vars. Secrets via env only.",
   "_unityMcpTemplate": {
     "project-twelve-unity-mcp": {
       "command": "RELAY_PATH",
@@ -9,5 +9,14 @@
       }
     }
   },
+  "_githubMcpTemplate": {
+    "project-twelve-github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  },
+  "_subagentOrchestratorNote": "Optional sibling repo MCP for external CLI reviews. See docs/EXTERNAL_CLI_REVIEWS.md. Project key: project-twelve-subagent-orchestrator",
   "mcpServers": {}
 }

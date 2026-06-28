@@ -90,7 +90,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup)
     {
-        Dictionary<Texture2D, MeshLayer> layers = new Dictionary<Texture2D, MeshLayer>();
+        Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
+        Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
 
         for (int localX = 0; localX < SandboxChunk.Size; localX++)
         {
@@ -103,12 +104,12 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 }
 
                 Vector2Int worldCoord = SandboxWorld.ChunkLocalToWorld(chunk.Coord, localX, localY);
-                AddGroundTile(layers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
-                AddCoverTile(layers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
+                AddGroundTile(groundLayers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
+                AddCoverTile(coverLayers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
             }
         }
 
-        ApplyLayeredMesh(layers, material, chunk, tileSize);
+        ApplyLayeredMesh(groundLayers, coverLayers, material, chunk, tileSize);
     }
 
     private static void AddGroundTile(
@@ -142,7 +143,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         }
 
         MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile));
+        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: 0f);
     }
 
     private static void AddCoverTile(
@@ -183,16 +184,17 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         }
 
         MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile));
+        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: -0.01f);
     }
 
     private void ApplyLayeredMesh(
-        Dictionary<Texture2D, MeshLayer> layers,
+        Dictionary<Texture2D, MeshLayer> groundLayers,
+        Dictionary<Texture2D, MeshLayer> coverLayers,
         Material material,
         SandboxChunk chunk,
         float tileSize)
     {
-        if (layers.Count == 0)
+        if (groundLayers.Count == 0 && coverLayers.Count == 0)
         {
             RebuildLegacyAtlasTiles(chunk, tileSize, material);
             return;
@@ -207,6 +209,31 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         List<Color> colors = new List<Color>();
         List<List<int>> submeshTriangles = new List<List<int>>();
 
+        AppendMeshLayers(groundLayers, material, vertices, uvs, colors, submeshTriangles, rebuildMaterials);
+        AppendMeshLayers(coverLayers, material, vertices, uvs, colors, submeshTriangles, rebuildMaterials);
+
+        mesh.SetVertices(vertices);
+        mesh.SetUVs(0, uvs);
+        mesh.SetColors(colors);
+        mesh.subMeshCount = submeshTriangles.Count;
+        for (int submeshIndex = 0; submeshIndex < submeshTriangles.Count; submeshIndex++)
+        {
+            mesh.SetTriangles(submeshTriangles[submeshIndex], submeshIndex);
+        }
+
+        mesh.RecalculateBounds();
+        meshRenderer.sharedMaterials = rebuildMaterials.ToArray();
+    }
+
+    private void AppendMeshLayers(
+        Dictionary<Texture2D, MeshLayer> layers,
+        Material material,
+        List<Vector3> vertices,
+        List<Vector2> uvs,
+        List<Color> colors,
+        List<List<int>> submeshTriangles,
+        List<Material> materials)
+    {
         foreach (KeyValuePair<Texture2D, MeshLayer> entry in layers)
         {
             MeshLayer layer = entry.Value;
@@ -222,20 +249,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             }
 
             submeshTriangles.Add(triangles);
-            rebuildMaterials.Add(CreateMaterialForTexture(material, entry.Key));
+            materials.Add(CreateMaterialForTexture(material, entry.Key));
         }
-
-        mesh.SetVertices(vertices);
-        mesh.SetUVs(0, uvs);
-        mesh.SetColors(colors);
-        mesh.subMeshCount = submeshTriangles.Count;
-        for (int submeshIndex = 0; submeshIndex < submeshTriangles.Count; submeshIndex++)
-        {
-            mesh.SetTriangles(submeshTriangles[submeshIndex], submeshIndex);
-        }
-
-        mesh.RecalculateBounds();
-        meshRenderer.sharedMaterials = rebuildMaterials.ToArray();
     }
 
     private void ApplySingleSubmesh(
@@ -286,10 +301,54 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float tileSize,
         Sprite sprite,
         bool flipX,
-        Color color)
+        Color color,
+        float zOffset)
     {
         Rect uv = GetSpriteUv(sprite, flipX);
-        AddTileQuad(layer.Vertices, layer.Triangles, layer.Uvs, layer.Colors, x, y, tileSize, uv, color);
+        AddSpriteBoundsQuad(layer, x, y, tileSize, sprite, uv, color, zOffset);
+    }
+
+    private static void AddSpriteBoundsQuad(
+        MeshLayer layer,
+        int x,
+        int y,
+        float tileSize,
+        Sprite sprite,
+        Rect uv,
+        Color color,
+        float zOffset)
+    {
+        Bounds bounds = sprite.bounds;
+        float pivotX = (x + 0.5f) * tileSize;
+        float pivotY = (y + 0.5f) * tileSize;
+
+        float left = pivotX + bounds.min.x;
+        float right = pivotX + bounds.max.x;
+        float bottom = pivotY + bounds.min.y;
+        float top = pivotY + bounds.max.y;
+
+        int start = layer.Vertices.Count;
+        layer.Vertices.Add(new Vector3(left, bottom, zOffset));
+        layer.Vertices.Add(new Vector3(right, bottom, zOffset));
+        layer.Vertices.Add(new Vector3(right, top, zOffset));
+        layer.Vertices.Add(new Vector3(left, top, zOffset));
+
+        layer.Uvs.Add(new Vector2(uv.xMin, uv.yMin));
+        layer.Uvs.Add(new Vector2(uv.xMax, uv.yMin));
+        layer.Uvs.Add(new Vector2(uv.xMax, uv.yMax));
+        layer.Uvs.Add(new Vector2(uv.xMin, uv.yMax));
+
+        layer.Triangles.Add(start);
+        layer.Triangles.Add(start + 2);
+        layer.Triangles.Add(start + 1);
+        layer.Triangles.Add(start);
+        layer.Triangles.Add(start + 3);
+        layer.Triangles.Add(start + 2);
+
+        layer.Colors.Add(color);
+        layer.Colors.Add(color);
+        layer.Colors.Add(color);
+        layer.Colors.Add(color);
     }
 
     private static Rect GetSpriteUv(Sprite sprite, bool flipX)

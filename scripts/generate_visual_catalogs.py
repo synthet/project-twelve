@@ -140,9 +140,9 @@ def generate_autotile_catalog(tiles_root: str) -> None:
         "  m_Name: AutotileCatalog\n"
         "  m_EditorClassIdentifier: ProjectTwelve.Runtime::ProjectTwelve.Visual.Tiles.AutotileCatalog\n"
         "  groundTilesets:\n"
-        + ("\n".join(ground) if ground else "  []\n")
+        + ("\n".join(ground) + "\n" if ground else "  []\n")
         + "  coverTilesets:\n"
-        + ("\n".join(cover) if cover else "  []\n")
+        + ("\n".join(cover) + "\n" if cover else "  []\n")
     )
     asset_path.write_text(yaml, encoding="utf-8")
     write_meta(asset_path, catalog_guid)

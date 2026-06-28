@@ -86,3 +86,7 @@ The workflow uses GameCI's Unity Test Runner. It skips the Unity execution step 
 - `UNITY_PASSWORD`
 
 Local test coverage starts in `Assets/Tests/EditMode` and currently validates core tile, chunk, and coordinate-conversion behavior.
+
+## Agent / AI workflow
+
+Contributors and coding agents should start with [AGENTS.md](AGENTS.md) for build/test commands, MCP setup, and safety rules. The spec-first SDLC loop and asset map live in [docs/ai-workflow/README.md](docs/ai-workflow/README.md). Backlog work is tracked in [docs/wiki/tickets/](docs/wiki/tickets/) with linked GitHub issues.

@@ -62,7 +62,14 @@ public static class LocalImportConfig
 
     private static List<string> DefaultDemoScriptTypeNames()
     {
-        return new List<string> { "CharacterControls", "CharacterController2D" };
+        return new List<string>
+        {
+            "CharacterControls",
+            "CharacterController2D",
+            "CharacterAnimation",
+            "CharacterBuilder",
+            "Character",
+        };
     }
 
     private static void EnsureLoaded()

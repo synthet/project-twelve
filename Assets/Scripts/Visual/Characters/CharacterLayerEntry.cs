@@ -18,7 +18,7 @@ namespace ProjectTwelve.Visual.Characters
         public string LayerName => layerName;
         public IReadOnlyList<Texture2D> Textures => textures;
 
-        internal static CharacterLayerEntry Create(string name, List<Texture2D> layerTextures)
+        public static CharacterLayerEntry Create(string name, List<Texture2D> layerTextures)
         {
             CharacterLayerEntry entry = new CharacterLayerEntry();
             entry.layerName = name;

@@ -32,7 +32,7 @@ public sealed class AutotileVisualTests
             { 0, 0, 0 }
         };
 
-        Assert.IsTrue(rule.Matches(mask, flipX: false));
+        Assert.IsTrue(rule.Matches(mask, flipInput: false));
     }
 
     [Test]
@@ -52,7 +52,7 @@ public sealed class AutotileVisualTests
             { 1, 1, 0 }
         };
 
-        Assert.IsTrue(rule.Matches(mask, flipX: true));
+        Assert.IsTrue(rule.Matches(mask, flipInput: true));
     }
 
     [Test]
@@ -94,7 +94,24 @@ public sealed class AutotileVisualTests
             5,
             5);
 
-        Assert.AreEqual(2, mask[1, 0]);
+        Assert.AreEqual(2, mask[0, 1]);
+    }
+
+    [Test]
+    public void AutotileResolver_SingleSpriteTileset_SkipsRuleMatching()
+    {
+        AutotileTileset tileset = new AutotileTileset("Rocks", new Texture2D(16, 16), CreateSprites("0"));
+        int[,] mask = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.AreSame(tileset.Sprites[0], resolved);
+        Assert.IsFalse(flipX);
     }
 
     private static AutotileTileset CreateTestTileset()

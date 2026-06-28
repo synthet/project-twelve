@@ -9,6 +9,15 @@
       }
     }
   },
+  "_optionalServers": {
+    "project-twelve-github": {
+      "_note": "Requires GITHUB_PERSONAL_ACCESS_TOKEN env var",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "project-twelve-subagent-orchestrator": {
+      "_note": "Sibling subagent-orchestrator repo; see docs/EXTERNAL_CLI_REVIEWS.md"
+    }
+  },
   "_platformRelayPaths": {
     "windows": "%USERPROFILE%\\.unity\\relay\\relay_win.exe",
     "macosAppleSilicon": "~/.unity/relay/relay_mac_arm64.app/Contents/MacOS/relay_mac_arm64",

@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f8e9d0c1b2a4938e7d6c5b4a3928170, type: 3}
   m_Name:
   m_EditorClassIdentifier: ProjectTwelve.Runtime::SandboxPlayerAvatarVisual
-  avatarPrefab: {fileID: 100100000, guid: 2689439e0fdf4ac9aa554747adb92ba7, type: 3}
+  avatarPrefab: {fileID: 375063816128229675, guid: 2689439e0fdf4ac9aa554747adb92ba7, type: 3}
   layerCatalog: {fileID: 11400000, guid: 86c858d9652c4835a73dec217f27d5ad, type: 2}
   avatarLocalPosition: {x: 0, y: 0, z: 0}
   bodySortingOrder: 10

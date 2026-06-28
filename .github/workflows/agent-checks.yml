@@ -1,0 +1,65 @@
+name: Agent checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  agent-checks:
+    name: Agent infrastructure checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Verify .cursor mirror is in sync
+        run: python scripts/sync_assistant_trees.py --check
+
+      - name: Check Markdown links
+        run: python3 scripts/check_markdown_links.py
+
+      - name: Check paid assets guard (push mode)
+        run: python3 scripts/check_paid_assets.py --push
+
+      - name: Compile agent Python scripts
+        run: python -m py_compile scripts/*.py scripts/ci/*.py scripts/agent-memory/*.py scripts/agent_memory/*.py
+
+      - name: OKF lint changed docs (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          python scripts/ci/okf_lint_changed.py \
+            --base "origin/${{ github.event.pull_request.base.ref }}" \
+            --head "${{ github.sha }}" \
+            --profile project \
+            --exclude-prefix archive/ \
+            --fail-on error
+
+      - name: OKF lint changed docs (push to main)
+        if: github.event_name == 'push'
+        run: |
+          python scripts/ci/okf_lint_changed.py \
+            --base "${{ github.event.before }}" \
+            --head "${{ github.sha }}" \
+            --profile project \
+            --exclude-prefix archive/ \
+            --fail-on error
+
+      - name: OKF lint full docs (informational)
+        continue-on-error: true
+        run: python scripts/okf_lint.py --profile project --exclude-prefix archive/ docs

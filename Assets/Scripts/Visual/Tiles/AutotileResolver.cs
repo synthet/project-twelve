@@ -19,6 +19,11 @@ namespace ProjectTwelve.Visual.Tiles
                 return null;
             }
 
+            if (tileset.Sprites.Count == 1)
+            {
+                return tileset.Sprites[0];
+            }
+
             IReadOnlyList<AutotileRule> rules = tileset.Rules;
             int index = FindRuleIndex(rules, mask, flipX: false);
             if (index >= 0)

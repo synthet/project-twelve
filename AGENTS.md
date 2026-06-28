@@ -1,9 +1,22 @@
 # AI Agents Configuration — ProjectTwelve
 
 ## Overview
-ProjectTwelve is a Unity 2D sandbox prototype. This repo adopts the reusable agent-operation practices from `synthet-code-framework`: explicit build/test commands, safety rules, MCP configuration hygiene, canonical-source docs, minimal diffs, and PR-ready validation.
+
+ProjectTwelve is a Unity 2D sandbox prototype. This repo ships agent scaffolding for Claude Code and
+Cursor: slash commands, skills, subagents, safety rules, an `.agent/` governance hub, a project-memory
+subsystem, and OKF docs tooling. This file is the **source of truth** for how agents build/test/run and
+which tools they may use.
+
+## Authoring & skill source of truth
+
+- **Canonical** assets are authored under `.claude/` (+ `.agent/`).
+- The **`.cursor/`** tree (rules/commands/skills/agents) is **generated** by
+  `python scripts/sync_assistant_trees.py` — do not hand-edit it; edit `.claude/` and re-run sync.
+- When you change a skill/command/agent, run the sync and commit both trees in the **same PR**
+  (see [`.agent/SKILL_CHANGE_AST10_REVIEW.md`](.agent/SKILL_CHANGE_AST10_REVIEW.md)).
 
 ## Commands
+
 ```bash
 # Open/build in Unity Editor 6.0.5.1f1; Unity regenerates solution files.
 # Batch-mode edit validation (requires Unity installed in the environment):
@@ -12,16 +25,36 @@ Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
 # Run Unity edit-mode tests (requires Unity installed in the environment):
 Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 
-# Documentation/link hygiene:
+# Documentation/link hygiene and paid-asset guard:
 python3 scripts/check_markdown_links.py
+python3 scripts/check_paid_assets.py --staged
+
+# OKF docs health:
+python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs
+python3 scripts/wiki_lint.py --exclude-prefix archive/
+
+# Agent assets:
+python scripts/sync_assistant_trees.py    # regenerate .cursor/ from .claude/
+
+# Project memory:
+python scripts/agent-memory/log_session.py --summary "..." --outcome "..." --candidate "text|working_rule|high"
+python scripts/agent-memory/dream.py
+python scripts/agent-memory/promote_dream.py --dream .agent-memory/dreams/<timestamp>.md
+python scripts/agent-memory/context.py
 ```
 
+**Python dependency:** `pip install pyyaml` (required for OKF lint and memory scripts).
+
 ## MCP servers
-- Define project MCP servers in [`.mcp.json`](.mcp.json); keep secrets in environment variables only.
-- Use project-scoped names such as `project-twelve-*`.
-- Local Cursor MCP config should be untracked at [`.cursor/mcp.json`](.cursor/mcp.json); copy from [`.cursor/mcp.example.json`](.cursor/mcp.example.json) when setting up a new machine.
+
+- Define project servers in [`.mcp.json`](.mcp.json) (Claude Code) and copy
+  [`.cursor/mcp.example.json`](.cursor/mcp.example.json) → `.cursor/mcp.json` (gitignored) for Cursor.
+- **Naming:** `<scope>-<role>-*` (e.g. `project-twelve-unity-mcp`, `project-twelve-github`).
+- **Secrets via env only**, never CLI args. Reload the MCP client after changing keys.
+- User-level `~/.cursor/mcp.json` holds cross-repo tools; project keys live in this repo.
 
 ### Unity MCP (Editor bridge)
+
 Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). This project declares `com.unity.ai.assistant` in `Packages/manifest.json`.
 
 **One-time setup (per machine):**
@@ -38,22 +71,39 @@ Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https
 
 **Requirements:** Unity 6+, Unity AI trial or subscription for Assistant features.
 
-## Common workflow
-Use a spec-first flow for non-trivial changes: clarify scope, plan, implement, test, then prepare a PR summary. Keep changes focused and cite the relevant docs or code in handoff notes.
+### External CLI reviews
+
+Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
+[`docs/EXTERNAL_CLI_REVIEWS.md`](docs/EXTERNAL_CLI_REVIEWS.md). Review-only; never enable writes.
+
+## Available tools
+
+<!-- BEGIN MCP TOOL INVENTORY -->
+<!-- Auto-generated; do not edit by hand. Regenerate when your MCP tools change. -->
+_(none yet)_
+<!-- END MCP TOOL INVENTORY -->
+
+## Common workflows
+
+`/spec → /plan → /implement → /test-and-fix → /pr-ready`. See
+[`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asset map and loop, and
+[`.agent/workflows/`](.agent/workflows/) for playbooks.
+
+Pick work from [`docs/wiki/tickets/`](docs/wiki/tickets/) and linked GitHub issues (see
+[`docs/project/00-backlog-workflow.md`](docs/project/00-backlog-workflow.md)).
 
 ## Git configuration — do not modify
-Never modify `.git/config` or add non-standard git extensions. If a worktree is needed, use a temporary one and clean it up immediately.
 
-## Coding-agent contract
-- **Unity scope:** preserve Unity `.meta` files when adding, moving, or deleting assets.
-- **Code style:** match the surrounding C# style; prefer explicit access modifiers and serialized private fields for Inspector settings.
-- **Architecture:** keep world data, rendering, player input, and persistence concerns separated unless an explicit contract change is documented.
-- **Security:** secrets belong in `secrets.json`, `.env`, or environment variables; never commit tokens, service keys, or machine-specific paths.
-- **Paid/licensed assets:** licensed content lives in the private `project-twelve-assets` repo as git submodule `Assets/_Licensed/`. Never commit licensed blobs into the public repo. Policy in `docs/PAID_ASSETS.md`. Run `python3 scripts/check_paid_assets.py --staged` or `--push` before commit/push.
-- **Change control:** make minimal diffs, include tests or validation notes for behavior changes, and avoid drive-by reformatting.
-- **Documentation:** update `README.md`, `docs/wiki/`, or `docs/CANONICAL_SOURCES.md` when changing architecture, workflows, or public conventions.
+Never modify `.git/config` or add non-standard git extensions (do not set
+`extensions.worktreeConfig` or change `core.repositoryformatversion`). Embedded git libraries in
+third-party tooling choke on non-standard extensions and break workspace resolution. If a worktree is
+needed, use a temporary one and clean it up immediately.
+
+**Optional pre-commit hook:** enable with `git config core.hooksPath .githooks` to run
+`python3 scripts/check_paid_assets.py --staged` before each commit.
 
 ## Test vocabulary
+
 | You say | Canonical name | Where | How to run |
 |---------|----------------|-------|------------|
 | Unity validation | Batch-mode project load | Unity project root | `Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log` |
@@ -61,14 +111,34 @@ Never modify `.git/config` or add non-standard git extensions. If a worktree is 
 | Markdown links | Docs link checker | `docs/`, `README.md`, agent docs | `python3 scripts/check_markdown_links.py` |
 | Paid assets guard | Block licensed paths in public repo | `config/paid-assets.local-only.example.txt` | `python3 scripts/check_paid_assets.py --staged` (commit) or `--push` |
 | Visual catalog regen | Submodule catalog generator | `scripts/generate_visual_catalogs.py` | `python3 scripts/generate_visual_catalogs.py` |
+| OKF lint | Docs frontmatter checker | `docs/` | `python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs` |
+| Cursor sync check | `.cursor/` drift gate | `scripts/sync_assistant_trees.py` | `python scripts/sync_assistant_trees.py --check` |
+
+## Coding-agent contract
+
+- **Unity scope:** preserve Unity `.meta` files when adding, moving, or deleting assets.
+- **Code style:** match the surrounding C# style; prefer explicit access modifiers and serialized private fields for Inspector settings.
+- **Architecture:** keep world data, rendering, player input, and persistence concerns separated unless an explicit contract change is documented.
+- **Security (hard rules):** secrets via env/`secrets.json` only; never commit tokens, service keys, or machine-specific paths. See [`docs/security.md`](docs/security.md) and [`.agent/SAFETY.md`](.agent/SAFETY.md).
+- **Paid/licensed assets:** licensed content lives in the private `project-twelve-assets` repo as git submodule `Assets/_Licensed/`. Never commit licensed blobs into the public repo. Policy in `docs/PAID_ASSETS.md`. Run `python3 scripts/check_paid_assets.py --staged` or `--push` before commit/push.
+- **Change control:** make minimal diffs, include tests or validation notes for behavior changes, and avoid drive-by reformatting.
+- **Documentation:** update `README.md`, `docs/wiki/`, or `docs/CANONICAL_SOURCES.md` when changing architecture, workflows, or public conventions.
+- **Prohibited:** committing secrets, disabling/weakening tests to go green, drive-by reformatting, inventing API paths / config keys / schema names (check [`docs/CANONICAL_SOURCES.md`](docs/CANONICAL_SOURCES.md)).
 
 ## AI workspace assets
+
 | Asset | Location |
 |-------|----------|
 | Agent contract | `AGENTS.md` |
 | Assistant orientation | `CLAUDE.md` |
+| Claude commands/skills/agents | `.claude/` (canonical) |
+| Cursor mirror | `.cursor/` (generated) |
 | Safety rules | `.agent/SAFETY.md` |
 | Agent inventory | `.agent/AGENT_INFRA_INVENTORY.md` |
+| Workflow playbooks | `.agent/workflows/` |
+| Project memory | `.agent-memory/` |
 | Workflow index | `docs/ai-workflow/README.md` |
+| Backlog workflow | `docs/project/00-backlog-workflow.md` |
 | Canonical sources | `docs/CANONICAL_SOURCES.md` |
 | Paid asset policy | `docs/PAID_ASSETS.md` |
+| Unity C# rules (supplementary) | `.cursorrules` |

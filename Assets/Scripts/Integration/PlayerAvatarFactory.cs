@@ -12,6 +12,15 @@ using UnityEditor;
 /// </summary>
 public static class PlayerAvatarFactory
 {
+    private static readonly string[] DemoScriptStripOrder =
+    {
+        "CharacterControls",
+        "CharacterController2D",
+        "CharacterAnimation",
+        "CharacterBuilder",
+        "Character",
+    };
+
     /// <summary>
     /// Instantiates an avatar, strips demo gameplay scripts, and composes appearance.
     /// </summary>
@@ -42,7 +51,19 @@ public static class PlayerAvatarFactory
             return false;
         }
 
-        GameObject instance = UnityEngine.Object.Instantiate(prefab, parent);
+        GameObject instance;
+        try
+        {
+            instance = UnityEngine.Object.Instantiate(prefab, parent);
+        }
+        catch (InvalidCastException)
+        {
+            Debug.LogWarning(
+                "PlayerAvatarFactory: avatar prefab reference does not resolve to a GameObject. " +
+                "Re-assign the avatar prefab in the inspector (the scene reference may use a stale fileID).");
+            return false;
+        }
+
         instance.name = "PlayerAvatar";
         instance.SetActive(false);
 
@@ -99,7 +120,31 @@ public static class PlayerAvatarFactory
 
     private static void StripDemoScripts(GameObject root)
     {
+        HashSet<string> configuredTypes = new HashSet<string>(StringComparer.Ordinal);
         IReadOnlyList<string> demoTypes = LocalImportConfig.DemoScriptTypeNames;
+        for (int i = 0; i < demoTypes.Count; i++)
+        {
+            configuredTypes.Add(demoTypes[i]);
+        }
+
+        for (int i = 0; i < DemoScriptStripOrder.Length; i++)
+        {
+            StripScriptsByTypeName(root, DemoScriptStripOrder[i]);
+        }
+
+        foreach (string typeName in configuredTypes)
+        {
+            if (Array.IndexOf(DemoScriptStripOrder, typeName) >= 0)
+            {
+                continue;
+            }
+
+            StripScriptsByTypeName(root, typeName);
+        }
+    }
+
+    private static void StripScriptsByTypeName(GameObject root, string typeName)
+    {
         MonoBehaviour[] behaviours = root.GetComponentsInChildren<MonoBehaviour>(true);
         for (int i = 0; i < behaviours.Length; i++)
         {
@@ -109,31 +154,36 @@ public static class PlayerAvatarFactory
                 continue;
             }
 
-            string typeName = behaviour.GetType().Name;
-            for (int j = 0; j < demoTypes.Count; j++)
+            if (behaviour.GetType().Name == typeName)
             {
-                if (typeName == demoTypes[j])
-                {
-                    UnityEngine.Object.Destroy(behaviour);
-                    break;
-                }
+                DestroyComponentImmediate(behaviour);
             }
         }
     }
 
     private static void StripPhysicsComponents(GameObject root)
     {
-        Rigidbody2D body = root.GetComponent<Rigidbody2D>();
-        if (body != null)
+        Rigidbody2D[] bodies = root.GetComponentsInChildren<Rigidbody2D>(true);
+        for (int i = 0; i < bodies.Length; i++)
         {
-            UnityEngine.Object.Destroy(body);
+            DestroyComponentImmediate(bodies[i]);
         }
 
-        Collider2D collider = root.GetComponent<Collider2D>();
-        if (collider != null)
+        Collider2D[] colliders = root.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
         {
-            UnityEngine.Object.Destroy(collider);
+            DestroyComponentImmediate(colliders[i]);
         }
+    }
+
+    private static void DestroyComponentImmediate(Component component)
+    {
+        if (component == null)
+        {
+            return;
+        }
+
+        UnityEngine.Object.DestroyImmediate(component);
     }
 
     private static void WireCreatureVisual(LayeredCharacterVisual visual, GameObject root)

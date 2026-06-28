@@ -26,9 +26,9 @@ For each offset `(dx, dy)` from the tile:
 
 Start from the cover connectivity mask (grass connects only to grass).
 
-Then, for side cells at `[1,0]` and `[1,2]` (north row left/right of center):
+Then, for west and east cardinals at `[0,1]` and `[2,1]`:
 
-- If a **solid ground body** exists at the diagonal ground position (west-of-north or east-of-north with matching ground group), set that side cell to `2` instead of `0` or `1`. This marks cliff/edge cover overlays.
+- If a **solid ground body** exists beside the cover tile (west-of-north and west, or east-of-north and east with matching ground group), set that cardinal to `2` instead of `0` or `1`. This marks cliff/edge cover overlays.
 
 Cover rules may use mask values `0`, `1`, and `2`.
 
@@ -72,6 +72,7 @@ Match(M, flipInput):
 3. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
 4. Fallback sprite id `"20"` when no rule matches or sprite missing.
 5. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
+6. **Single-sprite tilesets** (e.g. Rocks, BricksA) skip rule matching and always use the lone sprite.
 
 Rule tables are stored in `AutotileRuleTables`.
 

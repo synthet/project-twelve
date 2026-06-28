@@ -19,7 +19,7 @@ namespace ProjectTwelve.Visual.Monsters
             public string MonsterId => monsterId;
             public GameObject Prefab => prefab;
 
-            internal static Entry Create(string id, GameObject monsterPrefab)
+            public static Entry Create(string id, GameObject monsterPrefab)
             {
                 Entry entry = new Entry();
                 entry.monsterId = id;

@@ -45,14 +45,16 @@ namespace ProjectTwelve.Visual.Tiles
         {
             int[,] mask = BuildGroundMask(sharesCoverGroup, worldX, worldY);
 
+            // Cliff side markers on west/east cardinals (y=1) when solid ground body
+            // exists beside the cover tile but cover does not connect across the edge.
             if (hasGroundBody(worldX - 1, worldY + 1) && hasGroundBody(worldX - 1, worldY))
             {
-                mask[1, 0] = 2;
+                mask[0, 1] = 2;
             }
 
             if (hasGroundBody(worldX + 1, worldY + 1) && hasGroundBody(worldX + 1, worldY))
             {
-                mask[1, 2] = 2;
+                mask[2, 1] = 2;
             }
 
             return mask;

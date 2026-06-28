@@ -1,9 +1,63 @@
-# Agent Safety Rules
+# Agent safety and hygiene — ProjectTwelve
 
-- Never commit secrets, tokens, local service URLs with credentials, or private machine paths.
-- Keep secrets in environment variables, `.env`, `.env.*`, or `secrets.json`; these files are ignored by git.
-- **Never commit licensed Asset Store content into the public repo.** Licensed art lives in the `Assets/_Licensed` git submodule (`project-twelve-assets`). Run `python3 scripts/check_paid_assets.py --staged` before commits and `--push` before push.
-- Do not modify `.git/config` or add non-standard git extensions.
-- Treat destructive file operations, asset migrations, and generated Unity metadata changes as high-risk; verify `git status` before and after.
-- Preserve Unity `.meta` files when adding, moving, or deleting **project-owned** assets (not paid/local-only packs).
+## Secrets and credentials
+
+- Never commit `secrets.json`, real `.env`, API keys, tokens, or connection strings with passwords.
+- Never paste live credentials into prompts, logs, or tool arguments when avoidable. Use `.env.example`
+  for non-secret defaults.
+
+## Paid and licensed assets
+
+- **Never commit licensed Asset Store content into the public repo.** Licensed art lives in the
+  `Assets/_Licensed` git submodule (`project-twelve-assets`).
+- Run `python3 scripts/check_paid_assets.py --staged` before commits and `--push` before push.
+- See [`docs/PAID_ASSETS.md`](../docs/PAID_ASSETS.md) for the full workflow.
+
+## Unity assets
+
+- Preserve Unity `.meta` files when adding, moving, or deleting **project-owned** assets (not
+  paid/local-only packs).
+- Treat destructive file operations, asset migrations, and generated Unity metadata changes as
+  high-risk; verify `git status` before and after.
+
+## Generated and local artifacts
+
+- Do not commit build outputs, caches, large binaries, personal scratch scripts, or machine-specific paths.
+- Avoid bulk outputs under `output/`, `dist/`, `backups/`, or similar unless the repo expects them
+  (prefer `.gitignore`).
+
+## Contracts and terminology
+
+- Do not invent public API paths, payload fields, DB column names, config keys, or status enums.
+  Use [docs/CANONICAL_SOURCES.md](../docs/CANONICAL_SOURCES.md) as the authority map.
+
+## Tooling / MCP
+
+- Treat write-capable tools (run jobs, mutate config, execute arbitrary code, destructive SQL) as
+  **high risk**. Prefer read-only diagnostics unless the user explicitly requests writes — see
+  [.agent/workflows/safe_mcp_diagnostics.md](workflows/safe_mcp_diagnostics.md).
+- On shared machines, a live MCP endpoint may attach to a running process; do not assume isolation.
+
+## External CLI reviews (subagent-orchestrator)
+
+- Review-only: never set `allowWrites: true` on `run_subagent`.
+- Selected source files are sent to external providers (e.g. Codex / Gemini) per their policies;
+  do not use for proprietary code you cannot export.
+- Never include `secrets.json`, `.env`, credentials, or a full `config.json` in `task`, `files`, or
+  `extraContext`.
+- Outputs land in `.agent-runs/` (gitignored); treat as sensitive until reviewed.
+
+## Git
+
+- Never modify `.git/config` or add non-standard extensions (do not set `extensions.worktreeConfig`
+  or change `core.repositoryformatversion`). Embedded git libraries in third-party tooling choke on
+  non-standard extensions. If a worktree is needed, use a temporary one and clean it up immediately.
+
+## Docs
+
+- Prefer small linked pages over monolithic dumps.
+- After wiki-affecting edits, update indexes per [docs/WIKI_SCHEMA.md](../docs/WIKI_SCHEMA.md).
+
+## Change control
+
 - Prefer minimal, reviewable diffs with validation commands documented in PRs.
