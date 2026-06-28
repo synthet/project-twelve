@@ -1,29 +1,8 @@
----
-type: Documentation Index
-title: Implementation wiki
-description: Top-level navigation for the Unity 2D sandbox wiki, mapping prototype pages, subsystem references, and cross-cutting invariants.
-resource: wiki/README.md
-tags: [wiki, index, navigation]
-timestamp: 2026-06-28T00:00:00Z
-okf_version: 0.1
----
+# Open Knowledge Base — Index
 
-# Implementation wiki
+This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
 
-This wiki is the public, human-readable reference for the Unity 2D sandbox prototype. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
-
-The wiki contains **three complementary page sets**. They overlap on purpose: use the prototype-aligned pages for current code work, the numbered subsystem reference for design rationale, and the visual presentation pages for sprite/avatar integration.
-
-## Quick navigation
-
-| Task | Start with | Then check |
-|------|------------|------------|
-| Understand the current prototype | [Project Brief](project-brief.md) | [Architecture Map](architecture-map.md) |
-| Change world/chunk/tile behavior | [World and Chunk Data](world-and-chunk-data.md) | [02 Data Models](02-data-models.md), [03 Chunking](03-chunking.md) |
-| Change rendering or collision | [Rendering and Collision](rendering-and-collision.md) | [04 Rendering](04-rendering.md), [05 Collision & Physics](05-collision-physics.md) |
-| Change generation or saves | [Generation and Saving](generation-and-saving.md) | [07 Procedural Generation](07-procedural-generation.md), [11 Saving & Loading](11-saving-loading.md) |
-| Plan future work | [Roadmap and Tasks](roadmap-and-tasks.md) | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) |
-| Integrate visuals | [Visual integration](visual-integration.md) | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md), [Visual setup](../VISUAL_SETUP.md) |
+The knowledge base currently holds **three complementary page sets**. They overlap on purpose — read whichever fits your task, and cross-reference the others.
 
 ## Knowledge format
 
@@ -37,7 +16,7 @@ Each page should stay useful outside of any single chat or tool session:
 
 ## A. Prototype-aligned knowledge pages
 
-Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working on the current prototype or checking whether an idea is already represented in implementation notes.
+Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working on the current prototype.
 
 1. [Project Brief](project-brief.md)
 2. [Architecture Map](architecture-map.md)
@@ -52,9 +31,6 @@ Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start
 ## B. Detailed subsystem reference (numbered)
 
 A deeper, decision-oriented reference. Each page opens with a **Status / Decisions / Invariants** block and ends with **See also** links, so a single page is enough to work one subsystem. Use this when you need the *why* and the pitfalls, not just the *what*.
-
-> **Ownership & status:** every page below has an owner, spec status, dependencies, and review
-> cadence in the [Spec Ownership Registry](spec-ownership.md).
 
 | # | Page | Scope |
 |---|------|-------|
@@ -74,10 +50,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
-| — | [Baseline Scope Statement](baseline-scope.md) | Consolidated P0 baseline: core genre, prototype target, non-goals, key terminology |
-| — | [Spec Ownership Registry](spec-ownership.md) | Owner, spec status, dependencies, and review cadence for every subsystem page |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
-| — | [Backlog Task Schema & ID Conventions](task-schema.md) | Task ID format, area codes, ticket schema, and the spec→task→commit→verification trace |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
 
@@ -88,7 +61,6 @@ Project-owned rendering and avatar systems. Local source art paths are configure
 | Page | Scope |
 |------|-------|
 | [Visual integration](visual-integration.md) | Sandbox tile mapping, avatar factory, catalog touchpoints |
-| [Vendor references](vendor-references.md) | Upstream licensed packs (Pixel Hero Maker, TileEngine) |
 | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
 
 ### How the page sets correspond
@@ -118,11 +90,4 @@ These hold across the whole project; individual pages may add more.
 
 ## Source of truth
 
-The wiki summarizes and operationalizes the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md) (canonical product-level plan), with expanded context in [`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a wiki page and the design document disagree, treat the design document as the product-level source of truth, then update the stale page or call out the follow-up explicitly. For precedence across all repository references, see [`../CANONICAL_SOURCES.md`](../CANONICAL_SOURCES.md).
-
-## Maintenance notes
-
-- Keep the prototype-aligned pages grounded in the code that exists today.
-- Use the numbered reference pages for decisions, invariants, tradeoffs, and future-ready contracts.
-- Add new pages to this index and to [`../INDEX.md`](../INDEX.md).
-- Prefer cross-links over duplicating long sections between page sets.
+Both page sets expand the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md) (canonical plan), with a long-form companion in [`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a knowledge page and the design document disagree, treat the design document as the product-level source of truth and update the stale page or call out the follow-up explicitly.

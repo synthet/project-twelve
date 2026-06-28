@@ -56,13 +56,30 @@ def read_script_guid(relative_script_path: str) -> str:
 def read_sprite_file_ids(meta_path: Path) -> list[int]:
     text = meta_path.read_text(encoding="utf-8")
     entries: list[tuple[int, int]] = []
-    for match in re.finditer(
-        r"- first:\s*\n\s*213:\s*(-?\d+)\s*\n\s*second:\s*(\d+)",
+
+    table_match = re.search(
+        r"nameFileIdTable:\s*\n((?:\s+\d+:\s*-?\d+\s*\n)+)",
         text,
-    ):
-        file_id = int(match.group(1))
-        index = int(match.group(2))
-        entries.append((index, file_id))
+    )
+    if table_match:
+        for match in re.finditer(
+            r"^\s+(\d+):\s*(-?\d+)\s*$",
+            table_match.group(1),
+            re.MULTILINE,
+        ):
+            index = int(match.group(1))
+            file_id = int(match.group(2))
+            entries.append((index, file_id))
+
+    if not entries:
+        for match in re.finditer(
+            r"- first:\s*\n\s*213:\s*(-?\d+)\s*\n\s*second:\s*(\d+)",
+            text,
+        ):
+            file_id = int(match.group(1))
+            index = int(match.group(2))
+            entries.append((index, file_id))
+
     if entries:
         entries.sort(key=lambda item: item[0])
         return [file_id for _, file_id in entries]
@@ -109,6 +126,11 @@ def generate_autotile_catalog(tiles_root: str) -> None:
                 continue
             texture_guid = read_guid(meta_path)
             sprite_ids = read_sprite_file_ids(meta_path)
+            if subfolder == "Ground" and len(sprite_ids) < 32:
+                print(
+                    f"WARNING: {png.name} has {len(sprite_ids)} sprite refs "
+                    f"(expected 32 for ground autotile sheets)"
+                )
             sprite_lines = "\n".join(
                 f"    - {unity_ref(sprite_id, texture_guid)}" for sprite_id in sprite_ids
             )

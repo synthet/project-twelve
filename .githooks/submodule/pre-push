@@ -1,0 +1,5 @@
+#!/bin/sh
+# Submodule pre-push — enable via python scripts/install_githooks.py
+# Runs from Assets/_Licensed; repo root is two levels up.
+cd "$(git rev-parse --show-toplevel)/../.." || exit 1
+python3 scripts/fetch_remotes.py --warn-parent-gitlink || exit 1

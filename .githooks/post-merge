@@ -1,0 +1,3 @@
+#!/bin/sh
+# Optional local hooks — enable with: python scripts/install_githooks.py
+python3 scripts/fetch_remotes.py --local-sync || exit 1

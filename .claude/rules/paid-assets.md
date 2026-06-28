@@ -13,7 +13,7 @@ Licensed content lives in the private [project-twelve-assets](https://github.com
 
 Machine-local manifest: `config/paid-assets.local-only.txt` (gitignored; copy from `config/paid-assets.local-only.example.txt`).
 
-- `Assets/PixelHeroes/` — direct imports into the public repo
+- `Assets/PixelFantasy/` — direct imports into the public repo
 - `Assets/_Licensed/*` copied as regular files (submodule gitlink at `Assets/_Licensed` is allowed)
 - Legacy generated catalogs under `Assets/Settings/Visual/` in main
 
@@ -27,9 +27,7 @@ Machine-local manifest: `config/paid-assets.local-only.txt` (gitignored; copy fr
 
 - Do **not** `git add` licensed art paths into the public repo.
 - Do **not** use `git add -A` without verifying the staged set excludes paid assets.
-- Vendor pack names and import paths **may** appear in public docs and code comments (the licensed
-  files themselves live in the private `project-twelve-assets` submodule). Never commit the licensed
-  **assets** — art, prefabs, generated catalogs — into the public repo.
+- Do **not** commit vendor pack names or import paths in shared public docs or code comments.
 - Submodule pointer updates (`.gitmodules`, `Assets/_Licensed` gitlink) **are** allowed in the public repo.
 
 ## Adding a new paid pack

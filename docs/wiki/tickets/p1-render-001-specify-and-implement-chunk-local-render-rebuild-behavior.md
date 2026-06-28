@@ -1,7 +1,7 @@
 ---
 id: P1-RENDER-001
 title: "[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior."
-status: done
+status: implemented
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/29"

@@ -72,7 +72,7 @@ Match(M, flipInput):
 3. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
 4. Fallback sprite id `"20"` when no rule matches or sprite missing.
 5. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
-6. **Single-sprite tilesets** (e.g. Rocks, BricksA) skip rule matching and always use the lone sprite.
+6. **Single-sprite tilesets** (e.g. Rocks when the catalog lists one sprite) skip rule matching and always use the lone sprite. Standard ground sheets such as BricksA, BricksB, BricksC, BricksD, and Humus use **32 sprites** and the ground rule table.
 
 Rule tables are stored in `AutotileRuleTables`.
 

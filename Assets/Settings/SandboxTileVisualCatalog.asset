@@ -17,4 +17,7 @@ MonoBehaviour:
   grassGroundTileset: Humus
   stoneGroundTileset: Rocks
   copperOreGroundTileset: BricksA
+  ironOreGroundTileset: BricksB
+  silverOreGroundTileset: BricksC
+  goldOreGroundTileset: BricksD
   grassCoverTileset: GrassA

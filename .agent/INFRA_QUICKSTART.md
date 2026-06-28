@@ -12,7 +12,8 @@ One-page checklist for agents and contributors setting up or validating agent in
 
 ```bash
 pip install pyyaml
-git config core.hooksPath .githooks   # optional: paid-asset pre-commit
+python scripts/install_githooks.py    # optional: paid-asset + submodule sync hooks
+python scripts/fetch_remotes.py       # sync main repo + Assets/_Licensed submodule
 cp .cursor/mcp.example.json .cursor/mcp.json   # then set RELAY_PATH + UNITY_PROJECT_PATH
 ```
 

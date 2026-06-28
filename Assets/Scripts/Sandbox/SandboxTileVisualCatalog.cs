@@ -16,6 +16,9 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     [SerializeField] private string grassGroundTileset = "Humus";
     [SerializeField] private string stoneGroundTileset = "Rocks";
     [SerializeField] private string copperOreGroundTileset = "BricksA";
+    [SerializeField] private string ironOreGroundTileset = "BricksB";
+    [SerializeField] private string silverOreGroundTileset = "BricksC";
+    [SerializeField] private string goldOreGroundTileset = "BricksD";
 
     [Header("Cover Tilesets")]
     [SerializeField] private string grassCoverTileset = "GrassA";
@@ -109,6 +112,15 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
                 return !string.IsNullOrEmpty(tilesetName);
             case SandboxTileIds.CopperOre:
                 tilesetName = copperOreGroundTileset;
+                return !string.IsNullOrEmpty(tilesetName);
+            case SandboxTileIds.IronOre:
+                tilesetName = ironOreGroundTileset;
+                return !string.IsNullOrEmpty(tilesetName);
+            case SandboxTileIds.SilverOre:
+                tilesetName = silverOreGroundTileset;
+                return !string.IsNullOrEmpty(tilesetName);
+            case SandboxTileIds.GoldOre:
+                tilesetName = goldOreGroundTileset;
                 return !string.IsNullOrEmpty(tilesetName);
             default:
                 tilesetName = null;

@@ -1,4 +1,4 @@
 #!/bin/sh
 # Optional local hooks — enable with: python scripts/install_githooks.py
-python3 scripts/check_paid_assets.py --staged || exit 1
+python3 scripts/check_paid_assets.py --push || exit 1
 python3 scripts/fetch_remotes.py --verify || exit 1

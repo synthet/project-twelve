@@ -76,7 +76,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     y,
                     tileSize,
                     GetLegacyTileUv(tile),
-                    GetTileLightColor(tile));
+                    GetLegacyTileColor(tile));
             }
         }
 
@@ -319,13 +319,13 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float zOffset)
     {
         Bounds bounds = sprite.bounds;
-        float pivotX = (x + 0.5f) * tileSize;
-        float pivotY = (y + 0.5f) * tileSize;
+        float anchorX = (x + 0.5f) * tileSize;
+        float anchorY = y * tileSize;
 
-        float left = pivotX + bounds.min.x;
-        float right = pivotX + bounds.max.x;
-        float bottom = pivotY + bounds.min.y;
-        float top = pivotY + bounds.max.y;
+        float left = anchorX + bounds.min.x;
+        float right = anchorX + bounds.max.x;
+        float bottom = anchorY + bounds.min.y;
+        float top = anchorY + bounds.max.y;
 
         int start = layer.Vertices.Count;
         layer.Vertices.Add(new Vector3(left, bottom, zOffset));
@@ -484,9 +484,36 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             case SandboxTileIds.Stone:
                 return StoneUv;
             case SandboxTileIds.CopperOre:
+            case SandboxTileIds.IronOre:
+            case SandboxTileIds.SilverOre:
+            case SandboxTileIds.GoldOre:
                 return CopperOreUv;
             default:
                 return DirtUv;
+        }
+    }
+
+    private static Color GetLegacyTileColor(SandboxTile tile)
+    {
+        Color color = GetTileLightColor(tile);
+        switch (tile.id)
+        {
+            case SandboxTileIds.IronOre:
+                return new Color(color.r * 0.82f, color.g * 0.82f, color.b * 0.88f, color.a);
+            case SandboxTileIds.SilverOre:
+                return new Color(
+                    Mathf.Min(1f, color.r * 1.08f),
+                    Mathf.Min(1f, color.g * 1.08f),
+                    Mathf.Min(1f, color.b * 1.12f),
+                    color.a);
+            case SandboxTileIds.GoldOre:
+                return new Color(
+                    Mathf.Min(1f, color.r * 1.12f),
+                    Mathf.Min(1f, color.g * 1.06f),
+                    color.b * 0.88f,
+                    color.a);
+            default:
+                return color;
         }
     }
 

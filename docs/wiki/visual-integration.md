@@ -1,16 +1,3 @@
----
-type: concept
-title: Visual integration
-description: Sandbox tile mapping, avatar factory, and catalog touchpoints for rendering terrain and characters
-resource: docs/wiki/visual-integration.md
-tags:
-  - rendering
-  - visuals
-  - catalogs
-  - characters
-timestamp: 2026-06-28T00:00:00Z
----
-
 # Visual integration
 
 > **Status:** Terrain autotiling and player avatar presentation use project-owned code under `Assets/Scripts/Visual/`.
@@ -54,6 +41,9 @@ flowchart LR
 | Grass | Humus | GrassA |
 | Stone | Rocks | — |
 | CopperOre | BricksA | — |
+| IronOre | BricksB | — |
+| SilverOre | BricksC | — |
+| GoldOre | BricksD | — |
 
 ## Local setup
 
@@ -74,4 +64,3 @@ See [Visual setup](../VISUAL_SETUP.md) for machine configuration and import menu
 - [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md)
 - [Rendering and Collision](rendering-and-collision.md)
 - [Asset integration requirements](15-assets-integration.md)
-- [Vendor references](vendor-references.md) — upstream packs (Pixel Hero Maker, TileEngine)

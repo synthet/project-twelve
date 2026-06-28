@@ -130,8 +130,10 @@ Never modify `.git/config` or add non-standard git extensions (do not set
 third-party tooling choke on non-standard extensions and break workspace resolution. If a worktree is
 needed, use a temporary one and clean it up immediately.
 
-**Optional pre-commit hook:** enable with `git config core.hooksPath .githooks` to run
-`python3 scripts/check_paid_assets.py --staged` before each commit.
+**Optional git hooks:** run `python scripts/install_githooks.py` (human opt-in; agents do not run
+this automatically) to enable `.githooks/`: paid-asset guard, submodule verify on commit/push, and
+submodule local sync after pull/checkout. Network sync: `python scripts/fetch_remotes.py` or
+`/fetch-remotes`.
 
 ## Test vocabulary
 

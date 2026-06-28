@@ -25,9 +25,7 @@ Agent-facing rules live in the [`backlog-queue`](../../.claude/skills/backlog-qu
 
 ## Ticket format
 
-The canonical task ID format, area-code registry, and full ticket schema live in
-[`docs/wiki/task-schema.md`](../wiki/task-schema.md). In short, each ticket is a markdown file
-with YAML frontmatter:
+Each ticket is a markdown file with YAML frontmatter:
 
 ```yaml
 ---
@@ -61,5 +59,4 @@ Prefer `spec-driven` plus phase labels (`p0`, `p1`, …) on all backlog issues.
 
 - Ticket index: [`docs/wiki/tickets/README.md`](../wiki/tickets/README.md)
 - Spec-driven task list: [`docs/wiki/spec-driven-development-tasks.md`](../wiki/spec-driven-development-tasks.md)
-- Task schema & ID conventions: [`docs/wiki/task-schema.md`](../wiki/task-schema.md)
 - Agent skill: [`.claude/skills/backlog-queue/SKILL.md`](../../.claude/skills/backlog-queue/SKILL.md)

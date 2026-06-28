@@ -1,13 +1,3 @@
----
-type: Source-of-Truth Map
-title: Spec-Driven Development Tasks
-description: The phase-by-phase spec-driven backlog (P0–P5) with per-task acceptance criteria, verification gates, and the cross-phase task template that the ticket schema expands on.
-resource: wiki/spec-driven-development-tasks.md
-tags: [wiki, backlog, tasks, planning, roadmap]
-timestamp: 2026-06-28T00:00:00Z
-okf_version: 0.1
----
-
 # Spec-Driven Development Tasks
 
 > **Status:** Planning backlog.
@@ -28,14 +18,11 @@ Use this cycle for every feature, system, bug fix, and content pipeline change:
 
 ## Cross-phase task template
 
-Each task should be recorded with the following fields. The canonical ID format, area-code
-registry, and full ticket frontmatter/body schema live in the
-[Backlog Task Schema & ID Conventions](task-schema.md) page; the table below is the per-row
-summary it expands on.
+Each task should be recorded with the following fields:
 
 | Field | Requirement |
 |-------|-------------|
-| **ID** | Stable phase-prefixed identifier `P<phase>-<AREA>-<NNN>`, such as `P0-SPEC-001` (see [task schema](task-schema.md#task-id-format)). |
+| **ID** | Stable phase-prefixed identifier, such as `P0-SPEC-001`. |
 | **Spec reference** | Wiki/design section that defines the desired behavior. |
 | **User/system outcome** | Observable result from the player's or subsystem's perspective. |
 | **Acceptance criteria** | Pass/fail statements that can be tested without interpretation. |

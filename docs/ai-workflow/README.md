@@ -44,6 +44,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 
 ### Backlog
 
+- Sync remotes before picking work: `/fetch-remotes` (or `python scripts/fetch_remotes.py`). Git hooks (`python scripts/install_githooks.py`) keep the `Assets/_Licensed` checkout aligned with the parent gitlink after pull/checkout.
 - Pick work from open tickets in [`docs/wiki/tickets/`](../wiki/tickets/) sorted by phase/priority.
 - Claim via `/task-claim <issue-number>` (assigns GitHub issue; updates ticket frontmatter).
 - PR descriptions **must** include `Closes #<N>`.

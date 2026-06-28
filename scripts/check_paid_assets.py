@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -33,51 +32,18 @@ def load_manifest() -> list[str]:
     return paths
 
 
-def git_result(*args: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
+def run_git(*args: str) -> list[str]:
+    result = subprocess.run(
         ["git", *args],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
         check=False,
     )
-
-
-def run_git(*args: str) -> list[str]:
-    result = git_result(*args)
     if result.returncode != 0:
         print(result.stderr.strip() or f"git {' '.join(args)} failed", file=sys.stderr)
         sys.exit(result.returncode)
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
-
-
-def git_ref_exists(ref: str) -> bool:
-    result = git_result("rev-parse", "--verify", "--quiet", ref)
-    return result.returncode == 0
-
-
-def resolve_push_base(explicit_base_ref: str | None = None) -> str | None:
-    if explicit_base_ref:
-        if git_ref_exists(explicit_base_ref):
-            return explicit_base_ref
-        print(f"warning: --base-ref {explicit_base_ref!r} was not found; trying fallbacks", file=sys.stderr)
-
-    upstream = git_result("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-    if upstream.returncode == 0 and upstream.stdout.strip():
-        return upstream.stdout.strip().splitlines()[0]
-
-    github_base_ref = os.environ.get("GITHUB_BASE_REF")
-    if github_base_ref:
-        candidates = [f"origin/{github_base_ref}", github_base_ref]
-        for candidate in candidates:
-            if git_ref_exists(candidate):
-                return candidate
-
-    for candidate in ("origin/HEAD", "origin/main", "origin/master", "HEAD^"):
-        if git_ref_exists(candidate):
-            return candidate
-
-    return None
 
 
 def path_is_blocked(file_path: str, blocked_roots: list[str]) -> str | None:
@@ -122,11 +88,7 @@ def main() -> int:
     group.add_argument(
         "--push",
         action="store_true",
-        help="Check commits ahead of an upstream/base ref — use before push.",
-    )
-    parser.add_argument(
-        "--base-ref",
-        help="Optional base ref for --push comparisons, useful in CI checkouts without an upstream.",
+        help="Check commits ahead of upstream — use before push.",
     )
     args = parser.parse_args()
 
@@ -136,11 +98,9 @@ def main() -> int:
         return 0
 
     if args.push:
-        base_ref = resolve_push_base(args.base_ref)
-        if base_ref:
-            files = run_git("diff", "--name-only", f"{base_ref}...HEAD")
-        else:
-            files = run_git("ls-files")
+        upstream = run_git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+        upstream_ref = upstream[0] if upstream else "origin/HEAD"
+        files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")
     else:

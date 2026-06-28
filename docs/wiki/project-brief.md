@@ -1,17 +1,4 @@
----
-type: Documentation Hub
-title: Project Brief
-description: Vision, prototype scope, and current-state non-goals for the Unity 2D sandbox prototype.
-resource: wiki/project-brief.md
-tags: [wiki, scope, prototype, brief]
-timestamp: 2026-06-28T00:00:00Z
-okf_version: 0.1
----
-
 # Project Brief
-
-> The agreed, consolidated scope lives in the [Baseline Scope Statement](baseline-scope.md);
-> this page is the narrative source it draws from.
 
 ## Vision
 

@@ -47,4 +47,25 @@ python3 scripts/check_paid_assets.py --push       # before push
 python3 scripts/generate_visual_catalogs.py
 ```
 
+## Repo sync (main + assets submodule)
+
+```bash
+python scripts/fetch_remotes.py              # fetch both remotes, ff-only pull, sync gitlink
+python scripts/fetch_remotes.py --fetch-only   # fetch only; no pull on main branch
+python scripts/fetch_remotes.py --local-sync   # align submodule checkout to gitlink (hook path)
+python scripts/fetch_remotes.py --verify       # fail if submodule misaligned (hook path)
+python scripts/install_githooks.py             # one-time: enable .githooks on parent + submodule
+python scripts/install_githooks.py --check     # verify hooksPath configured
+```
+
+Agent slash command: `/fetch-remotes` (skill: `.claude/skills/repo-sync/SKILL.md`).
+
+| Hook | Repo | Behavior |
+|------|------|----------|
+| `pre-commit` | parent | `check_paid_assets.py --staged` + `fetch_remotes.py --verify` |
+| `pre-push` | parent | `check_paid_assets.py --push` + `fetch_remotes.py --verify` |
+| `post-merge` | parent | `fetch_remotes.py --local-sync` |
+| `post-checkout` | parent | `--local-sync` when switching branches |
+| `submodule/pre-push` | assets | `fetch_remotes.py --warn-parent-gitlink` |
+
 **Python dependency:** `pip install pyyaml`

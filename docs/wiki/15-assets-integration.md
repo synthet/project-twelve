@@ -1,19 +1,6 @@
----
-type: concept
-title: Asset Integration Requirements
-description: Sprite import conventions, atlases, animations, and rotation policies for tiles and entities
-resource: docs/wiki/15-assets-integration.md
-tags:
-  - assets
-  - rendering
-  - sprites
-  - animations
-timestamp: 2026-06-28T00:00:00Z
----
-
 # 15 — Asset Integration Requirements
 
-> **Status:** Planning (icon/animation pipelines TBD; sprite import + autotile baseline locked).
+> **Status:** Planning.
 > **Decisions:** Treat sprites, animation clips, and rotation metadata as data-driven content referenced by stable IDs; import first-party pixel art with consistent pixels-per-unit and atlas settings; keep rendering adapters replaceable between Unity Tilemap/SpriteRenderer and the future engine-facing atlas renderer.
 > **Invariants:** Asset definitions never become authoritative world state; tile/entity state stores IDs, variants, frame/rotation metadata, and animation state, while render backends resolve those values to Unity assets or engine atlas regions.
 
@@ -200,7 +187,6 @@ Before adding a third-party art pack to version control, create a small intake n
 ## See also
 
 - [Visual integration](visual-integration.md) — sandbox tile mapping and avatar presentation.
-- [Vendor references](vendor-references.md) — upstream licensed packs (Pixel Hero Maker, TileEngine).
 - [Rendering](04-rendering.md) — chunk-local Tilemap/custom-mesh rendering decisions.
 - [Data Models](02-data-models.md) — compact tile metadata and runtime IDs.
 - [Modding & Content](12-modding.md) — registries, stable string IDs, and external assets.
