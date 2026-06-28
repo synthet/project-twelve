@@ -92,6 +92,7 @@ same cadence. The cross-cutting P0 pages own project-wide scope and process.
 |------|------------------|-------|-------------|-----------------|----------------|
 | [Baseline Scope Statement](baseline-scope.md) | Product & Roadmap Owner | @synthet | Baseline | Core genre, prototype target, non-goals | Baseline gate |
 | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Product & Roadmap Owner | @synthet | Baseline | Phase backlog and acceptance gates | Baseline gate |
+| [Backlog Task Schema & ID Conventions](task-schema.md) | Product & Roadmap Owner | @synthet | Baseline | Task ID format, area codes, ticket schema, traceability | Baseline gate |
 | [Glossary](glossary.md) | Architecture Owner | @synthet | Draft | Shared vocabulary index | Baseline gate |
 | [Architecture Blueprint](architecture-blueprint.md) | Architecture Owner | @synthet | Draft | Visual blueprint translation | Phase gate (P2) |
 | [Project Brief](project-brief.md) | Product & Roadmap Owner | @synthet | Draft | Vision narrative | Baseline gate |
