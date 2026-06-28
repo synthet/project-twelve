@@ -1,8 +1,19 @@
-# Open Knowledge Base — Index
+# Implementation wiki
 
-This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
+This wiki is the public, human-readable reference for the Unity 2D sandbox prototype. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
 
-The knowledge base currently holds **three complementary page sets**. They overlap on purpose — read whichever fits your task, and cross-reference the others.
+The wiki contains **three complementary page sets**. They overlap on purpose: use the prototype-aligned pages for current code work, the numbered subsystem reference for design rationale, and the visual presentation pages for sprite/avatar integration.
+
+## Quick navigation
+
+| Task | Start with | Then check |
+|------|------------|------------|
+| Understand the current prototype | [Project Brief](project-brief.md) | [Architecture Map](architecture-map.md) |
+| Change world/chunk/tile behavior | [World and Chunk Data](world-and-chunk-data.md) | [02 Data Models](02-data-models.md), [03 Chunking](03-chunking.md) |
+| Change rendering or collision | [Rendering and Collision](rendering-and-collision.md) | [04 Rendering](04-rendering.md), [05 Collision & Physics](05-collision-physics.md) |
+| Change generation or saves | [Generation and Saving](generation-and-saving.md) | [07 Procedural Generation](07-procedural-generation.md), [11 Saving & Loading](11-saving-loading.md) |
+| Plan future work | [Roadmap and Tasks](roadmap-and-tasks.md) | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) |
+| Integrate visuals | [Visual integration](visual-integration.md) | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md), [Visual setup](../VISUAL_SETUP.md) |
 
 ## Knowledge format
 
@@ -16,7 +27,7 @@ Each page should stay useful outside of any single chat or tool session:
 
 ## A. Prototype-aligned knowledge pages
 
-Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working on the current prototype.
+Maps closely to the code that exists today (`Assets/Scripts/Sandbox*.cs`). Start here when working on the current prototype or checking whether an idea is already represented in implementation notes.
 
 1. [Project Brief](project-brief.md)
 2. [Architecture Map](architecture-map.md)
@@ -90,4 +101,11 @@ These hold across the whole project; individual pages may add more.
 
 ## Source of truth
 
-Both page sets expand the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md) (canonical plan), with a long-form companion in [`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a knowledge page and the design document disagree, treat the design document as the product-level source of truth and update the stale page or call out the follow-up explicitly.
+The wiki summarizes and operationalizes the architecture in [`../terraria-like-unity-design.md`](../terraria-like-unity-design.md) (canonical product-level plan), with expanded context in [`../terraria-like-unity-design-detailed.md`](../terraria-like-unity-design-detailed.md). When a wiki page and the design document disagree, treat the design document as the product-level source of truth, then update the stale page or call out the follow-up explicitly. For precedence across all repository references, see [`../CANONICAL_SOURCES.md`](../CANONICAL_SOURCES.md).
+
+## Maintenance notes
+
+- Keep the prototype-aligned pages grounded in the code that exists today.
+- Use the numbered reference pages for decisions, invariants, tradeoffs, and future-ready contracts.
+- Add new pages to this index and to [`../INDEX.md`](../INDEX.md).
+- Prefer cross-links over duplicating long sections between page sets.
