@@ -41,6 +41,12 @@
 *.sln.iml
 [Aa]ssets/Plugins/Editor/JetBrains*
 
+# Local editor workspace files
+*.code-workspace
+
+# Local debug output
+debug-*.log
+
 # Consulo cache
 .consulo/
 
