@@ -1,20 +1,15 @@
 {
-    "name": "ProjectTwelve.EditModeTests",
+    "name": "ProjectTwelve.RuntimeMcp",
     "references": [
         "ProjectTwelve.Runtime",
-        "ProjectTwelve.RuntimeMcp"
+        "Newtonsoft.Json"
     ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

@@ -32,6 +32,22 @@ public sealed class SandboxWorld : MonoBehaviour
     public float TileSize => tileSize;
     public int Seed => seed;
 
+    /// <summary>Number of chunks with active renderers.</summary>
+    public int LoadedChunkCount => renderers.Count;
+
+    /// <summary>Returns the current player world position when a player target is assigned.</summary>
+    public bool TryGetPlayerWorldPosition(out Vector2 position)
+    {
+        if (playerTarget == null)
+        {
+            position = default;
+            return false;
+        }
+
+        position = playerTarget.position;
+        return true;
+    }
+
     public void SetPlayerTarget(Transform target)
     {
         playerTarget = target;

@@ -71,6 +71,22 @@ Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https
 
 **Requirements:** Unity 6+, Unity AI trial or subscription for Assistant features.
 
+### In-game runtime MCP (Play Mode / desktop builds)
+
+While the game is running, `ProjectTwelve.RuntimeMcp` hosts a JSON-RPC MCP endpoint at
+`http://127.0.0.1:8765/mcp` (loopback only). Cursor connects via the `project-twelve-ingame-mcp`
+http entry in [`.cursor/mcp.example.json`](.cursor/mcp.example.json).
+
+**Before each session:** enter Play Mode (or launch a desktop build) so the runtime server is listening.
+
+**Disable or rebind:** set env `PROJECTTWELVE_MCP_ENABLED=false` or `PROJECTTWELVE_MCP_PORT=<port>`.
+
+**Smoke test:** call `player_state` or `world_info` while Play Mode is active.
+
+**Gateway Timeout:** the game must be in **Play Mode** (console log: `Runtime MCP listening on …`).
+`initialize` / `tools/list` respond on the HTTP thread; `tools/call` needs the main thread — unpause
+the Editor if Play Mode is paused.
+
 ### External CLI reviews
 
 Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
@@ -80,7 +96,22 @@ Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
 
 <!-- BEGIN MCP TOOL INVENTORY -->
 <!-- Auto-generated; do not edit by hand. Regenerate when your MCP tools change. -->
-_(none yet)_
+
+### project-twelve-ingame-mcp (runtime, Play Mode / desktop build)
+
+| Tool | Kind | Description |
+|------|------|-------------|
+| `player_move` | write | Set horizontal movement (`direction`: left/right/none; optional `durationSeconds`). |
+| `player_jump` | write | Request a jump when grounded. |
+| `player_teleport` | write | Teleport player to world `{ x, y }`. |
+| `world_set_tile` | write | Place/remove tile at `{ x, y, tileId }` (0 = Air). |
+| `player_state` | read | Player position, velocity, grounded, tile coord. |
+| `world_info` | read | Seed, tile size, player position/chunk, loaded chunk count. |
+| `tile_at` | read | Tile id/solid/light/fluid at `{ x, y }`. |
+| `perf` | read | Smoothed FPS and frame time (ms). |
+
+Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_PORT`).
+
 <!-- END MCP TOOL INVENTORY -->
 
 ## Common workflows

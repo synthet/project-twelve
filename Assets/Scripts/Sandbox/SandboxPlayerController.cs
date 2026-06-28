@@ -19,12 +19,46 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private Camera mainCamera;
 
     private float horizontalInput;
+    private float externalMoveInput;
+    private float externalMoveUntilTime;
+    private bool externalJumpRequested;
 
     /// <summary>True when tile probes under the player collider hit solid world tiles.</summary>
     public bool IsGrounded => CheckGrounded();
 
     /// <summary>Current rigidbody velocity (world units per second).</summary>
     public Vector2 Velocity => body != null ? body.linearVelocity : Vector2.zero;
+
+    /// <summary>
+    /// Sets external horizontal movement input for MCP or automation callers.
+    /// Local player input takes priority when non-zero.
+    /// </summary>
+    /// <param name="direction">-1 left, 0 none, 1 right.</param>
+    /// <param name="durationSeconds">When greater than zero, clears external input after this many seconds.</param>
+    public void SetExternalMoveInput(float direction, float durationSeconds = 0f)
+    {
+        externalMoveInput = Mathf.Clamp(direction, -1f, 1f);
+        externalMoveUntilTime = durationSeconds > 0f ? Time.time + durationSeconds : 0f;
+    }
+
+    /// <summary>Requests a jump on the next Update when the player is grounded.</summary>
+    public void RequestJump()
+    {
+        externalJumpRequested = true;
+    }
+
+    /// <summary>Teleports the player rigidbody to a world-space position.</summary>
+    /// <param name="worldPosition">Target position in world units.</param>
+    public void TeleportTo(Vector2 worldPosition)
+    {
+        if (body == null)
+        {
+            return;
+        }
+
+        body.position = worldPosition;
+        body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
+    }
 
 #if ENABLE_INPUT_SYSTEM
     private InputAction moveAction;
@@ -98,7 +132,13 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void Update()
     {
+        UpdateExternalMoveInput();
         horizontalInput = ReadHorizontalInput();
+        if (Mathf.Approximately(horizontalInput, 0f))
+        {
+            horizontalInput = externalMoveInput;
+        }
+
         HandleJump();
         HandleTileEditing();
         HandleSaveLoadShortcuts();
@@ -111,12 +151,24 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (!WasJumpPressed() || !IsGrounded)
+        bool jumpPressed = WasJumpPressed() || externalJumpRequested;
+        externalJumpRequested = false;
+
+        if (!jumpPressed || !IsGrounded)
         {
             return;
         }
 
         body.linearVelocity = new Vector2(body.linearVelocity.x, jumpVelocity);
+    }
+
+    private void UpdateExternalMoveInput()
+    {
+        if (externalMoveUntilTime > 0f && Time.time >= externalMoveUntilTime)
+        {
+            externalMoveInput = 0f;
+            externalMoveUntilTime = 0f;
+        }
     }
 
     private void HandleTileEditing()

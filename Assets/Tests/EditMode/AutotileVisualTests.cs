@@ -89,12 +89,31 @@ public sealed class AutotileVisualTests
     public void AutotileCoverMask_SetsSideCliffCellsToTwo()
     {
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => x == 5 && y == 5,
+            (x, y) => false,
             (x, y) => (x == 4 && y == 6) || (x == 4 && y == 5),
             5,
             5);
 
-        Assert.AreEqual(2, mask[0, 1]);
+        // West neighbor is a solid wall with no cover -> west cell (middle row, left col) is a cliff.
+        Assert.AreEqual(2, mask[1, 0]);
+        Assert.AreEqual(1, mask[1, 1]);
+        Assert.AreEqual(0, mask[1, 2]);
+    }
+
+    [Test]
+    public void AutotileCoverMask_ConnectsHorizontalGrassRun()
+    {
+        // Grass cover to the west and east, dirt below, air above: a middle run tile.
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) => y == 5 && (x == 4 || x == 6),
+            (x, y) => false,
+            5,
+            5);
+
+        Assert.AreEqual(1, mask[1, 0]);
+        Assert.AreEqual(1, mask[1, 2]);
+        Assert.AreEqual(0, mask[0, 1]);
+        Assert.AreEqual(0, mask[2, 1]);
     }
 
     [Test]

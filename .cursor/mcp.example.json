@@ -7,6 +7,11 @@
       "env": {
         "UNITY_PROJECT_PATH": "ABSOLUTE_PATH_TO_THIS_REPO"
       }
+    },
+    "project-twelve-ingame-mcp": {
+      "_note": "Requires the game running in Play Mode or a desktop build. Binds to 127.0.0.1 only.",
+      "url": "http://127.0.0.1:8765/mcp",
+      "type": "http"
     }
   },
   "_optionalServers": {

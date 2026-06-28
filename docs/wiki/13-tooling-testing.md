@@ -19,6 +19,11 @@ Most sandbox bugs are invisible without overlays. Add toggleable gizmos/overlays
 Plus an in-game **console/cheats**: spawn items, toggle overlays, teleport to test far regions,
 force-generate a chunk, dump a chunk's data.
 
+**Runtime MCP (implemented):** while Play Mode or a desktop build is running, agents can connect to
+`http://127.0.0.1:8765/mcp` (`project-twelve-ingame-mcp` in `.cursor/mcp.json`) to read debug state
+(`player_state`, `world_info`, `tile_at`, `perf`) and drive the player (`player_move`, `player_jump`,
+`player_teleport`, `world_set_tile`). Loopback-only; see [AGENTS.md](../../AGENTS.md) § In-game runtime MCP.
+
 ## Editor tools
 
 - Use Unity's **Tile Palette / Scene View** for hand-authored set-pieces and prototyping; most of
