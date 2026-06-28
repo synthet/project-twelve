@@ -1,7 +1,13 @@
 ---
 id: P0-SPEC-003
+type: Feature Spec
 title: "[P0-SPEC-003] Establish the task schema and ID conventions in the backlog."
-status: open
+description: Establish the canonical backlog task schema and phase-prefixed ID conventions, with sample first-sprint tasks, so every item traces from spec to task to issue to commit to verification.
+resource: wiki/tickets/p0-spec-003-establish-the-task-schema-and-id-conventions-in-the-backlog.md
+tags: [wiki, ticket, P0, spec, backlog, schema]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: in_progress
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/22"
@@ -85,9 +91,41 @@ As a developer or reviewer working on the P0 milestone, I want to establish the 
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] GitHub issue URL is recorded in this ticket (#22).
+- [x] GitHub issue links back to this markdown ticket (issue body links the ticket path).
+- [x] Spec references have been reviewed and updated if needed (`spec-driven-development-tasks.md` now points at the canonical schema; `00-overview.md` needs no contract change).
+- [x] Acceptance criteria have been validated (see Exit evidence below).
+- [x] Verification evidence is attached or linked.
+- [x] Follow-up tasks are created for deferred scope, defects, or open risks (backfilling OKF frontmatter on pre-baseline tickets is recorded as a non-goal below).
+
+## Exit evidence
+
+- **Deliverable:** Added [`docs/wiki/task-schema.md`](../task-schema.md), the single P0 reference
+  for **how a backlog item is identified and structured**. It fixes the `P<phase>-<AREA>-<NNN>`
+  **ID format** and its invariants (immutable, unique, non-recycled), an **area-code registry**
+  mapped to owning specs, the required **ticket frontmatter and body schema**, the **status
+  lifecycle**, and the end-to-end **traceability chain** (`spec → ticket → issue → branch →
+  commit → PR → verification`). The acceptance criterion *"new work can be traced from spec to
+  task to commit to verification"* is satisfied by the explicit chain table plus the join-key
+  rules that keep it navigable.
+- **Sample first-sprint tasks:** The page's *Sample tasks — first prototype sprint (P1)* section
+  enumerates the seven P1 vertical-slice tickets (`P1-WORLD-001` … `P1-QA-001`) as worked
+  examples, each with its spec reference, issue, acceptance criterion, and verification — fulfilling
+  the verification plan's *"create sample tasks for the first prototype sprint."* No new tickets
+  were invented; the existing P1 backlog is presented as the schema's reference instances.
+- **Cross-links:** [`spec-driven-development-tasks.md`](../spec-driven-development-tasks.md) (ID
+  field + template intro), [`spec-ownership.md`](../spec-ownership.md) (new registry row),
+  [`README.md`](../README.md) (index row), and
+  [`docs/project/00-backlog-workflow.md`](../../project/00-backlog-workflow.md) (Ticket format +
+  Related docs) now point at the canonical schema so the convention has a single source of truth.
+- **Spec references reviewed:** `docs/wiki/spec-driven-development-tasks.md` gained a pointer to the
+  schema; `docs/wiki/00-overview.md` is a subsystem-principles page and needs no change for this
+  process artifact.
+- **Verification:** Documentation-only change. Validated with
+  `python scripts/okf_lint.py --profile project --only wiki/task-schema.md` (new page passes the
+  changed-docs OKF gate) and `python3 scripts/check_markdown_links.py` (all local links resolve).
+- **Follow-up / non-goal:** Several pre-baseline tickets still emit `missing_*` OKF findings;
+  backfilling their frontmatter is out of scope here and is noted as a non-goal rather than fixed
+  in this focused change.
+- **GitHub issue:** [#22](https://github.com/synthet/project-twelve/issues/22); the issue body
+  already links back to this ticket.
