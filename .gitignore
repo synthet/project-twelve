@@ -218,3 +218,5 @@ secrets.json
 .agent-memory/dreams/*
 !.agent-memory/dreams/.gitkeep
 .agent-runs/
+__pycache__/
+*.pyc
