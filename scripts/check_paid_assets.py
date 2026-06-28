@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -32,18 +33,46 @@ def load_manifest() -> list[str]:
     return paths
 
 
-def run_git(*args: str) -> list[str]:
-    result = subprocess.run(
+def git_result(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
         ["git", *args],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
         check=False,
     )
+
+
+def run_git(*args: str) -> list[str]:
+    result = git_result(*args)
     if result.returncode != 0:
         print(result.stderr.strip() or f"git {' '.join(args)} failed", file=sys.stderr)
         sys.exit(result.returncode)
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+
+def git_ref_exists(ref: str) -> bool:
+    result = git_result("rev-parse", "--verify", "--quiet", ref)
+    return result.returncode == 0
+
+
+def resolve_push_base() -> str | None:
+    upstream = git_result("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    if upstream.returncode == 0 and upstream.stdout.strip():
+        return upstream.stdout.strip().splitlines()[0]
+
+    github_base_ref = os.environ.get("GITHUB_BASE_REF")
+    if github_base_ref:
+        candidates = [f"origin/{github_base_ref}", github_base_ref]
+        for candidate in candidates:
+            if git_ref_exists(candidate):
+                return candidate
+
+    for candidate in ("origin/HEAD", "origin/main", "origin/master", "HEAD^"):
+        if git_ref_exists(candidate):
+            return candidate
+
+    return None
 
 
 def path_is_blocked(file_path: str, blocked_roots: list[str]) -> str | None:
@@ -98,9 +127,11 @@ def main() -> int:
         return 0
 
     if args.push:
-        upstream = run_git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-        upstream_ref = upstream[0] if upstream else "origin/HEAD"
-        files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
+        base_ref = resolve_push_base()
+        if base_ref:
+            files = run_git("diff", "--name-only", f"{base_ref}...HEAD")
+        else:
+            files = run_git("ls-files")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")
     else:
