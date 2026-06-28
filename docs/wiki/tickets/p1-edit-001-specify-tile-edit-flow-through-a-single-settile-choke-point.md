@@ -1,6 +1,12 @@
 ---
 id: P1-EDIT-001
+type: Feature Spec
 title: "[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point."
+description: Specify and implement the single SetTile choke point that routes all sandbox tile edits through one place.
+resource: wiki/tickets/p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md
+tags: [wiki, ticket, P1, edit]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"

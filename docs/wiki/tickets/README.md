@@ -1,3 +1,13 @@
+---
+type: Documentation Hub
+title: Spec-Driven Development Tickets
+description: Index of spec-driven backlog tickets with status and linked GitHub issues.
+resource: wiki/tickets/README.md
+tags: [wiki, tickets, backlog, index]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Spec-Driven Development Tickets
 
 > **Project:** https://github.com/users/synthet/projects/2

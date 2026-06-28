@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: World and Chunk Data
+description: Chunk data model, coordinate conversion contract, tile fields, the SetTile edit choke point, and chunk lifecycle rules for the sandbox world.
+resource: wiki/world-and-chunk-data.md
+tags: [wiki, world, chunks, coordinates, tiles]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # World and Chunk Data
 
 ## Current Model
