@@ -1,3 +1,13 @@
+---
+type: Source-of-Truth Map
+title: Spec-Driven Development Tasks
+description: The phase-by-phase spec-driven backlog (P0–P5) with per-task acceptance criteria, verification gates, and the cross-phase task template that the ticket schema expands on.
+resource: wiki/spec-driven-development-tasks.md
+tags: [wiki, backlog, tasks, planning, roadmap]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Spec-Driven Development Tasks
 
 > **Status:** Planning backlog.
