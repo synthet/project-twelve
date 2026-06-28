@@ -1,6 +1,12 @@
 ---
 id: P1-EDIT-001
+type: Feature Spec
 title: "[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point."
+description: Specify and implement the single SetTile choke point that routes all sandbox tile edits through one place.
+resource: wiki/tickets/p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md
+tags: [wiki, ticket, P1, edit]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
@@ -85,9 +91,29 @@ As a developer or reviewer working on the P1 milestone, I want to specify tile e
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
+- [x] Spec references have been reviewed and updated if needed.
+- [x] Acceptance criteria have been validated.
+- [x] Verification evidence is attached or linked.
 - [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+
+## Exit evidence
+
+- **Implementation:** Routed `SandboxWorld.SetTile` through a new pure static choke point
+  `SandboxWorld.ApplyTileEdit` (`Assets/Scripts/Sandbox/SandboxWorld.cs`). The choke point writes
+  tile data, raises the owning chunk's render/collider dirty and edit-tracking flags, and dirties
+  loaded face-adjacent border neighbors, while `SetTile` keeps the Unity-facing chunk resolution and
+  renderer creation. Place and break both flow through `SetTile` (break writes
+  `SandboxTileIds.Air`).
+- **Spec:** Added the "Tile Edit Choke Point (P1-EDIT-001)" section to
+  `docs/wiki/world-and-chunk-data.md` documenting the edit flow, side effects, the deliberate
+  `LoadFromPath` bypass, and out-of-bounds handling.
+- **Verification:** EditMode tests in `Assets/Tests/EditMode/SandboxCoreTests.cs`
+  (`SandboxWorld_Apply*Edit*`) cover central edits, border edits that dirty a loaded neighbor,
+  breaking a tile to air, central edits leaving neighbors clean, and out-of-bounds edits changing
+  nothing. Run with:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- **GitHub issue:** [#26](https://github.com/synthet/project-twelve/issues/26), recorded in the
+  front matter. The backlink from the issue body to this ticket is not yet confirmed, so that box
+  remains open.

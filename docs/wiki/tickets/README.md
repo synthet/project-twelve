@@ -1,3 +1,13 @@
+---
+type: Documentation Hub
+title: Spec-Driven Development Tickets
+description: Index of spec-driven backlog tickets with status and linked GitHub issues.
+resource: wiki/tickets/README.md
+tags: [wiki, tickets, backlog, index]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Spec-Driven Development Tickets
 
 > **Project:** https://github.com/users/synthet/projects/2
@@ -13,8 +23,8 @@
 | P0-SPEC-004 | [[P0-SPEC-004] Define project quality gates.](p0-spec-004-define-project-quality-gates.md) | open | [#23](https://github.com/synthet/project-twelve/issues/23) |
 | P0-SPEC-005 | [[P0-SPEC-005] Identify architectural risks and spike candidates.](p0-spec-005-identify-architectural-risks-and-spike-candidates.md) | open | [#24](https://github.com/synthet/project-twelve/issues/24) |
 | P1-COLL-001 | [[P1-COLL-001] Specify prototype collision rules for solid tiles and player movement.](p1-coll-001-specify-prototype-collision-rules-for-solid-tiles-and-player.md) | open | [#25](https://github.com/synthet/project-twelve/issues/25) |
-| P1-EDIT-001 | [[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point.](p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md) | open | [#26](https://github.com/synthet/project-twelve/issues/26) |
-| P1-GEN-001 | [[P1-GEN-001] Specify deterministic terrain generation inputs and outputs.](p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md) | open | [#27](https://github.com/synthet/project-twelve/issues/27) |
+| P1-EDIT-001 | [[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point.](p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md) | implemented | [#26](https://github.com/synthet/project-twelve/issues/26) |
+| P1-GEN-001 | [[P1-GEN-001] Specify deterministic terrain generation inputs and outputs.](p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md) | implemented | [#27](https://github.com/synthet/project-twelve/issues/27) |
 | P1-QA-001 | [[P1-QA-001] Package the prototype vertical-slice demo checklist.](p1-qa-001-package-the-prototype-vertical-slice-demo-checklist.md) | open | [#28](https://github.com/synthet/project-twelve/issues/28) |
 | P1-RENDER-001 | [[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior.](p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md) | implemented | [#29](https://github.com/synthet/project-twelve/issues/29) |
 | P1-WORLD-001 | [[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates.](p1-world-001-specify-deterministic-world-chunk-and-local-coordinate-conve.md) | implemented | [#30](https://github.com/synthet/project-twelve/issues/30) |
