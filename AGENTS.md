@@ -147,6 +147,24 @@ submodule local sync after pull/checkout. Network sync: `python scripts/fetch_re
 | OKF lint | Docs frontmatter checker | `docs/` | `python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs` |
 | Cursor sync check | `.cursor/` drift gate | `scripts/sync_assistant_trees.py` | `python scripts/sync_assistant_trees.py --check` |
 
+## Codex regression guardrails
+
+Recent fix history shows recurring agent mistakes that must be checked before committing:
+
+- **Docs metadata:** fixes repeatedly repaired missing OKF frontmatter in `docs/**` and
+  `docs/wiki/tickets/**`. When editing docs, add/maintain frontmatter and run the docs lint gates.
+- **Generated mirrors:** `.cursor/**` is generated from `.claude/**`. Do not hand-edit generated
+  Cursor rules/commands/skills/agents; edit `.claude/**`, run `python scripts/sync_assistant_trees.py`,
+  and commit both trees.
+- **Safety scripts fail safe:** paid-asset and CI guard scripts must handle missing upstreams, detached
+  HEAD, shallow clones, no staged files, and absent base refs without allowing licensed assets through.
+- **Unity visual assumptions:** rendering/collision fixes must account for sprite bounds, pivots, tile
+  size, and import settings; add EditMode coverage when feasible.
+- **Required history check for rule/tooling changes:** when asked to update agent rules, Codex rules,
+  skills, commands, CI guards, or docs conventions, inspect recent fixes with
+  `git log --oneline --grep='fix' -n 20` and encode any repeated failure mode into the canonical
+  `.claude/` source plus generated `.cursor/` mirror.
+
 ## Coding-agent contract
 
 - **Unity scope:** preserve Unity `.meta` files when adding, moving, or deleting assets.
