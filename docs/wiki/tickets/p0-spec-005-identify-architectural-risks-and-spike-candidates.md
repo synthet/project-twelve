@@ -1,8 +1,13 @@
 ---
+type: Task
 id: P0-SPEC-005
 title: "[P0-SPEC-005] Identify architectural risks and spike candidates."
+description: Identify high-impact architectural risks with mitigations, owners, and decision deadlines.
 status: done
 phase: "Phase P0 — Discovery and specification baseline"
+resource: wiki/tickets/p0-spec-005-identify-architectural-risks-and-spike-candidates.md
+tags: [docs, wiki, tickets, risk-analysis, p0]
+timestamp: 2026-06-29T02:13:18Z
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/24"
 github_issue_status: created
