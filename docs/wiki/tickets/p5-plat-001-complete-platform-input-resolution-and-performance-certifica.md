@@ -1,6 +1,12 @@
 ---
 id: P5-PLAT-001
+type: Feature Spec
 title: "[P5-PLAT-001] Complete platform, input, resolution, and performance certification tasks."
+description: "Complete platform, input, resolution, and performance certification tasks."
+resource: wiki/tickets/p5-plat-001-complete-platform-input-resolution-and-performance-certifica.md
+tags: [wiki, ticket, P5, plat]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"

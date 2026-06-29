@@ -1,6 +1,12 @@
 ---
 id: P0-SPEC-005
+type: Feature Spec
 title: "[P0-SPEC-005] Identify architectural risks and spike candidates."
+description: Identify architectural risks and spike candidates.
+resource: wiki/tickets/p0-spec-005-identify-architectural-risks-and-spike-candidates.md
+tags: [wiki, ticket, P0, spec]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"

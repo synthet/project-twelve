@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Rendering and Collision"
+description: "ProjectTwelve Rendering and Collision reference — design notes, contracts, and decisions for the rendering and collision area of the sandbox prototype."
+resource: wiki/rendering-and-collision.md
+tags: [wiki, rendering]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Rendering and Collision
 
 ## Rendering Direction

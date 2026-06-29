@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Procedural Generation"
+description: "ProjectTwelve Procedural Generation reference — design notes, contracts, and decisions for the procedural generation area of the sandbox prototype."
+resource: wiki/07-procedural-generation.md
+tags: [wiki, procedural]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 07 — Procedural Generation
 
 > **Status:** Planning.

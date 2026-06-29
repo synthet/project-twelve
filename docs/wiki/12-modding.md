@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Modding & Content Pipeline"
+description: "ProjectTwelve Modding & Content Pipeline reference — design notes, contracts, and decisions for the modding & content pipeline area of the sandbox prototype."
+resource: wiki/12-modding.md
+tags: [wiki, modding]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 12 — Modding & Content Pipeline
 
 > **Status:** Planning.

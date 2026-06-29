@@ -1,6 +1,12 @@
 ---
 id: P1-QA-001
+type: Feature Spec
 title: "[P1-QA-001] Package the prototype vertical-slice demo checklist."
+description: Package the prototype vertical-slice demo checklist.
+resource: wiki/tickets/p1-qa-001-package-the-prototype-vertical-slice-demo-checklist.md
+tags: [wiki, ticket, P1, qa]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"

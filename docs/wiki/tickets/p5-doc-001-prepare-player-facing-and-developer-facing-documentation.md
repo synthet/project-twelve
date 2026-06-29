@@ -1,6 +1,12 @@
 ---
 id: P5-DOC-001
+type: Feature Spec
 title: "[P5-DOC-001] Prepare player-facing and developer-facing documentation."
+description: "Prepare player-facing and developer-facing documentation."
+resource: wiki/tickets/p5-doc-001-prepare-player-facing-and-developer-facing-documentation.md
+tags: [wiki, ticket, P5, doc]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"

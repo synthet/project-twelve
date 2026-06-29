@@ -1,3 +1,13 @@
+---
+type: Documentation Index
+title: Implementation wiki
+description: Top-level navigation for the Unity 2D sandbox wiki, mapping prototype pages, subsystem references, and cross-cutting invariants.
+resource: wiki/README.md
+tags: [wiki, index, navigation]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Open Knowledge Base — Index
 
 This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.

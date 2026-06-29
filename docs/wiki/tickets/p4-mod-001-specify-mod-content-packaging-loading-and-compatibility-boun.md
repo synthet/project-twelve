@@ -1,6 +1,12 @@
 ---
 id: P4-MOD-001
+type: Feature Spec
 title: "[P4-MOD-001] Specify mod content packaging, loading, and compatibility boundaries."
+description: "Specify mod content packaging, loading, and compatibility boundaries."
+resource: wiki/tickets/p4-mod-001-specify-mod-content-packaging-loading-and-compatibility-boun.md
+tags: [wiki, ticket, P4, mod]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"

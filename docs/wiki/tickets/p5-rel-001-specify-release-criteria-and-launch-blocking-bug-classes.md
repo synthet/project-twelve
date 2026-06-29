@@ -1,6 +1,12 @@
 ---
 id: P5-REL-001
+type: Feature Spec
 title: "[P5-REL-001] Specify release criteria and launch-blocking bug classes."
+description: "Specify release criteria and launch-blocking bug classes."
+resource: wiki/tickets/p5-rel-001-specify-release-criteria-and-launch-blocking-bug-classes.md
+tags: [wiki, ticket, P5, rel]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"

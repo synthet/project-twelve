@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Unity 2D Sandbox Architecture — Detailed Design Reference"
+description: "ProjectTwelve Unity 2D Sandbox Architecture — Detailed Design Reference — technical reference for the unity 2d sandbox architecture — detailed design reference documentation in the sandbox prototype."
+resource: terraria-like-unity-design-detailed.md
+tags: [docs, unity]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Unity 2D Sandbox Architecture — Detailed Design Reference
 
 > This is an expanded companion to [`terraria-like-unity-design.md`](./terraria-like-unity-design.md).

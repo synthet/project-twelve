@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Lighting"
+description: "ProjectTwelve Lighting reference — design notes, contracts, and decisions for the lighting area of the sandbox prototype."
+resource: wiki/06-lighting.md
+tags: [wiki, lighting]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 06 — Lighting
 
 > **Status:** Planning.

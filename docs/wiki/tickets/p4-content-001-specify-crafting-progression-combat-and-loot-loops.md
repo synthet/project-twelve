@@ -1,6 +1,12 @@
 ---
 id: P4-CONTENT-001
+type: Feature Spec
 title: "[P4-CONTENT-001] Specify crafting, progression, combat, and loot loops."
+description: "Specify crafting, progression, combat, and loot loops."
+resource: wiki/tickets/p4-content-001-specify-crafting-progression-combat-and-loot-loops.md
+tags: [wiki, ticket, P4, content]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"

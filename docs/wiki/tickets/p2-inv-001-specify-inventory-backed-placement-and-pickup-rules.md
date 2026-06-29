@@ -1,6 +1,12 @@
 ---
 id: P2-INV-001
+type: Feature Spec
 title: "[P2-INV-001] Specify inventory-backed placement and pickup rules."
+description: Specify inventory-backed placement and pickup rules.
+resource: wiki/tickets/p2-inv-001-specify-inventory-backed-placement-and-pickup-rules.md
+tags: [wiki, ticket, P2, inv]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

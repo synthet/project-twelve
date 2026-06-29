@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Architecture Map"
+description: "ProjectTwelve Architecture Map reference — design notes, contracts, and decisions for the architecture map area of the sandbox prototype."
+resource: wiki/architecture-map.md
+tags: [wiki, architecture]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Architecture Map
 
 ## Runtime Layers

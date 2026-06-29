@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Unity 2D Sandbox Architecture Plan"
+description: "ProjectTwelve Unity 2D Sandbox Architecture Plan — technical reference for the unity 2d sandbox architecture plan documentation in the sandbox prototype."
+resource: terraria-like-unity-design.md
+tags: [docs, unity]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Unity 2D Sandbox Architecture Plan
 
 ## Executive Summary

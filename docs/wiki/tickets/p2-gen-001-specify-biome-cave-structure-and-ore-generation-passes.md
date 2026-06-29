@@ -1,6 +1,12 @@
 ---
 id: P2-GEN-001
+type: Feature Spec
 title: "[P2-GEN-001] Specify biome, cave, structure, and ore generation passes."
+description: Specify biome, cave, structure, and ore generation passes.
+resource: wiki/tickets/p2-gen-001-specify-biome-cave-structure-and-ore-generation-passes.md
+tags: [wiki, ticket, P2, gen]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

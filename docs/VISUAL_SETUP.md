@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Visual setup"
+description: "ProjectTwelve Visual setup — technical reference for the visual setup documentation in the sandbox prototype."
+resource: VISUAL_SETUP.md
+tags: [docs, visual]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Visual setup (assets submodule)
 
 ProjectTwelve renders terrain, player avatars, and monsters from catalogs under `Assets/_Licensed/Settings/Visual/` in the private assets submodule. Simulation code and public tile mappings stay in the main repo.

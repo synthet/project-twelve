@@ -1,3 +1,13 @@
+---
+type: Reference
+title: "Unity Scripting API — Table of Contents"
+description: "ProjectTwelve Unity Scripting API — Table of Contents — reference for the unity scripting api — table of contents documentation in the sandbox prototype."
+resource: unity-reference/unity-scriptreference-index.md
+tags: [docs, unity, unity]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Unity Scripting API — Table of Contents
 
 Unity **6000.5.1f1 (Unity 6.5 Beta)** ScriptReference. Documentation root: `D:/Soft/Unity/Hub/Editor/6000.5.1f1/Editor/Data/Documentation/en`.

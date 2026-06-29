@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Architecture Blueprint (translated from the visual canvas)"
+description: "ProjectTwelve Architecture Blueprint (translated from the visual canvas) reference — design notes, contracts, and decisions for the architecture blueprint (translated from the visual canvas) area of the sandbox prototype."
+resource: wiki/architecture-blueprint.md
+tags: [wiki, architecture]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Architecture Blueprint (translated from the visual canvas)
 
 > **Source:** the *Architecture Blueprint* artifact, delivered as a bundled HTML canvas

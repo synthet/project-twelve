@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Saving & Loading"
+description: "ProjectTwelve Saving & Loading reference — design notes, contracts, and decisions for the saving & loading area of the sandbox prototype."
+resource: wiki/11-saving-loading.md
+tags: [wiki, saving]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 11 — Saving & Loading
 
 > **Status:** Planning.

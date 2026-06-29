@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Visual integration"
+description: "ProjectTwelve Visual integration — technical reference for the visual integration documentation in the sandbox prototype."
+resource: wiki/visual-integration.md
+tags: [wiki, visual]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Visual integration
 
 > **Status:** Terrain autotiling and player avatar presentation use project-owned code under `Assets/Scripts/Visual/`.

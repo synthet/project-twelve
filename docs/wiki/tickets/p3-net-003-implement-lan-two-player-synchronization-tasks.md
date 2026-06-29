@@ -1,6 +1,12 @@
 ---
 id: P3-NET-003
+type: Feature Spec
 title: "[P3-NET-003] Implement LAN two-player synchronization tasks."
+description: "Implement LAN two-player synchronization tasks."
+resource: wiki/tickets/p3-net-003-implement-lan-two-player-synchronization-tasks.md
+tags: [wiki, ticket, P3, net]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P3 — Networking alpha"
 github_project: "https://github.com/users/synthet/projects/2"

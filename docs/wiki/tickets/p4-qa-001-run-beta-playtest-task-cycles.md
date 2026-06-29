@@ -1,6 +1,12 @@
 ---
 id: P4-QA-001
+type: Feature Spec
 title: "[P4-QA-001] Run beta playtest task cycles."
+description: "Run beta playtest task cycles."
+resource: wiki/tickets/p4-qa-001-run-beta-playtest-task-cycles.md
+tags: [wiki, ticket, P4, qa]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"

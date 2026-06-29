@@ -1,6 +1,12 @@
 ---
 id: P3-NET-004
+type: Feature Spec
 title: "[P3-NET-004] Specify disconnect/reconnect and save consistency behavior."
+description: "Specify disconnect/reconnect and save consistency behavior."
+resource: wiki/tickets/p3-net-004-specify-disconnect-reconnect-and-save-consistency-behavior.md
+tags: [wiki, ticket, P3, net]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P3 — Networking alpha"
 github_project: "https://github.com/users/synthet/projects/2"

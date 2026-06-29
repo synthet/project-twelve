@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Roadmap and Tasks"
+description: "ProjectTwelve Roadmap and Tasks reference — design notes, contracts, and decisions for the roadmap and tasks area of the sandbox prototype."
+resource: wiki/roadmap-and-tasks.md
+tags: [wiki, roadmap]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Roadmap and Tasks
 
 This page keeps near-term prototype work in an open knowledge format: milestones describe outcomes, tasks define scoped implementation work, and validation notes explain how contributors can confirm completion.

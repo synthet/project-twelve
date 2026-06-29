@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Chunking"
+description: "ProjectTwelve Chunking reference — design notes, contracts, and decisions for the chunking area of the sandbox prototype."
+resource: wiki/03-chunking.md
+tags: [wiki, chunking]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 03 — Chunking
 
 > **Status:** Planning.

@@ -1,6 +1,12 @@
 ---
 id: P4-UX-001
+type: Feature Spec
 title: "[P4-UX-001] Specify production UI flows for inventory, crafting, settings, and multiplayer."
+description: "Specify production UI flows for inventory, crafting, settings, and multiplayer."
+resource: wiki/tickets/p4-ux-001-specify-production-ui-flows-for-inventory-crafting-settings-.md
+tags: [wiki, ticket, P4, ux]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"

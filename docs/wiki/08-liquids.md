@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Liquids"
+description: "ProjectTwelve Liquids reference — design notes, contracts, and decisions for the liquids area of the sandbox prototype."
+resource: wiki/08-liquids.md
+tags: [wiki, liquids]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 08 — Liquids
 
 > **Status:** Planning.

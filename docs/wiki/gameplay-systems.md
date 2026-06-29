@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Gameplay Systems"
+description: "ProjectTwelve Gameplay Systems reference — design notes, contracts, and decisions for the gameplay systems area of the sandbox prototype."
+resource: wiki/gameplay-systems.md
+tags: [wiki, gameplay]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Gameplay Systems
 
 ## Player

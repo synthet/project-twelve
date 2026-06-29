@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Roadmap"
+description: "ProjectTwelve Roadmap reference — design notes, contracts, and decisions for the roadmap area of the sandbox prototype."
+resource: wiki/14-roadmap.md
+tags: [wiki, roadmap]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 14 — Roadmap
 
 > **Status:** Planning.

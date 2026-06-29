@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Multiplayer and Modding"
+description: "ProjectTwelve Multiplayer and Modding reference — design notes, contracts, and decisions for the multiplayer and modding area of the sandbox prototype."
+resource: wiki/multiplayer-and-modding.md
+tags: [wiki, multiplayer]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Multiplayer and Modding
 
 ## Multiplayer

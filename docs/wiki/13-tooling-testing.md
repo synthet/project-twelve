@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Tooling, Testing & Profiling"
+description: "ProjectTwelve Tooling, Testing & Profiling reference — design notes, contracts, and decisions for the tooling, testing & profiling area of the sandbox prototype."
+resource: wiki/13-tooling-testing.md
+tags: [wiki, tooling]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 13 — Tooling, Testing & Profiling
 
 > **Status:** Planning.

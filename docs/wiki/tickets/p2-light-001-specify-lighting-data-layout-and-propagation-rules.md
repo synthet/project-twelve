@@ -1,6 +1,12 @@
 ---
 id: P2-LIGHT-001
+type: Feature Spec
 title: "[P2-LIGHT-001] Specify lighting data layout and propagation rules."
+description: Specify lighting data layout and propagation rules.
+resource: wiki/tickets/p2-light-001-specify-lighting-data-layout-and-propagation-rules.md
+tags: [wiki, ticket, P2, light]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

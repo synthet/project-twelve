@@ -1,6 +1,12 @@
 ---
 id: P5-LAUNCH-001
+type: Feature Spec
 title: "[P5-LAUNCH-001] Execute launch checklist and post-launch monitoring plan."
+description: "Execute launch checklist and post-launch monitoring plan."
+resource: wiki/tickets/p5-launch-001-execute-launch-checklist-and-post-launch-monitoring-plan.md
+tags: [wiki, ticket, P5, launch]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"

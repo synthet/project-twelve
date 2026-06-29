@@ -1,6 +1,12 @@
 ---
 id: P0-SPEC-004
+type: Feature Spec
 title: "[P0-SPEC-004] Define project quality gates."
+description: Define project quality gates.
+resource: wiki/tickets/p0-spec-004-define-project-quality-gates.md
+tags: [wiki, ticket, P0, spec]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"

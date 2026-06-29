@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Architecture"
+description: "ProjectTwelve Architecture reference — design notes, contracts, and decisions for the architecture area of the sandbox prototype."
+resource: wiki/01-architecture.md
+tags: [wiki, architecture]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 01 — Architecture
 
 > **Status:** Planning.

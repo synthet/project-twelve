@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Collision & Physics"
+description: "ProjectTwelve Collision & Physics reference — design notes, contracts, and decisions for the collision & physics area of the sandbox prototype."
+resource: wiki/05-collision-physics.md
+tags: [wiki, collision]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 05 — Collision & Physics
 
 > **Status:** Planning.

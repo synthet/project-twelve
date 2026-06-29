@@ -1,6 +1,12 @@
 ---
 id: P2-SAVE-001
+type: Feature Spec
 title: "[P2-SAVE-001] Specify save/load format using seed plus dirty chunk diffs."
+description: Specify save/load format using seed plus dirty chunk diffs.
+resource: wiki/tickets/p2-save-001-specify-save-load-format-using-seed-plus-dirty-chunk-diffs.md
+tags: [wiki, ticket, P2, save]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

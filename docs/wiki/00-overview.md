@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: Overview & Principles
+description: Goals, scope levels, guiding principles, and the top technical risk map for the Unity 2D sandbox.
+resource: wiki/00-overview.md
+tags: [wiki, overview, principles, scope, risks]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 00 — Overview & Principles
 
 > **Status:** Planning. No sandbox systems implemented yet.

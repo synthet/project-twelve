@@ -1,6 +1,12 @@
 ---
 id: P2-FLUID-001
+type: Feature Spec
 title: "[P2-FLUID-001] Specify simple liquid simulation constraints."
+description: Specify simple liquid simulation constraints.
+resource: wiki/tickets/p2-fluid-001-specify-simple-liquid-simulation-constraints.md
+tags: [wiki, ticket, P2, fluid]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

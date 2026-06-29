@@ -1,3 +1,16 @@
+---
+type: concept
+title: Asset Integration Requirements
+description: Sprite import conventions, atlases, animations, and rotation policies for tiles and entities
+resource: docs/wiki/15-assets-integration.md
+tags:
+  - assets
+  - rendering
+  - sprites
+  - animations
+timestamp: 2026-06-28T00:00:00Z
+---
+
 # 15 — Asset Integration Requirements
 
 > **Status:** Planning.

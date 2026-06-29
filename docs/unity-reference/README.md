@@ -1,3 +1,13 @@
+---
+type: Reference
+title: "Unity 6.5 Offline Documentation — Wiki Index"
+description: "ProjectTwelve Unity 6.5 Offline Documentation — Wiki Index — reference for the unity 6.5 offline documentation — wiki index documentation in the sandbox prototype."
+resource: unity-reference/README.md
+tags: [docs, unity, unity]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Unity 6.5 Offline Documentation — Wiki Index
 
 Local mirror of Unity **6000.5.1f1 (Unity 6.5 Beta)** English documentation.

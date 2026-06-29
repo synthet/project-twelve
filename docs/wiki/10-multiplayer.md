@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Multiplayer"
+description: "ProjectTwelve Multiplayer reference — design notes, contracts, and decisions for the multiplayer area of the sandbox prototype."
+resource: wiki/10-multiplayer.md
+tags: [wiki, multiplayer]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 10 — Multiplayer
 
 > **Status:** Planning (build last; see [Roadmap](14-roadmap.md)).

@@ -1,3 +1,13 @@
+---
+type: Reference
+title: "Unity User Manual — Table of Contents"
+description: "ProjectTwelve Unity User Manual — Table of Contents — reference for the unity user manual — table of contents documentation in the sandbox prototype."
+resource: unity-reference/unity-manual-index.md
+tags: [docs, unity, unity]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Unity User Manual — Table of Contents
 
 Unity **6000.5.1f1 (Unity 6.5 Beta)** offline manual. Documentation root: `D:/Soft/Unity/Hub/Editor/6000.5.1f1/Editor/Data/Documentation/en`.

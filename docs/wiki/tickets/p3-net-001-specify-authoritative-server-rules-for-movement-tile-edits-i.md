@@ -1,6 +1,12 @@
 ---
 id: P3-NET-001
+type: Feature Spec
 title: "[P3-NET-001] Specify authoritative server rules for movement, tile edits, inventory, and chunk subscription."
+description: Specify authoritative server rules for movement, tile edits, inventory, and chunk subscription.
+resource: wiki/tickets/p3-net-001-specify-authoritative-server-rules-for-movement-tile-edits-i.md
+tags: [wiki, ticket, P3, net]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P3 — Networking alpha"
 github_project: "https://github.com/users/synthet/projects/2"

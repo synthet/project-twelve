@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Pathfinding"
+description: "ProjectTwelve Pathfinding reference — design notes, contracts, and decisions for the pathfinding area of the sandbox prototype."
+resource: wiki/09-pathfinding.md
+tags: [wiki, pathfinding]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 09 — Pathfinding
 
 > **Status:** Planning.

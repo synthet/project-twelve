@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: Glossary
+description: Canonical shared vocabulary for the wiki; each term links to the page that owns it.
+resource: wiki/glossary.md
+tags: [wiki, glossary, terminology]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Glossary
 
 Shared vocabulary for the [wiki](README.md). Terms link to the page that owns them.

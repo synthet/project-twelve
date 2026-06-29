@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Lighting, Liquids, and Simulation"
+description: "ProjectTwelve Lighting, Liquids, and Simulation reference — design notes, contracts, and decisions for the lighting, liquids, and simulation area of the sandbox prototype."
+resource: wiki/simulation-systems.md
+tags: [wiki, lighting]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Lighting, Liquids, and Simulation
 
 ## Lighting

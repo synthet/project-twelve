@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Canonical Sources"
+description: "ProjectTwelve Canonical Sources — technical reference for the canonical sources documentation in the sandbox prototype."
+resource: CANONICAL_SOURCES.md
+tags: [docs, canonical]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Canonical Sources
 
 

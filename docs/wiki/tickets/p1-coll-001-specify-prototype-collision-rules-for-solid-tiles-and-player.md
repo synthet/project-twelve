@@ -1,6 +1,12 @@
 ---
 id: P1-COLL-001
+type: Feature Spec
 title: "[P1-COLL-001] Specify prototype collision rules for solid tiles and player movement."
+description: Specify prototype collision rules for solid tiles and player movement.
+resource: wiki/tickets/p1-coll-001-specify-prototype-collision-rules-for-solid-tiles-and-player.md
+tags: [wiki, ticket, P1, coll]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"

@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Generation and Saving"
+description: "ProjectTwelve Generation and Saving reference — design notes, contracts, and decisions for the generation and saving area of the sandbox prototype."
+resource: wiki/generation-and-saving.md
+tags: [wiki, generation]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Generation and Saving
 
 ## Generation Pipeline

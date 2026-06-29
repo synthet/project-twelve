@@ -1,6 +1,12 @@
 ---
 id: P4-PERF-001
+type: Feature Spec
 title: "[P4-PERF-001] Create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids."
+description: "Create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids."
+resource: wiki/tickets/p4-perf-001-create-optimization-tasks-for-chunk-streaming-rendering-coll.md
+tags: [wiki, ticket, P4, perf]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"

@@ -1,6 +1,12 @@
 ---
 id: P2-TOOL-001
+type: Feature Spec
 title: "[P2-TOOL-001] Specify debug tooling for chunks, generation, lighting, and saves."
+description: Specify debug tooling for chunks, generation, lighting, and saves.
+resource: wiki/tickets/p2-tool-001-specify-debug-tooling-for-chunks-generation-lighting-and-sav.md
+tags: [wiki, ticket, P2, tool]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

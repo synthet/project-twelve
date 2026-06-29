@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Visual Behavior Specification"
+description: "ProjectTwelve Visual Behavior Specification — technical reference for the visual behavior specification documentation in the sandbox prototype."
+resource: VISUAL_BEHAVIOR_SPEC.md
+tags: [docs, visual]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # Visual Behavior Specification
 
 > **Authority:** ProjectTwelve-owned behavioral contract for autotiling, character composition, creature animation, and effects.

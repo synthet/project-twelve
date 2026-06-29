@@ -1,6 +1,12 @@
 ---
 id: P2-DATA-001
+type: Feature Spec
 title: "[P2-DATA-001] Specify tile, item, and entity registry contracts."
+description: Specify tile, item, and entity registry contracts.
+resource: wiki/tickets/p2-data-001-specify-tile-item-and-entity-registry-contracts.md
+tags: [wiki, ticket, P2, data]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"

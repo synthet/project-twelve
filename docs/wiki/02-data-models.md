@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: "Data Models"
+description: "ProjectTwelve Data Models reference — design notes, contracts, and decisions for the data models area of the sandbox prototype."
+resource: wiki/02-data-models.md
+tags: [wiki, data]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # 02 — Data Models
 
 > **Status:** Planning.
