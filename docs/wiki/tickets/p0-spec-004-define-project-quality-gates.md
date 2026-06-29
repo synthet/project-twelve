@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P0-SPEC-004
 title: "[P0-SPEC-004] Define project quality gates."
+description: Document required automated and manual verification steps before merge, including tests, link hygiene, deterministic checks, and profiler targets.
 status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/23"
 github_issue_status: created
+resource: wiki/tickets/p0-spec-004-define-project-quality-gates.md
+tags: [docs, wiki, ticket, quality, testing, p0]
+timestamp: 2026-06-29T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"

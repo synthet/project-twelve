@@ -1,3 +1,13 @@
+---
+type: Index
+title: Open Knowledge Base — Index
+description: The canonical wiki index for ProjectTwelve architecture, design decisions, and specification references.
+resource: wiki/README.md
+tags: [docs, wiki, index, architecture]
+timestamp: 2026-06-27T00:00:00Z
+okf_version: 0.1
+---
+
 # Open Knowledge Base — Index
 
 This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.

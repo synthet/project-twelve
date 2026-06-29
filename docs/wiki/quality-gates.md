@@ -1,3 +1,13 @@
+---
+type: Guide
+title: Quality Gates
+description: Required automated and manual verification steps before merge — tests, link hygiene, deterministic checks, and profiler targets.
+resource: wiki/quality-gates.md
+tags: [docs, wiki, quality, ci, testing]
+timestamp: 2026-06-29T00:00:00Z
+okf_version: 0.1
+---
+
 # Quality Gates
 
 > **Status:** Active baseline.
