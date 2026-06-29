@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P0-SPEC-004
 title: "[P0-SPEC-004] Define project quality gates."
-status: open
+description: Document required automated and manual verification steps before merge, including tests, link hygiene, deterministic checks, and profiler targets.
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/23"
 github_issue_status: created
+resource: wiki/tickets/p0-spec-004-define-project-quality-gates.md
+tags: [docs, wiki, ticket, quality, testing, p0]
+timestamp: 2026-06-29T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"
@@ -85,9 +91,32 @@ As a developer or reviewer working on the P0 milestone, I want to define project
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] GitHub issue URL is recorded in this ticket: https://github.com/synthet/project-twelve/issues/23
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Spec references have been reviewed and updated if needed.
+  - `docs/wiki/spec-driven-development-tasks.md`: No changes needed (already accurate).
+  - `docs/wiki/00-overview.md`: Updated to reference quality-gates.md.
+- [x] Acceptance criteria have been validated:
+  - Required tests documented: EditMode test suite, profiler targets, and manual QA checklist.
+  - Lint/build checks documented: markdown links, paid assets, assistant tree sync, Unity validation.
+  - Deterministic seeds documented: world generation reproducibility, save/load round-trip, seed verification.
+  - Manual Unity checks documented: play-mode traversal, collision edge cases, profiler targets.
+- [x] Verification evidence:
+  - Created `docs/wiki/quality-gates.md` with comprehensive quality gates documentation.
+  - Updated `docs/wiki/00-overview.md` to reference quality gates in "See also" section.
+  - Updated `docs/wiki/README.md` to include quality gates in Set B reference index.
+  - All quality checks pass: markdown links, paid assets, assistant tree sync.
+  - Commits: `ca97edc` (main implementation), `4f05b6f` (fix documentation link).
+- [x] Follow-up tasks: None — all acceptance criteria met in a single focused implementation.
+
+## Implementation summary
+
+Created a comprehensive quality gates document that consolidates all required verification steps:
+
+1. **Automated tests**: EditMode test suite covering coordinate conversion, chunk lookup, lighting, fluids, generation, save/load, and network serialization.
+2. **Quality checks**: Markdown link validation, paid asset validation, assistant tree sync, Unity project validation.
+3. **Deterministic verification**: World generation reproducibility, save/load round-trip tests, seed variation checks.
+4. **Manual verification**: Play-mode traversal, collision edge cases, profiler targets (render rebuild, collision rebuild, lighting, fluids, memory, draw calls).
+5. **Exit evidence template**: Standardized format for recording completion evidence.
+
+The document is self-contained and linked from the architecture overview, making it discoverable for all developers.

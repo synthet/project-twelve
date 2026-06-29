@@ -1,3 +1,13 @@
+---
+type: Overview
+title: Overview & Principles
+description: ProjectTwelve architecture goals, scope, guiding principles, and top technical risks.
+resource: wiki/00-overview.md
+tags: [docs, wiki, architecture, principles]
+timestamp: 2026-06-27T00:00:00Z
+okf_version: 0.1
+---
+
 # 00 — Overview & Principles
 
 > **Status:** Planning. No sandbox systems implemented yet.
@@ -61,5 +71,7 @@ See [Roadmap](14-roadmap.md) for sequencing and timeboxes.
 ## See also
 
 - [Architecture](01-architecture.md) — how the pieces fit together.
+- [Quality Gates](quality-gates.md) — required checks before merge.
+- [Tooling, Testing & Profiling](13-tooling-testing.md) — testing strategy and debug tools.
 - [Roadmap](14-roadmap.md) — what to build first.
 - [Glossary](glossary.md).

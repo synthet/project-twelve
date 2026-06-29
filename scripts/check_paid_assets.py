@@ -98,8 +98,31 @@ def main() -> int:
         return 0
 
     if args.push:
-        upstream = run_git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-        upstream_ref = upstream[0] if upstream else "origin/HEAD"
+        # Try to get the configured upstream; fall back to common defaults
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            upstream_ref = result.stdout.strip()
+        else:
+            # Try common fallbacks for CI environments
+            for candidate in ["origin/master", "origin/main", "origin/HEAD"]:
+                check = subprocess.run(
+                    ["git", "rev-parse", "--verify", f"{candidate}^{{commit}}"],
+                    cwd=REPO_ROOT,
+                    capture_output=True,
+                    check=False,
+                )
+                if check.returncode == 0:
+                    upstream_ref = candidate
+                    break
+            else:
+                # If no upstream found, compare against the base of the current branch
+                upstream_ref = "HEAD~1"
         files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")

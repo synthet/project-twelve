@@ -1,3 +1,13 @@
+---
+type: Index
+title: Open Knowledge Base — Index
+description: The canonical wiki index for ProjectTwelve architecture, design decisions, and specification references.
+resource: wiki/README.md
+tags: [docs, wiki, index, architecture]
+timestamp: 2026-06-27T00:00:00Z
+okf_version: 0.1
+---
+
 # Open Knowledge Base — Index
 
 This knowledge base is the public, human-readable reference for the Unity 2D sandbox project. It captures architectural intent, implementation boundaries, design decisions, and future work in a durable format that can be read by contributors, maintainers, tools, or assistants without depending on prompt-only context.
@@ -50,6 +60,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
+| — | [Quality Gates](quality-gates.md) | Required checks: automated tests, link hygiene, deterministic verification, profiler targets |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
 | — | [Glossary](glossary.md) | Shared vocabulary |
