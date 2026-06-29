@@ -61,5 +61,7 @@ See [Roadmap](14-roadmap.md) for sequencing and timeboxes.
 ## See also
 
 - [Architecture](01-architecture.md) — how the pieces fit together.
+- [Quality Gates](quality-gates.md) — required checks before merge.
+- [Tooling, Testing & Profiling](13-tooling-testing.md) — testing strategy and debug tools.
 - [Roadmap](14-roadmap.md) — what to build first.
 - [Glossary](glossary.md).

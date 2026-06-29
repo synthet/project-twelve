@@ -1,7 +1,7 @@
 ---
 id: P0-SPEC-004
 title: "[P0-SPEC-004] Define project quality gates."
-status: open
+status: in_progress
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/23"
