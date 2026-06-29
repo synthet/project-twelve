@@ -1,22 +1,22 @@
 ---
-description: OKF frontmatter validation — required metadata fields for all wiki and documentation files.
+description: OKF frontmatter validation — required metadata fields for docs/ concept files.
 alwaysApply: true
 ---
 
 # OKF Frontmatter Requirements (always on)
 
-All markdown files in `docs/` must include valid OKF (Open Knowledge Format) frontmatter to pass CI lint checks. This rule prevents merge-blocking validation failures.
+`scripts/okf_lint.py` validates OKF (Open Knowledge Format) frontmatter for **concept files** in the `docs/` bundle: Markdown files under `docs/` except `log.md` files and paths skipped by configured `--exclude-prefix` values (default: `archive/`). This rule prevents merge-blocking validation failures while matching the linter's actual scope.
 
-## Required fields for all wiki/doc files
+## Required fields for checked docs concept files
 
-Every markdown file in `docs/` **must** include these frontmatter fields:
+Every checked concept file in `docs/` **must** include these frontmatter fields. By default this means `docs/**/*.md` except `log.md` files and files under excluded prefixes such as `docs/archive/`:
 
 ```yaml
 ---
 type: <PageType>
 title: <Human-readable title>
 description: <One-line summary of content and purpose>
-resource: <wiki/path/to/file.md>
+resource: <path/relative/to/docs.md>
 tags: [category, topic, phase]
 timestamp: <ISO8601 date: YYYY-MM-DDTHH:MM:SSZ>
 ---
@@ -29,7 +29,7 @@ timestamp: <ISO8601 date: YYYY-MM-DDTHH:MM:SSZ>
 | **type** | Required. Describes content category. Valid values: Overview, Guide, Architecture, Reference, Risk Analysis, Task, Specification, Runbook, etc. | `type: Architecture` |
 | **title** | Required. Human-readable title; same as `# Title` heading. | `title: World & Chunk Data` |
 | **description** | Required. One-line summary of what this page documents and why it matters. | `description: Chunk data model, lifecycle, coordinate conversions.` |
-| **resource** | Required. Relative path from repo root to this file (without leading `/`). | `resource: wiki/00-overview.md` |
+| **resource** | Required. Path to this file relative to the `docs/` bundle root (without leading `/`). The linter currently also accepts `docs/...` for compatibility, but prefer bundle-relative paths. | `resource: wiki/quality-gates.md` |
 | **tags** | Required. Array of 2–5 lowercase tags for categorization and discovery. Include phase (p0, p1, etc.) if applicable. | `tags: [docs, wiki, architecture, chunking]` |
 | **timestamp** | Required. ISO 8601 UTC date when last updated. | `timestamp: 2026-06-29T02:13:18Z` |
 
@@ -69,20 +69,20 @@ date -u +"%Y-%m-%dT%H:%M:%SZ"
 
 1. **Check the template** — Copy frontmatter from an existing file in the same directory (e.g., another `docs/wiki/*.md` file).
 2. **Update fields** — Edit `type`, `title`, `description`, and `tags` to match the new content.
-3. **Verify the resource path** — Must be relative to the repo root and match the actual file location.
+3. **Verify the resource path** — Must be relative to the `docs/` bundle root and match the actual file location, for example `wiki/quality-gates.md` for `docs/wiki/quality-gates.md`.
 4. **Set the timestamp** — Use the current UTC date or the date of last significant update.
 5. **Run the lint check before push:**
    ```bash
    python3 scripts/check_markdown_links.py
    python scripts/sync_assistant_trees.py --check
-   python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
+   python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on warning
    ```
 
 ## Common mistakes to avoid
 
 ❌ **Missing required fields** — CI will fail with `[missing_type]` or `[missing_description]` errors.
 
-❌ **Incorrect resource path** — Path must be relative from repo root (e.g., `wiki/00-overview.md`, not `docs/wiki/00-overview.md` or `./00-overview.md`).
+❌ **Incorrect resource path** — Path must be relative to the `docs/` bundle (e.g., `wiki/quality-gates.md`, not `./quality-gates.md` or an unrelated repo path).
 
 ❌ **Invalid type value** — Use standard singular nouns (not plural; not abbreviations).
 
@@ -98,7 +98,7 @@ When creating a new wiki file, use this checklist:
 - [ ] `type:` is set to a valid value (singular noun, capitalized).
 - [ ] `title:` matches the main `# Heading` in the file.
 - [ ] `description:` is a clear one-line summary (20–80 chars).
-- [ ] `resource:` path is relative from repo root and matches the file path.
+- [ ] `resource:` path is relative to the `docs/` bundle and matches the file path.
 - [ ] `tags:` includes 2–5 lowercase tags, at least one category tag.
 - [ ] `timestamp:` is ISO 8601 UTC format (`YYYY-MM-DDTHH:MM:SSZ`).
 - [ ] All field values are quoted strings (e.g., `type: "Task"` or `type: Task`).
@@ -107,5 +107,5 @@ When creating a new wiki file, use this checklist:
 ## See also
 
 - [`docs/wiki/quality-gates.md`](../../docs/wiki/quality-gates.md) — OKF linting is part of required CI checks.
-- OKF specification (internal) — `scripts/ci/okf_lint_changed.py` defines the validation rules.
+- OKF specification (internal) — `scripts/okf_lint.py` and `scripts/ci/okf_lint_changed.py` define the validation rules.
 - Template files — Any file in `docs/wiki/` can serve as a reference for correct frontmatter.
