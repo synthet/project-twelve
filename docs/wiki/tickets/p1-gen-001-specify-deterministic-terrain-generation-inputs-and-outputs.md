@@ -1,11 +1,17 @@
 ---
 id: P1-GEN-001
+type: Feature Spec
 title: "[P1-GEN-001] Specify deterministic terrain generation inputs and outputs."
-status: open
+description: Specify and implement deterministic terrain generation so the same seed and chunk coordinate always produce identical tiles across runs.
+resource: wiki/tickets/p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md
+tags: [wiki, ticket, P1, gen]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/27"
-github_issue_status: created
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/generation-and-saving.md"
@@ -85,8 +91,8 @@ As a developer or reviewer working on the P1 milestone, I want to specify determ
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [x] Spec references have been reviewed and updated if needed.
 - [x] Acceptance criteria have been validated.
 - [x] Verification evidence is attached or linked.
@@ -103,4 +109,6 @@ As a developer or reviewer working on the P1 milestone, I want to specify determ
   cover same-seed/same-coord identical output, column layering, surface vs. underground light
   seeds, and seed-sensitivity. Run with:
   `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
-- **GitHub issue:** Not created in this environment; issue-linkage boxes remain open.
+- **GitHub issue:** [#27](https://github.com/synthet/project-twelve/issues/27); the issue body
+  links back to this ticket. Implementation is merged into `master` and the issue is closed as
+  completed.

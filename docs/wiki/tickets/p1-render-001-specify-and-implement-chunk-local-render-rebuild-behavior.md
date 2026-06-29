@@ -1,11 +1,17 @@
 ---
 id: P1-RENDER-001
+type: Feature Spec
 title: "[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior."
-status: implemented
+description: Specify and implement chunk-local render rebuilds bounded to dirty, visible chunks so edits never touch unrelated or offscreen chunks.
+resource: wiki/tickets/p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md
+tags: [wiki, ticket, P1, render]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/29"
-github_issue_status: created
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/rendering-and-collision.md"

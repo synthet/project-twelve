@@ -83,14 +83,46 @@ public sealed class SandboxWorld : MonoBehaviour
         return chunk.GetLocalTile(local.x, local.y);
     }
 
+    /// <summary>
+    /// Single choke point for every gameplay tile edit. Placing and breaking both route here:
+    /// breaking is an edit to <see cref="SandboxTileIds.Air"/>. The edit resolves the owning chunk
+    /// (generating it on demand), applies the change through <see cref="ApplyTileEdit"/> so tile
+    /// data, dirty flags, and loaded border-neighbor chunks all update together, then ensures a
+    /// renderer exists for the owning chunk so the change becomes visible.
+    /// </summary>
     public void SetTile(int x, int y, int tileId)
     {
         Vector2Int chunkCoord = WorldToChunkCoord(x, y);
         SandboxChunk chunk = GetOrCreateChunk(chunkCoord);
         Vector2Int local = WorldToLocalCoord(x, y);
-        chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId));
+        ApplyTileEdit(chunks, chunk, local.x, local.y, new SandboxTile(tileId));
         EnsureRenderer(chunkCoord);
-        MarkBorderNeighborsDirty(chunks, chunkCoord, local.x, local.y);
+    }
+
+    /// <summary>
+    /// Applies a single tile edit to an already-resolved owning chunk and propagates its
+    /// consequences. Writing the tile through <see cref="SandboxChunk.SetLocalTile(int,int,SandboxTile)"/>
+    /// stores the new tile data, raises that chunk's render and collider dirty flags, and records the
+    /// chunk as edited for saving; <see cref="MarkBorderNeighborsDirty"/> then dirties any loaded
+    /// face-adjacent neighbor when the edit lands on a chunk border. The logic is a pure function of
+    /// the supplied chunk set, so it is covered directly by EditMode tests without instantiating
+    /// renderers. Edits that fall outside the chunk's local bounds are ignored by
+    /// <see cref="SandboxChunk.SetLocalTile(int,int,SandboxTile)"/> and dirty no neighbors.
+    /// </summary>
+    public static void ApplyTileEdit(
+        IReadOnlyDictionary<Vector2Int, SandboxChunk> loadedChunks,
+        SandboxChunk owningChunk,
+        int localX,
+        int localY,
+        SandboxTile tile)
+    {
+        if (!SandboxChunk.IsLocalInBounds(localX, localY))
+        {
+            return;
+        }
+
+        owningChunk.SetLocalTile(localX, localY, tile);
+        MarkBorderNeighborsDirty(loadedChunks, owningChunk.Coord, localX, localY);
     }
 
     /// <summary>

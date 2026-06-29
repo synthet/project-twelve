@@ -1,11 +1,17 @@
 ---
 id: P1-WORLD-002
+type: Feature Spec
 title: "[P1-WORLD-002] Implement chunk lifecycle tasks for load, visibility, dirty flags, and unload."
-status: implemented
+description: Implement chunk lifecycle selection for the load window, padded unload with hysteresis, and independent render/collider dirty flags.
+resource: wiki/tickets/p1-world-002-implement-chunk-lifecycle-tasks-for-load-visibility-dirty-fl.md
+tags: [wiki, ticket, P1, world]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/31"
-github_issue_status: created
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/world-and-chunk-data.md"

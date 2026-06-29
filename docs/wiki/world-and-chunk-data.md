@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: World and Chunk Data
+description: Chunk data model, coordinate conversion contract, tile fields, the SetTile edit choke point, and chunk lifecycle rules for the sandbox world.
+resource: wiki/world-and-chunk-data.md
+tags: [wiki, world, chunks, coordinates, tiles]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+---
+
 # World and Chunk Data
 
 ## Current Model
@@ -84,6 +94,33 @@ The neighbor set is exposed as the pure static `SandboxWorld.GetBorderNeighborCh
 dirtying step as `SandboxWorld.MarkBorderNeighborsDirty`, both covered by EditMode tests. This is
 the groundwork that keeps cross-chunk rendering (face culling, lighting) and merged collision
 consistent as those systems begin to sample neighbor tiles.
+
+## Tile Edit Choke Point (P1-EDIT-001)
+
+Every gameplay tile edit flows through the single `SandboxWorld.SetTile(x, y, tileId)` choke point.
+Placing and breaking are the same operation: breaking writes `SandboxTileIds.Air`. Routing all
+edits through one method keeps the data, dirty-flag, render, collision, and neighbor-propagation
+side effects consistent regardless of caller (player input today, tools or networking later).
+
+`SetTile` performs the Unity-facing steps — resolving and lazily generating the owning chunk and
+ensuring it has a renderer — and delegates the pure edit logic to the static
+`SandboxWorld.ApplyTileEdit`:
+
+- **Tile data.** The new tile is written via `SandboxChunk.SetLocalTile`, replacing the previous
+  tile in the owning chunk.
+- **Dirty flags.** Writing the tile raises the owning chunk's `NeedsRenderRebuild` and
+  `NeedsColliderRebuild` flags so both the mesh and the collider rebuild, and marks the chunk
+  `IsDirty`/`HasEdits` so the edit is persisted on the next save.
+- **Border neighbors.** `MarkBorderNeighborsDirty` dirties any already-loaded face-adjacent neighbor
+  when the edit lands on a chunk border, matching the [Border Edit Propagation](#border-edit-propagation)
+  rules above. Unloaded neighbors are left to rebuild when they next load.
+- **Bounds.** An edit whose local coordinate is out of range is ignored and dirties nothing.
+
+The deserialization path in `LoadFromPath` deliberately bypasses this choke point: it writes saved
+tiles with `markDirty: false` because loading is not a gameplay edit and must not re-flag every
+loaded chunk as edited. `ApplyTileEdit` is a pure function of the supplied chunk set and is covered
+by the `SandboxWorld_Apply*Edit*` EditMode tests for central edits, border edits, breaking to air,
+and out-of-bounds edits.
 
 ## Chunk Lifecycle Contract (P1-WORLD-002)
 

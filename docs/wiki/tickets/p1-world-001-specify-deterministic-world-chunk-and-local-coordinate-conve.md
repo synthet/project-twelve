@@ -1,11 +1,17 @@
 ---
 id: P1-WORLD-001
+type: Feature Spec
 title: "[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates."
-status: implemented
+description: Specify and implement deterministic world/chunk/local coordinate conversions, including negative coordinates and chunk-boundary cases.
+resource: wiki/tickets/p1-world-001-specify-deterministic-world-chunk-and-local-coordinate-conve.md
+tags: [wiki, ticket, P1, world]
+timestamp: 2026-06-28T00:00:00Z
+okf_version: 0.1
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/30"
-github_issue_status: created
+github_issue_status: closed
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/world-and-chunk-data.md"
