@@ -33,7 +33,7 @@ run_check "Markdown link validation" \
 # 2. OKF frontmatter validation (if docs changed)
 if git diff --cached --name-only | grep -q "docs/"; then
     run_check "OKF frontmatter validation" \
-        "python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error"
+        "python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on warning"
 else
     echo "⊘ OKF validation skipped (no docs/ changes staged)"
     echo ""
