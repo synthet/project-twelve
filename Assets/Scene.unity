@@ -162,7 +162,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.12, g: 0.14, b: 0.18, a: 0}
+  m_BackGroundColor: {r: 0.102, g: 0.098, b: 0.196, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -473,3 +473,5 @@ MonoBehaviour:
   tiledSize: {x: 128, y: 16}
   sortingOrder: -40
   cameraTransform: {fileID: 100001}
+  syncCameraClearColor: 1
+  cameraClearColor: {r: 0.102, g: 0.098, b: 0.196, a: 1}

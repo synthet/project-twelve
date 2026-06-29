@@ -204,6 +204,13 @@ public sealed class SandboxWorld : MonoBehaviour
             pair.Value.MarkClean();
         }
 
+        if (playerTarget != null)
+        {
+            saveData.hasPlayerPosition = true;
+            saveData.playerX = playerTarget.position.x;
+            saveData.playerY = playerTarget.position.y;
+        }
+
         string directory = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(directory))
         {
@@ -238,7 +245,31 @@ public sealed class SandboxWorld : MonoBehaviour
             chunks.Add(chunkData.Coord, chunk);
         }
 
+        if (saveData.hasPlayerPosition)
+        {
+            RestorePlayerPosition(new Vector2(saveData.playerX, saveData.playerY));
+            RefreshLoadedChunks();
+        }
+
         MarkAllLoadedRenderersDirty();
+    }
+
+    private void RestorePlayerPosition(Vector2 position)
+    {
+        if (playerTarget == null)
+        {
+            return;
+        }
+
+        if (playerTarget.TryGetComponent(out Rigidbody2D body))
+        {
+            body.position = position;
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        Vector3 current = playerTarget.position;
+        playerTarget.position = new Vector3(position.x, position.y, current.z);
     }
 
     public bool IsSolidAtWorldPosition(Vector2 worldPosition)

@@ -14,6 +14,12 @@ public sealed class SandboxPlayerController : MonoBehaviour
     [SerializeField] private float editRange = 6f;
     [SerializeField] private string saveFileName = "sandbox-world.json";
 
+    private const float GroundProbeDistance = 0.12f;
+    private const float GroundNormalThreshold = 0.5f;
+    private const float WallProbeDistance = 0.08f;
+    private const float WallNormalThreshold = 0.5f;
+    private const float FootInset = 0.05f;
+
     private Rigidbody2D body;
     private BoxCollider2D playerCollider;
     private Camera mainCamera;
@@ -75,6 +81,10 @@ public sealed class SandboxPlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
         mainCamera = Camera.main;
+
+        PhysicsMaterial2D frictionless = SandboxPhysicsMaterials.ZeroFriction;
+        body.sharedMaterial = frictionless;
+        playerCollider.sharedMaterial = frictionless;
 
         if (world == null)
         {
@@ -146,7 +156,13 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        body.linearVelocity = new Vector2(horizontalInput * moveSpeed, body.linearVelocity.y);
+        float targetVelocityX = horizontalInput * moveSpeed;
+        if (!Mathf.Approximately(horizontalInput, 0f) && IsBlockedHorizontally(Mathf.Sign(horizontalInput)))
+        {
+            targetVelocityX = 0f;
+        }
+
+        body.linearVelocity = new Vector2(targetVelocityX, body.linearVelocity.y);
     }
 
     private void HandleJump()
@@ -209,13 +225,13 @@ public sealed class SandboxPlayerController : MonoBehaviour
         if (WasSavePressed())
         {
             world.SaveToPath(path);
-            Debug.Log($"Saved sandbox world to {path}");
+            Debug.Log($"Saved sandbox world and player position to {path}");
         }
 
         if (WasLoadPressed())
         {
             world.LoadFromPath(path);
-            Debug.Log($"Loaded sandbox world from {path}");
+            Debug.Log($"Loaded sandbox world and player position from {path}");
         }
     }
 
@@ -412,14 +428,66 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private bool CheckGrounded()
     {
-        if (playerCollider == null || world == null)
+        if (playerCollider == null)
         {
             return false;
         }
 
         Bounds bounds = playerCollider.bounds;
-        Vector2 leftFoot = new Vector2(bounds.min.x + 0.05f, bounds.min.y - 0.05f);
-        Vector2 rightFoot = new Vector2(bounds.max.x - 0.05f, bounds.min.y - 0.05f);
-        return world.IsSolidAtWorldPosition(leftFoot) || world.IsSolidAtWorldPosition(rightFoot);
+        float probeY = bounds.min.y - 0.01f;
+        Vector2 leftFoot = new Vector2(bounds.min.x + FootInset, probeY);
+        Vector2 rightFoot = new Vector2(bounds.max.x - FootInset, probeY);
+        return ProbeGround(leftFoot) || ProbeGround(rightFoot);
+    }
+
+    private bool ProbeGround(Vector2 origin)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, GroundProbeDistance);
+        return IsTerrainHit(hit) && hit.normal.y > GroundNormalThreshold;
+    }
+
+    private bool IsBlockedHorizontally(float direction)
+    {
+        if (playerCollider == null || Mathf.Approximately(direction, 0f))
+        {
+            return false;
+        }
+
+        Bounds bounds = playerCollider.bounds;
+        float probeX = direction > 0f ? bounds.max.x + 0.01f : bounds.min.x - 0.01f;
+        Vector2 origin = new Vector2(probeX, bounds.min.y + bounds.size.y * 0.25f);
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.right * direction, WallProbeDistance);
+        return IsTerrainHit(hit) && Mathf.Abs(hit.normal.x) > WallNormalThreshold;
+    }
+
+    private bool IsTerrainHit(RaycastHit2D hit)
+    {
+        return hit.collider != null && hit.collider != playerCollider;
+    }
+}
+
+/// <summary>
+/// Shared 2D physics materials for sandbox gameplay colliders.
+/// </summary>
+public static class SandboxPhysicsMaterials
+{
+    private static PhysicsMaterial2D zeroFriction;
+
+    /// <summary>Frictionless material used for player and terrain to prevent wall sticking.</summary>
+    public static PhysicsMaterial2D ZeroFriction
+    {
+        get
+        {
+            if (zeroFriction == null)
+            {
+                zeroFriction = new PhysicsMaterial2D("SandboxZeroFriction")
+                {
+                    friction = 0f,
+                    bounciness = 0f
+                };
+            }
+
+            return zeroFriction;
+        }
     }
 }
