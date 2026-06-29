@@ -98,8 +98,18 @@ def main() -> int:
         return 0
 
     if args.push:
-        upstream = run_git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
-        upstream_ref = upstream[0] if upstream else "origin/HEAD"
+        # Try to get the configured upstream; fall back to origin/HEAD if not set
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            upstream_ref = result.stdout.strip()
+        else:
+            upstream_ref = "origin/HEAD"
         files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")
