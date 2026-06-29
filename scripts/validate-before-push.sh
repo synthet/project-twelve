@@ -2,7 +2,7 @@
 # Validate all quality gates before pushing to remote.
 # Run this from the repo root: bash scripts/validate-before-push.sh
 
-set -e  # Exit on first error
+set -o pipefail  # Fail if any command in a pipe fails
 
 echo "🔍 Running ProjectTwelve quality gate validation..."
 echo ""
