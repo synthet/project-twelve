@@ -30,8 +30,9 @@ The canonical task queue is **wiki tickets** under [`docs/wiki/tickets/`](docs/w
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
 Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 
-# Documentation/link hygiene and agent checks.
+# Documentation/link hygiene and OKF validation (run before pushing any docs/ changes).
 python3 scripts/check_markdown_links.py
+python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
 python3 scripts/check_paid_assets.py --staged
 python scripts/sync_assistant_trees.py --check
 ```

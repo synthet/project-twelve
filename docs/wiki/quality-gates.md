@@ -60,7 +60,37 @@ python3 scripts/check_markdown_links.py
 
 **On failure:** Fix broken links or move the referenced file.
 
-#### 2b. Paid asset validation
+#### 2b. OKF frontmatter validation (wiki and docs)
+
+**CRITICAL:** All files in `docs/` must include valid OKF frontmatter. This is enforced in CI and will block merge if violated.
+
+```bash
+python scripts/ci/okf_lint_changed.py \
+  --base origin/master \
+  --head HEAD \
+  --profile project \
+  --fail-on error
+```
+
+**Checks:**
+- Every markdown file has required frontmatter fields: `type`, `title`, `description`, `resource`, `tags`, `timestamp`.
+- Field values are syntactically valid (proper YAML formatting).
+- `resource` paths match the actual file location relative to repo root.
+- Timestamps are ISO 8601 UTC format.
+
+**On failure:** Add or fix frontmatter per [`.claude/rules/okf-frontmatter.md`](../../.claude/rules/okf-frontmatter.md). Common fixes:
+- Add missing fields (copy from an existing wiki file as a template).
+- Fix `resource` path: must be relative from repo root (e.g., `wiki/00-overview.md`).
+- Fix `timestamp` format: use ISO 8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
+- Use proper YAML syntax (colons followed by space, no tabs).
+
+**Run this locally before every push to docs/:**
+```bash
+# Check changed files only (faster)
+python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
+```
+
+#### 2c. Paid asset validation
 ```bash
 python3 scripts/check_paid_assets.py --staged
 ```
