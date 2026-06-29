@@ -216,6 +216,63 @@ public sealed class SandboxCoreTests
         Assert.IsFalse(loadedChunks.ContainsKey(new Vector2Int(-1, 0)));
     }
 
+    [Test]
+    public void SandboxWorld_GetFaceNeighborChunksReturnsFourOrthogonalNeighbors()
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>(
+            SandboxWorld.GetFaceNeighborChunks(new Vector2Int(2, 3)));
+
+        CollectionAssert.AreEquivalent(
+            new[]
+            {
+                new Vector2Int(1, 3),
+                new Vector2Int(3, 3),
+                new Vector2Int(2, 2),
+                new Vector2Int(2, 4),
+            },
+            neighbors);
+    }
+
+    [Test]
+    public void SandboxWorld_ChunkVisibilityChangeMarksRenderedNeighborsDirty()
+    {
+        Vector2Int existingCoord = Vector2Int.zero;
+        Vector2Int newCoord = new Vector2Int(1, 0);
+        SandboxChunk existing = CleanChunk(existingCoord);
+        SandboxChunk incoming = CleanChunk(newCoord);
+        var loadedChunks = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { existingCoord, existing },
+            { newCoord, incoming },
+        };
+        var rendered = new HashSet<Vector2Int> { existingCoord, newCoord };
+
+        SandboxWorld.MarkRenderedFaceNeighborsDirty(newCoord, loadedChunks, rendered);
+
+        Assert.IsTrue(existing.NeedsRenderRebuild);
+        Assert.IsTrue(existing.NeedsColliderRebuild);
+        Assert.IsFalse(incoming.NeedsRenderRebuild);
+        Assert.IsFalse(incoming.NeedsColliderRebuild);
+    }
+
+    [Test]
+    public void SandboxWorld_ChunkVisibilityChangeSkipsUnrenderedNeighbors()
+    {
+        Vector2Int existingCoord = Vector2Int.zero;
+        Vector2Int newCoord = new Vector2Int(1, 0);
+        SandboxChunk existing = CleanChunk(existingCoord);
+        var loadedChunks = new Dictionary<Vector2Int, SandboxChunk>
+        {
+            { existingCoord, existing },
+            { newCoord, CleanChunk(newCoord) },
+        };
+
+        SandboxWorld.MarkRenderedFaceNeighborsDirty(newCoord, loadedChunks, new HashSet<Vector2Int> { newCoord });
+
+        Assert.IsFalse(existing.NeedsRenderRebuild);
+        Assert.IsFalse(existing.NeedsColliderRebuild);
+    }
+
     private static SandboxChunk CleanChunk(Vector2Int coord)
     {
         SandboxChunk chunk = new SandboxChunk(coord);
