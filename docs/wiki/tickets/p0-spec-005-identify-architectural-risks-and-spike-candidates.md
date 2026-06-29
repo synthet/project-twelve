@@ -1,7 +1,7 @@
 ---
 id: P0-SPEC-005
 title: "[P0-SPEC-005] Identify architectural risks and spike candidates."
-status: claimed
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/24"

@@ -68,6 +68,8 @@ See [Roadmap](14-roadmap.md) for sequencing and timeboxes.
 | Save-file scale | Chunk diffs + compression + versioning | [11](11-saving-loading.md) |
 | Multiplayer consistency/cheating | Server-authoritative tile deltas | [10](10-multiplayer.md) |
 
+See [16-architectural-risks.md](16-architectural-risks.md) for detailed risk analysis with mitigations, owners, and decision deadlines.
+
 ## See also
 
 - [Architecture](01-architecture.md) — how the pieces fit together.

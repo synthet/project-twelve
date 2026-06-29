@@ -60,6 +60,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 13 | [Tooling, Testing & Profiling](13-tooling-testing.md) | Debug views, tests, profiler targets |
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
+| 16 | [Architectural Risks](16-architectural-risks.md) | High-impact technical risks with mitigations, owners, decision deadlines |
 | — | [Quality Gates](quality-gates.md) | Required checks: automated tests, link hygiene, deterministic verification, profiler targets |
 | — | [Spec-Driven Development Tasks](spec-driven-development-tasks.md) | Phase-by-phase task backlog, acceptance criteria, and verification gates |
 | — | [Architecture Blueprint](architecture-blueprint.md) | Text translation of the visual blueprint canvas (10 figures) |
