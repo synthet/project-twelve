@@ -44,7 +44,7 @@ python3 scripts/check_markdown_links.py
 ```
 
 **Checks:**
-- All `[text](path/to/file.md)` links resolve to existing files.
+- All markdown links resolve to existing files (e.g., relative paths like `docs/wiki/file.md`).
 - No relative paths pointing outside the repo.
 - Cross-refs in frontmatter (e.g., `github_issue`) are reachable.
 
