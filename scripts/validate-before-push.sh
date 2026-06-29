@@ -54,7 +54,7 @@ fi
 
 # 5. Python syntax validation
 run_check "Python script syntax" \
-    "python -m py_compile scripts/*.py scripts/ci/*.py scripts/agent-memory/*.py scripts/agent_memory/*.py 2>/dev/null || true"
+    "find scripts -type f -name '*.py' -print0 | xargs -0 --no-run-if-empty python -m py_compile"
 
 # Summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
