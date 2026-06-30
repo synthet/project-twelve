@@ -7,6 +7,47 @@ using UnityEngine;
 public sealed class AutotileVisualTests
 {
     [Test]
+    public void AutotileResolver_ConnectedGroundPlatform_ResolvesInteriorSprite()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        int[,] mask = AutotileMaskBuilder.BuildGroundMask((x, y) => true, 5, 5);
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
+
+        Assert.IsNotNull(resolved);
+        Assert.IsTrue(resolved.name == "9" || resolved.name == "10");
+        Assert.AreNotEqual("20", resolved.name);
+    }
+
+    [Test]
+    public void AutotileResolver_HorizontalGrassCoverRun_ResolvesMiddleSprite()
+    {
+        AutotileTileset tileset = CreateCoverTileset();
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) => y == 5 && (x == 4 || x == 6),
+            (x, y) => false,
+            5,
+            5);
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("4", resolved.name);
+    }
+
+    [Test]
+    public void AutotileCoverMask_StoneCliffBesideGrass_SetsCliffWithoutSharedGroundGroup()
+    {
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) => false,
+            (x, y) => x == 4 && (y == 5 || y == 6),
+            5,
+            5);
+
+        Assert.AreEqual(2, mask[1, 0]);
+    }
+
+    [Test]
     public void AutotileMaskBuilder_CornerRequiresBothCardinals()
     {
         int[,] mask = AutotileMaskBuilder.BuildGroundMask((x, y) => x == 0 && y == 0, 5, 5);
@@ -241,6 +282,12 @@ public sealed class AutotileVisualTests
 
         Texture2D texture = new Texture2D(16, 16);
         return new AutotileTileset("BricksStyle", texture, CreateSprites(names));
+    }
+
+    private static AutotileTileset CreateCoverTileset()
+    {
+        Texture2D texture = new Texture2D(16, 16);
+        return new AutotileTileset("GrassA", texture, CreateSprites("0", "1", "2", "3", "4", "5"));
     }
 
     private static AutotileTileset CreateTestTileset()

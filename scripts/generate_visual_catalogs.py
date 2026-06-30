@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import sys
 import uuid
 from pathlib import Path
 
@@ -112,9 +113,13 @@ def read_or_create_catalog_guid(asset_path: Path) -> str:
     return uuid.uuid4().hex
 
 
+GROUND_AUTOTILE_SPRITE_COUNT = 32
+
+
 def generate_autotile_catalog(tiles_root: str) -> None:
     ground: list[str] = []
     cover: list[str] = []
+    ground_sprite_errors: list[str] = []
     for subfolder, bucket in (("Ground", ground), ("Cover", cover)):
         folder = resolve_asset_path(tiles_root, subfolder)
         if not folder.is_dir():
@@ -126,11 +131,12 @@ def generate_autotile_catalog(tiles_root: str) -> None:
                 continue
             texture_guid = read_guid(meta_path)
             sprite_ids = read_sprite_file_ids(meta_path)
-            if subfolder == "Ground" and len(sprite_ids) < 32:
-                print(
-                    f"WARNING: {png.name} has {len(sprite_ids)} sprite refs "
-                    f"(expected 32 for ground autotile sheets)"
+            if subfolder == "Ground" and len(sprite_ids) != GROUND_AUTOTILE_SPRITE_COUNT:
+                ground_sprite_errors.append(
+                    f"{png.name}: {len(sprite_ids)} sprite refs "
+                    f"(expected {GROUND_AUTOTILE_SPRITE_COUNT} for ground autotile sheets)"
                 )
+                continue
             sprite_lines = "\n".join(
                 f"    - {unity_ref(sprite_id, texture_guid)}" for sprite_id in sprite_ids
             )
@@ -141,6 +147,12 @@ def generate_autotile_catalog(tiles_root: str) -> None:
                 f"    sprites:\n{sprite_lines}\n"
                 f"    customRules: []"
             )
+
+    if ground_sprite_errors:
+        print("ERROR: ground autotile sheets must have exactly 32 sprites:", file=sys.stderr)
+        for message in ground_sprite_errors:
+            print(f"  - {message}", file=sys.stderr)
+        raise SystemExit(1)
 
     catalog_guid = read_or_create_catalog_guid(OUTPUT_DIR / "AutotileCatalog.asset")
     autotile_script_guid = read_script_guid("Visual/Tiles/AutotileCatalog.cs")

@@ -421,7 +421,7 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileSize,
                 tileMaterial,
                 tileVisualCatalog,
-                LookupLoadedTile);
+                GetTile);
         }
     }
 
@@ -501,18 +501,6 @@ public sealed class SandboxWorld : MonoBehaviour
     private SandboxChunk GenerateChunk(Vector2Int chunkCoord)
     {
         return CreateTerrainGenerator().GenerateChunk(chunkCoord);
-    }
-
-    private SandboxTile LookupLoadedTile(int worldX, int worldY)
-    {
-        Vector2Int chunkCoord = WorldToChunkCoord(worldX, worldY);
-        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
-        {
-            return default;
-        }
-
-        Vector2Int local = WorldToLocalCoord(worldX, worldY);
-        return chunk.GetLocalTile(local.x, local.y);
     }
 
     private static int FloorDiv(int value, int divisor)

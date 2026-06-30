@@ -41,6 +41,7 @@ namespace ProjectTwelve.Visual.Tiles
         /// diagonal cells stay empty so the cover rule table (which constrains only that row)
         /// matches cleanly. Cell values: 1 = cover continues, 2 = cliff-side edge, 0 = open air.
         /// </summary>
+        /// <param name="hasGroundBody">Returns true when the coordinate holds any solid ground tile.</param>
         public static int[,] BuildCoverMask(
             Func<int, int, bool> sharesCoverGroup,
             Func<int, int, bool> hasGroundBody,

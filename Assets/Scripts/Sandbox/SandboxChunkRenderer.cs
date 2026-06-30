@@ -169,11 +169,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 SandboxTile neighbor = tileLookup(x, y);
                 return visualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
             },
-            (x, y) =>
-            {
-                SandboxTile neighbor = tileLookup(x, y);
-                return neighbor.IsSolid && visualCatalog.SharesGroundAutotileGroup(tile.id, neighbor.id);
-            },
+            (x, y) => tileLookup(x, y).IsSolid,
             worldCoord.x,
             worldCoord.y);
 
