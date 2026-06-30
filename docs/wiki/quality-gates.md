@@ -62,7 +62,7 @@ python3 scripts/check_markdown_links.py
 
 #### 2b. OKF frontmatter validation (wiki and docs)
 
-**CRITICAL:** All files in `docs/` must include valid OKF frontmatter. This is enforced in CI and will block merge if violated.
+All files in `docs/` must include valid OKF frontmatter. The CI command runs with `--fail-on error`, so a **missing `type` field is the only frontmatter omission that blocks merge**; missing `description`, `resource`, `tags`, or `timestamp` are reported as warnings. Add all six regardless — warnings keep docs discoverable and may be promoted to errors later.
 
 ```bash
 python scripts/ci/okf_lint_changed.py \
@@ -73,14 +73,14 @@ python scripts/ci/okf_lint_changed.py \
 ```
 
 **Checks:**
-- Every markdown file has required frontmatter fields: `type`, `title`, `description`, `resource`, `tags`, `timestamp`.
+- Every markdown file has a `type` field (merge-blocking) plus `title`, `description`, `resource`, `tags`, `timestamp` (warnings).
 - Field values are syntactically valid (proper YAML formatting).
-- `resource` paths match the actual file location relative to repo root.
+- `resource` paths match the actual file location relative to the `docs/` bundle root (e.g., `wiki/00-overview.md`); the linter also accepts a `docs/`-prefixed form for compatibility.
 - Timestamps are ISO 8601 UTC format.
 
 **On failure:** Add or fix frontmatter per [`.claude/rules/okf-frontmatter.md`](../../.claude/rules/okf-frontmatter.md). Common fixes:
 - Add missing fields (copy from an existing wiki file as a template).
-- Fix `resource` path: must be relative from repo root (e.g., `wiki/00-overview.md`).
+- Fix `resource` path: must be relative to the `docs/` bundle root (e.g., `wiki/00-overview.md`).
 - Fix `timestamp` format: use ISO 8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
 - Use proper YAML syntax (colons followed by space, no tabs).
 

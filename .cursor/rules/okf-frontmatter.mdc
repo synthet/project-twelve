@@ -5,11 +5,11 @@ alwaysApply: true
 
 # OKF Frontmatter Requirements (always on)
 
-`scripts/okf_lint.py` validates OKF (Open Knowledge Format) frontmatter for **concept files** in the `docs/` bundle: Markdown files under `docs/` except `log.md` files and paths skipped by configured `--exclude-prefix` values (default: `archive/`). This rule prevents merge-blocking validation failures while matching the linter's actual scope.
+`scripts/okf_lint.py` validates OKF (Open Knowledge Format) frontmatter for **concept files** in the `docs/` bundle: Markdown files under `docs/` except `log.md` files and paths skipped by configured `--exclude-prefix` values (default: `archive/`). Under the CI command (`--fail-on error`), a **missing `type` is the only field that blocks merge**; missing `description`, `resource`, `tags`, or `timestamp` are reported as warnings. Treat all six as required anyway — the warnings exist to keep docs discoverable and may be promoted to errors later.
 
 ## Required fields for checked docs concept files
 
-Every checked concept file in `docs/` **must** include these frontmatter fields. By default this means `docs/**/*.md` except `log.md` files and files under excluded prefixes such as `docs/archive/`:
+Every checked concept file in `docs/` should include these frontmatter fields (`type` is merge-blocking; the rest are warnings under `--fail-on error`). By default this means `docs/**/*.md` except `log.md` files and files under excluded prefixes such as `docs/archive/`:
 
 ```yaml
 ---
@@ -75,12 +75,12 @@ date -u +"%Y-%m-%dT%H:%M:%SZ"
    ```bash
    python3 scripts/check_markdown_links.py
    python scripts/sync_assistant_trees.py --check
-   python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on warning
+   python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
    ```
 
 ## Common mistakes to avoid
 
-❌ **Missing required fields** — CI will fail with `[missing_type]` or `[missing_description]` errors.
+❌ **Missing `type`** — CI fails with a `[missing_type]` error (the only merge-blocking field under `--fail-on error`). Missing `description`/`resource`/`tags`/`timestamp` are reported as warnings — add them anyway.
 
 ❌ **Incorrect resource path** — Path must be relative to the `docs/` bundle (e.g., `wiki/quality-gates.md`, not `./quality-gates.md` or an unrelated repo path).
 
