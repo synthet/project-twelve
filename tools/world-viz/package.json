@@ -1,0 +1,17 @@
+{
+  "name": "world-viz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline, engine-free visualizer/debugger for ProjectTwelve world generation.",
+  "type": "module",
+  "bin": {
+    "world-viz": "src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
