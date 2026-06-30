@@ -7,6 +7,22 @@ set -o pipefail  # Fail if any command in a pipe fails
 echo "🔍 Running ProjectTwelve quality gate validation..."
 echo ""
 
+# Determine the range of commits that will be pushed (committed-but-unpushed),
+# so the gates inspect the same delta that CI sees — not the staging area, which
+# is empty in the normal "commit, then validate, then push" flow.
+if git rev-parse --abbrev-ref --symbolic-full-name @{upstream} >/dev/null 2>&1; then
+    BASE_REF="$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream})"
+else
+    # No upstream configured yet (e.g. a fresh branch): compare against origin/master.
+    BASE_REF="origin/master"
+fi
+RANGE="${BASE_REF}...HEAD"
+echo "Comparing against: ${RANGE}"
+echo ""
+
+# Files changed in the range under review.
+CHANGED_FILES="$(git diff --name-only "${RANGE}")"
+
 # Counter for pass/fail
 CHECKS_PASSED=0
 CHECKS_FAILED=0
@@ -30,31 +46,39 @@ run_check() {
 run_check "Markdown link validation" \
     "python3 scripts/check_markdown_links.py"
 
-# 2. OKF frontmatter validation (if docs changed)
-if git diff --cached --name-only | grep -q "docs/"; then
+# 2. OKF frontmatter validation (if docs changed in the push range)
+if echo "${CHANGED_FILES}" | grep -q "^docs/"; then
     run_check "OKF frontmatter validation" \
-        "python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error"
+        "python scripts/ci/okf_lint_changed.py --base '${BASE_REF}' --head HEAD --profile project --fail-on error"
 else
-    echo "⊘ OKF validation skipped (no docs/ changes staged)"
+    echo "⊘ OKF validation skipped (no docs/ changes in ${RANGE})"
     echo ""
 fi
 
-# 3. Paid assets validation
+# 3. Paid assets validation (mirrors the CI pre-push check)
 run_check "Paid asset validation" \
-    "python3 scripts/check_paid_assets.py --staged"
+    "python3 scripts/check_paid_assets.py --push"
 
-# 4. Assistant tree sync validation (if .claude/ or .cursor/ changed)
-if git diff --cached --name-only | grep -qE "^\.claude/|^\.cursor/"; then
+# 4. Assistant tree sync validation (if .claude/ or .cursor/ changed in the push range)
+if echo "${CHANGED_FILES}" | grep -qE "^\.claude/|^\.cursor/"; then
     run_check "Assistant tree sync" \
         "python scripts/sync_assistant_trees.py --check"
 else
-    echo "⊘ Tree sync skipped (no .claude/ or .cursor/ changes staged)"
+    echo "⊘ Tree sync skipped (no .claude/ or .cursor/ changes in ${RANGE})"
     echo ""
 fi
 
-# 5. Python syntax validation
-run_check "Python script syntax" \
-    "python -m py_compile scripts/*.py scripts/ci/*.py scripts/agent-memory/*.py scripts/agent_memory/*.py 2>/dev/null || true"
+# 5. Python syntax validation. Build the file list explicitly so missing
+# optional directories don't error, and let py_compile's own exit code through
+# (no `|| true` — a real syntax error must fail this gate).
+PY_FILES="$(git ls-files 'scripts/*.py')"
+if [ -n "${PY_FILES}" ]; then
+    run_check "Python script syntax" \
+        "echo \"${PY_FILES}\" | xargs python -m py_compile"
+else
+    echo "⊘ Python syntax check skipped (no tracked scripts/*.py files)"
+    echo ""
+fi
 
 # Summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -62,7 +62,7 @@ python3 scripts/check_markdown_links.py
 
 #### 2b. OKF frontmatter validation (wiki and docs)
 
-**CRITICAL:** All files in `docs/` must include valid OKF frontmatter. This is enforced in CI and will block merge if violated.
+All files in `docs/` must include valid OKF frontmatter. The CI command runs with `--fail-on error`, so a **missing `type` field is the only frontmatter omission that blocks merge**; missing `description`, `resource`, `tags`, or `timestamp` are reported as warnings. Add all six regardless — warnings keep docs discoverable and may be promoted to errors later.
 
 ```bash
 python scripts/ci/okf_lint_changed.py \
@@ -73,7 +73,7 @@ python scripts/ci/okf_lint_changed.py \
 ```
 
 **Checks:**
-- Every markdown file has required frontmatter fields: `type`, `title`, `description`, `resource`, `tags`, `timestamp`.
+- Every markdown file has a `type` field (merge-blocking) plus `title`, `description`, `resource`, `tags`, `timestamp` (warnings).
 - Field values are syntactically valid (proper YAML formatting).
 - `resource` paths match the actual file location relative to repo root.
 - Timestamps are ISO 8601 UTC format.

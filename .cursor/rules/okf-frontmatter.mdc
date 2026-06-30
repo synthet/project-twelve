@@ -5,11 +5,11 @@ alwaysApply: true
 
 # OKF Frontmatter Requirements (always on)
 
-All markdown files in `docs/` must include valid OKF (Open Knowledge Format) frontmatter to pass CI lint checks. This rule prevents merge-blocking validation failures.
+All markdown files in `docs/` must include valid OKF (Open Knowledge Format) frontmatter. Under the CI command (`--fail-on error`), a **missing `type` is the only field that blocks merge**; missing `description`, `resource`, `tags`, or `timestamp` are reported as warnings. Treat all six as required anyway — the warnings exist to keep docs discoverable, and warnings can be promoted to errors later.
 
 ## Required fields for all wiki/doc files
 
-Every markdown file in `docs/` **must** include these frontmatter fields:
+Every markdown file in `docs/` should include these frontmatter fields (`type` is merge-blocking; the rest are warnings under `--fail-on error`):
 
 ```yaml
 ---
@@ -80,7 +80,7 @@ date -u +"%Y-%m-%dT%H:%M:%SZ"
 
 ## Common mistakes to avoid
 
-❌ **Missing required fields** — CI will fail with `[missing_type]` or `[missing_description]` errors.
+❌ **Missing `type`** — CI fails with a `[missing_type]` error (the only merge-blocking field under `--fail-on error`). Missing `description`/`resource`/`tags`/`timestamp` are reported as warnings — add them anyway.
 
 ❌ **Incorrect resource path** — Path must be relative from repo root (e.g., `wiki/00-overview.md`, not `docs/wiki/00-overview.md` or `./00-overview.md`).
 
