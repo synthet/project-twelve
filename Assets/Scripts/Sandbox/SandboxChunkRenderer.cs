@@ -427,6 +427,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 {
                     int runLength = x - runStart;
                     BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
+                    collider.sharedMaterial = SandboxPhysicsMaterials.ZeroFriction;
                     collider.offset = new Vector2((runStart + runLength * 0.5f) * tileSize, (y + 0.5f) * tileSize);
                     collider.size = new Vector2(runLength * tileSize, tileSize);
                     runStart = -1;

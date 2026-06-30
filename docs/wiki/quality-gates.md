@@ -75,12 +75,12 @@ python scripts/ci/okf_lint_changed.py \
 **Checks:**
 - Every markdown file has a `type` field (merge-blocking) plus `title`, `description`, `resource`, `tags`, `timestamp` (warnings).
 - Field values are syntactically valid (proper YAML formatting).
-- `resource` paths match the actual file location relative to repo root.
+- `resource` paths match the actual file location relative to the `docs/` bundle root (e.g., `wiki/00-overview.md`); the linter also accepts a `docs/`-prefixed form for compatibility.
 - Timestamps are ISO 8601 UTC format.
 
 **On failure:** Add or fix frontmatter per [`.claude/rules/okf-frontmatter.md`](../../.claude/rules/okf-frontmatter.md). Common fixes:
 - Add missing fields (copy from an existing wiki file as a template).
-- Fix `resource` path: must be relative from repo root (e.g., `wiki/00-overview.md`).
+- Fix `resource` path: must be relative to the `docs/` bundle root (e.g., `wiki/00-overview.md`).
 - Fix `timestamp` format: use ISO 8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`).
 - Use proper YAML syntax (colons followed by space, no tabs).
 

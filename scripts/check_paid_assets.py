@@ -46,6 +46,43 @@ def run_git(*args: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
+def run_git_optional(*args: str) -> tuple[int, str]:
+    """Run git without exiting on failure; return (returncode, stdout-stripped)."""
+    result = subprocess.run(
+        ["git", *args],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.returncode, result.stdout.strip()
+
+
+# The empty tree's well-known SHA-1; diffing against it yields every tracked
+# path reachable from HEAD, so the guard never silently misses a commit.
+EMPTY_TREE_SHA = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+
+
+def resolve_push_base() -> str:
+    """Pick a base ref to diff the push range against.
+
+    Prefer the configured upstream; fall back to common remote default
+    branches. If none resolve, diff against the empty tree so the whole
+    history is scanned — a paid-asset guard must fail safe toward over-
+    scanning, never toward skipping commits.
+    """
+    rc, upstream = run_git_optional(
+        "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"
+    )
+    if rc == 0 and upstream:
+        return upstream
+    for candidate in ("origin/master", "origin/main", "origin/HEAD"):
+        rc, _ = run_git_optional("rev-parse", "--verify", f"{candidate}^{{commit}}")
+        if rc == 0:
+            return candidate
+    return EMPTY_TREE_SHA
+
+
 def path_is_blocked(file_path: str, blocked_roots: list[str]) -> str | None:
     normalized = file_path.replace("\\", "/")
     for root in blocked_roots:
@@ -98,32 +135,13 @@ def main() -> int:
         return 0
 
     if args.push:
-        # Try to get the configured upstream; fall back to common defaults
-        result = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
-            cwd=REPO_ROOT,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if result.returncode == 0:
-            upstream_ref = result.stdout.strip()
+        base = resolve_push_base()
+        if base == EMPTY_TREE_SHA:
+            # No merge-base exists with the empty tree, so use a two-dot diff
+            # to scan every commit reachable from HEAD.
+            files = run_git("diff", "--name-only", base, "HEAD")
         else:
-            # Try common fallbacks for CI environments
-            for candidate in ["origin/master", "origin/main", "origin/HEAD"]:
-                check = subprocess.run(
-                    ["git", "rev-parse", "--verify", f"{candidate}^{{commit}}"],
-                    cwd=REPO_ROOT,
-                    capture_output=True,
-                    check=False,
-                )
-                if check.returncode == 0:
-                    upstream_ref = candidate
-                    break
-            else:
-                # If no upstream found, compare against the base of the current branch
-                upstream_ref = "HEAD~1"
-        files = run_git("diff", "--name-only", f"{upstream_ref}...HEAD")
+            files = run_git("diff", "--name-only", f"{base}...HEAD")
     elif args.staged:
         files = run_git("diff", "--cached", "--name-only")
     else:

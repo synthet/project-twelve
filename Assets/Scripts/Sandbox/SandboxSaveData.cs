@@ -7,6 +7,9 @@ public sealed class SandboxSaveData
 {
     public int version = 1;
     public int seed;
+    public bool hasPlayerPosition;
+    public float playerX;
+    public float playerY;
     public List<SandboxChunkSaveData> chunks = new List<SandboxChunkSaveData>();
 }
 

@@ -1,3 +1,6 @@
+# Out-of-editor dotnet test harness output (see Assets/_Licensed/tests/Directory.Build.props)
+.dotnet-tests-out/
+
 # ============================================
 # Unity generated files and folders
 # ============================================

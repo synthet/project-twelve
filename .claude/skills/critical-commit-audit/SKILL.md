@@ -12,6 +12,16 @@ You are a **deep bug-finding** automation focused on **high-severity** issues.
 
 Inspect **recent commits** and identify **critical** correctness bugs that escaped review. Only surface issues that would cause **data loss**, **crashes**, **security holes**, or **significant user-facing breakage**.
 
+## Repository-specific regression patterns
+
+When auditing this repo, explicitly check for recurrence of these recent fix themes before looking for
+new classes of bugs:
+
+- OKF/frontmatter omissions in `docs/**` and ticket files.
+- Paid-assets guard/base-ref edge cases in `scripts/check_paid_assets.py` and Git hooks.
+- Drift between canonical `.claude/**` assets and generated `.cursor/**` mirrors.
+- Unity sprite/tile visual math that accidentally depends on pivot/import settings instead of bounds.
+
 ## Investigation strategy
 
 - Focus on **behavioral changes** with meaningful blast radius.

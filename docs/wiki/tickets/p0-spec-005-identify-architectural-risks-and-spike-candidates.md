@@ -3,7 +3,7 @@ type: Task
 id: P0-SPEC-005
 title: "[P0-SPEC-005] Identify architectural risks and spike candidates."
 description: Identify high-impact architectural risks with mitigations, owners, and decision deadlines.
-status: done
+status: open
 phase: "Phase P0 — Discovery and specification baseline"
 resource: wiki/tickets/p0-spec-005-identify-architectural-risks-and-spike-candidates.md
 tags: [docs, wiki, tickets, risk-analysis, p0]
@@ -25,7 +25,7 @@ This ticket captures the shared product, engineering, QA, and documentation know
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#24](https://github.com/synthet/project-twelve/issues/24)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
@@ -90,9 +90,16 @@ As a developer or reviewer working on the P0 milestone, I want to identify archi
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [x] GitHub issue URL is recorded in this ticket and in front matter: [synthet/project-twelve#24](https://github.com/synthet/project-twelve/issues/24).
+- [ ] GitHub issue backlink to this markdown ticket is not verified in this workspace; network access to the GitHub API returned `Tunnel connection failed: 403 Forbidden`.
+- [x] Spec references have been reviewed: `docs/wiki/spec-driven-development-tasks.md` defines the risk-review task, and `docs/wiki/00-overview.md` links to the detailed risk-review artifact.
+- [ ] Acceptance criteria are partially validated: `docs/wiki/16-architectural-risks.md` records top risks, mitigations, owners, decision deadlines, and spike candidates, but the GitHub issue backlink remains unverified.
+- [x] Verification evidence is attached below.
+- [x] Follow-up tasks are created for deferred scope and open risks via the spike candidates listed in `docs/wiki/16-architectural-risks.md`.
+
+## Verification evidence
+
+- **Risk-review artifact:** `docs/wiki/16-architectural-risks.md` is updated with six high-impact risks covering chunking, collision, lighting, fluids, persistence, and networking; each risk includes severity, phase, owner, decision deadline, mitigation plan, verification approach, related specs, and a spike / PoC task.
+- **Overview traceability:** `docs/wiki/00-overview.md` points contributors to `docs/wiki/16-architectural-risks.md` for the detailed mitigations, owners, and decision deadlines behind the top technical risks.
+- **Backlog traceability:** `docs/wiki/spec-driven-development-tasks.md` keeps `P0-SPEC-005` scoped to identifying architectural risks and spike candidates, with risk review as the verification method.
+- **Follow-up coverage:** `docs/wiki/16-architectural-risks.md` lists spike candidates for the unresolved validation work: `P1-WORLD-001/002`, `P1-COLL-001`, `P1-RENDER-001`, `P1-GEN-001`, `P2-LIGHT-001`, `P2-FLUID-001`, `P2-SAVE-001`, and `P3-NET-001`.

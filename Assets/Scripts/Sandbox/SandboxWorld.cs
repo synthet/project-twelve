@@ -132,11 +132,51 @@ public sealed class SandboxWorld : MonoBehaviour
     {
         foreach (Vector2Int neighborCoord in GetBorderNeighborChunks(chunkCoord, localX, localY))
         {
-            if (loadedChunks.TryGetValue(neighborCoord, out SandboxChunk neighbor))
+            MarkChunkDirtyIfLoaded(loadedChunks, neighborCoord);
+        }
+    }
+
+    /// <summary>
+    /// Returns the four face-adjacent chunk coordinates sharing a border with <paramref name="chunkCoord"/>.
+    /// </summary>
+    public static IEnumerable<Vector2Int> GetFaceNeighborChunks(Vector2Int chunkCoord)
+    {
+        yield return new Vector2Int(chunkCoord.x - 1, chunkCoord.y);
+        yield return new Vector2Int(chunkCoord.x + 1, chunkCoord.y);
+        yield return new Vector2Int(chunkCoord.x, chunkCoord.y - 1);
+        yield return new Vector2Int(chunkCoord.x, chunkCoord.y + 1);
+    }
+
+    /// <summary>
+    /// Flags rendered face-adjacent neighbors for rebuild when a chunk becomes visible or is
+    /// unloaded. Autotile masks sample neighbor tiles across chunk borders, so a neighbor that
+    /// rendered before this chunk loaded (or after it unloads) keeps stale edge geometry until it
+    /// rebuilds.
+    /// </summary>
+    public static void MarkRenderedFaceNeighborsDirty(
+        Vector2Int chunkCoord,
+        IReadOnlyDictionary<Vector2Int, SandboxChunk> loadedChunks,
+        ICollection<Vector2Int> renderedChunkCoords)
+    {
+        foreach (Vector2Int neighborCoord in GetFaceNeighborChunks(chunkCoord))
+        {
+            if (!renderedChunkCoords.Contains(neighborCoord))
             {
-                neighbor.NeedsRenderRebuild = true;
-                neighbor.NeedsColliderRebuild = true;
+                continue;
             }
+
+            MarkChunkDirtyIfLoaded(loadedChunks, neighborCoord);
+        }
+    }
+
+    private static void MarkChunkDirtyIfLoaded(
+        IReadOnlyDictionary<Vector2Int, SandboxChunk> loadedChunks,
+        Vector2Int chunkCoord)
+    {
+        if (loadedChunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            chunk.NeedsRenderRebuild = true;
+            chunk.NeedsColliderRebuild = true;
         }
     }
 
@@ -162,6 +202,13 @@ public sealed class SandboxWorld : MonoBehaviour
 
             saveData.chunks.Add(chunkData);
             pair.Value.MarkClean();
+        }
+
+        if (playerTarget != null)
+        {
+            saveData.hasPlayerPosition = true;
+            saveData.playerX = playerTarget.position.x;
+            saveData.playerY = playerTarget.position.y;
         }
 
         string directory = Path.GetDirectoryName(path);
@@ -198,7 +245,31 @@ public sealed class SandboxWorld : MonoBehaviour
             chunks.Add(chunkData.Coord, chunk);
         }
 
+        if (saveData.hasPlayerPosition)
+        {
+            RestorePlayerPosition(new Vector2(saveData.playerX, saveData.playerY));
+            RefreshLoadedChunks();
+        }
+
         MarkAllLoadedRenderersDirty();
+    }
+
+    private void RestorePlayerPosition(Vector2 position)
+    {
+        if (playerTarget == null)
+        {
+            return;
+        }
+
+        if (playerTarget.TryGetComponent(out Rigidbody2D body))
+        {
+            body.position = position;
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        Vector3 current = playerTarget.position;
+        playerTarget.position = new Vector3(position.x, position.y, current.z);
     }
 
     public bool IsSolidAtWorldPosition(Vector2 worldPosition)
@@ -300,6 +371,7 @@ public sealed class SandboxWorld : MonoBehaviour
 
         foreach (Vector2Int coord in renderersToUnload)
         {
+            MarkRenderedFaceNeighborsDirty(coord, chunks, renderers.Keys);
             SandboxChunkRenderer chunkRenderer = renderers[coord];
             renderers.Remove(coord);
             if (Application.isPlaying)
@@ -413,6 +485,7 @@ public sealed class SandboxWorld : MonoBehaviour
         renderers.Add(chunkCoord, chunkRenderer);
         chunk.NeedsRenderRebuild = true;
         chunk.NeedsColliderRebuild = true;
+        MarkRenderedFaceNeighborsDirty(chunkCoord, chunks, renderers.Keys);
     }
 
     /// <summary>
