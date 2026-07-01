@@ -1,93 +1,145 @@
 ---
+type: Task
 id: P2-FLUID-001
 title: "[P2-FLUID-001] Specify simple liquid simulation constraints."
+description: Cellular-automaton fluid with per-cell amount, mass conservation, active-set sleep/wake, per-tick budget, and save persistence rules.
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/34"
 github_issue_status: created
+resource: wiki/tickets/p2-fluid-001-specify-simple-liquid-simulation-constraints.md
+tags: [docs, wiki, ticket, fluids, simulation, p2]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
+  - "docs/wiki/08-liquids.md"
   - "docs/wiki/simulation-systems.md"
+  - "docs/wiki/02-data-models.md"
 ---
 
 # [P2-FLUID-001] Specify simple liquid simulation constraints.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P2-FLUID-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket specifies the grid cellular-automaton liquid simulation from `docs/wiki/08-liquids.md`
+over the existing `SandboxTile.fluid` field (0.0–1.0 fill amount): flow rules (down → sideways →
+pressure-up), an **active set** so still water costs nothing, mass conservation as the primary
+invariant, chunk wake/sleep integration, per-tick update budget, and what fluid state persists in
+saves. Water is the only liquid in scope; lava and interactions are recorded follow-ups.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#34](https://github.com/synthet/project-twelve/issues/34)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P2 milestone, I want to specify simple liquid simulation constraints so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As a simulation developer on the P2 milestone, I want the liquid simulation's flow rules, budget,
+and sleep/wake constraints specified up front so that water behaves predictably (falls, spreads,
+equalizes), never leaks mass, and never becomes the frame-budget problem that naive all-cells
+simulation causes.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Specify simple liquid simulation constraints.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. Data: fluid amount is `SandboxTile.fluid ∈ [0.0, 1.0]` (already present). A cell is renderable
+   fluid when `fluid > minVisibleFill`; solid tiles hold no fluid.
+2. Rule order per tick, applied bottom-up over **active cells only** (per `08-liquids.md`):
+   flow down (gravity) → equalize sideways (split when both neighbors open) → pressure-up (excess
+   above `maxFill` pushes into the cell above, enabling U-tube equalization).
+3. Active set: a cell sleeps when its net transfer for a tick is below `settleEpsilon`; tile
+   edits, neighbor changes, and new sources wake cells (wired into the `SetTile` edit flow).
+4. Determinism: fixed iteration order within a tick (bottom-up rows; alternate or randomize L/R
+   scan per row **from a seeded PRNG** to avoid directional drift while staying reproducible).
+5. Chunk lifecycle: fluids pause in unloaded/distant chunks; on load/resume, border cells re-wake
+   so flow continues consistently across the seam.
+6. Saves: `fluid` amounts persist for dirty chunks (unlike light, fluid is not cheaply
+   recomputable); coordinate the field with P2-SAVE-001.
+7. Named constants specified (not inline literals): `maxFill = 1.0`, `settleEpsilon`,
+   `minVisibleFill`, `maxTransferPerTick` (flow rate), iterations per frame, and the per-tick
+   active-cell budget.
+8. Rendering contract (minimal): fill height proportional to `fluid` on an overlay above terrain;
+   full visual polish is out of scope.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. **Mass conservation:** total fluid across the loaded world changes only via explicit
+   sources/sinks; per-tick numeric drift stays within a documented epsilon.
+2. Still water costs ~zero: a settled lake performs no per-tick work (active set empty).
+3. Per-tick simulation cost stays under the `docs/wiki/quality-gates.md` target (< 3 ms for the
+   active-set step) on representative content; the budget cap defers excess cells to the next tick
+   rather than blowing the frame.
+4. Simulation core is pure C# over tile data (EditMode-testable without scenes) and chunk-local in
+   its data access (neighbor reads via `SandboxWorld.GetTile`).
 
 ## Acceptance criteria
 
-- Flow rate, update budget, chunk wake/sleep, and save format are defined.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Flow rate, update budget, chunk wake/sleep, and save format are defined in the spec page before
+  implementation.
+- EditMode conservation test: random terrain + random fluid drops, N ticks, total mass constant
+  within epsilon.
+- EditMode settling test: a poured column in a closed basin reaches a flat surface and the active
+  set becomes empty (no infinite jitter).
+- EditMode U-tube test: connected columns equalize to the same level via the pressure rule.
+- EditMode determinism test: same initial state + seed ⇒ identical fluid field after N ticks.
+- EditMode wake test: removing a tile under a settled pool wakes exactly the affected cells and
+  flow resumes.
+- Play-mode: digging a channel drains a generated lake convincingly with no frame hitches.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the commit, verification commands, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P2-FLUID-001`.
-- Keep implementation details aligned with `docs/wiki/simulation-systems.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Water-only pressure-model CA, active-set management, budget scheduling, save persistence of
+  amounts, and a minimal fill-height render overlay.
+- Out of scope: lava and fluid-type interactions (obsidian etc.), fluid-driven gameplay (drowning,
+  buoyancy), swimming animation hooks, and polished fluid rendering.
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P2-FLUID-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/simulation-systems.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
+- `Assets/Scripts/Sandbox/SandboxTile.cs` — `fluid` field (present, unused).
+- `Assets/Scripts/Sandbox/SandboxWorld.cs` — edit flow wake hook; chunk load/unload pause hook.
+- Generated lakes from P2-GEN-001 as initial fluid placement.
+- P2-SAVE-001 — persistence of fluid amounts for dirty chunks.
+- P2-TOOL-001 — fluid amount + active-set overlay for debugging.
 
-### Implementation notes
+### Tick procedure (normative sketch in 08-liquids.md)
 
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+```text
+for each active cell c, bottom-up (row scan order from seeded PRNG):
+    if solid(c): continue
+    move min-capacity flow c → below; wake changed cells
+    equalize c with left/right toward equal fill
+    if c.fluid > maxFill: move excess c → above (pressure)
+    keep c awake iff it changed by ≥ settleEpsilon, else sleep
+```
 
 ### Verification plan
 
-- Deterministic simulation fixtures and performance budget checks.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Deterministic EditMode fixtures: conservation, settling, U-tube, determinism, wake — pure data
+  tests over small handcrafted terrains.
+- Performance check: profiler capture of the active-set step against the < 3 ms target while
+  draining a large lake; confirm settled state costs ~0.
+- Play-mode manual check per acceptance criteria with the P2-TOOL-001 overlay when available.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/simulation-systems.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- `docs/wiki/simulation-systems.md` — liquids section updated to the specified constants and rules.
+- `docs/wiki/08-liquids.md` — mark the pressure-amount model as adopted; record chosen constants.
+- P2-SAVE-001 ticket — fluid persistence cross-reference.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Fluid constants and rules documented in `simulation-systems.md` before implementation.
+- [ ] Conservation, settling, U-tube, determinism, and wake EditMode tests pass.
+- [ ] Profiler evidence for budget and sleeping-lake cost attached.
+- [ ] Follow-up tasks created for lava/interactions and fluid rendering polish.

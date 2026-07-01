@@ -1,93 +1,134 @@
 ---
+type: Task
 id: P2-INV-001
 title: "[P2-INV-001] Specify inventory-backed placement and pickup rules."
+description: Item-consuming tile placement and drop-yielding tile breaking through the SetTile choke point, with stack, reach, and hotbar rules.
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/36"
 github_issue_status: created
+resource: wiki/tickets/p2-inv-001-specify-inventory-backed-placement-and-pickup-rules.md
+tags: [docs, wiki, ticket, inventory, gameplay, p2]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/gameplay-systems.md"
+  - "docs/wiki/02-data-models.md"
+  - "docs/wiki/12-modding.md"
 ---
 
 # [P2-INV-001] Specify inventory-backed placement and pickup rules.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P2-INV-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket replaces the P1 free-editing mode (place/break without cost) with inventory-backed
+editing: placing a tile consumes an item stack, breaking a tile yields its drop, and both flow
+through the single `SandboxWorld.SetTile` choke point established by P1-EDIT-001. It specifies the
+inventory data contract (slot-based, registry item IDs per P2-DATA-001), stack rules, reach
+validation at the controller boundary, and the pickup lifecycle — placed so the same validation
+can later run server-side (P3-NET-001).
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#36](https://github.com/synthet/project-twelve/issues/36)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P2 milestone, I want to specify inventory-backed placement and pickup rules so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As a gameplay developer on the P2 milestone, I want placement and pickup rules specified with
+explicit consume/restore semantics so that items and tiles stay consistent under any edit sequence
+— nothing duplicates, nothing vanishes — and the validation seam is ready to become
+server-authoritative in P3.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Specify inventory-backed placement and pickup rules.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. Inventory contract: fixed-size ordered slot array (hotbar = first row) as recommended by
+   `docs/wiki/02-data-models.md`; each slot holds `(itemId, count)` with `count ≤ maxStack`
+   (per-item registry property, default 999 for tile items).
+2. Item identity is a registry string ID (P2-DATA-001); tile items reference the tile they place,
+   tile defs reference the item they drop (both directions validated at registry load).
+3. **Place:** validated request → if the active hotbar slot holds a placeable item with `count ≥ 1`
+   and the target cell is air (and not occluded by the player's own body), call
+   `SandboxWorld.SetTile`, then decrement the stack. If `SetTile` fails, the stack is not touched.
+4. **Break:** validated request → if the target tile is breakable, call `SetTile(air)`; on success
+   spawn the tile's drop as a pickup entity at the cell center.
+5. **Pickup:** drop entities are magnetized to the player within `pickupRadius` and merge into the
+   first matching non-full stack, then the first empty slot; when inventory is full the drop
+   remains in the world. Drops despawn after a documented lifetime.
+6. Validation placement: reach (`editRange` in tiles), target-cell rules, and rate limits live at
+   the controller/request boundary (`SandboxPlayerController`), not inside `SetTile` — matching
+   the `docs/wiki/gameplay-systems.md` split (authoritative mutation in world, request validation
+   near input) so P3 can move the same checks server-side.
+7. Consistency invariant: for any edit sequence, `tiles placed − tiles broken` equals
+   `items consumed − items gained` per item type (no dupes, no losses), including failure paths
+   (blocked placement, full inventory, out-of-range requests).
+8. Named constants specified: `editRange`, `pickupRadius`, `dropLifetime`, default `maxStack`.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. Inventory state is serializable and joins the save format (P2-SAVE-001 header already carries
+   player position; extend with inventory).
+2. Inventory logic is pure C# (no scene dependencies) for EditMode testing; pickup entity behavior
+   is the only Play-mode-dependent piece.
+3. UI in this ticket is minimal (hotbar selection + counts); production inventory UI belongs to
+   P4-UX-001.
 
 ## Acceptance criteria
 
-- Items are consumed/restored consistently by place/break actions.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Items are consumed and restored consistently by place/break actions across all failure paths
+  (the consistency invariant above holds in tests).
+- EditMode: place decrements exactly one item on success and zero on failure (occupied cell,
+  empty slot, out of range).
+- EditMode: break yields exactly the registry-defined drop; full-inventory break leaves the drop
+  in the world without loss.
+- EditMode: stack merge fills existing stacks before opening new slots and respects `maxStack`.
+- Play-mode checklist: dig → auto-pickup → counter increments → place elsewhere → counter
+  decrements; drops magnetize within radius; out-of-range clicks do nothing.
+- Save/load round-trip preserves inventory contents exactly (with P2-SAVE-001).
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the commit, verification commands, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P2-INV-001`.
-- Keep implementation details aligned with `docs/wiki/gameplay-systems.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Inventory data model, place/break/pickup rules, hotbar selection, drop entity lifecycle, and
+  wiring into the existing mouse-edit path of `SandboxPlayerController`.
+- Out of scope: crafting and tool properties (P4-CONTENT-001 owns tool strength/cooldown/damage),
+  production inventory UI (P4-UX-001), multiplayer ownership of drops (P3-NET-001).
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P2-INV-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/gameplay-systems.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- `Assets/Scripts/Sandbox/SandboxPlayerController.cs` — current mouse tile-edit path to gate.
+- `Assets/Scripts/Sandbox/SandboxWorld.cs` — `SetTile` choke point (P1-EDIT-001 contract).
+- P2-DATA-001 — item registry and tile↔item cross-references (blocking dependency; if not landed,
+  a temporary item table keyed by tile ID is acceptable with a recorded follow-up).
+- P2-SAVE-001 — inventory persistence.
 
 ### Verification plan
 
-- Inventory edit tests and play-mode placement checklist.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- EditMode inventory tests: consume/restore consistency, stack merge/overflow, failure paths —
+  table-driven over edit sequences.
+- Play-mode placement checklist per acceptance criteria.
+- Save/load round-trip test extension once P2-SAVE-001 lands.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/gameplay-systems.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- `docs/wiki/gameplay-systems.md` — inventory/items section updated from intent to contract
+  (slots, stacks, constants, validation boundary).
+- P2-DATA-001 / P2-SAVE-001 tickets — cross-references for item defs and persistence.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Inventory contract documented in `gameplay-systems.md` before implementation.
+- [ ] Consistency, stack, and failure-path EditMode tests pass.
+- [ ] Play-mode placement checklist executed with notes.
+- [ ] Follow-up tasks created for crafting/tools, inventory UI, and drop ownership in multiplayer.

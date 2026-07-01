@@ -1,93 +1,129 @@
 ---
+type: Task
 id: P2-TOOL-001
 title: "[P2-TOOL-001] Specify debug tooling for chunks, generation, lighting, and saves."
+description: Toggleable debug overlays, chunk inspector, generation tuning window, and console commands layered on the existing Runtime MCP surface.
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/39"
 github_issue_status: created
+resource: wiki/tickets/p2-tool-001-specify-debug-tooling-for-chunks-generation-lighting-and-sav.md
+tags: [docs, wiki, ticket, tooling, debug, p2]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/13-tooling-testing.md"
+  - "docs/wiki/quality-gates.md"
 ---
 
 # [P2-TOOL-001] Specify debug tooling for chunks, generation, lighting, and saves.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P2-TOOL-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket specifies the debug tooling that `docs/wiki/13-tooling-testing.md` says to build
+early, because most sandbox bugs (wrong dirty flags, light leaks, fluid jitter, non-local
+rebuilds) are invisible without overlays. Deliverables: toggleable in-game overlays (chunk
+borders, tile solidity, light heatmap, fluid amounts + active set, collider rebuild regions), a
+chunk inspector, a generation tuning editor window, save inspection commands, and extensions to
+the already-implemented Runtime MCP surface (`Assets/Scripts/RuntimeMcp/GameplayMcpTools.cs`:
+`player_state`, `world_info`, `tile_at`, `perf`, `player_move`, `world_set_tile`). Tooling reads
+runtime state; it must not alter runtime contracts.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#39](https://github.com/synthet/project-twelve/issues/39)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P2 milestone, I want to specify debug tooling for chunks, generation, lighting, and saves so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As a developer debugging P2 systems (lighting, fluids, generation, saves), I want overlays and
+inspection tools that expose per-tile and per-chunk state at a glance so that I can see why a
+system misbehaves instead of inferring it from symptoms.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Specify debug tooling for chunks, generation, lighting, and saves.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. In-game overlays, individually toggleable at runtime (hotkeys + console), rendering above the
+   world: (a) chunk borders + load radius, (b) tile solidity, (c) light values as a heatmap
+   (P2-LIGHT-001), (d) fluid amount + active-set membership (P2-FLUID-001), (e) collider rebuild
+   flashes proving rebuilds are chunk-local, (f) dirty-flag state per chunk
+   (render/collider/save).
+2. Chunk inspector (editor window): select a chunk by coordinate or click; view its tile array
+   (id/light/fluid/metadata), dirty flags, and save-diff status.
+3. Generation tuning window: seed + pass parameters (P2-GEN-001 settings object) with live
+   regenerate into a scratch world — never mutating a live save.
+4. Console commands (minimum): toggle overlays, teleport, set/get tile, force-generate chunk,
+   dump chunk data, save/load to a named slot, spawn item/enemy (as those systems land).
+5. Runtime MCP extensions mirroring the above for agent-driven debugging: `chunk_info` (flags +
+   diff status), `light_at`, `fluid_at`, overlay toggles. Loopback-only constraint and tool
+   registration pattern per `McpDispatcher`/`McpTool`.
+6. Read-only guarantee: debug reads never mutate simulation state; mutating commands (teleport,
+   set tile) route through the same public APIs gameplay uses (`SandboxWorld.SetTile`), never
+   private backdoors — tooling must not create a second edit path.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. Zero cost when disabled: overlays and inspectors allocate nothing and draw nothing unless
+   toggled; debug assemblies/classes are excluded or stripped from release builds.
+2. Overlays render correctly across chunk borders and negative coordinates.
+3. New MCP tools follow the existing dispatcher/serialization pattern and are covered by
+   `RuntimeMcpDispatcherTests.cs`-style EditMode tests.
 
 ## Acceptance criteria
 
-- Tools expose enough state to debug without modifying runtime contracts.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Tools expose enough state to debug chunks, generation, lighting, and saves without modifying
+  runtime contracts (the read-only guarantee holds in review).
+- Editor smoke test: every overlay toggles on/off in Play mode without errors; screenshots of
+  each overlay attached as exit evidence.
+- Chunk inspector shows live tile/flag data for a selected chunk, including a negative-coordinate
+  chunk.
+- Generation tuning window regenerates a scratch world from a changed seed without touching the
+  active session's save.
+- New Runtime MCP tools respond correctly (EditMode dispatcher tests) and appear in the tool list.
+- Profiler check: all overlays disabled ⇒ no measurable overhead vs a build without the tooling.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the commit, verification commands, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P2-TOOL-001`.
-- Keep implementation details aligned with `docs/wiki/13-tooling-testing.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Overlay renderer, chunk inspector window, generation tuning window, console commands, and MCP
+  tool extensions listed above.
+- Out of scope: network subscription overlays (P3), pathfinding open/closed-set overlay (lands
+  with P2-AI-001 but may reuse this overlay framework), performance dashboards beyond the
+  existing `perf` tool.
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P2-TOOL-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/13-tooling-testing.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- `Assets/Scripts/RuntimeMcp/` — `RuntimeMcpServer`, `McpDispatcher`, `GameplayMcpTools` patterns.
+- `Assets/Scripts/Sandbox/SandboxWorld.cs`, `SandboxChunk.cs` — state to expose (flags, tiles).
+- P2-LIGHT-001 / P2-FLUID-001 — data the heatmap/fluid overlays visualize (overlay framework can
+  land first with borders/solidity/dirty-flag views).
+- `Assets/Tests/EditMode/RuntimeMcpDispatcherTests.cs` — test pattern for new tools.
 
 ### Verification plan
 
-- Editor smoke tests and screenshots of inspector/debug views.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Editor smoke tests + screenshots of each overlay and window (exit evidence).
+- EditMode tests for new MCP tools (dispatch, serialization, read-only behavior).
+- Profiler comparison with tooling disabled (zero-cost requirement).
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/13-tooling-testing.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- `docs/wiki/13-tooling-testing.md` — overlay/command/window inventory updated to the specified
+  contract; Runtime MCP tool list extended.
+- `AGENTS.md` § In-game runtime MCP — new tool names.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Tooling inventory documented in `13-tooling-testing.md` before implementation.
+- [ ] Overlay screenshots and editor smoke-test notes attached.
+- [ ] MCP dispatcher EditMode tests pass for new tools.
+- [ ] Follow-up tasks created for network/pathfinding overlays and release-build stripping checks.
