@@ -1,7 +1,12 @@
 ---
 id: P1-COLL-001
+type: Task
 title: "[P1-COLL-001] Specify prototype collision rules for solid tiles and player movement."
-status: open
+description: "Backlog ticket to specify prototype collision rules for solid tiles and player movement."
+resource: wiki/tickets/p1-coll-001-specify-prototype-collision-rules-for-solid-tiles-and-player.md
+tags: [ticket, p1, collision, spec]
+timestamp: 2026-07-01T05:03:48Z
+status: in_progress
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/25"
@@ -83,11 +88,34 @@ As a developer or reviewer working on the P1 milestone, I want to specify protot
 - Update `docs/wiki/rendering-and-collision.md` when the subsystem contract changes.
 - Keep this ticket synchronized with the final GitHub issue URL and outcome.
 
-## Exit evidence checklist
+## Exit evidence
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- **Spec:** `docs/wiki/rendering-and-collision.md` § "Prototype collision rules (P1-COLL-001)"
+  documents tile solidity, run-merged chunk-local `BoxCollider2D` generation, the
+  Rigidbody2D player movement model, ground/wall probe rules with a constants table,
+  tunneling analysis, invariants/edge cases, and a play-mode QA checklist. OKF frontmatter
+  was added to the page (previously missing).
+- **Automated tests (test pyramid):**
+  - EditMode `Assets/Tests/EditMode/SandboxColliderGeometryTests.cs` unit-tests the pure
+    `SandboxColliderGeometry` run-merge and rect math (gaps, edges, no cross-row merge, scaling).
+  - PlayMode `Assets/Tests/PlayMode/SandboxCollisionPlayModeTests.cs` (new assembly
+    `ProjectTwelve.PlayModeTests`) covers stand, jump (grounded and ignored-airborne),
+    walk-into-wall stop, and no-tunneling-while-falling against real run-merged colliders.
+  - Collider geometry was extracted from `SandboxChunkRenderer.RebuildColliders` into
+    `Assets/Scripts/Sandbox/SandboxColliderGeometry.cs` (behavior-preserving) to enable the
+    EditMode layer.
+- **Verification commands:**
+  - `Unity -batchmode -quit -projectPath . -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile Logs/unity-playmode-tests.log`
+  - `python3 scripts/check_markdown_links.py`
+  - `python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error`
+  - `python3 scripts/check_paid_assets.py --staged`
+
+### Checklist
+
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Spec references have been reviewed and updated (collision spec authored).
+- [x] Acceptance criteria validated by PlayMode tests + documented QA checklist.
+- [ ] Verification evidence attached (PlayMode run pending a Unity-capable environment).
+- [ ] Follow-up tasks created for deferred scope (manual swept-AABB collision, one-way
+  platforms/slopes, high-speed tunneling mitigation) and the stale ticket-status drift.
