@@ -9,6 +9,7 @@ github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/generation-and-saving.md"
+  - "docs/wiki/tickets/p2-visual-004-specify-biome-tileset-expansion.md"
 ---
 
 # [P2-GEN-001] Specify biome, cave, structure, and ore generation passes.
@@ -62,6 +63,7 @@ As a developer or reviewer working on the P2 milestone, I want to specify biome,
 
 - Primary backlog item: `P2-GEN-001` from `docs/wiki/spec-driven-development-tasks.md`.
 - Primary subsystem reference: `docs/wiki/generation-and-saving.md`.
+- Biome tileset mapping: `docs/wiki/tickets/p2-visual-004-specify-biome-tileset-expansion.md` (tile ID → autotile tileset per biome).
 - Project tracking target: `https://github.com/users/synthet/projects/2`.
 
 ### Implementation notes

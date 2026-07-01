@@ -9,6 +9,8 @@ github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/13-tooling-testing.md"
+  - "docs/wiki/visual-integration.md"
+  - "docs/VISUAL_SETUP.md"
 ---
 
 # [P1-QA-001] Package the prototype vertical-slice demo checklist.
@@ -46,6 +48,9 @@ As a developer or reviewer working on the P1 milestone, I want to package the pr
 ## Acceptance criteria
 
 - A reviewer can validate movement, generation, rendering, collision, and editing in one scene.
+- With `Assets/_Licensed` initialized, autotiled terrain renders on chunk meshes (not vertex-color fallback only).
+- With character catalog and prefab configured, a composed player avatar spawns and animates Idle/Run/Jump/Fall/Land during movement.
+- Visual verification steps align with `docs/VISUAL_SETUP.md` play-mode checklist.
 - The related specification page is updated or explicitly confirmed to require no change.
 - The GitHub issue and this markdown ticket link to each other.
 - Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.

@@ -1,7 +1,7 @@
 ---
 id: P1-EDIT-001
 title: "[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point."
-status: open
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/26"

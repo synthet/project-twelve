@@ -9,6 +9,7 @@ github_issue_status: created
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/gameplay-systems.md"
+  - "docs/wiki/tickets/p2-visual-003-specify-monster-visual-integration-for-enemies.md"
 ---
 
 # [P2-AI-001] Specify enemy spawn and pathfinding rules.
@@ -62,6 +63,7 @@ As a developer or reviewer working on the P2 milestone, I want to specify enemy 
 
 - Primary backlog item: `P2-AI-001` from `docs/wiki/spec-driven-development-tasks.md`.
 - Primary subsystem reference: `docs/wiki/gameplay-systems.md`.
+- Visual spawn contract: `docs/wiki/tickets/p2-visual-003-specify-monster-visual-integration-for-enemies.md`.
 - Project tracking target: `https://github.com/users/synthet/projects/2`.
 
 ### Implementation notes

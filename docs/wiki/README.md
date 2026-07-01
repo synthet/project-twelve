@@ -68,12 +68,13 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 
 ## C. Visual presentation
 
-Project-owned rendering and avatar systems. Local source art paths are configured per machine — see [Visual setup](../VISUAL_SETUP.md).
+Project-owned rendering, player avatar, creature, and effect systems. Local source art paths are configured per machine — see [Visual setup](../VISUAL_SETUP.md).
 
 | Page | Scope |
 |------|-------|
-| [Visual integration](visual-integration.md) | Sandbox tile mapping, avatar factory, catalog touchpoints |
+| [Visual integration](visual-integration.md) | Tile mapping, avatar factory, vendor parity, creature/effect touchpoints |
 | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
+| [Asset integration requirements](15-assets-integration.md) | Sprites, atlases, animation schema (Set B reference) |
 
 ### How the page sets correspond
 

@@ -1,7 +1,7 @@
 ---
 id: P0-SPEC-002
 title: "[P0-SPEC-002] Define spec ownership for every subsystem page."
-status: open
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/21"

@@ -1,7 +1,7 @@
 ---
 id: P0-SPEC-001
 title: "[P0-SPEC-001] Consolidate the product brief, architecture overview, and glossary into a single baseline scope statement."
-status: open
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/20"

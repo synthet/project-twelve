@@ -1,7 +1,7 @@
 ---
 id: P1-GEN-001
 title: "[P1-GEN-001] Specify deterministic terrain generation inputs and outputs."
-status: open
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/27"

@@ -1,7 +1,7 @@
 ---
 id: P0-SPEC-003
 title: "[P0-SPEC-003] Establish the task schema and ID conventions in the backlog."
-status: open
+status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/22"

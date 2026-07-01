@@ -27,6 +27,7 @@ This page keeps near-term prototype work in an open knowledge format: milestones
 | Generation determinism tests | Verify identical seeds/settings produce identical chunk data. | Repeated generation of the same chunk produces equivalent tile IDs and state. |
 | Border edit propagation | Dirty neighboring chunks when edits happen on chunk borders. | Editing a border tile causes affected adjacent chunk render/collider state to rebuild. |
 | Collider strategy review | Compare many `BoxCollider2D` instances, merged chunk colliders, and manual collision. | A documented decision identifies the next collision approach and profiling target. |
+| Visual EditMode tests | Cover `CharacterSheetLayout` clip keys and autotile resolver invariants. | P1-VISUAL-002; tests run without licensed art fixtures. |
 
 ## Milestone 3: Content Foundation
 
@@ -37,6 +38,9 @@ This page keeps near-term prototype work in an open knowledge format: milestones
 | Tile registry | Introduce stable tile definitions keyed by string IDs. | Runtime tile IDs resolve through a registry without breaking existing chunk storage. |
 | Item registry | Define item definitions for pickups, inventory entries, and placement behavior. | Items can reference placeable tiles and display metadata from definitions. |
 | Texture atlas rendering | Replace vertex-color-only tiles with atlas-backed tile visuals. | Chunk rendering can select tile UVs from registered tile definitions. |
+| Visual catalog pipeline | Document submodule catalog generation and `LocalImportConfig` contract. | P2-VISUAL-001; regen workflow documented and reproducible. |
+| Player avatar integration | Composed avatar in play mode with locomotion driven from controller. | P1-VISUAL-001; QA checklist includes autotiles and avatar. |
+| Extended character presentation | VFX, firearms, Walk vs Run, combat triggers. | P2-VISUAL-002 spec closes gaps vs vendor reference behavior. |
 | Inventory-backed edits | Gate placement/removal through inventory state. | Player placement consumes inventory where appropriate; removal creates pickup or inventory output. |
 
 ## Knowledge-page maintenance

@@ -51,7 +51,9 @@ Each task should be recorded with the following fields:
 | P1-COLL-001 | Specify prototype collision rules for solid tiles and player movement. | Player can stand, jump, collide with terrain, and avoid tunneling in target scenarios. | Play-mode movement checklist and collision edge-case tests. |
 | P1-EDIT-001 | Specify tile edit flow through a single `SetTile` choke point. | Place/break updates tile data, dirty flags, render, collision, and neighboring border chunks. | Unit tests for central edits and border edits. |
 | P1-GEN-001 | Specify deterministic terrain generation inputs and outputs. | Same seed and chunk coordinate produce identical tiles across runs. | Golden-seed deterministic generation tests. |
-| P1-QA-001 | Package the prototype vertical-slice demo checklist. | A reviewer can validate movement, generation, rendering, collision, and editing in one scene. | Manual QA checklist with screenshots or short capture. |
+| P1-VISUAL-001 | Specify sandbox player avatar visual integration. | Composed avatar spawns in play mode; Idle/Run/Jump/Fall/Land driven from controller; parity table documented. | Play-mode checklist per `docs/VISUAL_SETUP.md`. |
+| P1-VISUAL-002 | Add visual subsystem EditMode tests. | Character sheet layout and autotile resolver invariants covered without licensed art. | EditMode batch test run. |
+| P1-QA-001 | Package the prototype vertical-slice demo checklist. | A reviewer can validate movement, generation, rendering, collision, editing, autotiled terrain, and composed avatar in one scene. | Manual QA checklist with screenshots or short capture. |
 
 ## Phase P2 — Core systems alpha
 
@@ -65,6 +67,9 @@ Each task should be recorded with the following fields:
 | P2-AI-001 | Specify enemy spawn and pathfinding rules. | Navigation respects terrain, jump/fall limits, and loaded-world boundaries. | Pathfinding fixtures across platforms, caves, and blocked routes. |
 | P2-SAVE-001 | Specify save/load format using seed plus dirty chunk diffs. | Clean chunks derive from seed; edited chunks persist and migrate safely. | Round-trip save/load tests and corrupted-save handling tests. |
 | P2-TOOL-001 | Specify debug tooling for chunks, generation, lighting, and saves. | Tools expose enough state to debug without modifying runtime contracts. | Editor smoke tests and screenshots of inspector/debug views. |
+| P2-VISUAL-001 | Specify visual catalog import pipeline contract. | Autotile, character, and monster catalog inputs/outputs and regen workflow documented. | Catalog regen on submodule-enabled machine. |
+| P2-VISUAL-002 | Specify extended character presentation (effects, firearms, locomotion). | VFX, firearms, Walk vs Run, and spec gaps implemented or explicitly deferred. | Play-mode VFX smoke test; animator checklist. |
+| P2-VISUAL-003 | Specify monster visual integration for enemies. | Spawn API and catalog IDs documented; demo creature animates Idle/Walk. | Play-mode spawn per `docs/VISUAL_SETUP.md`. |
 
 ## Phase P3 — Networking alpha
 
