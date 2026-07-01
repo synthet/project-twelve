@@ -77,7 +77,9 @@ at high speed become a problem.
 ### Terrain collider generation
 
 Owned by `SandboxChunkRenderer.RebuildColliders`, invoked from `Rebuild(...)` on the same
-chunk GameObject that carries the mesh:
+chunk GameObject that carries the mesh. The run-merge and rect math are factored into the pure
+`SandboxColliderGeometry` helper (`BuildSolidRuns` + `GetColliderRect`) so the geometry is
+unit-testable in EditMode; the renderer only turns each run into a `BoxCollider2D`:
 
 - **Per-row run merging.** For each of the chunk's 32 rows, contiguous horizontal runs of
   solid tiles are merged into one `BoxCollider2D`. A row with two gaps produces up to three
@@ -165,8 +167,10 @@ Reproducible manual verification in a scene with a generated world and a spawned
   now-empty cell (collider rebuild took effect), and placing a tile under a falling player
   catches it.
 
-Automated coverage of stand, jump, walk/wall-stop, and no-tunneling lives in the PlayMode
-suite `Assets/Tests/PlayMode/SandboxCollisionPlayModeTests.cs`.
+Automated coverage follows the test pyramid: the pure collider geometry (run merging and rect
+math) is unit-tested in EditMode by `Assets/Tests/EditMode/SandboxColliderGeometryTests.cs`,
+while the integrated physics behavior — stand, jump, walk/wall-stop, and no-tunneling — is
+covered by the PlayMode suite `Assets/Tests/PlayMode/SandboxCollisionPlayModeTests.cs`.
 
 ## Autotiled terrain visuals
 

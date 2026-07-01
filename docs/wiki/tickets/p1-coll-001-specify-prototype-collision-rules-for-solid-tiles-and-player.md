@@ -95,9 +95,15 @@ As a developer or reviewer working on the P1 milestone, I want to specify protot
   Rigidbody2D player movement model, ground/wall probe rules with a constants table,
   tunneling analysis, invariants/edge cases, and a play-mode QA checklist. OKF frontmatter
   was added to the page (previously missing).
-- **Automated tests:** `Assets/Tests/PlayMode/SandboxCollisionPlayModeTests.cs` (new
-  assembly `ProjectTwelve.PlayModeTests`) covers stand, jump (grounded and ignored-airborne),
-  walk-into-wall stop, and no-tunneling-while-falling against real run-merged colliders.
+- **Automated tests (test pyramid):**
+  - EditMode `Assets/Tests/EditMode/SandboxColliderGeometryTests.cs` unit-tests the pure
+    `SandboxColliderGeometry` run-merge and rect math (gaps, edges, no cross-row merge, scaling).
+  - PlayMode `Assets/Tests/PlayMode/SandboxCollisionPlayModeTests.cs` (new assembly
+    `ProjectTwelve.PlayModeTests`) covers stand, jump (grounded and ignored-airborne),
+    walk-into-wall stop, and no-tunneling-while-falling against real run-merged colliders.
+  - Collider geometry was extracted from `SandboxChunkRenderer.RebuildColliders` into
+    `Assets/Scripts/Sandbox/SandboxColliderGeometry.cs` (behavior-preserving) to enable the
+    EditMode layer.
 - **Verification commands:**
   - `Unity -batchmode -quit -projectPath . -runTests -testPlatform PlayMode -testResults TestResults/playmode.xml -logFile Logs/unity-playmode-tests.log`
   - `python3 scripts/check_markdown_links.py`

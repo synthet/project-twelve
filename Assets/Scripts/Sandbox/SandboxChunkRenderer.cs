@@ -408,27 +408,13 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             }
         }
 
-        for (int y = 0; y < SandboxChunk.Size; y++)
+        foreach (SandboxColliderGeometry.SolidRun run in SandboxColliderGeometry.BuildSolidRuns(chunk))
         {
-            int runStart = -1;
-            for (int x = 0; x <= SandboxChunk.Size; x++)
-            {
-                bool isSolid = x < SandboxChunk.Size && chunk.GetLocalTile(x, y).IsSolid;
-                if (isSolid && runStart < 0)
-                {
-                    runStart = x;
-                }
-
-                if ((!isSolid || x == SandboxChunk.Size) && runStart >= 0)
-                {
-                    int runLength = x - runStart;
-                    BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
-                    collider.sharedMaterial = SandboxPhysicsMaterials.ZeroFriction;
-                    collider.offset = new Vector2((runStart + runLength * 0.5f) * tileSize, (y + 0.5f) * tileSize);
-                    collider.size = new Vector2(runLength * tileSize, tileSize);
-                    runStart = -1;
-                }
-            }
+            SandboxColliderGeometry.GetColliderRect(run, tileSize, out Vector2 offset, out Vector2 size);
+            BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
+            collider.sharedMaterial = SandboxPhysicsMaterials.ZeroFriction;
+            collider.offset = offset;
+            collider.size = size;
         }
     }
 
