@@ -6,6 +6,8 @@ description: Extend SandboxTileVisualCatalog and tile ID mapping to use remainin
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
+github_issue: "https://github.com/synthet/project-twelve/issues/80"
+github_issue_status: created
 resource: wiki/tickets/p2-visual-004-specify-biome-tileset-expansion.md
 tags: [docs, wiki, ticket, visual, terrain, biomes, p2]
 timestamp: 2026-07-01T05:00:00Z

@@ -6,6 +6,8 @@ description: Integrate remaining PixelTileEngine content — props, bridges, lad
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
+github_issue: "https://github.com/synthet/project-twelve/issues/81"
+github_issue_status: created
 resource: wiki/tickets/p2-visual-005-specify-tile-engine-props-and-parallax-backgrounds.md
 tags: [docs, wiki, ticket, visual, terrain, props, p2]
 timestamp: 2026-07-01T05:00:00Z
