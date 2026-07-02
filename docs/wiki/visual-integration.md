@@ -4,7 +4,7 @@ title: Visual Integration
 description: Sandbox tile mapping, player avatar composition, creature visuals, and vendor parity for project-owned presentation code.
 resource: wiki/visual-integration.md
 tags: [docs, wiki, visual, rendering, characters]
-timestamp: 2026-07-02T00:00:00Z
+timestamp: 2026-07-02T12:00:00Z
 ---
 
 # Visual integration
@@ -38,6 +38,16 @@ ProjectTwelve does **not** reference vendor demo scripts at runtime. Behavioral 
 | Sprite effects (dust, muzzle) | `EffectCatalog.CreateSpriteEffect` | Partial — driver hooks exist; scene catalog optional |
 | Sprite sheet format (576×928, 64×64 cells) | `CharacterSheetLayout` | Implemented |
 | Building characters at runtime | Equipment strings on `CharacterComposer` + `Rebuild()` | Implemented |
+
+### P1 non-goals (recorded per P1-VISUAL-001)
+
+The P1 avatar slice deliberately stops at the five locomotion states wired by
+`SandboxPlayerAvatarAnimation` (Idle, Run, Jump, Fall, Land). Deferred to
+[P2-VISUAL-002](tickets/p2-visual-002-specify-extended-character-presentation.md):
+
+- Combat triggers (`Slash`, `Jab`, `Push`, `Shot`, `Hit`) — no combat simulation exists yet.
+- Detached firearm presentation (`FirearmVisual`, muzzle socket) — not wired from `PlayerAvatarFactory`.
+- Walk vs Run speed threshold — sandbox controller has a single move speed; `Walk` stays unused.
 
 ## Implementation status matrix
 
