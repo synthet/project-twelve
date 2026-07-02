@@ -3,7 +3,7 @@ type: Task
 id: P1-QA-001
 title: "[P1-QA-001] Package the prototype vertical-slice demo checklist."
 description: Reviewer-executable demo script validating movement, generation, rendering, collision, editing, autotile terrain, and the composed avatar in one scene.
-status: open
+status: in_progress
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/28"
@@ -136,9 +136,10 @@ exercise them.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Demo runbook authored with pinned scene/seed and evidence table.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Demo runbook authored with pinned scene/seed and evidence table:
+      [`docs/wiki/p1-vertical-slice-demo.md`](../p1-vertical-slice-demo.md).
 - [ ] Full checklist executed by someone other than the author, with evidence attached.
 - [ ] Degraded-setup path (no `Assets/_Licensed`) executed and documented.
 - [ ] Follow-up tasks created for any failed or flaky steps.
