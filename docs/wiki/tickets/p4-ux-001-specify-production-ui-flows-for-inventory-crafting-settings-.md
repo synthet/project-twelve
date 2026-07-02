@@ -1,93 +1,133 @@
 ---
+type: Task
 id: P4-UX-001
 title: "[P4-UX-001] Specify production UI flows for inventory, crafting, settings, and multiplayer."
+description: Screen inventory and interaction flows for inventory, crafting, settings, and multiplayer with keyboard/mouse plus controller-ready navigation.
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/48"
 github_issue_status: created
+resource: wiki/tickets/p4-ux-001-specify-production-ui-flows-for-inventory-crafting-settings-.md
+tags: [docs, wiki, ticket, ux, ui, p4]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/gameplay-systems.md"
+  - "docs/wiki/tickets/p2-inv-001-specify-inventory-backed-placement-and-pickup-rules.md"
+  - "docs/wiki/tickets/p4-content-001-specify-crafting-progression-combat-and-loot-loops.md"
 ---
 
 # [P4-UX-001] Specify production UI flows for inventory, crafting, settings, and multiplayer.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P4-UX-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket specifies the production UI layer over systems that already have data contracts:
+inventory grid + hotbar (P2-INV-001 slots), crafting list with station context (P4-CONTENT-001
+recipes), settings (audio/video/controls/gameplay), and multiplayer host/join (P3-NET-003 flow).
+It defines the screen inventory, per-screen interaction flows, an input matrix for keyboard/mouse
+with **controller-ready navigation targets** (every interactive element reachable by directional
+focus — even though controller support itself ships later), and UI-state rules (pause behavior,
+stacking, dismissal). UI reads and writes game state only through the existing system APIs —
+presentation logic stays out of simulation code.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#48](https://github.com/synthet/project-twelve/issues/48)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P4 milestone, I want to specify production UI flows for inventory, crafting, settings, and multiplayer so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As a player in the beta, I want coherent, predictable UI for managing items, crafting, settings,
+and joining a friend's world so that the systems built in P2–P4 are usable without developer
+knowledge — and as a developer, I want the flows specified so UI work doesn't invent new
+gameplay rules.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Specify production UI flows for inventory, crafting, settings, and multiplayer.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. **Screen inventory (specified per screen: entry points, states, exits):** HUD (hotbar,
+   health), Inventory (grid + drag/drop + hotbar assignment), Crafting (recipe list with
+   craftable-now filtering, station-aware per P4-CONTENT-001), Settings (audio, video,
+   rebindable controls, gameplay toggles), Multiplayer (host world / join by address, connection
+   status, disconnect messaging per P3-NET-004), Pause menu, and death/respawn screen.
+2. **Inventory interactions:** drag-and-drop between slots, stack splitting (documented gesture),
+   quick-move (shift-click), hotbar binding; all mutations route through P2-INV-001 APIs —
+   the UI never edits slot data directly.
+3. **Crafting interactions:** recipe rows show inputs/outputs with have/need counts; craft
+   button disabled with reason when uncraftable; station-gated recipes appear only in station
+   context (or greyed with the station named — decision recorded).
+4. **Input matrix:** every action mapped for keyboard/mouse; every interactive element has a
+   directional-navigation target and focus state so a controller scheme can bind later without
+   re-layout. Rebinding UI covers the gameplay action set.
+5. **UI-state rules:** which screens pause single-player (and explicitly don't pause
+   multiplayer), screen stacking/dismissal order (Esc semantics), and world-input suppression
+   while a screen is open (no digging through the inventory screen).
+6. **Feedback rules:** pickup/craft confirmations, denied-action feedback (out of range, full
+   inventory), and connection-state changes all have specified, non-blocking presentation.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. UI is a presentation layer: reads via system queries/events, writes via system APIs; no
+   gameplay rules live in UI code.
+2. UI updates are event-driven (no per-frame polling of inventories); opening any screen causes
+   no perceptible hitch.
+3. Layouts remain usable at 16:9, 16:10, and ultrawide at 1080p-class resolutions (full
+   resolution certification is P5-PLAT-001).
+4. Text is centralized for future localization (no hardcoded user-facing strings in components).
 
 ## Acceptance criteria
 
-- UI supports keyboard/mouse and controller-ready navigation targets.
-- The related specification page is updated or explicitly confirmed to require no change.
+- UI supports keyboard/mouse and controller-ready navigation targets across all specified
+  screens (focus-traversal review passes with no unreachable elements).
+- UX review checklist executed per screen: entry/exit paths work, Esc semantics consistent,
+  pause rules honored in single-player and multiplayer.
+- Inventory flow: drag/drop, split, quick-move, and hotbar binding work and round-trip through
+  P2-INV-001 (EditMode tests on any UI-side view-model logic).
+- Crafting flow: craftable filtering matches registry state; denied crafts show the reason.
+- Multiplayer flow: host → second client joins by address → disconnect shows the specified
+  message (with P3-NET-003/004).
+- Screenshot capture of every screen at the three aspect ratios attached as evidence.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the commit, verification commands, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P4-UX-001`.
-- Keep implementation details aligned with `docs/wiki/gameplay-systems.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Screen inventory, flow specs, input matrix, focus/navigation contract, and implementation of
+  the listed screens with placeholder-quality art.
+- Out of scope: final visual design/art pass, controller input implementation (targets only),
+  localization content (structure only), accessibility features beyond focus order (recorded
+  follow-up per quality-gates non-goals), map/minimap UI.
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P4-UX-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/gameplay-systems.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- P2-INV-001 (inventory API), P4-CONTENT-001 (recipes/stations), P3-NET-003/004 (host/join and
+  disconnect states), P2-TOOL-001 console (debug entry points stay separate from player UI).
+- Unity UI stack choice (uGUI vs UI Toolkit) — decision recorded in this ticket at
+  implementation time with rationale.
 
 ### Verification plan
 
-- UX review checklist and screenshot capture.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Per-screen UX review checklist + focus-traversal audit.
+- EditMode tests for view-model logic (craftable filtering, slot view mapping).
+- Screenshot matrix (screens × aspect ratios) as exit evidence.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/gameplay-systems.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- `docs/wiki/gameplay-systems.md` — UI/flows section added (screen inventory + state rules).
+- P4-CONTENT-001 / P2-INV-001 tickets — cross-references for the APIs UI consumes.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Screen inventory and flow specs documented before implementation.
+- [ ] Focus-traversal audit passes (controller-ready).
+- [ ] Screenshot matrix attached.
+- [ ] Follow-up tasks created for controller bindings, localization, and accessibility.

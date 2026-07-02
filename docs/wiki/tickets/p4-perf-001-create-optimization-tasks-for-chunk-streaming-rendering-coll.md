@@ -1,93 +1,124 @@
 ---
+type: Task
 id: P4-PERF-001
 title: "[P4-PERF-001] Create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids."
+description: Define per-system performance budgets on target hardware, measure against them, and spawn targeted optimization tasks with before/after profiler gates.
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/46"
 github_issue_status: created
+resource: wiki/tickets/p4-perf-001-create-optimization-tasks-for-chunk-streaming-rendering-coll.md
+tags: [docs, wiki, ticket, performance, profiling, p4]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/13-tooling-testing.md"
+  - "docs/wiki/quality-gates.md"
 ---
 
 # [P4-PERF-001] Create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P4-PERF-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket is a measurement-and-planning task: define frame-level performance budgets for the
+feature-complete game on documented target hardware, profile the five known cliffs from
+`docs/wiki/13-tooling-testing.md` (chunk streaming, mesh rebuild, collider rebuild, lighting
+relight, fluid iteration) under standardized stress scenarios, and convert every budget breach
+into a **separate, targeted optimization ticket** with its own before/after profiler gate. The
+per-chunk baseline targets already exist in `docs/wiki/quality-gates.md` (render < 1 ms, collider
+< 2 ms, relight < 5 ms, fluid step < 3 ms, 0 steady-state GC alloc); this ticket extends them to
+whole-frame and content-scale budgets and validates them empirically.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#46](https://github.com/synthet/project-twelve/issues/46)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P4 milestone, I want to create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As a developer preparing for beta, I want budgets and measured baselines for every hot system so
+that optimization work is driven by data against agreed targets — not by guessing — and each fix
+is provably an improvement.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Create optimization tasks for chunk streaming, rendering, collision, lighting, and liquids.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. **Budget definition:** target hardware spec documented (min + recommended desktop); frame
+   budget 16.6 ms at 60 FPS with a per-system allocation table (simulation, rendering, physics,
+   lighting, fluids, streaming, headroom); content-scale assumptions stated (view distance in
+   chunks, active entity count, active fluid cells).
+2. **Stress scenarios (standardized, seeded, repeatable):** (a) high-speed traversal (streaming
+   churn), (b) bulk edit / explosion (remesh + relight + collider storm), (c) large waterfall +
+   drained lake (fluid worst case), (d) dense enemy population (AI + pathfinding), (e) long-idle
+   settled world (steady-state cost must be ~0 for fluids/lighting; 0 GC alloc).
+3. **Measurement:** run every scenario on target hardware with the Unity Profiler; record
+   per-system timings, GC allocations, draw calls, and memory per chunk; store captures and a
+   summary table as repo evidence.
+4. **Task generation:** each budget breach produces a new optimization ticket
+   (`P4-PERF-00N`) naming the system, the scenario, the measured number, the target, and a
+   candidate approach (from the options catalogued in the wiki: mesh-rebuild batching, collider
+   run-merge tuning, light-window capping, fluid budget shaping, streaming prefetch).
+5. **Regression guard:** the scenario suite + measurement procedure is documented as a repeatable
+   runbook so P4-QA-001 cycles and P5-PLAT-001 certification rerun it identically.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. Scenarios are deterministic (pinned seeds/scripts) so before/after comparisons are valid.
+2. Measurements come from builds (not editor-only) for frame-time numbers; editor profiling is
+   acceptable for allocation attribution.
+3. No optimization work lands inside this ticket itself — it produces the measured backlog
+   (minimal-diff discipline; fixes go to their own tickets with their own gates).
 
 ## Acceptance criteria
 
-- Performance budgets are defined for target hardware and content scale.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Performance budgets are defined for target hardware and content scale and recorded in
+  `docs/wiki/quality-gates.md` (extending the existing per-chunk table).
+- All five stress scenarios are scripted/documented and produce repeatable captures (two runs of
+  the same scenario agree within a documented variance).
+- A measurement summary table exists: scenario × system → measured vs budget, green/red.
+- Every red cell has a corresponding filed optimization ticket with baseline capture attached.
+- The idle-world scenario shows ~0 active-set cost and 0 steady-state GC allocation, or tickets
+  exist for the violations.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the commit, captures, the summary table, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P4-PERF-001`.
-- Keep implementation details aligned with `docs/wiki/13-tooling-testing.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Budget table, scenario scripts/runbook, measurement passes, filed optimization tickets.
+- Out of scope: implementing optimizations (child tickets), mobile/console profiling
+  (P5-PLAT-001), network bandwidth budgets (owned by P3-NET-003's report; may be folded into a
+  child ticket if breached).
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P4-PERF-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/13-tooling-testing.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- Feature-complete systems: P2 core set, P3 networking, P4-CONTENT-001 (enemy density scenario).
+- `docs/wiki/quality-gates.md` — existing per-chunk targets to extend.
+- P2-TOOL-001 overlays + `perf` MCP tool — instrumentation for scenario setup.
 
 ### Verification plan
 
-- Profiler captures before and after optimization.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Repeatability check: duplicate runs agree within documented variance.
+- Review: each filed child ticket contains scenario, numbers, target, and candidate approach.
+- Runbook dry-run by someone other than the author.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/13-tooling-testing.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- `docs/wiki/quality-gates.md` — extended budget table and scenario runbook link.
+- `docs/wiki/13-tooling-testing.md` — profiling-targets section updated with scenario suite.
+- New child tickets under `docs/wiki/tickets/` per breach.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Budget table and target hardware documented.
+- [ ] Five scenario captures + summary table attached.
+- [ ] Optimization tickets filed for every breach.
+- [ ] Runbook validated by a second person.
