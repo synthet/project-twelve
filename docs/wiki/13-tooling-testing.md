@@ -1,8 +1,25 @@
+---
+type: Guide
+title: Tooling, Testing & Profiling
+description: Debug visualizations, editor tools, automated test priorities, and profiling targets for the sandbox.
+resource: wiki/13-tooling-testing.md
+tags: [docs, wiki, testing, tooling, profiling]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
+---
+
 # 13 — Tooling, Testing & Profiling
 
 > **Status:** Planning.
 > **Decisions:** Debug views early; unit-test pure algorithms; profile the known cliffs.
 > **Invariants:** Pure data algorithms (coords, lighting, fluids, gen, serialization) are unit-tested.
+
+## Manual checks
+
+For reviewer-executed play-mode validation of the P1 vertical slice (movement, streaming,
+determinism, editing, collision, visuals), follow the
+[P1 Vertical-Slice Demo Runbook](p1-vertical-slice-demo.md). Merge-blocking manual checks and
+profiler targets live in [Quality Gates](quality-gates.md).
 
 ## Debug visualizations (build these early)
 
