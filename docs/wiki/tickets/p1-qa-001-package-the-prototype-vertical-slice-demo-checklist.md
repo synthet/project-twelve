@@ -137,7 +137,7 @@ exercise them.
 ## Exit evidence checklist
 
 - [x] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [x] Demo runbook authored with pinned scene/seed and evidence table:
       [`docs/wiki/p1-vertical-slice-demo.md`](../p1-vertical-slice-demo.md).
 - [ ] Full checklist executed by someone other than the author, with evidence attached.
