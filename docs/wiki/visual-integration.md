@@ -4,7 +4,7 @@ title: Visual Integration
 description: Sandbox tile mapping, player avatar composition, creature visuals, and vendor parity for project-owned presentation code.
 resource: wiki/visual-integration.md
 tags: [docs, wiki, visual, rendering, characters]
-timestamp: 2026-06-30T12:00:00Z
+timestamp: 2026-07-02T00:00:00Z
 ---
 
 # Visual integration
@@ -53,7 +53,7 @@ ProjectTwelve does **not** reference vendor demo scripts at runtime. Behavioral 
 | Run/Jump/Land dust VFX | Deferred | Needs `EffectCatalog` in scene |
 | Horns layer in merge order | Deferred | Spec lists Horns; merge omits it |
 | Monster spawn + locomotion demo | Partial | `MonsterSpawnHelper` works; no AI wiring |
-| EditMode visual invariant tests | Open | P1-VISUAL-002 |
+| EditMode visual invariant tests | Implemented | P1-VISUAL-002 — sheet layout, merge order, autotile pick/flip |
 | Catalog import pipeline spec | Open | P2-VISUAL-001 |
 
 ## Data flow (terrain)
