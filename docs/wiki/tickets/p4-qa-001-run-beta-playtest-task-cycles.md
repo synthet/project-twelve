@@ -1,93 +1,128 @@
 ---
+type: Task
 id: P4-QA-001
 title: "[P4-QA-001] Run beta playtest task cycles."
+description: Repeatable playtest cycle protocol — session design, feedback capture, and triage into spec changes, bugs, tuning, or deferred scope.
 status: open
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/47"
 github_issue_status: created
+resource: wiki/tickets/p4-qa-001-run-beta-playtest-task-cycles.md
+tags: [docs, wiki, ticket, qa, playtest, p4]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/13-tooling-testing.md"
+  - "docs/wiki/quality-gates.md"
+  - "docs/project/00-backlog-workflow.md"
 ---
 
 # [P4-QA-001] Run beta playtest task cycles.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P4-QA-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket defines and runs the beta playtest **cycle protocol**: a repeatable loop of build →
+scripted-and-free-play sessions → structured feedback capture → triage into exactly one of four
+buckets (spec change, bug, tuning, deferred scope) → backlog items → next build. The deliverable
+is both the protocol document and evidence of at least two completed cycles feeding the backlog
+per `docs/project/00-backlog-workflow.md`. The protocol exists so feedback becomes tracked work
+instead of anecdotes — the "promote repeated defects into new spec requirements" governance rule
+from `docs/wiki/spec-driven-development-tasks.md`.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#47](https://github.com/synthet/project-twelve/issues/47)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P4 milestone, I want to run beta playtest task cycles so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As the maintainer running the beta, I want a playtest protocol that reliably converts play
+sessions into triaged backlog items so that every cycle measurably improves the game and no
+recurring complaint gets lost or re-reported untracked.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Run beta playtest task cycles.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. **Cycle definition:** each cycle = pinned build (tagged commit + build artifact), session
+   plan, 2+ playtesters (at least one non-developer per cycle where possible), capture, triage,
+   backlog update, and a cycle report — cadence documented (e.g. bi-weekly during beta).
+2. **Session design:** every cycle includes (a) a scripted scenario pass reusing the P1-QA-001
+   runbook extended with P2–P4 features (craft chain, combat, save/reload, two-player LAN), and
+   (b) unscripted free play with a stated focus theme (e.g. "early progression pacing").
+3. **Capture format:** structured per-session record — build id, tester, platform, session
+   length, task-completion outcomes, friction moments (timestamped), bugs with repro attempts,
+   and subjective ratings on a small fixed scale for the focus theme; debug tooling
+   (P2-TOOL-001 console, seed pinning) documented as capture aids.
+4. **Triage taxonomy (every item lands in exactly one):** **spec change** (design intent wrong →
+   ticket editing the wiki spec), **bug** (behavior violates existing spec → bug ticket with
+   repro), **tuning** (numbers, not rules → data change per P4-CONTENT-001 workflow), or
+   **deferred** (recorded with reason and revisit trigger). Recurring items (≥2 cycles) escalate:
+   defect → spec requirement per the governance rule.
+5. **Traceability:** every triaged item becomes a wiki ticket / GitHub issue linked to the cycle
+   report; cycle reports live under `docs/wiki/` (or `docs/project/`) with OKF frontmatter and
+   link to the sessions they summarize.
+6. **Exit measurement:** each cycle report states whether the previous cycle's top-3 issues were
+   resolved, verifying the loop actually closes.
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. The protocol is executable by one maintainer + volunteer testers (no QA-team assumptions).
+2. A full cycle's overhead (setup, capture, triage, reporting) stays within a documented budget
+   (target: ≤ 1 day of maintainer time per cycle).
+3. Personal data in reports is limited to what testers consent to (name/handle optional).
 
 ## Acceptance criteria
 
-- Feedback is triaged into spec changes, bugs, tuning, or deferred scope.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Feedback is triaged into spec changes, bugs, tuning, or deferred scope — every captured item
+  from every session lands in exactly one bucket with a tracked artifact or recorded deferral.
+- The protocol document exists (session plan template, capture template, triage rules, report
+  template) before the first cycle runs.
+- At least two full cycles are completed: two builds, session records, triage tables, and cycle
+  reports linked to filed backlog items.
+- Cycle 2's report evaluates cycle 1's top-3 issues (loop closure).
+- Recurring-issue escalation demonstrated or explicitly noted as not-yet-triggered.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records the cycle reports, filed items, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P4-QA-001`.
-- Keep implementation details aligned with `docs/wiki/13-tooling-testing.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Protocol authoring, templates, and the first two executed cycles with reports.
+- Out of scope: public/open beta distribution, telemetry/analytics instrumentation (recorded
+  follow-up if manual capture proves insufficient), balance decisions themselves (P4-CONTENT-001
+  data owns tuning; cycles produce the inputs).
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P4-QA-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/13-tooling-testing.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- Feature-complete build including P4-CONTENT-001 loops and P3-NET-003 LAN (scripted scenario
+  coverage).
+- P1-QA-001 runbook — base for the scripted pass.
+- P2-TOOL-001 — seed pinning, console, and state dumps as capture aids.
+- `docs/project/00-backlog-workflow.md` — where triaged items land.
 
 ### Verification plan
 
-- Playtest reports linked to backlog items.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Review: protocol document completeness (all four templates present).
+- Evidence: two cycle reports with session records and linked backlog items.
+- Spot-check: random sampled feedback items trace to a bucket artifact.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/13-tooling-testing.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- New protocol page (e.g. `docs/wiki/beta-playtest-protocol.md`, type `Runbook`, OKF frontmatter).
+- Cycle reports added per cycle with links into the backlog.
+- `docs/wiki/13-tooling-testing.md` — reference the protocol from the testing section.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Protocol document with all templates merged before cycle 1.
+- [ ] Two cycle reports with triage tables and linked items attached.
+- [ ] Loop-closure evaluation present in cycle 2's report.
+- [ ] Follow-up tasks created for telemetry and open-beta distribution if warranted.

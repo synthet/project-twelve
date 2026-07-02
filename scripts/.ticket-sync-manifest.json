@@ -27,7 +27,7 @@
     },
     "P1-COLL-001": {
       "number": 25,
-      "state": "OPEN",
+      "state": "CLOSED",
       "url": "https://github.com/synthet/project-twelve/issues/25"
     },
     "P1-EDIT-001": {
@@ -124,6 +124,16 @@
       "number": 78,
       "state": "OPEN",
       "url": "https://github.com/synthet/project-twelve/issues/78"
+    },
+    "P2-VISUAL-004": {
+      "number": 80,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/80"
+    },
+    "P2-VISUAL-005": {
+      "number": 81,
+      "state": "OPEN",
+      "url": "https://github.com/synthet/project-twelve/issues/81"
     },
     "P3-NET-001": {
       "number": 40,
@@ -237,6 +247,14 @@
       "issue_url": "https://github.com/synthet/project-twelve/issues/29",
       "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0A4"
     },
+    "P1-VISUAL-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/74",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxXLg8"
+    },
+    "P1-VISUAL-002": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/75",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxXLiY"
+    },
     "P1-WORLD-001": {
       "issue_url": "https://github.com/synthet/project-twelve/issues/30",
       "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Bk"
@@ -276,6 +294,18 @@
     "P2-TOOL-001": {
       "issue_url": "https://github.com/synthet/project-twelve/issues/39",
       "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxC0Pc"
+    },
+    "P2-VISUAL-001": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/76",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxXLrM"
+    },
+    "P2-VISUAL-002": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/77",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxXLsw"
+    },
+    "P2-VISUAL-003": {
+      "issue_url": "https://github.com/synthet/project-twelve/issues/78",
+      "item_id": "PVTI_lAHOAFXgIs4Bb1C5zgxXLts"
     },
     "P3-NET-001": {
       "issue_url": "https://github.com/synthet/project-twelve/issues/40",

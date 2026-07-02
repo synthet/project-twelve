@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P0-SPEC-001
 title: "[P0-SPEC-001] Consolidate the product brief, architecture overview, and glossary into a single baseline scope statement."
+description: Backlog ticket consolidating the product brief, architecture overview, and glossary into one baseline scope statement.
 status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/20"
 github_issue_status: created
+resource: wiki/tickets/p0-spec-001-consolidate-the-product-brief-architecture-overview-and-glos.md
+tags: [docs, wiki, ticket, spec, p0]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"

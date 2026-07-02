@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P0-SPEC-002
 title: "[P0-SPEC-002] Define spec ownership for every subsystem page."
+description: Backlog ticket defining spec ownership, status, dependencies, and review cadence for every subsystem page.
 status: done
 phase: "Phase P0 — Discovery and specification baseline"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/21"
 github_issue_status: created
+resource: wiki/tickets/p0-spec-002-define-spec-ownership-for-every-subsystem-page.md
+tags: [docs, wiki, ticket, spec, p0]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/00-overview.md"

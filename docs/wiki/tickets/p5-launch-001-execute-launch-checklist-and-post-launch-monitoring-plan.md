@@ -1,93 +1,131 @@
 ---
+type: Task
 id: P5-LAUNCH-001
 title: "[P5-LAUNCH-001] Execute launch checklist and post-launch monitoring plan."
+description: Launch-day checklist (artifacts, release notes, rollback plan), hotfix workflow, and the post-launch monitoring and incident-response plan.
 status: open
 phase: "Phase P5 — Release candidate and launch"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/50"
 github_issue_status: created
+resource: wiki/tickets/p5-launch-001-execute-launch-checklist-and-post-launch-monitoring-plan.md
+tags: [docs, wiki, ticket, launch, release, p5]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/14-roadmap.md"
+  - "docs/wiki/tickets/p5-rel-001-specify-release-criteria-and-launch-blocking-bug-classes.md"
 ---
 
 # [P5-LAUNCH-001] Execute launch checklist and post-launch monitoring plan.
 
 ## Open knowledge summary
 
-This ticket captures the shared product, engineering, QA, and documentation knowledge needed to deliver `P5-LAUNCH-001`. It is intentionally self-contained so the GitHub issue, implementation branch, review notes, and wiki updates can all trace back to the same requirements.
+This ticket operationalizes the launch: a launch-day checklist (build artifacts from the RC
+commit, release notes, distribution upload, rollback plan), a **hotfix workflow** distinct from
+normal development (what may skip which process steps, and what may not — quality gates and
+S0 criteria are never skipped), and a post-launch monitoring plan sized for a solo/small-team
+project: player-report channels, triage cadence using the P5-REL-001 severity taxonomy, and the
+first-patch decision rule. The ticket closes with a **dry-run release** and a rehearsed incident
+scenario before the real launch.
 
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation. After the issue is created, replace `github_issue: null` in the front matter with the issue URL.
+- **Issue:** [synthet/project-twelve#50](https://github.com/synthet/project-twelve/issues/50)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
 
-As a developer or reviewer working on the P5 milestone, I want to execute launch checklist and post-launch monitoring plan so that the project can advance through the spec-driven workflow with clear scope, objective validation, and durable documentation.
+As the maintainer on launch day, I want every step scripted and rehearsed — including the ones
+for when things go wrong — so that launch is checklist execution and an S0 report two hours
+after release triggers a practiced response, not improvisation.
 
 ## Requirements
 
 ### Functional requirements
 
-1. The implementation or documentation change must satisfy the backlog task: **Execute launch checklist and post-launch monitoring plan.**
-2. The work must be traceable to the spec references listed in this ticket.
-3. Any behavior, data contract, tool output, or workflow introduced by this task must be documented before the task is considered complete.
-4. The task must preserve chunk-first and deterministic-system assumptions where the referenced subsystem depends on them.
+1. **Launch checklist**, each item with owner and evidence: P5-REL-001 go decision recorded; RC
+   commit tagged; build artifacts produced from that exact tag for every shipped platform
+   (P5-PLAT-001 matrix) with checksums; paid-asset guard run against distributed content;
+   release notes drafted (player-facing summary + known issues from P5-DOC-001); distribution
+   channel upload + store/page assets; save-compatibility statement (P5-MIG-001); announcement
+   posts; post-launch monitoring switched on.
+2. **Rollback plan:** the previous-known-good build stays available; the decision rule for
+   pulling a release vs hotfixing forward is written down (S0 affecting saves ⇒ immediate
+   mitigation guidance to players + rollback/hotfix per the rule); save-compatibility
+   implications of any rollback are addressed (a rolled-back binary must still load saves the
+   pulled version created, or the plan says what players are told).
+3. **Hotfix workflow:** branch from the release tag; minimal diff; full quality gates + the
+   P5-REL-001 S0 scenario suite always run; P5-PLAT-001 certification may be reduced to the
+   affected cells (documented); version/save-format rules for hotfixes (no format bumps in a
+   hotfix unless the bug *is* the format); release-note and tag conventions.
+4. **Monitoring plan:** report channels (issue tracker template for players, community channel);
+   triage cadence (daily in week 1, then documented steady-state); severity assignment per
+   P5-REL-001; the first-patch decision rule (what accumulates vs what ships immediately);
+   crash/log collection approach documented (opt-in log attachment at minimum; automated
+   telemetry only as a recorded follow-up).
+5. **Rehearsal:** one full dry-run release to a private/staging channel executing every checklist
+   item, and one tabletop incident drill (simulated S0 save-corruption report → detection →
+   decision → hotfix path → player communication).
 
 ### Non-functional requirements
 
-1. The work must be small enough to review as a focused change set.
-2. The change must avoid hidden coupling between unrelated systems.
-3. Verification evidence must be reproducible by another contributor using documented steps.
-4. Any unresolved risk must be recorded as a follow-up ticket or an explicit non-goal.
+1. Every checklist step is executable by one person and idempotent where possible (re-running an
+   upload step is safe).
+2. All launch materials (checklist, rollback rule, hotfix workflow, monitoring plan) live in the
+   repo with OKF frontmatter — not in chat history or heads.
+3. Time budget documented: launch-day execution target and hotfix turnaround target (decision →
+   shipped) are stated and validated by the rehearsal.
 
 ## Acceptance criteria
 
-- Build artifacts, release notes, rollback plan, and hotfix workflow are ready.
-- The related specification page is updated or explicitly confirmed to require no change.
+- Build artifacts, release notes, rollback plan, and hotfix workflow are ready — reviewed,
+  merged, and validated by rehearsal before launch day.
+- Dry-run release executed end-to-end with evidence (staging upload, checksums, notes) and a
+  timing report against the budget.
+- Incident drill executed with a written post-drill report (what worked, gaps filed as issues).
+- Rollback decision rule and save-compatibility implications documented and reviewed.
+- Monitoring plan active from launch: channels exist, triage cadence scheduled, report template
+  published.
 - The GitHub issue and this markdown ticket link to each other.
-- Exit evidence records the commit, verification commands, manual QA notes when applicable, and reviewer findings.
+- Exit evidence records rehearsal artifacts, drill report, and reviewer findings.
 
 ## Detailed technical specifications
 
 ### Scope
 
-- Deliver the behavior, documentation, or planning artifact described by `P5-LAUNCH-001`.
-- Keep implementation details aligned with `docs/wiki/14-roadmap.md` and the cross-phase task template in `docs/wiki/spec-driven-development-tasks.md`.
-- Prefer explicit data contracts, invariants, lifecycle rules, and edge cases over implicit conventions.
+- Checklist/workflow/plan authoring, the dry-run release, and the incident drill.
+- Out of scope: the real launch execution (uses these artifacts), marketing campaign planning,
+  automated crash-telemetry infrastructure (follow-up), post-launch content roadmap
+  (`docs/wiki/14-roadmap.md` owns sequencing).
 
 ### Inputs and dependencies
 
-- Primary backlog item: `P5-LAUNCH-001` from `docs/wiki/spec-driven-development-tasks.md`.
-- Primary subsystem reference: `docs/wiki/14-roadmap.md`.
-- Project tracking target: `https://github.com/users/synthet/projects/2`.
-
-### Implementation notes
-
-- Start by reviewing the referenced wiki pages and updating the spec if the current behavior is ambiguous.
-- Create or adjust automated tests before or alongside implementation when code behavior changes.
-- Keep runtime code, editor tooling, and documentation changes separated when practical so reviewers can validate each layer.
-- Record migration, save compatibility, networking, and performance impacts when the task touches those systems.
+- P5-REL-001 (go/no-go + severity taxonomy), P5-PLAT-001 (build matrix), P5-MIG-001
+  (compatibility statement), P5-DOC-001 (known issues, player docs) — inputs to checklist items.
+- Distribution channel decision (recorded here; e.g. itch.io/Steam) — shapes upload steps.
+- `.claude/skills`/`release-notes` tooling — release-note drafting support.
 
 ### Verification plan
 
-- Dry-run release and post-launch incident rehearsal.
-- Run repository-level formatting or diff checks before closing the task.
-- Attach screenshots, profiler captures, deterministic fixture output, or playtest notes when the verification method calls for them.
+- Dry-run release with timing + evidence.
+- Tabletop incident drill with report.
+- Review: every checklist item names its owner and evidence artifact.
 
 ## Documentation impact
 
-- Update `docs/wiki/spec-driven-development-tasks.md` if task scope, acceptance criteria, or sequencing changes.
-- Update `docs/wiki/14-roadmap.md` when the subsystem contract changes.
-- Keep this ticket synchronized with the final GitHub issue URL and outcome.
+- New launch runbook page (e.g. `docs/wiki/launch-runbook.md`, OKF frontmatter) holding
+  checklist, rollback rule, hotfix workflow, monitoring plan; linked from `docs/wiki/14-roadmap.md`.
+- Release-note template added alongside existing release tooling.
+- Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
 ## Exit evidence checklist
 
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
-- [ ] Spec references have been reviewed and updated if needed.
-- [ ] Acceptance criteria have been validated.
-- [ ] Verification evidence is attached or linked.
-- [ ] Follow-up tasks are created for deferred scope, defects, or open risks.
+- [ ] Launch runbook merged (checklist, rollback, hotfix, monitoring).
+- [ ] Dry-run release executed with timing report.
+- [ ] Incident drill report attached with gaps filed.
+- [ ] Follow-up tasks created for telemetry and distribution-channel specifics.

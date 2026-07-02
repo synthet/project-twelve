@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P1-EDIT-001
 title: "[P1-EDIT-001] Specify tile edit flow through a single `SetTile` choke point."
+description: Backlog ticket specifying the tile edit flow through the single SetTile choke point with per-subsystem dirty-flag propagation.
 status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/26"
 github_issue_status: created
+resource: wiki/tickets/p1-edit-001-specify-tile-edit-flow-through-a-single-settile-choke-point.md
+tags: [docs, wiki, ticket, editing, p1]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/world-and-chunk-data.md"
