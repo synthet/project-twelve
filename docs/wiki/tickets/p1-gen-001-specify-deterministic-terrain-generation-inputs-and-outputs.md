@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P1-GEN-001
 title: "[P1-GEN-001] Specify deterministic terrain generation inputs and outputs."
+description: Backlog ticket specifying deterministic terrain generation inputs and outputs so identical seeds reproduce identical chunks.
 status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/27"
 github_issue_status: created
+resource: wiki/tickets/p1-gen-001-specify-deterministic-terrain-generation-inputs-and-outputs.md
+tags: [docs, wiki, ticket, generation, p1]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/generation-and-saving.md"

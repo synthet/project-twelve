@@ -1,11 +1,17 @@
 ---
+type: Task
 id: P1-RENDER-001
 title: "[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior."
+description: Backlog ticket specifying and implementing render rebuilds bounded to dirty visible chunks only.
 status: implemented
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/29"
 github_issue_status: created
+resource: wiki/tickets/p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md
+tags: [docs, wiki, ticket, rendering, p1]
+timestamp: 2026-07-01T00:00:00Z
+okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
   - "docs/wiki/rendering-and-collision.md"
