@@ -3,14 +3,14 @@ type: Task
 id: P1-VISUAL-002
 title: "[P1-VISUAL-002] Add visual subsystem EditMode tests."
 description: Add EditMode tests for character sheet layout and autotile resolver invariants without licensed art fixtures.
-status: open
+status: in_progress
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/75"
 github_issue_status: created
 resource: wiki/tickets/p1-visual-002-add-visual-subsystem-editmode-tests.md
 tags: [docs, wiki, ticket, visual, testing, p1]
-timestamp: 2026-06-30T12:00:00Z
+timestamp: 2026-07-02T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/VISUAL_BEHAVIOR_SPEC.md"

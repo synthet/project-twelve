@@ -4,7 +4,7 @@ title: Quality Gates
 description: Required automated and manual verification steps before merge — tests, link hygiene, deterministic checks, and profiler targets.
 resource: wiki/quality-gates.md
 tags: [docs, wiki, quality, ci, testing]
-timestamp: 2026-06-29T00:00:00Z
+timestamp: 2026-07-02T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -33,6 +33,7 @@ Every commit should run the full EditMode test suite. Tests must validate:
 | **Generation** | Same seed ⇒ identical tiles; on-demand chunk ≡ full-world chunk | (included in EditMode suite) | — |
 | **Save/load** | Round-trip equality; old-version saves migrate correctly | (included in EditMode suite) | — |
 | **Network serialization** | Tile-delta encode/decode round-trips; sequence ordering preserved | (included in EditMode suite) | — |
+| **Visual invariants** | Character sheet clip rows/keys match spec; autotile pick is deterministic, weighted, flip-aware | (included in EditMode suite) | — |
 
 **When to run:** Before every push; part of CI/CD.
 

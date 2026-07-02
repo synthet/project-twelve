@@ -256,6 +256,98 @@ public sealed class AutotileVisualTests
         AssertSpriteQuadSpansTileCell(x, y, tileSize, sprite);
     }
 
+    [Test]
+    public void AutotileResolver_DirectMatch_ResolvesWithoutFlip()
+    {
+        AutotileTileset tileset = CreateAsymmetricRuleTileset();
+        int[,] mask = new[,]
+        {
+            { 0, 1, 1 },
+            { 0, 1, 1 },
+            { 0, 1, 1 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("L", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_MirroredMask_ResolvesSameRuleWithFlipX()
+    {
+        AutotileTileset tileset = CreateAsymmetricRuleTileset();
+        // Horizontal mirror of the "L" rule pattern (second index reversed).
+        int[,] mirrored = new[,]
+        {
+            { 1, 1, 0 },
+            { 1, 1, 0 },
+            { 1, 1, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mirrored, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("L", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_WeightedRules_SameMaskAlwaysPicksSameVariant()
+    {
+        AutotileTileset tileset = CreateWeightedVariantTileset(heavyWeight: 4, lightWeight: 1);
+        int[,] mask = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        Sprite first = AutotileResolver.ResolveSprite(tileset, mask, out bool flipFirst);
+        Sprite second = AutotileResolver.ResolveSprite(tileset, mask, out bool flipSecond);
+
+        Assert.IsNotNull(first);
+        Assert.AreSame(first, second);
+        Assert.AreEqual(flipFirst, flipSecond);
+        Assert.IsTrue(first.name == "A" || first.name == "B", $"Unexpected variant '{first.name}'.");
+    }
+
+    [Test]
+    public void AutotileResolver_WeightedRules_NonPositiveWeightsStillResolve()
+    {
+        AutotileTileset tileset = CreateWeightedVariantTileset(heavyWeight: 0, lightWeight: 0);
+        int[,] mask = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
+
+        Assert.IsNotNull(resolved);
+        Assert.IsTrue(resolved.name == "A" || resolved.name == "B", $"Unexpected variant '{resolved.name}'.");
+    }
+
+    [Test]
+    public void AutotileResolver_UnmatchedMask_ReturnsFallbackSprite()
+    {
+        AutotileTileset tileset = CreateAsymmetricRuleTileset();
+        int[,] mask = new[,]
+        {
+            { 0, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual(AutotileRuleTables.FallbackSpriteId, resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
     private static void AssertSpriteQuadSpansTileCell(int x, int y, float tileSize, Sprite sprite)
     {
         Bounds bounds = sprite.bounds;
@@ -294,6 +386,46 @@ public sealed class AutotileVisualTests
     {
         Texture2D texture = new Texture2D(16, 16);
         return new AutotileTileset("Test", texture, CreateSprites("9", "10", "20"));
+    }
+
+    private static AutotileTileset CreateAsymmetricRuleTileset()
+    {
+        AutotileTileset tileset = new AutotileTileset(
+            "AsymmetricRules",
+            new Texture2D(16, 16),
+            CreateSprites("L", "20"));
+        tileset.SetCustomRules(new List<AutotileRule>
+        {
+            new AutotileRule("L", new[,]
+            {
+                { 0, 1, 1 },
+                { 0, 1, 1 },
+                { 0, 1, 1 }
+            })
+        });
+
+        return tileset;
+    }
+
+    private static AutotileTileset CreateWeightedVariantTileset(int heavyWeight, int lightWeight)
+    {
+        int[,] allSolid =
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+        AutotileTileset tileset = new AutotileTileset(
+            "WeightedVariants",
+            new Texture2D(16, 16),
+            CreateSprites("A", "B", "20"));
+        tileset.SetCustomRules(new List<AutotileRule>
+        {
+            new AutotileRule("A", allSolid, heavyWeight),
+            new AutotileRule("B", allSolid, lightWeight)
+        });
+
+        return tileset;
     }
 
     private static System.Collections.Generic.List<Sprite> CreateSprites(params string[] names)
