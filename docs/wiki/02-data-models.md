@@ -1,3 +1,13 @@
+---
+type: Architecture
+title: Data Models
+description: Reference sketches for Tile, Chunk, World, Entity, and Inventory types plus the coordinate space contract.
+resource: wiki/02-data-models.md
+tags: [docs, wiki, architecture, data, chunking]
+timestamp: 2026-07-03T00:00:00Z
+okf_version: 0.1
+---
+
 # 02 — Data Models
 
 > **Status:** Planning.
@@ -26,6 +36,11 @@ Design notes:
 - `id == 0` is **air** by convention; `default(Tile)` is empty. `World.GetTile` returns `default`
   for unloaded/out-of-bounds coordinates, so callers must treat air and "not loaded" carefully
   (query chunk presence when the distinction matters).
+- `id` is a **runtime registry index**, not a durable identity: the registry pins the empty
+  definition (`core:air`) to index 0 at freeze and assigns the rest deterministically. Today the
+  prototype still stores the legacy `SandboxTileIds` constants (compatibility shim); saves and
+  network payloads must map through the string-ID palette either way — see
+  [Modding & Content](12-modding.md) § "Registry contract (P2-DATA-001)".
 - `light` and `fluid` are **derived/simulated** state, not authored content. On save you may
   persist them or recompute on load (recomputing light is cheap; fluid may need persistence).
 - If memory pressure demands it, split rarely-used fields (e.g. `metadata`) into a sparse side
