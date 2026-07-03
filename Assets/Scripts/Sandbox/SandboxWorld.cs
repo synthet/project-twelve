@@ -32,6 +32,9 @@ public sealed class SandboxWorld : MonoBehaviour
     public float TileSize => tileSize;
     public int Seed => seed;
 
+    /// <summary>Visual catalog used for autotile mesh rendering and debug tooling.</summary>
+    public SandboxTileVisualCatalog TileVisualCatalog => tileVisualCatalog;
+
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
 

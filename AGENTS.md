@@ -108,6 +108,9 @@ Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
 | `player_state` | read | Player position, velocity, grounded, tile coord. |
 | `world_info` | read | Seed, tile size, player position/chunk, loaded chunk count. |
 | `tile_at` | read | Tile id/solid/light/fluid at `{ x, y }`. |
+| `tiles_area` | read | Rectangular tile dump with ASCII grid; bounds via `xMin`…`yMax` or `centerX`/`centerY` + `radius`, optional `aroundPlayer`. |
+| `tile_autotile` | read | Autotile masks, neighbor connectivity, matching rule ids, and resolved ground/cover sprites at `{ x, y }`. |
+| `tiles_autotile_area` | read | Same autotile debug as `tile_autotile` for each solid tile in a region (`maxCells` default 400). |
 | `perf` | read | Smoothed FPS and frame time (ms). |
 
 Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_PORT`).

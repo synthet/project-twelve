@@ -178,6 +178,8 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 _ => BuildWorldInfo(FindWorld())));
 
+            RegisterTileDebugTools(dispatcher);
+
             dispatcher.RegisterTool(new McpTool(
                 "tile_at",
                 "Read tile data at world tile coordinates.",
@@ -234,6 +236,141 @@ namespace ProjectTwelve.RuntimeMcp
                         ["frameTimeMs"] = delta * 1000f
                     };
                 }));
+        }
+
+        private static void RegisterTileDebugTools(McpDispatcher dispatcher)
+        {
+            JObject areaProperties = new JObject
+            {
+                ["xMin"] = new JObject { ["type"] = "integer", ["description"] = "Inclusive west bound (use with xMax/yMin/yMax)." },
+                ["yMin"] = new JObject { ["type"] = "integer" },
+                ["xMax"] = new JObject { ["type"] = "integer" },
+                ["yMax"] = new JObject { ["type"] = "integer" },
+                ["centerX"] = new JObject { ["type"] = "integer", ["description"] = "Center X when using radius mode." },
+                ["centerY"] = new JObject { ["type"] = "integer", ["description"] = "Center Y when using radius mode." },
+                ["x"] = new JObject { ["type"] = "integer", ["description"] = "Alias for centerX." },
+                ["y"] = new JObject { ["type"] = "integer", ["description"] = "Alias for centerY." },
+                ["radius"] = new JObject { ["type"] = "integer", ["description"] = "Square radius from center (default 2)." },
+                ["radiusX"] = new JObject { ["type"] = "integer", ["description"] = "Horizontal radius from center." },
+                ["radiusY"] = new JObject { ["type"] = "integer", ["description"] = "Vertical radius from center." },
+                ["aroundPlayer"] = new JObject
+                {
+                    ["type"] = "boolean",
+                    ["description"] = "When true, center the area on the current player tile."
+                },
+                ["includeAir"] = new JObject
+                {
+                    ["type"] = "boolean",
+                    ["description"] = "Include air cells in the tiles array (default true for tiles_area)."
+                },
+                ["maxCells"] = new JObject
+                {
+                    ["type"] = "integer",
+                    ["description"] = $"Maximum cells in the requested area (default {McpTileDebug.MaxAreaCells})."
+                }
+            };
+
+            dispatcher.RegisterTool(new McpTool(
+                "tiles_area",
+                "Dump a rectangular world-tile region with ids, names, chunk coords, and an ASCII grid.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = areaProperties
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    if (!McpTileDebug.TryResolveBounds(
+                            args,
+                            world,
+                            McpTileDebug.MaxAreaCells,
+                            out int xMin,
+                            out int yMin,
+                            out int xMax,
+                            out int yMax,
+                            out string boundsError))
+                    {
+                        throw new System.InvalidOperationException(boundsError);
+                    }
+
+                    bool includeAir = args.Value<bool?>("includeAir") ?? true;
+                    return McpTileDebug.BuildAreaDump(
+                        world,
+                        world.TileVisualCatalog,
+                        xMin,
+                        yMin,
+                        xMax,
+                        yMax,
+                        includeAir,
+                        includeAutotile: false);
+                }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "tile_autotile",
+                "Inspect autotile neighbor connectivity, masks, matching rule ids, and resolved sprite ids for one tile.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["x"] = new JObject { ["type"] = "integer" },
+                        ["y"] = new JObject { ["type"] = "integer" }
+                    },
+                    ["required"] = new JArray("x", "y")
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    int x = args["x"]?.Value<int>() ?? 0;
+                    int y = args["y"]?.Value<int>() ?? 0;
+                    return McpTileDebug.BuildAutotileAt(world, world.TileVisualCatalog, x, y);
+                }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "tiles_autotile_area",
+                "Dump autotile connectivity and resolved ground/cover sprites for each solid tile in a region.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = areaProperties
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    int maxCells = args["maxCells"]?.Value<int>() ?? McpTileDebug.MaxAreaCells;
+                    if (maxCells < 1)
+                    {
+                        maxCells = 1;
+                    }
+
+                    if (!McpTileDebug.TryResolveBounds(args, world, maxCells, out int xMin, out int yMin, out int xMax, out int yMax, out string boundsError))
+                    {
+                        throw new System.InvalidOperationException(boundsError);
+                    }
+
+                    bool includeAir = args.Value<bool?>("includeAir") ?? false;
+                    return McpTileDebug.BuildAreaDump(
+                        world,
+                        world.TileVisualCatalog,
+                        xMin,
+                        yMin,
+                        xMax,
+                        yMax,
+                        includeAir,
+                        includeAutotile: true);
+                }));
+        }
+
+        private static SandboxWorld RequireWorld()
+        {
+            SandboxWorld world = FindWorld();
+            if (world == null)
+            {
+                throw new System.InvalidOperationException("SandboxWorld not found in scene.");
+            }
+
+            return world;
         }
 
         private static JObject BuildPlayerState(SandboxPlayerController controller, SandboxWorld world)
