@@ -4,7 +4,7 @@ title: Spec-Driven Development Tickets
 description: Index of open-knowledge backlog tickets, one per spec-driven task, with status and GitHub issue linkage.
 resource: wiki/tickets/README.md
 tags: [docs, wiki, tickets, backlog, index]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-02T12:00:00Z
 okf_version: 0.1
 ---
 
@@ -29,8 +29,8 @@ okf_version: 0.1
 | P1-RENDER-001 | [[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior.](p1-render-001-specify-and-implement-chunk-local-render-rebuild-behavior.md) | implemented | [#29](https://github.com/synthet/project-twelve/issues/29) |
 | P1-WORLD-001 | [[P1-WORLD-001] Specify deterministic world, chunk, and local coordinate conversions, including negative coordinates.](p1-world-001-specify-deterministic-world-chunk-and-local-coordinate-conve.md) | implemented | [#30](https://github.com/synthet/project-twelve/issues/30) |
 | P1-WORLD-002 | [[P1-WORLD-002] Implement chunk lifecycle tasks for load, visibility, dirty flags, and unload.](p1-world-002-implement-chunk-lifecycle-tasks-for-load-visibility-dirty-fl.md) | implemented | [#31](https://github.com/synthet/project-twelve/issues/31) |
-| P1-VISUAL-001 | [[P1-VISUAL-001] Specify sandbox player avatar visual integration.](p1-visual-001-specify-sandbox-player-avatar-visual-integration.md) | open | [#74](https://github.com/synthet/project-twelve/issues/74) |
-| P1-VISUAL-002 | [[P1-VISUAL-002] Add visual subsystem EditMode tests.](p1-visual-002-add-visual-subsystem-editmode-tests.md) | open | [#75](https://github.com/synthet/project-twelve/issues/75) |
+| P1-VISUAL-001 | [[P1-VISUAL-001] Specify sandbox player avatar visual integration.](p1-visual-001-specify-sandbox-player-avatar-visual-integration.md) | in_progress | [#74](https://github.com/synthet/project-twelve/issues/74) |
+| P1-VISUAL-002 | [[P1-VISUAL-002] Add visual subsystem EditMode tests.](p1-visual-002-add-visual-subsystem-editmode-tests.md) | in_progress | [#75](https://github.com/synthet/project-twelve/issues/75) |
 | P2-AI-001 | [[P2-AI-001] Specify enemy spawn and pathfinding rules.](p2-ai-001-specify-enemy-spawn-and-pathfinding-rules.md) | open | [#32](https://github.com/synthet/project-twelve/issues/32) |
 | P2-DATA-001 | [[P2-DATA-001] Specify tile, item, and entity registry contracts.](p2-data-001-specify-tile-item-and-entity-registry-contracts.md) | open | [#33](https://github.com/synthet/project-twelve/issues/33) |
 | P2-FLUID-001 | [[P2-FLUID-001] Specify simple liquid simulation constraints.](p2-fluid-001-specify-simple-liquid-simulation-constraints.md) | open | [#34](https://github.com/synthet/project-twelve/issues/34) |
