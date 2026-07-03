@@ -3,7 +3,7 @@ type: Task
 id: P2-SAVE-001
 title: "[P2-SAVE-001] Specify save/load format using seed plus dirty chunk diffs."
 description: Versioned save format — header with seed/settings/palette, dirty-chunk diffs, atomic writes, corruption fail-safe, and migration hooks.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/38"
