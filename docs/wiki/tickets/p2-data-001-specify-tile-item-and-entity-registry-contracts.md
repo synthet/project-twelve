@@ -3,14 +3,14 @@ type: Task
 id: P2-DATA-001
 title: "[P2-DATA-001] Specify tile, item, and entity registry contracts."
 description: String-ID registries for tiles/items/entities with runtime index assignment, save palette mapping, and duplicate/missing-ID validation.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/33"
 github_issue_status: created
 resource: wiki/tickets/p2-data-001-specify-tile-item-and-entity-registry-contracts.md
 tags: [docs, wiki, ticket, registry, modding, p2]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-03T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
@@ -143,11 +143,43 @@ public interface IRegistry<TDef> where TDef : class
 - P2-SAVE-001 ticket — palette header field cross-reference.
 - Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
 
-## Exit evidence checklist
+## Exit evidence
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Registry contract documented in `docs/wiki/12-modding.md` before implementation.
-- [ ] Validation + determinism + palette EditMode tests pass.
-- [ ] Prototype regression check recorded (same seed, identical world).
-- [ ] Follow-up tasks created for item/entity registry completion and mod load order.
+- **Spec:** `docs/wiki/12-modding.md` § "Registry contract (P2-DATA-001)" documents the
+  `namespace:name` ID grammar, pure-data definitions, register→freeze→validate lifecycle,
+  deterministic runtime index assignment (empty def pinned to 0, ordinal string-ID sort),
+  save palette semantics, load validation rules, and the legacy 0–7 migration table.
+- **Implementation:** `Assets/Scripts/Sandbox/Registry/` — `ContentRegistry<TDef>`
+  (engine-agnostic registry with freeze semantics), `TileDefinition`/`ItemDefinition`/
+  `EntityDefinition` (pure data), `RegistryPalette` (capture + fail-loud remap), and
+  `SandboxCoreContent` (8 `core:` tile defs, item/entity contracts with minimal defs, legacy ID
+  table, cross-registry reference validation). `SandboxTileIds` is documented as the
+  compatibility shim; caller migration to runtime indices is deferred to P2-DATA-002, so
+  runtime behavior (and therefore the pinned-seed prototype scene) is unchanged by this change
+  set.
+- **Automated tests:** EditMode `Assets/Tests/EditMode/ContentRegistryTests.cs` covers duplicate
+  ID registration (throws), malformed IDs, unknown-ID lookup (explicit error), post-freeze
+  registration (throws), deterministic indices across registration orders, air at runtime index
+  0, palette round-trip across a reordered/extended registry, palette unknown-ID and
+  duplicate/sparse-index failures, legacy table ↔ `SandboxTileIds` 1:1 mapping, solidity parity
+  with `SandboxTile.IsSolid`, and unresolved drop-item/visual-key detection.
+- **Verification commands:**
+  - `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`
+    (pending — authored in a headless container without Unity 6.0.5.1f1; run on a
+    Unity-capable machine before merge).
+  - `python3 scripts/check_markdown_links.py`
+  - `python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error`
+  - `python3 scripts/check_paid_assets.py --staged`
+
+### Checklist
+
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Registry contract documented in `docs/wiki/12-modding.md` before implementation.
+- [ ] Validation + determinism + palette EditMode tests pass (authored; EditMode run pending a
+      Unity-capable environment).
+- [x] Prototype regression check recorded: no runtime caller changed in this change set —
+      `SandboxTile.id` still stores legacy constants, so the pinned-seed world is bit-identical;
+      the behavioral swap happens in P2-DATA-002.
+- [x] Follow-up task created for caller migration, item/entity registry completion, and mod load
+      order: [[P2-DATA-002]](p2-data-002-migrate-sandbox-callers-to-registry-runtime-indices.md).

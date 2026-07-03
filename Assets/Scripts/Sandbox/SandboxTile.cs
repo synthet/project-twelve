@@ -19,6 +19,12 @@ public struct SandboxTile
     }
 }
 
+/// <summary>
+/// Legacy numeric tile IDs — compatibility shim only (P2-DATA-001). New content identity is the
+/// registry string ID (<c>ProjectTwelve.Sandbox.Registry.SandboxCoreContent</c>); these constants
+/// map 1:1 onto <c>SandboxCoreContent.LegacyTileIdToStringId</c> and survive until callers
+/// migrate to registry runtime indices (P2-DATA-002). Do not add new constants here.
+/// </summary>
 public static class SandboxTileIds
 {
     public const int Air = 0;

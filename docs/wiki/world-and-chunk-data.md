@@ -1,3 +1,13 @@
+---
+type: Reference
+title: World and Chunk Data
+description: Chunk data model, coordinate conversion contract, tile field semantics, and chunk lifecycle rules.
+resource: wiki/world-and-chunk-data.md
+tags: [docs, wiki, chunking, world, p1]
+timestamp: 2026-07-03T00:00:00Z
+okf_version: 0.1
+---
+
 # World and Chunk Data
 
 ## Current Model
@@ -58,7 +68,7 @@ required.
 
 | Field | Purpose now | Future use |
 | --- | --- | --- |
-| `id` | Selects air, dirt, grass, or stone. | Registry-backed tile identity. |
+| `id` | Selects air, dirt, grass, or stone via legacy `SandboxTileIds` constants (compatibility shim). | Registry **runtime index** assigned at freeze; the string ID is the durable identity — see [Modding & Content](12-modding.md) § "Registry contract (P2-DATA-001)". |
 | `light` | Simple brightness multiplier in rendering. | Propagated sunlight/emissive light value. |
 | `fluid` | Reserved. | Liquid amount from 0.0 to 1.0. |
 | `metadata` | Reserved. | Tile variant, damage, wall, frame, or compact state. |
