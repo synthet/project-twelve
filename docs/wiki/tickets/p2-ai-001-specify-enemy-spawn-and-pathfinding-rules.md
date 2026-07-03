@@ -3,7 +3,7 @@ type: Task
 id: P2-AI-001
 title: "[P2-AI-001] Specify enemy spawn and pathfinding rules."
 description: Grid A* navigation with jump/fall edges derived from collision solidity, plus spawn rules bounded by distance, light, and loaded chunks.
-status: claimed
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/32"
@@ -137,9 +137,10 @@ believably, and spawning feels dangerous underground without popping in on scree
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Nav/spawn contract documented in `gameplay-systems.md` before implementation.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Nav/spawn contract documented in `gameplay-systems.md` and `09-pathfinding.md` before
+      implementation (P2-AI-001 specification section added 2026-07-03).
 - [ ] Pathfinding and spawn EditMode fixtures pass.
 - [ ] Play-mode chase capture attached.
 - [ ] Follow-up tasks created for flying archetypes, combat, and nav scaling.

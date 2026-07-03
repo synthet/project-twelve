@@ -14,21 +14,22 @@ namespace ProjectTwelve.Visual.Tiles
         {
             bool Has(int dx, int dy) => sharesGroundGroup(worldX + dx, worldY + dy);
 
+            // mask[x, y]: x = west..east, y = north..south (matches AutotileRule / rule-table layout).
             return new[,]
             {
                 {
                     Has(-1, 1) && Has(-1, 0) && Has(0, 1) ? 1 : 0,
-                    Has(0, 1) ? 1 : 0,
-                    Has(1, 1) && Has(1, 0) && Has(0, 1) ? 1 : 0
-                },
-                {
                     Has(-1, 0) ? 1 : 0,
-                    1,
-                    Has(1, 0) ? 1 : 0
+                    Has(-1, -1) && Has(-1, 0) && Has(0, -1) ? 1 : 0
                 },
                 {
-                    Has(-1, -1) && Has(-1, 0) && Has(0, -1) ? 1 : 0,
-                    Has(0, -1) ? 1 : 0,
+                    Has(0, 1) ? 1 : 0,
+                    1,
+                    Has(0, -1) ? 1 : 0
+                },
+                {
+                    Has(1, 1) && Has(1, 0) && Has(0, 1) ? 1 : 0,
+                    Has(1, 0) ? 1 : 0,
                     Has(1, -1) && Has(1, 0) && Has(0, -1) ? 1 : 0
                 }
             };
@@ -37,9 +38,8 @@ namespace ProjectTwelve.Visual.Tiles
         /// <summary>
         /// Builds a cover autotile mask for grass overlays at the given world coordinate.
         /// Grass cover runs horizontally along the surface, so connectivity is decided purely by
-        /// the west/east neighbors. The middle row encodes (west, center, east); vertical and
-        /// diagonal cells stay empty so the cover rule table (which constrains only that row)
-        /// matches cleanly. Cell values: 1 = cover continues, 2 = cliff-side edge, 0 = open air.
+        /// the west/east neighbors on mask row y = 1 (mask[0,1], mask[1,1], mask[2,1]). Vertical and
+        /// diagonal cells stay empty so the cover rule table matches cleanly.
         /// </summary>
         /// <param name="hasGroundBody">Returns true when the coordinate holds any solid ground tile.</param>
         public static int[,] BuildCoverMask(
@@ -50,8 +50,8 @@ namespace ProjectTwelve.Visual.Tiles
         {
             int[,] mask = new int[3, 3];
             mask[1, 1] = 1;
-            mask[1, 0] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX - 1, worldY);
-            mask[1, 2] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX + 1, worldY);
+            mask[0, 1] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX - 1, worldY);
+            mask[2, 1] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX + 1, worldY);
             return mask;
         }
 

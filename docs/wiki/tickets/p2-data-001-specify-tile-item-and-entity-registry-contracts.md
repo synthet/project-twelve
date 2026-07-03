@@ -3,7 +3,7 @@ type: Task
 id: P2-DATA-001
 title: "[P2-DATA-001] Specify tile, item, and entity registry contracts."
 description: String-ID registries for tiles/items/entities with runtime index assignment, save palette mapping, and duplicate/missing-ID validation.
-status: in_progress
+status: done
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/33"

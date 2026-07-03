@@ -4,7 +4,7 @@ title: Backlog Workflow
 description: The canonical backlog contract for ProjectTwelve — wiki tickets linked to GitHub issues.
 resource: project/00-backlog-workflow.md
 tags: [docs, project, backlog, workflow]
-timestamp: 2026-06-28T00:00:00Z
+timestamp: 2026-07-03T17:00:00Z
 okf_version: 0.1
 ---
 
@@ -22,6 +22,22 @@ Agent-facing rules live in the [`backlog-queue`](../../.claude/skills/backlog-qu
 3. **In progress** — set ticket `status: in_progress` on your first commit.
 4. **Blocked** → comment on the GitHub issue with reason + unblock condition; set ticket `status: blocked`.
 5. **Reference** the issue in the PR (`Closes #<N>`); set ticket `status: done` on merge.
+
+## PR merge hygiene (required)
+
+Backlog PRs must keep **GitHub issues**, **wiki tickets**, and **the ticket index** in sync:
+
+1. **`Closes #<N>` in the PR body** when the PR completes the linked ticket. Use `Refs #<N>`
+   only for partial or exploratory work that does **not** finish the ticket. `Refs` does not close
+   the issue on merge — that is a common source of drift.
+2. **Same PR updates wiki status** when the work is complete:
+   - Ticket frontmatter `status: done` (use `done` only — not `implemented` or other values).
+   - Matching row in [`docs/wiki/tickets/README.md`](../wiki/tickets/README.md).
+   - Exit evidence checklist boxes in the ticket body when applicable.
+3. **On merge**, confirm the GitHub issue closed automatically. If it did not (e.g. the PR used
+   `Refs`), close it manually with a comment linking the merge commit.
+4. **`/pr-ready` and agents** must verify ticket frontmatter + README index match the PR intent
+   before requesting review.
 
 ## Ticket format
 

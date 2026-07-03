@@ -3,7 +3,7 @@ type: Task
 id: P1-RENDER-001
 title: "[P1-RENDER-001] Specify and implement chunk-local render rebuild behavior."
 description: Backlog ticket specifying and implementing render rebuilds bounded to dirty visible chunks only.
-status: implemented
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/29"

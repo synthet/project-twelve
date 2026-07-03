@@ -52,8 +52,17 @@ Update ticket frontmatter `status: blocked`.
 
 ### 5. PR references the issue
 
-Your PR description **must** contain `Closes #<N>`. On merge, update ticket frontmatter `status: done`
-(or closed).
+Your PR description **must** contain `Closes #<N>` when the PR **completes** the ticket. Use
+`Refs #<N>` only for partial work that leaves the issue open.
+
+**In the same PR** (or an immediate follow-up before calling the task done):
+
+1. Set ticket frontmatter `status: done` (canonical values: `open | claimed | in_progress | blocked | done`).
+2. Update the matching row in [`docs/wiki/tickets/README.md`](../../../docs/wiki/tickets/README.md).
+3. Check exit-evidence boxes in the ticket body when the acceptance criteria are met.
+
+After merge, confirm GitHub auto-closed the issue. If the PR used `Refs` by mistake, close the
+issue manually with a comment citing the merge commit.
 
 ## Filing a new task
 

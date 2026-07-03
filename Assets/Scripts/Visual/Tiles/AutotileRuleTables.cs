@@ -65,16 +65,16 @@ namespace ProjectTwelve.Visual.Tiles
 
         private static List<AutotileRule> BuildCoverRules()
         {
-            // Cover tiles connect horizontally. The middle row encodes (west, center, east):
-            // 1 = cover continues, 2 = cliff-side edge, 0 = open-air end cap. The resolver mirrors
-            // these horizontally via flipX, so the west-end rules also serve the east-end cases.
+            // Cover tiles connect horizontally on mask row y = 1: mask[0,1] west, mask[1,1] center,
+            // mask[2,1] east. Values: 1 = cover continues, 2 = cliff-side edge, 0 = open air.
+            // flipX mirrors asymmetric west/east end-cap rules.
             return new List<AutotileRule>
             {
-                new AutotileRule("2", M(0,2,0, 0,1,0, 0,2,0)), // cliff on both sides
-                new AutotileRule("1", M(0,0,0, 0,1,0, 0,2,0)), // open west, cliff east
-                new AutotileRule("5", M(0,1,0, 0,1,0, 0,2,0)), // cover west, cliff east
-                new AutotileRule("3", M(0,0,0, 0,1,0, 0,1,0)), // open west end cap, cover east
-                new AutotileRule("4", M(0,1,0, 0,1,0, 0,1,0)), // cover both sides (middle run)
+                new AutotileRule("2", M(0,0,0, 2,1,2, 0,0,0)), // cliff on both sides
+                new AutotileRule("1", M(0,0,0, 0,1,2, 0,0,0)), // open west, cliff east
+                new AutotileRule("5", M(0,0,0, 1,1,2, 0,0,0)), // cover west, cliff east
+                new AutotileRule("3", M(0,0,0, 0,1,1, 0,0,0)), // open west end cap, cover east
+                new AutotileRule("4", M(0,0,0, 1,1,1, 0,0,0)), // cover both sides (middle run)
                 new AutotileRule("0", M(0,0,0, 0,1,0, 0,0,0)), // isolated
             };
         }

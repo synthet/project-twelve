@@ -6,7 +6,7 @@ description: "Backlog ticket to specify prototype collision rules for solid tile
 resource: wiki/tickets/p1-coll-001-specify-prototype-collision-rules-for-solid-tiles-and-player.md
 tags: [ticket, p1, collision, spec]
 timestamp: 2026-07-01T05:03:48Z
-status: in_progress
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/25"

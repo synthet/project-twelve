@@ -58,16 +58,77 @@ namespace ProjectTwelve.Visual.Tiles
                 return -1;
             }
 
-            AutotileRule selected = PickDeterministic(matches, mask, flipX);
+            if (matches.Count == 1)
+            {
+                return IndexOfRule(rules, matches[0]);
+            }
+
+            if (AllSharePattern(matches))
+            {
+                AutotileRule selected = PickDeterministic(matches, mask, flipX);
+                return IndexOfRule(rules, selected);
+            }
+
+            // Distinct patterns that both match: first rule in table order wins (vendor style).
             for (int i = 0; i < rules.Count; i++)
             {
-                if (ReferenceEquals(rules[i], selected))
+                if (rules[i].Matches(mask, flipX))
                 {
                     return i;
                 }
             }
 
             return -1;
+        }
+
+        private static int IndexOfRule(IReadOnlyList<AutotileRule> rules, AutotileRule rule)
+        {
+            for (int i = 0; i < rules.Count; i++)
+            {
+                if (ReferenceEquals(rules[i], rule))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        private static bool AllSharePattern(IReadOnlyList<AutotileRule> matches)
+        {
+            int[,] first = matches[0].ToMask();
+            for (int i = 1; i < matches.Count; i++)
+            {
+                if (!MasksEqual(first, matches[i].ToMask()))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool MasksEqual(int[,] left, int[,] right)
+        {
+            if (left == null || right == null
+                || left.GetLength(0) != right.GetLength(0)
+                || left.GetLength(1) != right.GetLength(1))
+            {
+                return false;
+            }
+
+            for (int x = 0; x < left.GetLength(0); x++)
+            {
+                for (int y = 0; y < left.GetLength(1); y++)
+                {
+                    if (left[x, y] != right[x, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private static AutotileRule PickDeterministic(List<AutotileRule> matches, int[,] mask, bool flipX)

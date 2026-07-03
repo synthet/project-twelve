@@ -300,70 +300,18 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Color color,
         float zOffset)
     {
-        Rect uv = GetSpriteUv(sprite, flipX);
-        AddSpriteBoundsQuad(layer, x, y, tileSize, sprite, uv, color, zOffset);
-    }
-
-    private static void AddSpriteBoundsQuad(
-        MeshLayer layer,
-        int x,
-        int y,
-        float tileSize,
-        Sprite sprite,
-        Rect uv,
-        Color color,
-        float zOffset)
-    {
-        Bounds bounds = sprite.bounds;
-        float anchorX = x * tileSize - bounds.min.x;
-        float anchorY = y * tileSize - bounds.min.y;
-
-        float left = anchorX + bounds.min.x;
-        float right = anchorX + bounds.max.x;
-        float bottom = anchorY + bounds.min.y;
-        float top = anchorY + bounds.max.y;
-
-        int start = layer.Vertices.Count;
-        layer.Vertices.Add(new Vector3(left, bottom, zOffset));
-        layer.Vertices.Add(new Vector3(right, bottom, zOffset));
-        layer.Vertices.Add(new Vector3(right, top, zOffset));
-        layer.Vertices.Add(new Vector3(left, top, zOffset));
-
-        layer.Uvs.Add(new Vector2(uv.xMin, uv.yMin));
-        layer.Uvs.Add(new Vector2(uv.xMax, uv.yMin));
-        layer.Uvs.Add(new Vector2(uv.xMax, uv.yMax));
-        layer.Uvs.Add(new Vector2(uv.xMin, uv.yMax));
-
-        layer.Triangles.Add(start);
-        layer.Triangles.Add(start + 2);
-        layer.Triangles.Add(start + 1);
-        layer.Triangles.Add(start);
-        layer.Triangles.Add(start + 3);
-        layer.Triangles.Add(start + 2);
-
-        layer.Colors.Add(color);
-        layer.Colors.Add(color);
-        layer.Colors.Add(color);
-        layer.Colors.Add(color);
-    }
-
-    private static Rect GetSpriteUv(Sprite sprite, bool flipX)
-    {
-        Rect rect = sprite.textureRect;
-        Texture2D texture = sprite.texture;
-        float uMin = rect.x / texture.width;
-        float uMax = (rect.x + rect.width) / texture.width;
-        float vMin = rect.y / texture.height;
-        float vMax = (rect.y + rect.height) / texture.height;
-
-        if (flipX)
-        {
-            float swap = uMin;
-            uMin = uMax;
-            uMax = swap;
-        }
-
-        return new Rect(uMin, vMin, uMax - uMin, vMax - vMin);
+        AutotileSpriteMeshBuilder.AppendSprite(
+            layer.Vertices,
+            layer.Triangles,
+            layer.Uvs,
+            layer.Colors,
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX,
+            color,
+            zOffset);
     }
 
     private static Material CreateMaterialForTexture(Material template, Texture2D texture)

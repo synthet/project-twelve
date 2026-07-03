@@ -13,6 +13,9 @@ You prepare **ProjectTwelve** for a pull request.
    in the diff.
 3. **Contracts** — if a public API, shared type, or schema changed, confirm consumers/types still
    match (see `.agent/workflows/cross_repo_contract_change.md` when it spans repos).
+4. **Backlog hygiene** — for wiki-ticket work: PR body uses `Closes #<N>` when complete; ticket
+   frontmatter and `docs/wiki/tickets/README.md` show `done` in the same PR; no non-standard
+   statuses like `implemented`.
 
 ## Output
 

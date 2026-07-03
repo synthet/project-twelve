@@ -3,7 +3,7 @@ type: Task
 id: P1-QA-001
 title: "[P1-QA-001] Package the prototype vertical-slice demo checklist."
 description: Reviewer-executable demo script validating movement, generation, rendering, collision, editing, autotile terrain, and the composed avatar in one scene.
-status: in_progress
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/28"

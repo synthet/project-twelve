@@ -3,7 +3,7 @@ type: Task
 id: P1-WORLD-002
 title: "[P1-WORLD-002] Implement chunk lifecycle tasks for load, visibility, dirty flags, and unload."
 description: Backlog ticket implementing the chunk lifecycle — load around the player, visibility, independent dirty flags, and unload.
-status: implemented
+status: done
 phase: "Phase P1 — Prototype vertical slice"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/31"

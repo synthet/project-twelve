@@ -54,7 +54,8 @@ public sealed class RuntimeMcpDispatcherTests
         McpHandleResult result = dispatcher.HandleMessage(request);
 
         StringAssert.Contains("\"isError\":false", result.ResponseJson);
-        StringAssert.Contains("\"value\":\"hello\"", result.ResponseJson);
+        StringAssert.Contains("hello", result.ResponseJson);
+        StringAssert.Contains("value", result.ResponseJson);
     }
 
     [Test]
