@@ -23,13 +23,15 @@ spec_references:
 
 ## Open knowledge summary
 
-Follow-up to [[P2-DATA-001]](p2-data-001-specify-tile-item-and-entity-registry-contracts.md). The
-registry contract, `ContentRegistry<TDef>`, core definitions, `RegistryPalette`, and EditMode
-validation tests are in place, with `SandboxTileIds` deliberately left as a compatibility shim so
-that change set stayed behavior-preserving. This ticket performs the behavioral swap: sandbox
-callers bind to registry runtime indices and `TileDefinition` properties, saves migrate through the
-legacy table and persist the palette, and the item/entity registries and mod load order are
-completed.
+Follow-up to [[P2-DATA-001]](p2-data-001-specify-tile-item-and-entity-registry-contracts.md), which
+landed the registry (`ContentRegistry<TDef>`, 8 `core:` tile defs, `RegistryPalette`, legacy ID
+table) as inert infrastructure: `SandboxTile.id` still stores the hard-coded `SandboxTileIds`
+constants, and six call sites make content decisions from those ints. This task performs the
+behavioral swap: the world initializes a frozen tile registry at startup, `SandboxTile.id` becomes
+a registry runtime index, callers read `TileDefinition` properties (`Solid`, `AtlasSprite`) instead
+of matching constants, and saves become registry-safe — version-1 saves load through the legacy
+table, and new saves persist the palette so worlds survive future registry reordering. The
+pinned-seed world must be visually and behaviorally identical after the swap.
 
 ## GitHub project linkage
 
@@ -37,44 +39,122 @@ completed.
 - **Issue:** [synthet/project-twelve#86](https://github.com/synthet/project-twelve/issues/86)
 - **Backlink requirement:** Satisfied — the issue body links to this markdown ticket.
 
-## User story
+## Users / stakeholders
 
-As a systems developer on the P2 milestone, I want the sandbox runtime to consume registry
-definitions instead of legacy constants so that content changes, saves, and future mods flow
-through one data-driven identity system.
+- **Systems developers** on P2 tickets (P2-INV-001 drops, P2-LIGHT-001 opacity/emission,
+  P2-GEN-001 new tiles) — gain one data-driven place to add content without touching switches in
+  renderer/catalog code.
+- **P3 networking** — inherits deterministic indices shared across processes.
+- **Players / testers** — existing P1 save files keep loading.
+- **Future modders** (P4-MOD-001) — caller code stops assuming a closed set of 8 tiles.
 
-## Requirements
+## Non-goals
 
-### Functional requirements
+- **No mod loading** from external files, and no load-order/override implementation (spec text
+  only, pre-work for P4-MOD-001).
+- **No new save features** beyond the palette header field and legacy migration — atomic writes,
+  corruption handling, and diff thresholds stay in P2-SAVE-001.
+- **No inventory behavior** — `DropItemId`/`Hardness` remain unread placeholders until P2-INV-001.
+- **No lighting behavior** — `Opaque`/`LightEmission` remain unread until P2-LIGHT-001.
+- **No visual changes** — autotile resolution, licensed-catalog wiring, and the legacy UV/color
+  fallback palette keep their current outputs; only their *selection keys* change.
+- **No new tile content** — exactly the existing 8 `core:` defs.
 
-1. Replace `SandboxTileIds` consumption in `SandboxWorld`, `SandboxTerrainGenerator`,
-   `SandboxChunkRenderer`, `SandboxPlayerController`, `SandboxTileVisualCatalog` (including its
-   tile-ID `switch`), and `GameplayMcpTools` with registry runtime indices and `TileDefinition`
-   lookups (`Solid`, `AtlasSprite`).
-2. Load version-1 saves by mapping legacy numeric IDs through
-   `SandboxCoreContent.LegacyTileIdToStringId`; write the `RegistryPalette` into new saves and
-   resolve it on load (header field coordinated with P2-SAVE-001).
-3. Delete `SandboxTileIds` once no caller references it, or keep it only as `static readonly`
-   values resolved from the registry if editor tooling still needs names.
-4. Complete `ItemDefinition`/`EntityDefinition` fields as P2-INV-001 and P2-AI-001 firm up their
-   contracts; keep definitions pure data.
-5. Specify mod load order and override/priority rules in `docs/wiki/12-modding.md` (pre-work for
-   P4-MOD-001).
+## User stories
+
+- As a **systems developer**, I want the renderer and visual catalog to read `TileDefinition`
+  properties so that adding a ninth tile means adding one definition, not editing three `switch`
+  statements.
+- As a **player**, I want my existing version-1 save to load unchanged after the update so that
+  the registry swap is invisible to me.
+- As a **future contributor**, I want new saves to carry the string-ID palette so that reordering
+  or extending the registry never corrupts a world.
+- As a **networking developer (P3)**, I want `SandboxTile.id` to be the deterministic registry
+  index so that two processes agree on tile identity without exchanging strings.
+
+## Acceptance criteria
+
+### Bootstrap and identity
+
+- When `SandboxWorld` initializes, it builds and freezes the core tile/item registries and runs
+  `SandboxCoreContent.ValidateTileReferences` before generating or loading any chunk; a validation
+  failure prevents entering Play with a clear error.
+- When any runtime code decides content behavior, it reads a `TileDefinition` (or a registry index
+  compared against a registry-resolved value) — `grep -rn "SandboxTileIds\." Assets/Scripts`
+  returns no hits outside `SandboxCoreContent` (legacy table) and save-migration code.
+- When `SandboxChunkRenderer` computes solidity/culling and `SandboxColliderGeometry` consumes
+  `IsSolid`, the result comes from `TileDefinition.Solid`, and the collider geometry EditMode
+  tests still pass unmodified.
+- When `SandboxTileVisualCatalog` resolves a ground tileset, it uses `TileDefinition.AtlasSprite`
+  instead of the per-tile `switch` (`TryGetGroundTilesetName`); grass-cover rules key off
+  definition data or the `core:grass` index, not the constant `2`.
+- When the licensed catalog is absent, `GetLegacyTileUv`/`GetLegacyTileColor` produce the same
+  UV/color per tile as before the swap (mapping keyed by string ID or definition, not constants).
+
+### Saves
+
+- Given a version-1 save produced before this change, when it is loaded, every edited tile
+  resolves through `SandboxCoreContent.LegacyTileIdToStringId` to the same visible tile as before.
+- Given a save written after this change, its JSON contains the palette (string ID → runtime
+  index), and loading it after inserting a hypothetical `core:coal_ore` definition still resolves
+  every tile to its original string ID (EditMode test over temp files, mirroring the
+  registry-level test in `ContentRegistryTests`).
+- Given a save whose palette references an unknown string ID, when it is loaded, the load fails
+  with an explicit error — no tile is silently replaced with air.
+
+### Regression
+
+- When the pinned-seed scene from the [P1 vertical-slice runbook](../p1-vertical-slice-demo.md) is
+  generated before and after the swap, terrain is identical at the runbook's three documented
+  spot-check positions (including the negative-x one).
+- All pre-existing EditMode tests pass without modification (except tests that themselves assert
+  legacy constants, which may be updated in the same commit with justification).
+- Player place/break still works: remove writes the air index, place writes the configured tile's
+  index.
+
+## Open questions
+
+1. **Serialized inspector ints** — `SandboxPlayerController.placeTileId` is a
+   `[SerializeField] int` (default `SandboxTileIds.Dirt`) baked into scenes/prefabs. If `id`
+   becomes a registry index, serialized ints silently change meaning when content changes.
+   Recommendation: change the serialized field to a **string ID** (`"core:dirt"`) resolved to an
+   index at `Awake`; needs a decision because it touches scene assets.
+2. **MCP tool contract** — `GameplayMcpTools` accepts `tileId` as an int from external callers.
+   Keep accepting legacy ints (mapped through the table), accept string IDs, or both?
+   Recommendation: accept both (`tileId` int = legacy, `tile` string = registry) to avoid breaking
+   existing MCP clients; needs confirmation since it's a published tool surface
+   (`docs/wiki/13-tooling-testing.md`).
+3. **Save version bump** — bump `SandboxSaveData.version` to 2 when adding the palette, with
+   version-1 handled by the legacy table? This pre-empts part of P2-SAVE-001's header work; the
+   alternative (palette without a version bump) makes formats ambiguous. Recommendation: bump to 2
+   and record the coordination in the P2-SAVE-001 ticket.
+4. **Fate of `SandboxTileIds`** — delete outright, or keep as `static readonly` registry-resolved
+   values for editor tooling readability? Deleting is cleaner; keeping eases review.
+5. **Landing shape** — one PR or a short stack (renderer/catalog swap → save migration → shim
+   removal)? The non-functional requirements prefer reviewable slices; a 2-PR stack (runtime swap
+   + saves) seems right if the diff exceeds ~400 lines.
+
+## Detailed technical specifications
+
+### Scope
+
+- Migrate `SandboxWorld`, `SandboxTerrainGenerator`, `SandboxChunkRenderer`,
+  `SandboxPlayerController`, `SandboxTileVisualCatalog` (including its tile-ID `switch`), and
+  `GameplayMcpTools` from `SandboxTileIds` constants to registry runtime indices /
+  `TileDefinition` lookups.
+- Load legacy saves through `SandboxCoreContent.LegacyTileIdToStringId`; write the
+  `RegistryPalette` into new saves and resolve it on load (header field coordinated with
+  P2-SAVE-001).
+- Complete `ItemDefinition`/`EntityDefinition` fields as P2-INV-001 and P2-AI-001 firm up their
+  contracts; keep definitions pure data.
+- Specify mod load order and override/priority rules in `docs/wiki/12-modding.md` (pre-work for
+  P4-MOD-001).
 
 ### Non-functional requirements
 
 1. Hot paths remain array-indexed by runtime int — no per-tile string lookups per frame.
 2. The pinned-seed prototype scene renders identically before and after the swap.
 3. Minimal diffs per subsystem; the swap may land as a short stack of reviewable changes.
-
-## Acceptance criteria
-
-- No runtime code reads `SandboxTileIds` constants for content decisions.
-- A version-1 save loads correctly after the swap; a new save survives a registry reordering
-  (palette round-trip in-engine, not just registry-level).
-- EditMode tests cover the save migration path; existing sandbox tests still pass.
-- Pinned-seed regression spot-check recorded per the P1 vertical-slice runbook positions.
-- The GitHub issue and this markdown ticket link to each other.
 
 ## Exit evidence checklist
 
