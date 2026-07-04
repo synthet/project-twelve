@@ -4,7 +4,7 @@ title: Data Models
 description: Reference sketches for Tile, Chunk, World, Entity, and Inventory types plus the coordinate space contract.
 resource: wiki/02-data-models.md
 tags: [docs, wiki, architecture, data, chunking]
-timestamp: 2026-07-03T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -37,9 +37,9 @@ Design notes:
   for unloaded/out-of-bounds coordinates, so callers must treat air and "not loaded" carefully
   (query chunk presence when the distinction matters).
 - `id` is a **runtime registry index**, not a durable identity: the registry pins the empty
-  definition (`core:air`) to index 0 at freeze and assigns the rest deterministically. Today the
-  prototype still stores the legacy `SandboxTileIds` constants (compatibility shim); saves and
-  network payloads must map through the string-ID palette either way — see
+  definition (`core:air`) to index 0 at freeze and assigns the rest deterministically. Callers
+  are migrated (P2-DATA-002) — `SandboxTile.id` stores live runtime indices, saves persist the
+  string-ID palette, and version-1 saves still load through the fixed legacy table — see
   [Modding & Content](12-modding.md) § "Registry contract (P2-DATA-001)".
 - `light` and `fluid` are **derived/simulated** state, not authored content. On save you may
   persist them or recompute on load (recomputing light is cheap; fluid may need persistence).

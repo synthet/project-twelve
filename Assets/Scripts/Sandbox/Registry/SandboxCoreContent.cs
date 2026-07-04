@@ -12,10 +12,13 @@ namespace ProjectTwelve.Sandbox.Registry
     public static class SandboxCoreContent
     {
         public const string AirTileId = "core:air";
+        public const string GrassTileId = "core:grass";
 
         /// <summary>
-        /// Legacy <see cref="SandboxTileIds"/> numeric value → stable string ID, index-aligned:
-        /// element N is the string ID of legacy tile ID N. Fixed forever; P1 saves load through it.
+        /// Legacy P1-prototype numeric tile ID → stable string ID, index-aligned: element N is
+        /// the string ID of legacy tile ID N (air=0, dirt=1, grass=2, stone=3, then the ores).
+        /// Fixed forever; version-1 saves load through it. Note <see cref="SandboxTileIds"/> no
+        /// longer carries this numbering — its fields are registry runtime indices now.
         /// </summary>
         public static readonly IReadOnlyList<string> LegacyTileIdToStringId = new[]
         {

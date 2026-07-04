@@ -3,14 +3,14 @@ type: Task
 id: P2-DATA-002
 title: "[P2-DATA-002] Migrate sandbox callers to registry runtime indices and complete item/entity registries."
 description: Swap SandboxTile.id from legacy constants to registry runtime indices, persist the save palette, and complete item/entity definitions and mod load order.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/86"
 github_issue_status: created
 resource: wiki/tickets/p2-data-002-migrate-sandbox-callers-to-registry-runtime-indices.md
 tags: [docs, wiki, ticket, registry, modding, p2]
-timestamp: 2026-07-03T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/12-modding.md"
@@ -78,9 +78,22 @@ through one data-driven identity system.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Caller migration landed with EditMode coverage.
-- [ ] Save palette persisted and legacy migration tested.
-- [ ] Mod load order specified in `docs/wiki/12-modding.md`.
-- [ ] Pinned-seed regression check recorded.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Caller migration landed with EditMode coverage (`SandboxRegistries` holder;
+  `SandboxTerrainGenerator`, `SandboxPlayerController`, `GameplayMcpTools`, `McpTileDebug`,
+  `SandboxTileVisualCatalog`, `SandboxChunkRenderer` migrated; `SandboxTileIds` reduced to
+  `static readonly` registry-resolved indices; `ContentRegistryTests` updated).
+- [x] Save palette persisted and legacy migration tested (`SandboxSaveData.tilePalette`,
+  `SandboxWorld.SaveToPath`/`LoadFromPath`, new `SandboxSaveLoadTests`: legacy v1 fixture,
+  palette write, in-engine registry-reorder round trip).
+- [x] Mod load order specified in `docs/wiki/12-modding.md` (explicit dependency/priority
+  scheme with declared overrides; not last-loader-wins).
+- [ ] Pinned-seed regression check recorded — **not executed in the authoring environment
+  (no Unity Editor in the container).** Reviewer procedure per
+  `docs/wiki/p1-vertical-slice-demo.md` step 7 / MCP-assisted variant: with seed 1337, use
+  `player_teleport` + `tile_at` at columns x = −40, 0, +40 before and after this change set;
+  the highest-solid-tile Y and per-column tile-**name** sequence must match exactly (raw
+  numeric tile ids legitimately differ — registry indices replaced the legacy numbering).
+  EditMode suite command:
+  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.

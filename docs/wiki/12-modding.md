@@ -4,7 +4,7 @@ title: Modding & Content Pipeline
 description: Data-driven content registries — stable string IDs, freeze lifecycle, deterministic runtime indices, save palette, and mod loading boundaries.
 resource: wiki/12-modding.md
 tags: [docs, wiki, modding, registry, p2]
-timestamp: 2026-07-03T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -100,9 +100,11 @@ no longer resolves is an explicit load error (fail loudly), not a silent air-sub
 
 ### Prototype migration (legacy numeric IDs)
 
-The hard-coded `SandboxTileIds` constants (`Air`=0 … `GoldOre`=7) survive as a **compatibility
-shim**: `SandboxTile.id` still stores these legacy values until callers migrate to registry
-runtime indices (follow-up P2-DATA-002). The legacy ↔ string mapping is fixed:
+The caller migration is **complete** (P2-DATA-002): `SandboxTile.id` stores registry runtime
+indices, and `SandboxTileIds` is no longer the legacy numbering — its fields are `static
+readonly` runtime indices resolved from the frozen registry, kept only as named identity for
+tests and editor tooling. The fixed legacy ↔ string mapping below is an on-disk contract that
+version-1 saves and tile-viz `tile-space/v1` fixtures still load through:
 
 | Legacy int | String ID |
 |-----------:|-----------|
@@ -115,11 +117,12 @@ runtime indices (follow-up P2-DATA-002). The legacy ↔ string mapping is fixed:
 | 6 | `core:silver_ore` |
 | 7 | `core:gold_ore` |
 
-`SandboxCoreContent.LegacyTileIdToStringId` encodes this table; existing P1 saves load through it.
+`SandboxCoreContent.LegacyTileIdToStringId` encodes this table; existing P1 saves load through it
+(`SandboxWorld.LoadFromPath` maps legacy ids when the save carries no palette).
 New code must not add content `enum`s or `switch`es over tile IDs — bind to definitions instead.
 
-- `Tile.id` (the int in [Data Models](02-data-models.md)) becomes a **runtime index** assigned at
-  freeze once callers migrate; the string ID remains the durable identity persisted via the palette
+- `Tile.id` (the int in [Data Models](02-data-models.md)) **is a runtime index** assigned at
+  freeze; the string ID remains the durable identity persisted via the palette
   (see [Saving & Loading](11-saving-loading.md)).
 
 ## Definition formats
@@ -131,15 +134,42 @@ New code must not add content `enum`s or `switch`es over tile IDs — bind to de
 
 ## Load order
 
+Load order and override resolution are **explicit and declared**, never filesystem/discovery
+order — two machines loading the same mod set must agree byte-for-byte on the frozen registries
+(pre-work for P4-MOD-001; the registry contract above already enforces the duplicate-ID guard
+this scheme builds on).
+
 ```
-1. Load core definitions      (built-in registries)
-2. Load mod definitions        (in a defined order)
-3. Mods add new IDs or override/extend existing ones
+1. Load core definitions       (built-in registries; always first)
+2. Resolve mod load order      (declared metadata, deterministic — see below)
+3. Load mod definitions in that order (new IDs, or declared overrides of existing IDs)
 4. Freeze registries; assign runtime int IDs; build atlases
+5. Validate that referenced IDs (recipe inputs, biome tiles, drop items) resolve
 ```
 
-Conflicts: last-loader-wins for overrides, or an explicit dependency/priority scheme. Validate that
-referenced IDs (recipe inputs, biome tiles) resolve after load.
+Each mod manifest declares:
+
+- **`id`** — unique mod identifier; also the namespace prefix of its content string IDs.
+- **`dependencies: [modId, …]`** — mods that must load before this one.
+- **`priority: int`** (default 0) — tie-breaker among mods with no dependency relation; higher
+  loads later.
+- **`overrides: [stringId, …]`** — an explicit, auditable allowlist of existing IDs this mod
+  intends to replace.
+
+**Order resolution:** topological sort on `dependencies`; ties break by ascending `priority`,
+then ordinal mod `id`. A dependency cycle is a load error (fail loudly, name the cycle).
+
+**Override/conflict rules (explicit-declaration scheme, not last-loader-wins):**
+
+- Registering an ID that already exists **without** declaring it in `overrides` throws — the
+  registry's duplicate-ID guard stays authoritative, so accidental collisions fail loudly.
+- A declared override replaces the earlier definition wholesale (definitions are pure data;
+  there is no partial merge).
+- When two mods declare an override for the same ID, the later mod in resolved load order wins,
+  and the conflict is logged (`Debug.LogWarning` naming both mods and the contested ID) —
+  visible, never silent.
+- Core (`core:`) definitions are overridable through the same declared mechanism; the core
+  registries always load first and never override anyone.
 
 ## External assets
 

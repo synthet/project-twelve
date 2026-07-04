@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
@@ -275,7 +276,7 @@ namespace ProjectTwelve.RuntimeMcp
                 payload["cover"] = new JObject
                 {
                     ["rendered"] = false,
-                    ["reason"] = tile.id != SandboxTileIds.Grass
+                    ["reason"] = tile.id != SandboxRegistries.GrassIndex
                         ? "Cover applies to grass surface tiles only."
                         : "Cover requires air directly above the tile."
                 };
@@ -381,7 +382,7 @@ namespace ProjectTwelve.RuntimeMcp
                 (x, y) =>
                 {
                     SandboxTile neighbor = world.GetTile(x, y);
-                    return catalog.SharesCoverAutotileGroup(SandboxTileIds.Grass, neighbor.id);
+                    return catalog.SharesCoverAutotileGroup(SandboxRegistries.GrassIndex, neighbor.id);
                 },
                 (x, y) => world.GetTile(x, y).IsSolid,
                 worldX,
@@ -495,54 +496,84 @@ namespace ProjectTwelve.RuntimeMcp
             return true;
         }
 
+        /// <summary>
+        /// Display name for a registry runtime tile index, derived from the definition's string
+        /// ID (segment after the namespace, PascalCased — "core:gold_ore" → "GoldOre").
+        /// </summary>
         public static string GetTileName(int tileId)
         {
-            switch (tileId)
+            ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+            if (tileId < 0 || tileId >= tiles.Count)
             {
-                case SandboxTileIds.Air:
-                    return "Air";
-                case SandboxTileIds.Dirt:
-                    return "Dirt";
-                case SandboxTileIds.Grass:
-                    return "Grass";
-                case SandboxTileIds.Stone:
-                    return "Stone";
-                case SandboxTileIds.CopperOre:
-                    return "CopperOre";
-                case SandboxTileIds.IronOre:
-                    return "IronOre";
-                case SandboxTileIds.SilverOre:
-                    return "SilverOre";
-                case SandboxTileIds.GoldOre:
-                    return "GoldOre";
-                default:
-                    return $"Unknown({tileId})";
+                return $"Unknown({tileId})";
             }
+
+            return PascalCaseFromStringId(tiles.Get(tileId).Id);
         }
+
+        private static char[] glyphsByRuntimeIndex;
 
         private static char GetTileGlyph(int tileId)
         {
-            switch (tileId)
+            ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+            if (glyphsByRuntimeIndex == null || glyphsByRuntimeIndex.Length != tiles.Count)
             {
-                case SandboxTileIds.Air:
+                char[] glyphs = new char[tiles.Count];
+                for (int i = 0; i < glyphs.Length; i++)
+                {
+                    glyphs[i] = ResolveGlyph(tiles.Get(i).Id);
+                }
+
+                glyphsByRuntimeIndex = glyphs;
+            }
+
+            return tileId >= 0 && tileId < glyphsByRuntimeIndex.Length ? glyphsByRuntimeIndex[tileId] : '?';
+        }
+
+        private static char ResolveGlyph(string stringId)
+        {
+            switch (stringId)
+            {
+                case "core:air":
                     return '.';
-                case SandboxTileIds.Dirt:
+                case "core:dirt":
                     return 'd';
-                case SandboxTileIds.Grass:
+                case "core:grass":
                     return 'g';
-                case SandboxTileIds.Stone:
+                case "core:stone":
                     return 's';
-                case SandboxTileIds.CopperOre:
+                case "core:copper_ore":
                     return 'c';
-                case SandboxTileIds.IronOre:
+                case "core:iron_ore":
                     return 'i';
-                case SandboxTileIds.SilverOre:
+                case "core:silver_ore":
                     return 'v';
-                case SandboxTileIds.GoldOre:
+                case "core:gold_ore":
                     return 'o';
                 default:
                     return '?';
             }
+        }
+
+        private static string PascalCaseFromStringId(string stringId)
+        {
+            int nameStart = stringId.IndexOf(':') + 1;
+            StringBuilder builder = new StringBuilder(stringId.Length - nameStart);
+            bool upperNext = true;
+            for (int i = nameStart; i < stringId.Length; i++)
+            {
+                char c = stringId[i];
+                if (c == '_')
+                {
+                    upperNext = true;
+                    continue;
+                }
+
+                builder.Append(upperNext ? char.ToUpperInvariant(c) : c);
+                upperNext = false;
+            }
+
+            return builder.ToString();
         }
     }
 }

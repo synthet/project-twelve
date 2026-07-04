@@ -453,7 +453,7 @@ MonoBehaviour:
   world: {fileID: 200002}
   moveSpeed: 7
   jumpVelocity: 11
-  placeTileId: 1
+  placeTileId: core:dirt
   editRange: 6
   saveFileName: sandbox-world.json
 --- !u!114 &300007

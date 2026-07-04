@@ -1,3 +1,4 @@
+using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 
 /// <summary>
@@ -19,6 +20,13 @@ public readonly struct SandboxTerrainGenerator
     public readonly float TerrainFrequency;
     public readonly int DirtDepth;
 
+    // Registry runtime indices resolved once per generator instance; generation loops stay
+    // free of per-tile string lookups (P2-DATA-002 hot-path requirement).
+    private readonly int airTileIndex;
+    private readonly int grassTileIndex;
+    private readonly int dirtTileIndex;
+    private readonly int stoneTileIndex;
+
     public SandboxTerrainGenerator(int seed, int surfaceHeight, int terrainAmplitude, float terrainFrequency, int dirtDepth)
     {
         Seed = seed;
@@ -26,6 +34,12 @@ public readonly struct SandboxTerrainGenerator
         TerrainAmplitude = terrainAmplitude;
         TerrainFrequency = terrainFrequency;
         DirtDepth = dirtDepth;
+
+        ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+        airTileIndex = SandboxRegistries.AirIndex;
+        grassTileIndex = tiles.GetIndex(SandboxCoreContent.GrassTileId);
+        dirtTileIndex = tiles.GetIndex("core:dirt");
+        stoneTileIndex = tiles.GetIndex("core:stone");
     }
 
     /// <summary>
@@ -71,20 +85,21 @@ public readonly struct SandboxTerrainGenerator
     }
 
     /// <summary>
-    /// Resolves the tile id for a world row relative to its column surface height.
+    /// Resolves the registry runtime tile index for a world row relative to its column
+    /// surface height.
     /// </summary>
     public int GetGeneratedTileId(int worldY, int height)
     {
         if (worldY > height)
         {
-            return SandboxTileIds.Air;
+            return airTileIndex;
         }
 
         if (worldY == height)
         {
-            return SandboxTileIds.Grass;
+            return grassTileIndex;
         }
 
-        return worldY > height - DirtDepth ? SandboxTileIds.Dirt : SandboxTileIds.Stone;
+        return worldY > height - DirtDepth ? dirtTileIndex : stoneTileIndex;
     }
 }

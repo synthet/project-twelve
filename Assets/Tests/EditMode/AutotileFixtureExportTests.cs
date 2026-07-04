@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
@@ -220,26 +221,26 @@ public sealed class AutotileFixtureExportTests
         sb.Append('}');
     }
 
+    private static int MapLegacyId(int legacyId)
+    {
+        var legacy = SandboxCoreContent.LegacyTileIdToStringId;
+        Assert.That(
+            legacyId,
+            Is.InRange(0, legacy.Count - 1),
+            "Snippet tile id is outside the legacy tile-id table.");
+        return SandboxRegistries.Tiles.GetIndex(legacy[legacyId]);
+    }
+
     private static string GetGroundTilesetName(int tileId)
     {
-        switch (tileId)
+        ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+        if (tileId <= 0 || tileId >= tiles.Count)
         {
-            case SandboxTileIds.Dirt:
-            case SandboxTileIds.Grass:
-                return "Humus";
-            case SandboxTileIds.Stone:
-                return "Rocks";
-            case SandboxTileIds.CopperOre:
-                return "BricksA";
-            case SandboxTileIds.IronOre:
-                return "BricksB";
-            case SandboxTileIds.SilverOre:
-                return "BricksC";
-            case SandboxTileIds.GoldOre:
-                return "BricksD";
-            default:
-                return null;
+            return null;
         }
+
+        string atlasSprite = tiles.Get(tileId).AtlasSprite;
+        return string.IsNullOrEmpty(atlasSprite) ? null : atlasSprite;
     }
 
     private static bool SharesGroundGroup(int tileIdA, int tileIdB)
@@ -341,7 +342,10 @@ public sealed class AutotileFixtureExportTests
 
             int x = entry["x"]?.Value<int>() ?? originX + (entry["dx"]?.Value<int>() ?? 0);
             int y = entry["y"]?.Value<int>() ?? originY + (entry["dy"]?.Value<int>() ?? 0);
-            int id = entry["id"]?.Value<int>() ?? entry["tileId"]?.Value<int>() ?? 0;
+            // The tile-space/v1 snippet format encodes legacy numeric ids (shared with the
+            // tile-viz JS resolver); map them to registry runtime indices for the C# side.
+            int legacyId = entry["id"]?.Value<int>() ?? entry["tileId"]?.Value<int>() ?? 0;
+            int id = MapLegacyId(legacyId);
             byte light = (byte)(entry["light"]?.Value<int>() ?? (id == SandboxTileIds.Air ? 0 : 15));
             space[new Vector2Int(x, y)] = new SandboxTile(id, light);
             xMin = Mathf.Min(xMin, x);
