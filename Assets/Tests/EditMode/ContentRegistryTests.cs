@@ -185,25 +185,44 @@ public sealed class ContentRegistryTests
     }
 
     [Test]
-    public void LegacyTable_MapsSandboxTileIdsConstantsOneToOne()
+    public void LegacyTable_MapsFixedNumericIdsOneToOne()
     {
+        // The legacy numbering is a frozen on-disk contract (version-1 saves, tile-viz
+        // fixtures); it is indexed with literal ints on purpose — SandboxTileIds fields are
+        // registry runtime indices now, not this numbering.
         IReadOnlyList<string> legacy = SandboxCoreContent.LegacyTileIdToStringId;
 
         Assert.AreEqual(8, legacy.Count);
-        Assert.AreEqual("core:air", legacy[SandboxTileIds.Air]);
-        Assert.AreEqual("core:dirt", legacy[SandboxTileIds.Dirt]);
-        Assert.AreEqual("core:grass", legacy[SandboxTileIds.Grass]);
-        Assert.AreEqual("core:stone", legacy[SandboxTileIds.Stone]);
-        Assert.AreEqual("core:copper_ore", legacy[SandboxTileIds.CopperOre]);
-        Assert.AreEqual("core:iron_ore", legacy[SandboxTileIds.IronOre]);
-        Assert.AreEqual("core:silver_ore", legacy[SandboxTileIds.SilverOre]);
-        Assert.AreEqual("core:gold_ore", legacy[SandboxTileIds.GoldOre]);
+        Assert.AreEqual("core:air", legacy[0]);
+        Assert.AreEqual("core:dirt", legacy[1]);
+        Assert.AreEqual("core:grass", legacy[2]);
+        Assert.AreEqual("core:stone", legacy[3]);
+        Assert.AreEqual("core:copper_ore", legacy[4]);
+        Assert.AreEqual("core:iron_ore", legacy[5]);
+        Assert.AreEqual("core:silver_ore", legacy[6]);
+        Assert.AreEqual("core:gold_ore", legacy[7]);
 
         ContentRegistry<TileDefinition> tiles = SandboxCoreContent.CreateTileRegistry();
         foreach (string id in legacy)
         {
             Assert.IsTrue(tiles.TryGet(id, out _), $"Legacy string ID '{id}' must resolve in the core tile registry.");
         }
+    }
+
+    [Test]
+    public void SandboxTileIds_ResolvesToLiveRegistryRuntimeIndices()
+    {
+        ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+
+        Assert.AreEqual(tiles.GetIndex("core:air"), SandboxTileIds.Air);
+        Assert.AreEqual(tiles.GetIndex("core:dirt"), SandboxTileIds.Dirt);
+        Assert.AreEqual(tiles.GetIndex("core:grass"), SandboxTileIds.Grass);
+        Assert.AreEqual(tiles.GetIndex("core:stone"), SandboxTileIds.Stone);
+        Assert.AreEqual(tiles.GetIndex("core:copper_ore"), SandboxTileIds.CopperOre);
+        Assert.AreEqual(tiles.GetIndex("core:iron_ore"), SandboxTileIds.IronOre);
+        Assert.AreEqual(tiles.GetIndex("core:silver_ore"), SandboxTileIds.SilverOre);
+        Assert.AreEqual(tiles.GetIndex("core:gold_ore"), SandboxTileIds.GoldOre);
+        Assert.AreEqual(0, SandboxTileIds.Air, "Air must stay pinned to runtime index 0.");
     }
 
     [Test]
