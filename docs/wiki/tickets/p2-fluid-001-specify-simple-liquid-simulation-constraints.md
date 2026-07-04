@@ -3,14 +3,14 @@ type: Task
 id: P2-FLUID-001
 title: "[P2-FLUID-001] Specify simple liquid simulation constraints."
 description: Cellular-automaton fluid with per-cell amount, mass conservation, active-set sleep/wake, per-tick budget, and save persistence rules.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/34"
 github_issue_status: created
 resource: wiki/tickets/p2-fluid-001-specify-simple-liquid-simulation-constraints.md
 tags: [docs, wiki, ticket, fluids, simulation, p2]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
@@ -137,9 +137,24 @@ for each active cell c, bottom-up (row scan order from seeded PRNG):
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Fluid constants and rules documented in `simulation-systems.md` before implementation.
-- [ ] Conservation, settling, U-tube, determinism, and wake EditMode tests pass.
-- [ ] Profiler evidence for budget and sleeping-lake cost attached.
-- [ ] Follow-up tasks created for lava/interactions and fluid rendering polish.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket ([#34](https://github.com/synthet/project-twelve/issues/34) body → "Wiki ticket (canonical spec)").
+- [x] Fluid constants and rules documented before implementation in
+      `docs/wiki/08-liquids.md` § "P2-FLUID-001 specification (water)" and
+      `docs/wiki/simulation-systems.md` § "Liquids" (adopted 2026-07-04).
+- [x] Implementation landed under `Assets/Scripts/Sandbox/Fluid/`
+      (`SandboxFluidConstants`, `ISandboxFluidGrid`, `SandboxFluidSimulator`,
+      `SandboxWorldFluidGrid`, `SandboxFluidController`) with the wake seam wired into the single
+      `SandboxWorld.SetTile` choke point (`TileChanged`/`ChunkLoaded` events + `SandboxChunk.SetLocalFluid`).
+- [~] Conservation, settling, U-tube, determinism, wake, budget, and unloaded-boundary EditMode
+      fixtures authored in `Assets/Tests/EditMode/SandboxFluidSimulatorTests.cs`
+      (with `FluidTestGrid`). **The Unity Editor is unavailable in this headless environment**, so
+      the suite could not be executed here; the exact simulator math (including `float32` storage)
+      was validated offline by a faithful port — 20/20 assertions pass. Run under the Editor before
+      close: `Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml`.
+- [ ] Profiler evidence for budget and sleeping-lake cost attached. *(Requires the Unity Editor; a
+      settled lake empties the active set so its per-tick cost is ~0 by construction — see the
+      `StillWater_SettledLake_CostsZeroPerTick` fixture.)*
+- [ ] Follow-up tasks created for lava/interactions and fluid rendering polish. *(Recorded as
+      out-of-scope follow-ups in `08-liquids.md` § "Out of scope"; the liquids overlay renderer and
+      volume-preserving displacement also need tickets — deferred to maintainer triage.)*

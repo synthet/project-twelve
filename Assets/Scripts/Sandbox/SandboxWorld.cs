@@ -60,6 +60,20 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>The transform chunk loading follows; also the chase target for enemies.</summary>
     public Transform PlayerTarget => playerTarget;
 
+    /// <summary>
+    /// Raised after a tile edit at world coordinate (x, y) through <see cref="SetTile"/>. The fluid
+    /// simulation subscribes to re-wake the edited cell and its neighbours so surrounding liquid
+    /// re-flows (see <c>docs/wiki/08-liquids.md</c> § "Tile-edit flow"). Kept decoupled — the world
+    /// does not own the simulator — to mirror the nav-dirty pattern.
+    /// </summary>
+    public event System.Action<int, int> TileChanged;
+
+    /// <summary>
+    /// Raised when a chunk enters the loaded (renderer-backed) window. The fluid simulation
+    /// subscribes to re-wake the newly loaded chunk's cells so paused flow resumes across the seam.
+    /// </summary>
+    public event System.Action<Vector2Int> ChunkLoaded;
+
     private void Start()
     {
         RefreshLoadedChunks();
@@ -98,6 +112,39 @@ public sealed class SandboxWorld : MonoBehaviour
         chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId));
         EnsureRenderer(chunkCoord);
         MarkBorderNeighborsDirty(chunks, chunkCoord, local.x, local.y);
+        TileChanged?.Invoke(x, y);
+    }
+
+    /// <summary>
+    /// Current fluid amount at a world tile, or 0 when the owning chunk has not been generated.
+    /// Never generates a chunk on read, so it is safe to call for cells outside the loaded set.
+    /// </summary>
+    public float GetFluid(int x, int y)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            return 0f;
+        }
+
+        Vector2Int local = WorldToLocalCoord(x, y);
+        return chunk.GetLocalFluid(local.x, local.y);
+    }
+
+    /// <summary>
+    /// Writes the fluid amount at a world tile. Never generates a chunk — a write to an
+    /// ungenerated chunk is dropped — so fluid simulation cannot pull unloaded terrain into memory.
+    /// </summary>
+    public void SetFluid(int x, int y, float amount)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            return;
+        }
+
+        Vector2Int local = WorldToLocalCoord(x, y);
+        chunk.SetLocalFluid(local.x, local.y, amount);
     }
 
     /// <summary>
@@ -557,6 +604,7 @@ public sealed class SandboxWorld : MonoBehaviour
         chunk.NeedsRenderRebuild = true;
         chunk.NeedsColliderRebuild = true;
         MarkRenderedFaceNeighborsDirty(chunkCoord, chunks, renderers.Keys);
+        ChunkLoaded?.Invoke(chunkCoord);
     }
 
     /// <summary>

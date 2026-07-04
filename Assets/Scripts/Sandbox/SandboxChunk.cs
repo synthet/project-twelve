@@ -59,6 +59,31 @@ public sealed class SandboxChunk
         HasEdits |= markDirty;
     }
 
+    /// <summary>Current fluid amount of a local cell, or 0 when out of bounds.</summary>
+    public float GetLocalFluid(int x, int y)
+    {
+        return IsLocalInBounds(x, y) ? tiles[x, y].fluid : 0f;
+    }
+
+    /// <summary>
+    /// Writes only the fluid amount of a local cell (the tile id is untouched). Unlike
+    /// <see cref="SetLocalTile(int,int,SandboxTile)"/> this does not bump the nav version or request
+    /// a collider rebuild — fluid is not solidity — but it does flag a render rebuild (the liquid
+    /// overlay changed) and mark the chunk dirty so the amount persists in the next save.
+    /// </summary>
+    public void SetLocalFluid(int x, int y, float amount)
+    {
+        if (!IsLocalInBounds(x, y))
+        {
+            return;
+        }
+
+        tiles[x, y].fluid = amount;
+        NeedsRenderRebuild = true;
+        IsDirty = true;
+        HasEdits = true;
+    }
+
     /// <summary>
     /// Marks the chunk nav-dirty without a tile write. Used for border edits in neighbor chunks
     /// (jump/fall arcs cross chunk borders) and for load/unload transitions that change the
