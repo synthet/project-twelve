@@ -1,8 +1,12 @@
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
 /// <summary>
-/// Maps sandbox tile IDs to project autotile ground/cover tilesets.
+/// Maps sandbox tile IDs to project autotile ground/cover tilesets. Ground tileset names come
+/// from <see cref="TileDefinition.AtlasSprite"/> in the frozen tile registry (P2-DATA-002);
+/// only the grass cover overlay remains catalog-configured, as cover selection is not part of
+/// the tile definition contract.
 /// </summary>
 [CreateAssetMenu(
     fileName = "SandboxTileVisualCatalog",
@@ -10,15 +14,6 @@ using UnityEngine;
 public sealed class SandboxTileVisualCatalog : ScriptableObject
 {
     [SerializeField] private AutotileCatalog autotileCatalog;
-
-    [Header("Ground Tilesets")]
-    [SerializeField] private string dirtGroundTileset = "Humus";
-    [SerializeField] private string grassGroundTileset = "Humus";
-    [SerializeField] private string stoneGroundTileset = "Rocks";
-    [SerializeField] private string copperOreGroundTileset = "BricksA";
-    [SerializeField] private string ironOreGroundTileset = "BricksB";
-    [SerializeField] private string silverOreGroundTileset = "BricksC";
-    [SerializeField] private string goldOreGroundTileset = "BricksD";
 
     [Header("Cover Tilesets")]
     [SerializeField] private string grassCoverTileset = "GrassA";
@@ -33,7 +28,7 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
         && (autotileCatalog.GroundTilesets.Count > 0 || autotileCatalog.CoverTilesets.Count > 0);
 
     /// <summary>
-    /// Returns the ground tileset used to render the given sandbox tile ID.
+    /// Returns the ground tileset used to render the given registry runtime tile index.
     /// </summary>
     public bool TryGetGroundTileset(int tileId, out AutotileTileset tileset)
     {
@@ -53,7 +48,7 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     {
         tileset = null;
         if (autotileCatalog == null
-            || tileId != SandboxTileIds.Grass
+            || tileId != SandboxRegistries.GrassIndex
             || string.IsNullOrEmpty(grassCoverTileset))
         {
             return false;
@@ -67,7 +62,7 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     /// </summary>
     public bool SharesGroundAutotileGroup(int tileIdA, int tileIdB)
     {
-        if (tileIdA == SandboxTileIds.Air || tileIdB == SandboxTileIds.Air)
+        if (tileIdA == SandboxRegistries.AirIndex || tileIdB == SandboxRegistries.AirIndex)
         {
             return false;
         }
@@ -86,7 +81,7 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     /// </summary>
     public bool ShouldRenderGrassCover(int tileId, SandboxTile tileAbove)
     {
-        return tileId == SandboxTileIds.Grass && !tileAbove.IsSolid;
+        return tileId == SandboxRegistries.GrassIndex && !tileAbove.IsSolid;
     }
 
     /// <summary>
@@ -94,37 +89,19 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     /// </summary>
     public bool SharesCoverAutotileGroup(int tileIdA, int tileIdB)
     {
-        return tileIdA == SandboxTileIds.Grass && tileIdB == SandboxTileIds.Grass;
+        return tileIdA == SandboxRegistries.GrassIndex && tileIdB == SandboxRegistries.GrassIndex;
     }
 
-    private bool TryGetGroundTilesetName(int tileId, out string tilesetName)
+    private static bool TryGetGroundTilesetName(int tileId, out string tilesetName)
     {
-        switch (tileId)
+        ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
+        if (tileId <= 0 || tileId >= tiles.Count)
         {
-            case SandboxTileIds.Dirt:
-                tilesetName = dirtGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.Grass:
-                tilesetName = grassGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.Stone:
-                tilesetName = stoneGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.CopperOre:
-                tilesetName = copperOreGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.IronOre:
-                tilesetName = ironOreGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.SilverOre:
-                tilesetName = silverOreGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            case SandboxTileIds.GoldOre:
-                tilesetName = goldOreGroundTileset;
-                return !string.IsNullOrEmpty(tilesetName);
-            default:
-                tilesetName = null;
-                return false;
+            tilesetName = null;
+            return false;
         }
+
+        tilesetName = tiles.Get(tileId).AtlasSprite;
+        return !string.IsNullOrEmpty(tilesetName);
     }
 }

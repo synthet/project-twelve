@@ -13,11 +13,4 @@ MonoBehaviour:
   m_Name: SandboxTileVisualCatalog
   m_EditorClassIdentifier: ProjectTwelve.Runtime::SandboxTileVisualCatalog
   autotileCatalog: {fileID: 11400000, guid: 8f239560493c4da6a5722100847f2533, type: 2}
-  dirtGroundTileset: Humus
-  grassGroundTileset: Humus
-  stoneGroundTileset: Rocks
-  copperOreGroundTileset: BricksA
-  ironOreGroundTileset: BricksB
-  silverOreGroundTileset: BricksC
-  goldOreGroundTileset: BricksD
   grassCoverTileset: GrassA
