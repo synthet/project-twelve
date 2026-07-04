@@ -56,6 +56,9 @@ public sealed class SandboxWorld : MonoBehaviour
         playerTarget = target;
     }
 
+    /// <summary>The transform chunk loading follows; also the chase target for enemies.</summary>
+    public Transform PlayerTarget => playerTarget;
+
     private void Start()
     {
         RefreshLoadedChunks();
@@ -180,7 +183,27 @@ public sealed class SandboxWorld : MonoBehaviour
         {
             chunk.NeedsRenderRebuild = true;
             chunk.NeedsColliderRebuild = true;
+            chunk.BumpNavVersion();
         }
+    }
+
+    /// <summary>
+    /// Whether the chunk is in the streamed (renderer-backed) window. This is the loaded-chunk
+    /// set navigation and spawning are bounded by: enemies never path into or spawn in chunks
+    /// outside it.
+    /// </summary>
+    public bool IsChunkLoaded(Vector2Int chunkCoord)
+    {
+        return renderers.ContainsKey(chunkCoord);
+    }
+
+    /// <summary>
+    /// Current navigation version of the chunk (see <see cref="SandboxChunk.NavVersion"/>), or 0
+    /// when the chunk has never been generated.
+    /// </summary>
+    public int GetNavVersion(Vector2Int chunkCoord)
+    {
+        return chunks.TryGetValue(chunkCoord, out SandboxChunk chunk) ? chunk.NavVersion : 0;
     }
 
 

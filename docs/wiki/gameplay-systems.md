@@ -1,3 +1,13 @@
+---
+type: Architecture
+title: Gameplay Systems
+description: Simulation/presentation split for player, inventory, and enemy systems, including the P2-AI-001 enemy nav and spawn contract.
+resource: wiki/gameplay-systems.md
+tags: [docs, wiki, gameplay, ai, p2]
+timestamp: 2026-07-04T00:00:00Z
+okf_version: 0.1
+---
+
 # Gameplay Systems
 
 ## Player
@@ -29,13 +39,20 @@ Enemy behavior for the P2 alpha is specified in [09 — Pathfinding](09-pathfind
 
 | Layer | Component | Responsibility |
 |-------|-----------|----------------|
-| Simulation | Walker enemy controller (TBD) | Path follow, local steering fallback, despawn rules |
-| Navigation | `GridPathfinder` (TBD) | A* over walk/jump/fall edges with expansion budgets |
-| Spawn | Area spawn controller (TBD) | Candidate selection per distance/light/population rules |
+| Simulation | `SandboxEnemyAgent` | Path follow, local steering fallback, despawn rules |
+| Navigation | `SandboxNavPathfinder` (+ `SandboxNavRequestScheduler`) | A* over walk/jump/fall edges with expansion and per-tick budgets |
+| Spawn | `SandboxEnemySpawner` / `SandboxSpawnRules` | Candidate selection per distance/light/population rules |
 | Presentation | `MonsterSpawnHelper` / `MonsterLocomotionDriver` | Visual spawn and animation (P2-VISUAL-003) |
 
-**Nav-dirty:** `SandboxWorld.SetTile` marks affected chunks nav-dirty; agents recompute lazily on
-the next step when their path crosses changed cells.
+All navigation code lives under `Assets/Scripts/Sandbox/Nav/`; the pure core (pathfinder, spawn
+rules, scheduler) is EditMode-tested against grid fixtures without a scene.
+
+**Nav-dirty:** `SandboxWorld.SetTile` marks affected chunks nav-dirty (`SandboxChunk.NavVersion`,
+a monotonic counter; border edits also bump face neighbors); agents snapshot crossed-chunk
+versions and recompute lazily on the next step when their path crosses changed cells.
+
+**Despawn:** when the chase target's chunk leaves the loaded set, an agent idles and then despawns
+after `despawnGraceSeconds` (10 s). Enemies never path into or spawn in unloaded chunks.
 
 **Spawn constraints:** candidates must be air-with-support inside loaded chunks, outside the camera
 view, within `[minSpawnDistance, maxSpawnDistance]` of the player, and respect underground light

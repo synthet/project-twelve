@@ -10,7 +10,7 @@ github_issue: "https://github.com/synthet/project-twelve/issues/32"
 github_issue_status: created
 resource: wiki/tickets/p2-ai-001-specify-enemy-spawn-and-pathfinding-rules.md
 tags: [docs, wiki, ticket, ai, pathfinding, p2]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
@@ -141,6 +141,16 @@ believably, and spawning feels dangerous underground without popping in on scree
 - [x] GitHub issue links back to this markdown ticket.
 - [x] Nav/spawn contract documented in `gameplay-systems.md` and `09-pathfinding.md` before
       implementation (P2-AI-001 specification section added 2026-07-03).
-- [ ] Pathfinding and spawn EditMode fixtures pass.
-- [ ] Play-mode chase capture attached.
-- [ ] Follow-up tasks created for flying archetypes, combat, and nav scaling.
+- [x] Implementation landed under `Assets/Scripts/Sandbox/Nav/` (pathfinder, scheduler, spawn
+      rules, world adapter, `SandboxEnemySpawner`/`SandboxEnemyAgent`) with nav-dirty wiring in
+      `SandboxChunk`/`SandboxWorld` (2026-07-04; adopted decisions recorded in
+      `09-pathfinding.md` § "Implementation notes").
+- [ ] Pathfinding and spawn EditMode fixtures pass. *(Fixtures authored in
+      `SandboxNavPathfinderTests.cs` / `SandboxSpawnRulesTests.cs`; the authoring environment has
+      no Unity 6.0.5.1f1, so run
+      `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`
+      on a Unity-capable machine and record the result here.)*
+- [ ] Play-mode chase capture attached. *(Requires the Unity Editor; see acceptance criteria.)*
+- [ ] Follow-up tasks created for flying archetypes, combat, and nav scaling. *(Combat/loot is
+      already tracked by P4-CONTENT-001 (#44); flying/swimming archetypes and waypoint-graph
+      scaling still need tickets — deferred to maintainer triage.)*
