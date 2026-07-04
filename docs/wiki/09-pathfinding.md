@@ -1,6 +1,17 @@
+---
+type: Reference
+title: Pathfinding
+description: Grid A* navigation contract and implementation for enemies — movement edges, budgets, nav-dirty invalidation, and spawn rules.
+resource: wiki/09-pathfinding.md
+tags: [docs, wiki, ai, pathfinding, p2]
+timestamp: 2026-07-04T00:00:00Z
+okf_version: 0.1
+---
+
 # 09 — Pathfinding
 
-> **Status:** Specified for P2 walker archetype (P2-AI-001); implementation pending.
+> **Status:** Implemented for the P2 walker archetype (P2-AI-001) under
+> `Assets/Scripts/Sandbox/Nav/`, with EditMode fixtures; play-mode chase capture pending.
 > **Decisions:** **Grid A\*** over the tile solidity graph; recompute on terrain change or path
 > invalidation; per-chunk nav-dirty marking.
 > **Invariants:** The nav graph is derived from the same solid/empty data used by collision.
@@ -147,6 +158,22 @@ Spawn selection runs on a cadence (`spawnInterval` seconds) and only considers *
 On success, spawn via P2-VISUAL-003 `MonsterSpawnHelper` and drive locomotion through
 `MonsterLocomotionDriver`. If the player target leaves the loaded set, idle agents **despawn** after
 `despawnGraceSeconds` (default `10`) — document in gameplay systems.
+
+### Implementation notes (adopted decisions)
+
+The walker pass is implemented under `Assets/Scripts/Sandbox/Nav/` with EditMode coverage in
+`SandboxNavPathfinderTests` and `SandboxSpawnRulesTests`. Decisions the code pins down beyond the
+contract above:
+
+| Area | Component | Decision |
+|------|-----------|----------|
+| Search | `SandboxNavPathfinder` | Body AABB is 1×1 tile; jump clearance uses a rectilinear up-across-down probe of the arc (ascend start column to apex = rise + 1 capped at `maxJumpHeight`, traverse apex row, descend landing column). |
+| Gap metric | `SandboxNavConstants.MaxJumpGap` | Counts **open tiles crossed**, so the landing column offset is `maxJumpGap + 1`. |
+| Nav-dirty | `SandboxChunk.NavVersion` | A monotonic per-chunk counter bumped on every tile write replaces a clearable dirty bool (multiple agents must not race to clear a shared flag). Border edits also bump face-neighbor versions because jump/fall arcs cross chunk borders. Paths snapshot crossed-chunk versions and report `IsStale` on mismatch. |
+| Budgets | `SandboxNavRequestScheduler` | FIFO queue, one pending request per agent, `maxRequestsPerTick` per `ProcessTick`; budget exhaustion returns no-path and the agent local-steers. |
+| Loaded set | `SandboxWorldNavGrid` | "Loaded" = renderer-backed chunk window; unloaded cells are impassable and never generated on demand by nav reads. |
+| Light | `SandboxSpawnRules.InterimLightAt` | Interim model until P2-LIGHT-001: underground cells read 0, surface-band cells read 15. The light accessor is injected, so the real lightmap replaces it without touching the rules. |
+| Spawning | `SandboxEnemySpawner` | Samples up to 32 random candidates per cadence in the spawn band and takes the first valid; spawns via `MonsterSpawnHelper`, drives `MonsterLocomotionDriver` only on state transitions. |
 
 ### Out of scope (recorded follow-ups)
 
