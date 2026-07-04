@@ -166,13 +166,13 @@ public sealed class AutotileFixtureExportTests
             },
             x,
             y);
-        Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+        string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
         sb.AppendFormat(ci, "\"tileset\":\"{0}\",", groundName);
         AppendMask(sb, mask);
         sb.AppendFormat(
             ci,
             ",\"spriteId\":\"{0}\",\"flipX\":{1},\"resolved\":true",
-            sprite != null ? sprite.name : "null",
+            spriteId ?? "null",
             flipX ? "true" : "false");
         sb.Append('}');
     }
@@ -209,14 +209,14 @@ public sealed class AutotileFixtureExportTests
             },
             x,
             y);
-        Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+        string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
         sb.Append("\"rendered\":true,");
         sb.Append("\"tileset\":\"GrassA\",");
         AppendMask(sb, mask);
         sb.AppendFormat(
             ci,
             ",\"spriteId\":\"{0}\",\"flipX\":{1},\"resolved\":true",
-            sprite != null ? sprite.name : "null",
+            spriteId ?? "null",
             flipX ? "true" : "false");
         sb.Append('}');
     }

@@ -16,9 +16,9 @@ namespace ProjectTwelve.Visual.Tiles
         }
 
         /// <summary>
-        /// Resolves the sprite and horizontal flip for a tileset and neighbor mask.
+        /// Resolves the rule-table sprite id and horizontal flip for a tileset and neighbor mask.
         /// </summary>
-        public static Sprite ResolveSprite(AutotileTileset tileset, int[,] mask, out bool flipX)
+        public static string ResolveSpriteId(AutotileTileset tileset, int[,] mask, out bool flipX)
         {
             flipX = false;
             if (tileset?.Sprites == null || tileset.Sprites.Count == 0 || mask == null)
@@ -28,7 +28,7 @@ namespace ProjectTwelve.Visual.Tiles
 
             if (tileset.Sprites.Count == 1)
             {
-                return tileset.Sprites[0];
+                return tileset.Rules.Count > 0 ? tileset.Rules[0].SpriteId : GetFallbackSpriteId(tileset);
             }
 
             IReadOnlyList<AutotileRule> rules = tileset.Rules;
@@ -36,24 +36,38 @@ namespace ProjectTwelve.Visual.Tiles
             if (index >= 0)
             {
                 flipX = false;
-                return GetSpriteForRule(tileset, rules, index);
+                return rules[index].SpriteId;
             }
 
             index = FindRuleIndex(rules, mask, MatchPass.FlipRows);
             if (index >= 0)
             {
                 flipX = true;
-                return GetSpriteForRule(tileset, rules, index);
+                return rules[index].SpriteId;
             }
 
             index = FindRuleIndex(rules, mask, MatchPass.FlipColumns);
             if (index >= 0)
             {
                 flipX = true;
-                return GetSpriteForRule(tileset, rules, index);
+                return rules[index].SpriteId;
             }
 
-            return GetFallbackSprite(tileset);
+            return GetFallbackSpriteId(tileset);
+        }
+
+        /// <summary>
+        /// Resolves the sprite and horizontal flip for a tileset and neighbor mask.
+        /// </summary>
+        public static Sprite ResolveSprite(AutotileTileset tileset, int[,] mask, out bool flipX)
+        {
+            string spriteId = ResolveSpriteId(tileset, mask, out flipX);
+            if (spriteId == null)
+            {
+                return null;
+            }
+
+            return GetSpriteById(tileset, spriteId);
         }
 
         private static int FindRuleIndex(IReadOnlyList<AutotileRule> rules, int[,] mask, MatchPass pass)
@@ -205,16 +219,19 @@ namespace ProjectTwelve.Visual.Tiles
             }
         }
 
-        private static Sprite GetSpriteForRule(
-            AutotileTileset tileset,
-            IReadOnlyList<AutotileRule> rules,
-            int index)
+        private static string GetFallbackSpriteId(AutotileTileset tileset)
         {
-            string spriteName = rules[index].SpriteId;
+            return tileset.Sprites.Count == AutotileRuleTables.GroundSpriteCount
+                ? AutotileRuleTables.FallbackSpriteId
+                : "0";
+        }
+
+        private static Sprite GetSpriteById(AutotileTileset tileset, string spriteId)
+        {
             for (int i = 0; i < tileset.Sprites.Count; i++)
             {
                 Sprite sprite = tileset.Sprites[i];
-                if (sprite != null && sprite.name == spriteName)
+                if (sprite != null && sprite.name == spriteId)
                 {
                     return sprite;
                 }
@@ -225,19 +242,14 @@ namespace ProjectTwelve.Visual.Tiles
 
         private static Sprite GetFallbackSprite(AutotileTileset tileset)
         {
-            string fallbackId = tileset.Sprites.Count == AutotileRuleTables.GroundSpriteCount
-                ? AutotileRuleTables.FallbackSpriteId
-                : "0";
+            string fallbackId = GetFallbackSpriteId(tileset);
 
             foreach (string candidate in new[] { fallbackId, AutotileRuleTables.FallbackSpriteId, "0" })
             {
-                for (int i = 0; i < tileset.Sprites.Count; i++)
+                Sprite sprite = GetSpriteById(tileset, candidate);
+                if (sprite != null)
                 {
-                    Sprite sprite = tileset.Sprites[i];
-                    if (sprite != null && sprite.name == candidate)
-                    {
-                        return sprite;
-                    }
+                    return sprite;
                 }
             }
 

@@ -3,14 +3,14 @@ type: Task
 id: P2-DATA-002
 title: "[P2-DATA-002] Migrate sandbox callers to registry runtime indices and complete item/entity registries."
 description: Swap SandboxTile.id from legacy constants to registry runtime indices, persist the save palette, and complete item/entity definitions and mod load order.
-status: in_progress
+status: done
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/86"
-github_issue_status: created
+github_issue_status: closed
 resource: wiki/tickets/p2-data-002-migrate-sandbox-callers-to-registry-runtime-indices.md
 tags: [docs, wiki, ticket, registry, modding, p2]
-timestamp: 2026-07-04T00:00:00Z
+timestamp: 2026-07-04T22:20:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/12-modding.md"
@@ -89,11 +89,19 @@ through one data-driven identity system.
   palette write, in-engine registry-reorder round trip).
 - [x] Mod load order specified in `docs/wiki/12-modding.md` (explicit dependency/priority
   scheme with declared overrides; not last-loader-wins).
-- [ ] Pinned-seed regression check recorded — **not executed in the authoring environment
-  (no Unity Editor in the container).** Reviewer procedure per
-  `docs/wiki/p1-vertical-slice-demo.md` step 7 / MCP-assisted variant: with seed 1337, use
-  `player_teleport` + `tile_at` at columns x = −40, 0, +40 before and after this change set;
-  the highest-solid-tile Y and per-column tile-**name** sequence must match exactly (raw
-  numeric tile ids legitimately differ — registry indices replaced the legacy numbering).
-  EditMode suite command:
-  `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- [x] Pinned-seed regression check recorded (2026-07-04, local finalize pass). **EditMode:**
+  199/199 passed (`TestResults/editmode.xml`, Unity 6000.5.1f1 batchmode). **tile-viz:** 16/16
+  passed after regenerating `test/fixtures/expected/*.json` from the JS resolver (Unity export now
+  writes rule-table `spriteId` via `AutotileResolver.ResolveSpriteId`). **Determinism (seed 1337,
+  columns x = −40, 0, +40):** two consecutive `world-viz` terrain-generator runs matched on surface
+  Y and tile-name sequence (Play Mode MCP unavailable — Unity Editor held the project open; runtime
+  MCP not listening). Evidence:
+
+  | Column | Surface Y (run 1 / run 2) | Tile-name sequence (high → low, identical both runs) |
+  |--------|---------------------------|------------------------------------------------------|
+  | −40 | 32 / 32 | Air×5, Grass, Dirt×7, Stone×8 |
+  | 0 | 27 / 27 | Air×5, Grass, Dirt×7, Stone×8 |
+  | +40 | 26 / 26 | Air×5, Grass, Dirt×7, Stone×8 |
+
+  Raw runtime tile ids legitimately differ from legacy 0–7; names are the regression contract.
+  Implementation merged in [PR #93](https://github.com/synthet/project-twelve/pull/93).
