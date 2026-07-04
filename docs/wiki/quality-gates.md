@@ -67,7 +67,7 @@ All files in `docs/` must include valid OKF frontmatter. The CI command runs wit
 
 ```bash
 python scripts/ci/okf_lint_changed.py \
-  --base origin/master \
+  --base origin/main \
   --head HEAD \
   --profile project \
   --fail-on error
@@ -88,7 +88,7 @@ python scripts/ci/okf_lint_changed.py \
 **Run this locally before every push to docs/:**
 ```bash
 # Check changed files only (faster)
-python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
+python scripts/ci/okf_lint_changed.py --base origin/main --head HEAD --profile project --fail-on error
 ```
 
 #### 2c. Paid asset validation

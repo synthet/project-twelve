@@ -4,7 +4,7 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-07-04T00:35:00Z
+timestamp: 2026-07-04T16:55:00Z
 okf_version: 0.1
 ---
 
@@ -37,11 +37,28 @@ Validate CLI tooling skills with `python scripts/validate_cli_skills.py` (see [`
 /spec → /plan → /implement → /test-and-fix → /pr-ready → (optional) /subagent-review → /release-notes
 ```
 
+### Phase gates
+
+Each phase produces an artifact that gates the next one. Do not skip a gate silently — if a phase
+is unnecessary (trivial fix), say so explicitly.
+
+| Phase | Artifact produced | Gate to pass before the next phase |
+|-------|-------------------|-------------------------------------|
+| `/spec` | Spec with EARS `AC-n` acceptance criteria | User approves; no criterion is AMBIGUOUS |
+| `/plan` | Implementation plan (files, approach, tests, rollback) | User approves the plan |
+| `/implement` | Minimal-diff change set with tests | Lint + narrowest tests green |
+| `/test-and-fix` | Green test run (or written blocker); RCA log entry for non-obvious failures | Tests pass or blocker documented |
+| `validate-implementation` (skill) | Per-AC Verified/Failed/Unknown report with evidence | Every AC Verified, or open items accepted by the user |
+| `/pr-ready` | Definition-of-done report + paste-ready PR text | Checks green, `Closes #<N>`, ticket in `Stage = Review` |
+
 1. **Spec** — identify the gameplay, tooling, or documentation outcome and affected canonical sources.
 2. **Plan** — list the files to change, validation commands, and Unity asset/meta implications.
 3. **Implement** — make focused diffs; avoid unrelated formatting or broad rewrites.
 4. **Test and fix** — run the relevant commands from `AGENTS.md`; document environment limitations when Unity is unavailable.
-5. **PR-ready** — review `git status --short`, run `python3 scripts/check_paid_assets.py --staged`, summarize changes, cite tests, and note follow-up work.
+5. **Validate** — run the `validate-implementation` skill against each `AC-n` with evidence before `/pr-ready`.
+6. **PR-ready** — review `git status --short`, run `python3 scripts/check_paid_assets.py --staged`, summarize changes, cite tests, and note follow-up work.
+
+Large epics: use `/decompose` before `/plan` to split parallelizable subtasks.
 
 ### Backlog
 

@@ -12,7 +12,7 @@ Many upstream checks assume **untrusted registry skills** (signing, SBOM, contai
 
 ## Supply chain and sync (AST02, AST07, AST10)
 
-- [ ] **Canonical copy:** If the skill exists under `.cursor/skills/<name>/`, that path is **canonical**; `.claude/skills/<name>/SKILL.md` is updated in the **same PR** when applicable (see [AGENTS.md](../AGENTS.md#agent-skills-source-of-truth-ast10)).
+- [ ] **Canonical copy:** Author under `.claude/skills/<name>/SKILL.md` (canonical); run `python scripts/sync_assistant_trees.py` and commit the `.cursor/` mirror in the **same PR** (see [AGENTS.md](../AGENTS.md)).
 - [ ] **Inventory:** [SKILL_INVENTORY.md](./SKILL_INVENTORY.md) updated (new row or **Last reviewed** date).
 
 ## Privilege and scope (AST03)

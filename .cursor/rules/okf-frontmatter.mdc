@@ -75,7 +75,7 @@ date -u +"%Y-%m-%dT%H:%M:%SZ"
    ```bash
    python3 scripts/check_markdown_links.py
    python scripts/sync_assistant_trees.py --check
-   python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
+   python scripts/ci/okf_lint_changed.py --base origin/main --head HEAD --profile project --fail-on error
    ```
 
 ## Common mistakes to avoid

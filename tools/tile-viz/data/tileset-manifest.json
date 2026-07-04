@@ -12,61 +12,12 @@
   },
   "grassCoverTileset": "GrassA",
   "tilesets": [
-    {
-      "name": "Humus",
-      "path": "Ground/Humus.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    },
-    {
-      "name": "Rocks",
-      "path": "Ground/Rocks.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    },
-    {
-      "name": "GrassA",
-      "path": "Cover/GrassA.png",
-      "layer": "cover",
-      "cellSize": 16,
-      "columns": 3,
-      "spriteCount": 6
-    },
-    {
-      "name": "BricksA",
-      "path": "Ground/BricksA.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    },
-    {
-      "name": "BricksB",
-      "path": "Ground/BricksB.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    },
-    {
-      "name": "BricksC",
-      "path": "Ground/BricksC.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    },
-    {
-      "name": "BricksD",
-      "path": "Ground/BricksD.png",
-      "layer": "ground",
-      "cellSize": 16,
-      "columns": 8,
-      "spriteCount": 32
-    }
+    {"name":"Humus","path":"Ground/Humus.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"Rocks","path":"Ground/Rocks.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"GrassA","path":"Cover/GrassA.png","layer":"cover","cellSize":16,"columns":3,"spriteCount":6},
+    {"name":"BricksA","path":"Ground/BricksA.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"BricksB","path":"Ground/BricksB.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"BricksC","path":"Ground/BricksC.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"BricksD","path":"Ground/BricksD.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32}
   ]
 }

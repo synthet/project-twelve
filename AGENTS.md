@@ -19,11 +19,11 @@ which tools they may use.
 
 ```bash
 # Open/build in Unity Editor 6.0.5.1f1; Unity regenerates solution files.
-# Batch-mode edit validation (requires Unity installed in the environment):
+# Batch-mode edit validation (Unity 6000.5.1f1 — see .claude/skills/unity-tests/SKILL.md):
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
 
-# Run Unity edit-mode tests (requires Unity installed in the environment):
-Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
+# EditMode tests (on Windows: omit -quit with -runTests — see unity-tests skill):
+Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 
 # Documentation/link hygiene and paid-asset guard:
 python3 scripts/check_markdown_links.py
@@ -176,7 +176,7 @@ submodule local sync after pull/checkout. Network sync: `python scripts/fetch_re
 | You say | Canonical name | Where | How to run |
 |---------|----------------|-------|------------|
 | Unity validation | Batch-mode project load | Unity project root | `Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log` |
-| EditMode tests | Unity EditMode test suite | Unity Test Framework | `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log` |
+| EditMode tests | Unity EditMode test suite | Unity Test Framework | See [`.claude/skills/unity-tests/SKILL.md`](.claude/skills/unity-tests/SKILL.md) (`.env` paths, Windows `-quit` quirk, result parsing) |
 | Markdown links | Docs link checker | `docs/`, `README.md`, agent docs | `python3 scripts/check_markdown_links.py` |
 | Paid assets guard | Block licensed paths in public repo | `config/paid-assets.local-only.example.txt` | `python3 scripts/check_paid_assets.py --staged` (commit) or `--push` |
 | Visual catalog regen | Submodule catalog generator | `scripts/generate_visual_catalogs.py` | `python3 scripts/generate_visual_catalogs.py` |

@@ -1,6 +1,6 @@
 # Agent infrastructure inventory — ProjectTwelve
 
-**Last reviewed:** 2026-06-28. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+**Last reviewed:** 2026-07-04. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
 
 Keep this table current as the single catalog of every agent-facing asset. `.claude/` is canonical;
 `.cursor/` is generated from it.

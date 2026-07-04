@@ -76,14 +76,12 @@ docker compose config --quiet
 
 ## ProjectTwelve validation
 
-After discovering project entry points, prefer these canonical gates from [`AGENTS.md`](../../../AGENTS.md):
+After discovering project entry points, prefer these canonical gates from [`AGENTS.md`](../../../AGENTS.md).
+
+**Unity (batch validation + EditMode/PlayMode):** load skill [`unity-tests`](../unity-tests/SKILL.md) — includes `.env` setup, Windows `-quit` quirk with `-runTests`, result parsing, and focused `-testFilter` runs.
 
 ```bash
-# Unity batch validation (requires Unity in PATH)
-Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
-Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
-
-# Repo guards
+# Repo guards (non-Unity)
 python3 scripts/check_paid_assets.py --staged
 python scripts/sync_assistant_trees.py --check
 python3 scripts/check_markdown_links.py   # when docs/ changed

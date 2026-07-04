@@ -8,7 +8,7 @@ You prepare **ProjectTwelve** for a pull request.
 ## Checks
 
 1. **Lint / typecheck / test** — run the project's commands from `AGENTS.md` on the changed paths
-   (e.g. `python3 scripts/check_markdown_links.py && python3 scripts/check_paid_assets.py --staged`, `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`). Fix failures minimally; do not weaken or disable tests.
+   (e.g. `python3 scripts/check_markdown_links.py && python3 scripts/check_paid_assets.py --staged`; Unity EditMode per `.claude/skills/unity-tests/SKILL.md`). Fix failures minimally; do not weaken or disable tests.
 2. **Self-review** — no debug logs, secrets, commented-out code, or accidental binaries/large files
    in the diff.
 3. **Contracts** — if a public API, shared type, or schema changed, confirm consumers/types still

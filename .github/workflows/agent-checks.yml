@@ -31,6 +31,15 @@ jobs:
       - name: Verify .cursor mirror is in sync
         run: python scripts/sync_assistant_trees.py --check
 
+      - name: Agent frontmatter contract
+        run: python scripts/ci/check_agent_frontmatter.py
+
+      - name: Committed-secrets scan
+        run: python scripts/ci/check_secrets.py
+
+      - name: CLI skills structure
+        run: python scripts/validate_cli_skills.py
+
       - name: Check Markdown links
         run: python3 scripts/check_markdown_links.py
 

@@ -4,9 +4,11 @@ Quick reference of commands known to work in this repo. Keep in sync with `AGENT
 
 ## Build / test / lint (unity)
 
+See [`.claude/skills/unity-tests/SKILL.md`](../.claude/skills/unity-tests/SKILL.md) for `.env` paths, Windows batchmode quirks, and result parsing.
+
 ```bash
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
-Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
+Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 python3 scripts/check_markdown_links.py && python3 scripts/check_paid_assets.py --staged
 ```
 

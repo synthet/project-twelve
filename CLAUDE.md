@@ -41,11 +41,11 @@ Full agent contract, MCP setup, and test vocabulary: [`AGENTS.md`](AGENTS.md).
 ```bash
 # Requires Unity Editor 6.0.5.1f1 in PATH.
 Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
-Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
+Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
 
 # Documentation/link hygiene and OKF validation (run before pushing any docs/ changes).
 python3 scripts/check_markdown_links.py
-python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
+python scripts/ci/okf_lint_changed.py --base origin/main --head HEAD --profile project --fail-on error
 python3 scripts/check_paid_assets.py --staged
 python scripts/sync_assistant_trees.py --check
 

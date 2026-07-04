@@ -1,12 +1,9 @@
 # Project Memory
 
-Curated, human-reviewed memory for AI coding sessions. Populated via the
-log → dream → promote loop (see [CURSOR_USAGE.md](CURSOR_USAGE.md)). Do not edit
-by hand during a session.
 
 ## Stable Project Facts
 
-- (none yet)
+- Runtime MCP tools require Play Mode; endpoint is loopback-only on port 8765
 
 ## User Preferences
 
@@ -14,7 +11,11 @@ by hand during a session.
 
 ## Working Rules
 
-- (none yet)
+- Autotile changes require Unity EditMode tests and `cd tools/tile-viz && npm test` for C#/JS parity
+- Terrain generation changes require Unity EditMode tests and `cd tools/world-viz && npm test`
+- Licensed art lives in Assets/_Licensed submodule; never commit paid blobs to the public repo
+- Autotile and sprite anchoring must use sprite bounds, not pivots (VISUAL_BEHAVIOR_SPEC)
+- Edit .claude/ sources then run python scripts/sync_assistant_trees.py; do not hand-edit .cursor/
 
 ## Recurring Issues
 

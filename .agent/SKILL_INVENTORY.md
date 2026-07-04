@@ -1,9 +1,10 @@
 # Skill inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-03
+**Last reviewed:** 2026-07-04
 
 | Skill | Path | Tier | Notes |
 |-------|------|------|-------|
+| unity-tests | `.claude/skills/unity-tests/SKILL.md` | L1 | Unity 6000.5.1f1 batch load, EditMode/PlayMode, `.env` paths |
 | agent-memory | `.claude/skills/agent-memory/SKILL.md` | L1 | Session log → dream → promote |
 | backlog-queue | `.claude/skills/backlog-queue/SKILL.md` | L1 | ProjectTwelve fork: wiki tickets + issues |
 | pick-next-task | `.claude/skills/pick-next-task/SKILL.md` | L1 | Read-only next-ticket recommendation |
@@ -27,6 +28,9 @@
 | security-review | `.claude/skills/security-review/SKILL.md` | L2 | Security review checklist |
 | subagent-review | `.claude/skills/subagent-review/SKILL.md` | L2 | External CLI review via orchestrator |
 | threat-modeling-agentic-tools | `.claude/skills/threat-modeling-agentic-tools/SKILL.md` | L2 | Agentic tooling threat model |
+| validate-implementation | `.claude/skills/validate-implementation/SKILL.md` | L1 | AC evidence table before /pr-ready |
+| eval | `.claude/skills/eval/SKILL.md` | L1 | Task quality signals → agent memory |
+| release-bump | `.claude/skills/release-bump/SKILL.md` | L2 | Semver + changelog when VERSION exists |
 
 CLI skill maintenance spec: [`.agent/cli-tools-skills-spec.md`](./cli-tools-skills-spec.md).
 

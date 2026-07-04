@@ -3,95 +3,11 @@
   "fallbackSpriteId": "20",
   "groundSpriteCount": 32,
   "rules": [
-    {
-      "spriteId": "2",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        2,
-        1,
-        2,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "spriteId": "1",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        0,
-        1,
-        2,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "spriteId": "5",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        1,
-        1,
-        2,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "spriteId": "3",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "spriteId": "4",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "spriteId": "0",
-      "weight": 1,
-      "pattern": [
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0
-      ]
-    }
+    {"spriteId":"2","weight":1,"pattern":[0,0,0,2,1,2,0,0,0]},
+    {"spriteId":"1","weight":1,"pattern":[0,0,0,0,1,2,0,0,0]},
+    {"spriteId":"5","weight":1,"pattern":[0,0,0,1,1,2,0,0,0]},
+    {"spriteId":"3","weight":1,"pattern":[0,0,0,0,1,1,0,0,0]},
+    {"spriteId":"4","weight":1,"pattern":[0,0,0,1,1,1,0,0,0]},
+    {"spriteId":"0","weight":1,"pattern":[0,0,0,0,1,0,0,0,0]}
   ]
 }
