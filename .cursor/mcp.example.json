@@ -12,6 +12,11 @@
       "_note": "Requires the game running in Play Mode or a desktop build. Binds to 127.0.0.1 only.",
       "url": "http://127.0.0.1:8765/mcp",
       "type": "http"
+    },
+    "project-twelve-fff-mcp": {
+      "_note": "Fast file search for agents (ffgrep, fffind, fff-multi-grep). Install: https://github.com/dmtrKovalenko/fff — Windows: irm https://raw.githubusercontent.com/dmtrKovalenko/fff/main/install-mcp.ps1 | iex; Unix: curl -L https://dmtrkovalenko.dev/install-fff-mcp.sh | bash. Requires fff-mcp on PATH (or set command to the full binary path). Use --no-warmup so Cursor does not time out during the initial index scan; pass the repo root as the positional PATH arg.",
+      "command": "fff-mcp",
+      "args": ["--no-warmup", "ABSOLUTE_PATH_TO_THIS_REPO"]
     }
   },
   "_optionalServers": {

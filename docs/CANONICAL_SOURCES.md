@@ -56,6 +56,8 @@
 
 | Unity MCP (Cursor) | `.cursor/mcp.json` (local) | Relay bridge to Unity Editor; template in `.cursor/mcp.example.json`. |
 
+| FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json` / `.mcp.json`. |
+
 | Unity C# coding rules (supplementary) | `.cursorrules` | Long-form Cursor rules for Unity C# style and patterns. |
 
 

@@ -22,6 +22,7 @@ The canonical task queue is **wiki tickets** under [`docs/wiki/tickets/`](docs/w
 | `Assets/Scripts/Integration/PlayerAvatarFactory.cs` | Spawns player avatars without vendor script references. |
 | `docs/wiki/` | Open architecture and implementation reference. |
 | `com.unity.ai.assistant` | [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html) editor bridge; configure via Edit → Project Settings → AI → Unity MCP. |
+| [FFF MCP](https://github.com/dmtrKovalenko/fff) | Optional fast file search for agents (`fffind`, `ffgrep`, `fff-multi-grep`); see `AGENTS.md` § FFF file search MCP. |
 
 ## Commands
 

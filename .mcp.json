@@ -18,5 +18,12 @@
     }
   },
   "_subagentOrchestratorNote": "Optional sibling repo MCP for external CLI reviews. See docs/EXTERNAL_CLI_REVIEWS.md. Project key: project-twelve-subagent-orchestrator",
+  "_fffMcpTemplate": {
+    "project-twelve-fff-mcp": {
+      "type": "stdio",
+      "command": "fff-mcp",
+      "args": ["--no-warmup", "ABSOLUTE_PATH_TO_THIS_REPO"]
+    }
+  },
   "mcpServers": {}
 }

@@ -36,6 +36,10 @@ python3 scripts/wiki_lint.py --exclude-prefix archive/
 # Agent assets:
 python scripts/sync_assistant_trees.py    # regenerate .cursor/ from .claude/
 
+# Offline tooling (no Unity):
+cd tools/world-viz && npm test             # terrain parity vs Unity golden fixture
+cd tools/tile-viz && npm test              # autotile resolver + snippet fixtures
+
 # Project memory:
 python scripts/agent-memory/log_session.py --summary "..." --outcome "..." --candidate "text|working_rule|high"
 python scripts/agent-memory/dream.py
@@ -92,6 +96,25 @@ the Editor if Play Mode is paused.
 Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
 [`docs/EXTERNAL_CLI_REVIEWS.md`](docs/EXTERNAL_CLI_REVIEWS.md). Review-only; never enable writes.
 
+### FFF file search MCP
+
+[FFF](https://github.com/dmtrKovalenko/fff) is a fast, frecency-ranked file search MCP for agents.
+Use its tools for repo-wide path and content search instead of repeated grep roundtrips when the
+server is connected.
+
+**One-time setup (per machine):**
+
+- **Windows:** `irm https://raw.githubusercontent.com/dmtrKovalenko/fff/main/install-mcp.ps1 | iex`
+- **Linux / macOS:** `curl -L https://dmtrkovalenko.dev/install-fff-mcp.sh | bash`
+- **Homebrew:** `brew install dmtrKovalenko/fff/fff-mcp`
+
+Then add `project-twelve-fff-mcp` from [`.cursor/mcp.example.json`](.cursor/mcp.example.json) to
+gitignored `.cursor/mcp.json` (or enable in [`.mcp.json`](.mcp.json) for Claude Code) and reload the
+MCP client.
+
+**Agent guidance:** for file search or grep in the current git-indexed directory, prefer FFF MCP tools
+(`fffind`, `ffgrep`, `fff-multi-grep`) over built-in search when available.
+
 ## Available tools
 
 <!-- BEGIN MCP TOOL INVENTORY -->
@@ -114,6 +137,16 @@ Optional second opinions via the sibling `subagent-orchestrator` MCP server. See
 | `perf` | read | Smoothed FPS and frame time (ms). |
 
 Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_PORT`).
+
+### project-twelve-fff-mcp (file search)
+
+| Tool | Kind | Description |
+|------|------|-------------|
+| `fffind` | read | Frecency-ranked path and filename search over the indexed repo. |
+| `ffgrep` | read | Content search (plain, regex, fuzzy fallback) with context and pagination. |
+| `fff-multi-grep` | read | Multi-pattern OR content search in one call. |
+
+Upstream: [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff). Binary: `fff-mcp`.
 
 <!-- END MCP TOOL INVENTORY -->
 
@@ -149,6 +182,8 @@ submodule local sync after pull/checkout. Network sync: `python scripts/fetch_re
 | Visual catalog regen | Submodule catalog generator | `scripts/generate_visual_catalogs.py` | `python3 scripts/generate_visual_catalogs.py` |
 | OKF lint | Docs frontmatter checker | `docs/` | `python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs` |
 | Cursor sync check | `.cursor/` drift gate | `scripts/sync_assistant_trees.py` | `python scripts/sync_assistant_trees.py --check` |
+| world-viz tests | Engine-free terrain JS port | `tools/world-viz/` | `cd tools/world-viz && npm test` |
+| tile-viz tests | Engine-free autotile resolver/render | `tools/tile-viz/` | `cd tools/tile-viz && npm test` |
 
 ## Codex regression guardrails
 

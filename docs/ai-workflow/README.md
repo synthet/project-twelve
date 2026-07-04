@@ -4,7 +4,7 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-06-28T00:00:00Z
+timestamp: 2026-07-04T00:35:00Z
 okf_version: 0.1
 ---
 
@@ -17,7 +17,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Asset | Location | Notes |
 |-------|----------|-------|
 | Claude commands | `.claude/commands/*.md` | **Canonical** authoring source |
-| Claude skills | `.claude/skills/*/SKILL.md` | **Canonical** authoring source |
+| Claude skills | `.claude/skills/*/SKILL.md` | **Canonical** authoring source; includes **CLI tooling** skills (`search-tool-selection`, `safe-command-patterns`, …) and project skills (`backlog-queue`, `repo-sync`, …) |
 | Claude subagents | `.claude/agents/*.md` | **Canonical** authoring source |
 | Claude rules | `.claude/rules/*.md` | Always-on guidance |
 | Cursor mirror | `.cursor/{rules,commands,skills,agents}` | **Generated** from `.claude/` — do not edit by hand |
@@ -29,6 +29,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 
 **Single source of truth:** edit assets under `.claude/` + `.agent/`, then run
 `python scripts/sync_assistant_trees.py` to regenerate the `.cursor/` mirror.
+Validate CLI tooling skills with `python scripts/validate_cli_skills.py` (see [`.agent/cli-tools-skills-spec.md`](../../.agent/cli-tools-skills-spec.md)).
 
 ## The SDLC loop
 
@@ -60,6 +61,10 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 ## Unity MCP
 
 When the Unity Editor is open, agents can call Editor tools (scenes, assets, console) through [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). Setup: `AGENTS.md` → **Unity MCP (Editor bridge)**. Package: `com.unity.ai.assistant` in `Packages/manifest.json`.
+
+## FFF file search MCP
+
+Optional [FFF](https://github.com/dmtrKovalenko/fff) server for fast, frecency-ranked repo search (`fffind`, `ffgrep`, `fff-multi-grep`). Setup: `AGENTS.md` → **FFF file search MCP**; template key `project-twelve-fff-mcp` in `.cursor/mcp.example.json`.
 
 ## Safety
 

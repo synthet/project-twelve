@@ -1,3 +1,8 @@
+---
+name: task-env-package-tools
+description: Run project tasks, manage language versions, and install developer tools reproducibly. Use after inspecting project entry-point files.
+---
+
 # Task Env Package Tools
 
 ## Purpose
@@ -67,6 +72,34 @@ docker compose config --quiet
 - Corepack may need a new shell after Node install.
 - `direnv allow` executes repo-controlled shell; review `.envrc` first.
 - If Docker is unavailable in WSL, verify Docker Desktop WSL integration and `docker context ls`.
+
+
+## ProjectTwelve validation
+
+After discovering project entry points, prefer these canonical gates from [`AGENTS.md`](../../../AGENTS.md):
+
+```bash
+# Unity batch validation (requires Unity in PATH)
+Unity -batchmode -quit -projectPath . -logFile Logs/unity-validate.log
+Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
+
+# Repo guards
+python3 scripts/check_paid_assets.py --staged
+python scripts/sync_assistant_trees.py --check
+python3 scripts/check_markdown_links.py   # when docs/ changed
+python scripts/validate_cli_skills.py
+```
+
+## Windows Notes
+- Use PowerShell 7+; prefer `winget` or Scoop for CLI installs.
+- Native binaries use `fd`, `bat`, and `delta` (not Ubuntu `fdfind`/`batcat` names).
+- Quote paths with spaces; forward slashes often work in modern Windows CLIs.
+- Set `NO_COLOR=1` or `--color=never` when color escapes pollute agent logs.
+
+## WSL2 Notes
+- Clone repos inside the WSL filesystem (`~/projects/`), not `/mnt/c/`, for speed and file watchers.
+- `fd` is often installed as `fdfind`; `bat` as `batcat`.
+- Prefer WSL for Bash-heavy tooling, Docker Compose, and MCP servers expecting Unix paths.
 
 ## Verification Checklist
 ```bash

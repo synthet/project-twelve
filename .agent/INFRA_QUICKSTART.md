@@ -15,9 +15,10 @@ pip install pyyaml
 python scripts/install_githooks.py    # optional: paid-asset + submodule sync hooks
 python scripts/fetch_remotes.py       # sync main repo + Assets/_Licensed submodule
 cp .cursor/mcp.example.json .cursor/mcp.json   # then set RELAY_PATH + UNITY_PROJECT_PATH
+# Optional: install FFF file search MCP — see AGENTS.md § FFF file search MCP
 ```
 
-Open Unity 6.0.5.1f1; confirm Unity MCP bridge is **Running**.
+Open Unity 6.0.5.1f1; confirm Unity MCP bridge is **Running**. Reload Cursor after MCP config changes.
 
 ## 3. Before a PR
 
