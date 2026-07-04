@@ -3,7 +3,7 @@ type: Task
 id: P2-DATA-002
 title: "[P2-DATA-002] Migrate sandbox callers to registry runtime indices and complete item/entity registries."
 description: Swap SandboxTile.id from legacy constants to registry runtime indices, persist the save palette, and complete item/entity definitions and mod load order.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/86"

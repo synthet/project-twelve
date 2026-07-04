@@ -1,4 +1,5 @@
 using System.IO;
+using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
     [SerializeField] private SandboxWorld world;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float jumpVelocity = 11f;
-    [SerializeField] private int placeTileId = SandboxTileIds.Dirt;
+    [SerializeField] private string placeTileId = "core:dirt";
     [SerializeField] private float editRange = 6f;
     [SerializeField] private string saveFileName = "sandbox-world.json";
 
@@ -23,6 +24,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private Rigidbody2D body;
     private BoxCollider2D playerCollider;
     private Camera mainCamera;
+    private int placeTileRuntimeIndex;
 
     private float horizontalInput;
     private float externalMoveInput;
@@ -81,6 +83,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
         mainCamera = Camera.main;
+        placeTileRuntimeIndex = SandboxRegistries.Tiles.GetIndex(placeTileId);
 
         PhysicsMaterial2D frictionless = SandboxPhysicsMaterials.ZeroFriction;
         body.sharedMaterial = frictionless;
@@ -211,7 +214,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return;
         }
 
-        world.SetTile(tile.x, tile.y, remove ? SandboxTileIds.Air : placeTileId);
+        world.SetTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
     }
 
     private void HandleSaveLoadShortcuts()

@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 
 namespace ProjectTwelve.RuntimeMcp
@@ -130,7 +131,7 @@ namespace ProjectTwelve.RuntimeMcp
                         ["tileId"] = new JObject
                         {
                             ["type"] = "integer",
-                            ["description"] = "Tile id to place. Use 0 (Air) to remove."
+                            ["description"] = "Registry runtime tile index to place (discover via tile_at/tiles_area). Use 0 (Air) to remove."
                         }
                     },
                     ["required"] = new JArray("x", "y", "tileId")
@@ -145,7 +146,7 @@ namespace ProjectTwelve.RuntimeMcp
 
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
-                    int tileId = args["tileId"]?.Value<int>() ?? SandboxTileIds.Air;
+                    int tileId = args["tileId"]?.Value<int>() ?? SandboxRegistries.AirIndex;
                     world.SetTile(x, y, tileId);
 
                     SandboxTile tile = world.GetTile(x, y);
