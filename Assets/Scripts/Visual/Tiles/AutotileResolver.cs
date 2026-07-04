@@ -229,12 +229,15 @@ namespace ProjectTwelve.Visual.Tiles
                 ? AutotileRuleTables.FallbackSpriteId
                 : "0";
 
-            for (int i = 0; i < tileset.Sprites.Count; i++)
+            foreach (string candidate in new[] { fallbackId, AutotileRuleTables.FallbackSpriteId, "0" })
             {
-                Sprite sprite = tileset.Sprites[i];
-                if (sprite != null && sprite.name == fallbackId)
+                for (int i = 0; i < tileset.Sprites.Count; i++)
                 {
-                    return sprite;
+                    Sprite sprite = tileset.Sprites[i];
+                    if (sprite != null && sprite.name == candidate)
+                    {
+                        return sprite;
+                    }
                 }
             }
 

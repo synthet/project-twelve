@@ -2,8 +2,7 @@
     "name": "ProjectTwelve.EditModeTests",
     "references": [
         "ProjectTwelve.Runtime",
-        "ProjectTwelve.RuntimeMcp",
-        "Newtonsoft.Json"
+        "ProjectTwelve.RuntimeMcp"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
@@ -13,8 +12,11 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],

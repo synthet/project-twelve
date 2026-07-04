@@ -93,14 +93,14 @@ public sealed class AutotileVisualTests
         AutotileRule rule = new AutotileRule("3", new[,]
         {
             { 0, 0, 0 },
-            { 0, 1, 1 },
-            { 0, 0, 0 }
+            { 0, 1, 0 },
+            { 0, 1, 1 }
         });
 
         int[,] mask = new[,]
         {
-            { 0, 0, 0 },
-            { 1, 1, 0 },
+            { 0, 1, 1 },
+            { 0, 1, 0 },
             { 0, 0, 0 }
         };
 

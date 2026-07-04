@@ -152,6 +152,11 @@ namespace ProjectTwelve.Sandbox.Nav
                     }
 
                     Vector2Int landing = new Vector2Int(lx, node.y + rise);
+                    if (rise == 0 && !CrossesUnsupportedGap(grid, node, landing))
+                    {
+                        continue; // continuous flat ground — walk edges already cover this
+                    }
+
                     if (IsStandable(grid, landing.x, landing.y) && HasJumpClearance(grid, node, landing))
                     {
                         results.Add(new SandboxNavStep(landing, SandboxNavMove.Jump));
@@ -196,6 +201,24 @@ namespace ProjectTwelve.Sandbox.Nav
                 if (grid.IsLoaded(x, y - 1) && grid.IsSolid(x, y - 1))
                 {
                     landing = new Vector2Int(x, y);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Whether a horizontal jump crosses at least one non-standable foot cell (a gap). Flat
+        /// jumps on continuous ground are suppressed so A* uses walk edges instead.
+        /// </summary>
+        private static bool CrossesUnsupportedGap(ISandboxNavGrid grid, Vector2Int from, Vector2Int landing)
+        {
+            int step = landing.x > from.x ? 1 : -1;
+            for (int x = from.x + step; x != landing.x; x += step)
+            {
+                if (!IsStandable(grid, x, from.y))
+                {
                     return true;
                 }
             }

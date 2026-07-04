@@ -264,12 +264,7 @@ public sealed class AutotileFixtureExportTests
                 texture,
                 new Rect(0, 0, 16, 16),
                 new Vector2(0.5f, 0f),
-                16f,
-                0,
-                SpriteMeshType.FullRect,
-                Vector4.zero,
-                false,
-                i.ToString()));
+                16f));
         }
 
         return new AutotileTileset(name, texture, sprites);
@@ -285,12 +280,7 @@ public sealed class AutotileFixtureExportTests
                 texture,
                 new Rect(0, 0, 16, 16),
                 new Vector2(0.5f, 0f),
-                16f,
-                0,
-                SpriteMeshType.FullRect,
-                Vector4.zero,
-                false,
-                i.ToString()));
+                16f));
         }
 
         return new AutotileTileset(name, texture, sprites);
