@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
@@ -12,6 +13,15 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private static readonly Rect GrassUv = GetLegacyAtlasUv(1);
     private static readonly Rect StoneUv = GetLegacyAtlasUv(2);
     private static readonly Rect CopperOreUv = GetLegacyAtlasUv(3);
+
+    // Registry runtime indices resolved once; the per-tile rebuild loop stays free of
+    // string lookups (P2-DATA-002 hot-path requirement).
+    private static readonly int GrassTileIndex = SandboxRegistries.Tiles.GetIndex("core:grass");
+    private static readonly int StoneTileIndex = SandboxRegistries.Tiles.GetIndex("core:stone");
+    private static readonly int CopperOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:copper_ore");
+    private static readonly int IronOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:iron_ore");
+    private static readonly int SilverOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:silver_ore");
+    private static readonly int GoldOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:gold_ore");
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -408,44 +418,54 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
     private static Rect GetLegacyTileUv(SandboxTile tile)
     {
-        switch (tile.id)
+        if (tile.id == GrassTileIndex)
         {
-            case SandboxTileIds.Grass:
-                return GrassUv;
-            case SandboxTileIds.Stone:
-                return StoneUv;
-            case SandboxTileIds.CopperOre:
-            case SandboxTileIds.IronOre:
-            case SandboxTileIds.SilverOre:
-            case SandboxTileIds.GoldOre:
-                return CopperOreUv;
-            default:
-                return DirtUv;
+            return GrassUv;
         }
+
+        if (tile.id == StoneTileIndex)
+        {
+            return StoneUv;
+        }
+
+        if (tile.id == CopperOreTileIndex
+            || tile.id == IronOreTileIndex
+            || tile.id == SilverOreTileIndex
+            || tile.id == GoldOreTileIndex)
+        {
+            return CopperOreUv;
+        }
+
+        return DirtUv;
     }
 
     private static Color GetLegacyTileColor(SandboxTile tile)
     {
         Color color = GetTileLightColor(tile);
-        switch (tile.id)
+        if (tile.id == IronOreTileIndex)
         {
-            case SandboxTileIds.IronOre:
-                return new Color(color.r * 0.82f, color.g * 0.82f, color.b * 0.88f, color.a);
-            case SandboxTileIds.SilverOre:
-                return new Color(
-                    Mathf.Min(1f, color.r * 1.08f),
-                    Mathf.Min(1f, color.g * 1.08f),
-                    Mathf.Min(1f, color.b * 1.12f),
-                    color.a);
-            case SandboxTileIds.GoldOre:
-                return new Color(
-                    Mathf.Min(1f, color.r * 1.12f),
-                    Mathf.Min(1f, color.g * 1.06f),
-                    color.b * 0.88f,
-                    color.a);
-            default:
-                return color;
+            return new Color(color.r * 0.82f, color.g * 0.82f, color.b * 0.88f, color.a);
         }
+
+        if (tile.id == SilverOreTileIndex)
+        {
+            return new Color(
+                Mathf.Min(1f, color.r * 1.08f),
+                Mathf.Min(1f, color.g * 1.08f),
+                Mathf.Min(1f, color.b * 1.12f),
+                color.a);
+        }
+
+        if (tile.id == GoldOreTileIndex)
+        {
+            return new Color(
+                Mathf.Min(1f, color.r * 1.12f),
+                Mathf.Min(1f, color.g * 1.06f),
+                color.b * 0.88f,
+                color.a);
+        }
+
+        return color;
     }
 
     private static Color GetTileLightColor(SandboxTile tile)
