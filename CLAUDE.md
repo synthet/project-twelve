@@ -18,11 +18,23 @@ The canonical task queue is **wiki tickets** under [`docs/wiki/tickets/`](docs/w
 | `Assets/Scripts/Sandbox/SandboxChunkRenderer.cs` | Chunk mesh/collider rebuilds. |
 | `Assets/Scripts/Sandbox/SandboxPlayerController.cs` | Prototype player movement and mouse tile editing. |
 | `Assets/Scripts/Visual/` | Autotile, character, creature, monster, and effect presentation systems. |
+| `Assets/Scripts/Visual/Tiles/` | Autotile masks, rule tables, resolver, chunk mesh sprite selection (`AutotileMaskBuilder`, `AutotileResolver`, `AutotileRuleTables`). |
+| `Assets/Scripts/RuntimeMcp/` | Play Mode JSON-RPC MCP (`tile_autotile`, `tiles_area`, tile edits); loopback only. |
 | `Assets/_Licensed/` | Git submodule → private licensed art and visual catalogs (`project-twelve-assets`). |
 | `Assets/Scripts/Integration/PlayerAvatarFactory.cs` | Spawns player avatars without vendor script references. |
+| `tools/world-viz/` | Engine-free terrain generation / ASCII debug; parity vs Unity golden fixture. |
+| `tools/tile-viz/` | Engine-free autotile resolver + PNG compositor; parity with C# via exported JSON fixtures. |
 | `docs/wiki/` | Open architecture and implementation reference. |
 | `com.unity.ai.assistant` | [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html) editor bridge; configure via Edit → Project Settings → AI → Unity MCP. |
 | [FFF MCP](https://github.com/dmtrKovalenko/fff) | Optional fast file search for agents (`fffind`, `ffgrep`, `fff-multi-grep`); see `AGENTS.md` § FFF file search MCP. |
+
+Full agent contract, MCP setup, and test vocabulary: [`AGENTS.md`](AGENTS.md).
+
+### Visual & debug tooling
+
+- [`docs/VISUAL_BEHAVIOR_SPEC.md`](docs/VISUAL_BEHAVIOR_SPEC.md) — autotile contract
+- [`tools/tile-viz/README.md`](tools/tile-viz/README.md) — offline resolver CLI and fixture formats
+- [`tools/world-viz/README.md`](tools/world-viz/README.md) — offline terrain viz
 
 ## Commands
 
@@ -36,7 +48,17 @@ python3 scripts/check_markdown_links.py
 python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error
 python3 scripts/check_paid_assets.py --staged
 python scripts/sync_assistant_trees.py --check
+
+# Offline tooling (no Unity)
+cd tools/world-viz && npm test
+cd tools/tile-viz && npm test
 ```
+
+**When to run offline tests:**
+
+- Autotile / visual tile logic changes → Unity EditMode tests **and** `tile-viz` npm test
+- Terrain generation changes → Unity EditMode tests **and** `world-viz` npm test
+- Rule-table changes → regenerate `tools/tile-viz/data/*.json` (Unity export tests or `tools/tile-viz/scripts/generate-rules-json.mjs`); do not hand-edit exported JSON
 
 ## SDLC loop
 
@@ -58,6 +80,7 @@ See [`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asse
 - Never commit licensed Asset Store content into the **public** repo. Licensed art lives in the `Assets/_Licensed` submodule (`docs/PAID_ASSETS.md`). Run `python3 scripts/check_paid_assets.py --staged` before commits.
 - Never modify `.git/config` or introduce non-standard git extensions.
 - After editing `.claude/` assets, run `python scripts/sync_assistant_trees.py` and commit both trees together.
+- When changing autotile behavior, keep Unity C#, EditMode fixtures, and `tools/tile-viz` JS resolver in sync (see parity table in [`tools/tile-viz/README.md`](tools/tile-viz/README.md)).
 
 ## Documentation
 

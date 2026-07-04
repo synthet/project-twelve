@@ -1,0 +1,18 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "material-boundary-vertical",
+  "origin": { "x": 10, "y": 3 },
+  "width": 1,
+  "height": 4,
+  "tiles": [
+    { "x": 10, "y": 6, "id": 1, "light": 4 },
+    { "x": 10, "y": 5, "id": 1, "light": 4 },
+    { "x": 10, "y": 4, "id": 3, "light": 4 },
+    { "x": 10, "y": 3, "id": 3, "light": 4 }
+  ],
+  "expect": [
+    { "x": 10, "y": 5, "ground": { "spriteId": "29" } },
+    { "x": 10, "y": 4, "ground": { "spriteId": "28" } }
+  ]
+}

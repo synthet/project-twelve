@@ -58,21 +58,28 @@ Each rule contains:
 Given neighbor mask `M` and rule pattern `P` (both 3×3):
 
 ```
-Match(M, flipInput):
+MatchRows(M, flipInput):
   for each x, y in 0..2:
     my = flipInput ? (2 - y) : y
     if P[x,y] != M[x, my]: return false
+  return true
+
+MatchColumns(M, flipColumns):
+  for each x, y in 0..2:
+    mx = flipColumns ? (2 - x) : x
+    if P[x,y] != M[mx, y]: return false
   return true
 ```
 
 ### Resolution order
 
-1. Collect all rules where `Match(M, flipInput=false)`.
-2. If none, collect rules where `Match(M, flipInput=true)` and set output `flipX = true`.
-3. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
-4. Fallback sprite id `"20"` when no rule matches or sprite missing.
-5. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
-6. **Single-sprite tilesets** (e.g. Rocks when the catalog lists one sprite) skip rule matching and always use the lone sprite. Standard ground sheets such as BricksA, BricksB, BricksC, BricksD, and Humus use **32 sprites** and the ground rule table.
+1. Collect all rules where `MatchRows(M, flipInput=false)`.
+2. If none, collect rules where `MatchRows(M, flipInput=true)` and set output `flipX = true`.
+3. If none, collect rules where `MatchColumns(M, flipColumns=true)` and set output `flipX = true`.
+4. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
+5. Fallback sprite id `"20"` for 32-sprite ground tilesets; `"0"` for cover tilesets when no rule matches or sprite missing.
+6. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
+7. **Single-sprite tilesets** (e.g. Rocks when the catalog lists one sprite) skip rule matching and always use the lone sprite. Standard ground sheets such as BricksA, BricksB, BricksC, BricksD, and Humus use **32 sprites** and the ground rule table.
 
 Rule tables are stored in `AutotileRuleTables`.
 

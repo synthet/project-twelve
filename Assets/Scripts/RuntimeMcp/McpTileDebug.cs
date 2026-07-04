@@ -399,7 +399,9 @@ namespace ProjectTwelve.RuntimeMcp
             for (int i = 0; i < rules.Count; i++)
             {
                 AutotileRule rule = rules[i];
-                if (rule.Matches(mask, flipInput: false) || rule.Matches(mask, flipInput: true))
+                if (rule.Matches(mask, flipInput: false)
+                    || rule.Matches(mask, flipInput: true)
+                    || rule.MatchesColumns(mask, flipColumns: true))
                 {
                     matches.Add(rule.SpriteId);
                 }

@@ -36,6 +36,78 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
+    public void AutotileResolver_GrassCoverEastEnd_ResolvesRule3WithFlipX()
+    {
+        AutotileTileset tileset = CreateCoverTileset();
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) => y == 5 && x == 4,
+            (x, y) => false,
+            5,
+            5);
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("3", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_GroundEastRunEnd_ResolvesRule0WithFlipX()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        int[,] mask = new[,]
+        {
+            { 0, 1, 1 },
+            { 0, 1, 1 },
+            { 0, 0, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("0", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_CoverUnmatchedMask_FallsBackToSprite0()
+    {
+        AutotileTileset tileset = CreateCoverTileset();
+        int[,] mask = new[,]
+        {
+            { 0, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("0", resolved.name);
+    }
+
+    [Test]
+    public void AutotileRule_FlipColumnsMirrorsWestEastComparison()
+    {
+        AutotileRule rule = new AutotileRule("3", new[,]
+        {
+            { 0, 0, 0 },
+            { 0, 1, 1 },
+            { 0, 0, 0 }
+        });
+
+        int[,] mask = new[,]
+        {
+            { 0, 0, 0 },
+            { 1, 1, 0 },
+            { 0, 0, 0 }
+        };
+
+        Assert.IsTrue(rule.MatchesColumns(mask, flipColumns: true));
+    }
+
+    [Test]
     public void AutotileCoverMask_StoneCliffBesideGrass_SetsCliffWithoutSharedGroundGroup()
     {
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(

@@ -1,0 +1,70 @@
+# tile-viz — offline autotile resolver and sprite compositor
+
+Resolve and render ProjectTwelve autotiles **without the Unity engine**: load tile
+snippets, spaces, or procedural worlds from JSON, run the same mask/resolver logic as
+`Assets/Scripts/Visual/Tiles/`, and optionally composite licensed sprite sheets to PNG.
+
+Sibling to [`../world-viz`](../world-viz) (terrain generation / flat-color debug). tile-viz
+reuses world-viz core modules for world sampling and save loading.
+
+## Setup
+
+```bash
+cd tools/tile-viz
+npm install
+npm test
+```
+
+Licensed art is **not** committed. For PNG rendering, point `--assets-root` at your local
+submodule tile folder, e.g. `Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles`.
+
+## Usage
+
+```bash
+# Resolve autotile masks + sprite ids (stdout JSON)
+node src/cli.js resolve --space test/fixtures/snippets/grass-cover-middle.json
+
+# Assert inline expect[] blocks in a fixture
+node src/cli.js test-fixture --space test/fixtures/snippets/dug-west-gap.json
+
+# Render sprite PNG (requires licensed PNGs)
+node src/cli.js render --space test/fixtures/snippets/grass-cover-middle.json \
+  --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
+  --scale 16 --png out.png
+
+# Convert runtime MCP dump to tile-space JSON
+node src/cli.js import-mcp --file ../world-viz/mcp-dirt-stone.json --out test/fixtures/spaces/dirt-stone.json
+```
+
+## JSON formats (`project-twelve/tile-space/v1`)
+
+| Kind | Purpose |
+|------|---------|
+| `snippet` | Small hand-authored grid with optional `expect[]` assertions |
+| `space` | Bounded region (`xMin`…`yMax`) with sparse `tiles[]` |
+| `world` | Procedural `generate{}` + `region{}` and/or `save` path + `edits[]` |
+
+See [`test/fixtures/snippets/`](test/fixtures/snippets/) for examples.
+
+## Parity with Unity
+
+| Artifact | Unity exporter |
+|----------|----------------|
+| `data/autotile-rules.*.json` | `AutotileRulesFixtureExportTests.cs` |
+| `data/tileset-manifest.json` | `AutotileFixtureExportTests.cs` |
+| `test/fixtures/expected/*.json` | `AutotileFixtureExportTests.cs` |
+
+Rule tables in `data/` are loaded by the Node resolver — do not edit by hand; regenerate
+from Unity or `node scripts/generate-rules-json.mjs` when C# tables change.
+
+## Tests
+
+```bash
+npm test
+```
+
+- `resolver.test.js` — rule table + mask resolution invariants
+- `snippet.test.js` — all snippet fixtures match `expect[]`
+- `render.test.js` — PNG golden (skipped without licensed assets)
+
+Set `TILE_VIZ_ASSETS_ROOT` to override the default licensed tiles path for render tests.

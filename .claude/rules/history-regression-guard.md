@@ -24,6 +24,8 @@ Recent fix commits show repeated failures in **documentation metadata**, **repo 
   account for pivots, bounds, tile size, and add EditMode coverage when practical.
 - **Markdown examples can break docs checks.** Commit `6112af7`/nearby docs fixes show that fenced
   examples, links, and frontmatter need validation, not just visual inspection.
+- **Autotile Unity/JS drift:** C# resolver changes without `tile-viz` tests or stale
+  `data/autotile-rules.*.json` break offline parity.
 
 ## Required pre-commit decision table
 
@@ -34,6 +36,9 @@ Recent fix commits show repeated failures in **documentation metadata**, **repo 
 | `docs/**` or `README.md` | Run `python3 scripts/check_markdown_links.py`; run OKF lint for docs/wiki changes. |
 | `scripts/check_paid_assets.py`, hooks, or CI guard logic | Test staged and push/no-upstream paths where possible; never make asset checks pass open on ambiguity. |
 | Unity C# under `Assets/Scripts/**` | Run targeted EditMode tests if Unity is available; otherwise document Unity availability as the blocker. |
+| `Assets/Scripts/Visual/Tiles/**` | Unity EditMode autotile tests; `cd tools/tile-viz && npm test`; regen exported JSON if rule tables changed |
+| `tools/tile-viz/**` or `tools/world-viz/**` | `npm test` in that package; if resolver logic changed, verify matching Unity EditMode coverage |
+| `Assets/Scripts/RuntimeMcp/**` | EditMode MCP dispatcher tests if tool contracts change; document Play Mode requirement for manual smoke |
 | Assets or submodules | Run `python3 scripts/check_paid_assets.py --staged` and inspect `git diff --cached --name-only`. |
 
 ## Codex-specific enforcement

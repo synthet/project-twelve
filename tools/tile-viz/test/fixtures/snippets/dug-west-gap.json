@@ -1,0 +1,21 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "dug-west-gap",
+  "origin": { "x": -1, "y": 26 },
+  "width": 4,
+  "height": 2,
+  "tiles": [
+    { "x": 0, "y": 27, "id": 2, "light": 15 },
+    { "x": 1, "y": 27, "id": 2, "light": 15 },
+    { "x": 2, "y": 27, "id": 2, "light": 15 },
+    { "x": 0, "y": 26, "id": 1, "light": 4 },
+    { "x": 1, "y": 26, "id": 1, "light": 4 },
+    { "x": 2, "y": 26, "id": 1, "light": 4 }
+  ],
+  "expect": [
+    { "x": 0, "y": 27, "ground": { "spriteId": "0" }, "cover": { "spriteId": "3", "rendered": true } },
+    { "x": 1, "y": 27, "ground": { "spriteId": "2" }, "cover": { "spriteId": "4", "rendered": true } },
+    { "x": 2, "y": 27, "ground": { "spriteId": "0", "flipX": true }, "cover": { "spriteId": "3", "flipX": true, "rendered": true } }
+  ]
+}

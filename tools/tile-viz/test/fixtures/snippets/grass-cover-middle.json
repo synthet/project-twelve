@@ -1,0 +1,21 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "grass-cover-middle",
+  "origin": { "x": 0, "y": 0 },
+  "width": 5,
+  "height": 3,
+  "tiles": [
+    { "dx": 0, "dy": 2, "id": 2, "light": 15 },
+    { "dx": 1, "dy": 2, "id": 2, "light": 15 },
+    { "dx": 2, "dy": 2, "id": 2, "light": 15 },
+    { "dx": 0, "dy": 1, "id": 1, "light": 4 },
+    { "dx": 1, "dy": 1, "id": 1, "light": 4 },
+    { "dx": 2, "dy": 1, "id": 1, "light": 4 }
+  ],
+  "expect": [
+    { "x": 0, "y": 2, "ground": { "spriteId": "0" }, "cover": { "spriteId": "3", "rendered": true } },
+    { "x": 1, "y": 2, "ground": { "spriteId": "2" }, "cover": { "spriteId": "4", "rendered": true } },
+    { "x": 2, "y": 2, "ground": { "spriteId": "0", "flipX": true }, "cover": { "spriteId": "3", "flipX": true, "rendered": true } }
+  ]
+}

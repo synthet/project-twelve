@@ -54,6 +54,33 @@ namespace ProjectTwelve.Visual.Tiles
             return true;
         }
 
+        /// <summary>
+        /// Returns whether the rule pattern matches when west/east columns are mirrored.
+        /// </summary>
+        /// <param name="mask">3×3 neighbor mask.</param>
+        /// <param name="flipColumns">When true, mirror mask columns (x ↔ 2−x) before compare.</param>
+        public bool MatchesColumns(int[,] mask, bool flipColumns)
+        {
+            if (mask == null || mask.GetLength(0) != 3 || mask.GetLength(1) != 3)
+            {
+                return false;
+            }
+
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    int mx = flipColumns ? 2 - x : x;
+                    if (pattern[x + y * 3] != mask[mx, y])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public int[,] ToMask()
         {
             int[,] mask = new int[3, 3];

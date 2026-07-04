@@ -1,0 +1,20 @@
+{
+  "name": "tile-viz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Engine-free autotile resolver, JSON tile-space fixtures, and sprite-sheet PNG compositor for ProjectTwelve.",
+  "type": "module",
+  "bin": {
+    "tile-viz": "src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "pngjs": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

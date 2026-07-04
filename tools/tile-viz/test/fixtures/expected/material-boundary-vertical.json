@@ -1,0 +1,145 @@
+{
+  "name": "material-boundary-vertical",
+  "tiles": [
+    {
+      "x": 10,
+      "y": 6,
+      "ground": {
+        "tileset": "Humus",
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "spriteId": "28",
+        "flipX": false,
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover applies to grass surface tiles only."
+      }
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "ground": {
+        "tileset": "Humus",
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "spriteId": "29",
+        "flipX": false,
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover applies to grass surface tiles only."
+      }
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "ground": {
+        "tileset": "Rocks",
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "spriteId": "28",
+        "flipX": false,
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover applies to grass surface tiles only."
+      }
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "ground": {
+        "tileset": "Rocks",
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "spriteId": "29",
+        "flipX": false,
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover applies to grass surface tiles only."
+      }
+    }
+  ]
+}

@@ -8,6 +8,13 @@ namespace ProjectTwelve.Visual.Tiles
     /// </summary>
     public static class AutotileResolver
     {
+        private enum MatchPass
+        {
+            Direct,
+            FlipRows,
+            FlipColumns
+        }
+
         /// <summary>
         /// Resolves the sprite and horizontal flip for a tileset and neighbor mask.
         /// </summary>
@@ -25,14 +32,21 @@ namespace ProjectTwelve.Visual.Tiles
             }
 
             IReadOnlyList<AutotileRule> rules = tileset.Rules;
-            int index = FindRuleIndex(rules, mask, flipX: false);
+            int index = FindRuleIndex(rules, mask, MatchPass.Direct);
             if (index >= 0)
             {
                 flipX = false;
                 return GetSpriteForRule(tileset, rules, index);
             }
 
-            index = FindRuleIndex(rules, mask, flipX: true);
+            index = FindRuleIndex(rules, mask, MatchPass.FlipRows);
+            if (index >= 0)
+            {
+                flipX = true;
+                return GetSpriteForRule(tileset, rules, index);
+            }
+
+            index = FindRuleIndex(rules, mask, MatchPass.FlipColumns);
             if (index >= 0)
             {
                 flipX = true;
@@ -42,12 +56,12 @@ namespace ProjectTwelve.Visual.Tiles
             return GetFallbackSprite(tileset);
         }
 
-        private static int FindRuleIndex(IReadOnlyList<AutotileRule> rules, int[,] mask, bool flipX)
+        private static int FindRuleIndex(IReadOnlyList<AutotileRule> rules, int[,] mask, MatchPass pass)
         {
             List<AutotileRule> matches = new List<AutotileRule>();
             for (int i = 0; i < rules.Count; i++)
             {
-                if (rules[i].Matches(mask, flipX))
+                if (RuleMatches(rules[i], mask, pass))
                 {
                     matches.Add(rules[i]);
                 }
@@ -65,20 +79,36 @@ namespace ProjectTwelve.Visual.Tiles
 
             if (AllSharePattern(matches))
             {
-                AutotileRule selected = PickDeterministic(matches, mask, flipX);
+                bool flipForHash = pass != MatchPass.Direct;
+                AutotileRule selected = PickDeterministic(matches, mask, flipForHash);
                 return IndexOfRule(rules, selected);
             }
 
             // Distinct patterns that both match: first rule in table order wins (vendor style).
             for (int i = 0; i < rules.Count; i++)
             {
-                if (rules[i].Matches(mask, flipX))
+                if (RuleMatches(rules[i], mask, pass))
                 {
                     return i;
                 }
             }
 
             return -1;
+        }
+
+        private static bool RuleMatches(AutotileRule rule, int[,] mask, MatchPass pass)
+        {
+            switch (pass)
+            {
+                case MatchPass.Direct:
+                    return rule.Matches(mask, flipInput: false);
+                case MatchPass.FlipRows:
+                    return rule.Matches(mask, flipInput: true);
+                case MatchPass.FlipColumns:
+                    return rule.MatchesColumns(mask, flipColumns: true);
+                default:
+                    return false;
+            }
         }
 
         private static int IndexOfRule(IReadOnlyList<AutotileRule> rules, AutotileRule rule)
@@ -131,7 +161,7 @@ namespace ProjectTwelve.Visual.Tiles
             return true;
         }
 
-        private static AutotileRule PickDeterministic(List<AutotileRule> matches, int[,] mask, bool flipX)
+        private static AutotileRule PickDeterministic(List<AutotileRule> matches, int[,] mask, bool flipForHash)
         {
             if (matches.Count == 1)
             {
@@ -144,7 +174,7 @@ namespace ProjectTwelve.Visual.Tiles
                 totalWeight += Mathf.Max(1, matches[i].Weight);
             }
 
-            int pick = HashMask(mask, flipX) % totalWeight;
+            int pick = HashMask(mask, flipForHash) % totalWeight;
             int state = 0;
             for (int i = 0; i < matches.Count; i++)
             {
@@ -158,11 +188,11 @@ namespace ProjectTwelve.Visual.Tiles
             return matches[0];
         }
 
-        private static int HashMask(int[,] mask, bool flipX)
+        private static int HashMask(int[,] mask, bool flipForHash)
         {
             unchecked
             {
-                int hash = flipX ? 17 : 31;
+                int hash = flipForHash ? 17 : 31;
                 for (int x = 0; x < mask.GetLength(0); x++)
                 {
                     for (int y = 0; y < mask.GetLength(1); y++)
@@ -195,10 +225,14 @@ namespace ProjectTwelve.Visual.Tiles
 
         private static Sprite GetFallbackSprite(AutotileTileset tileset)
         {
+            string fallbackId = tileset.Sprites.Count == AutotileRuleTables.GroundSpriteCount
+                ? AutotileRuleTables.FallbackSpriteId
+                : "0";
+
             for (int i = 0; i < tileset.Sprites.Count; i++)
             {
                 Sprite sprite = tileset.Sprites[i];
-                if (sprite != null && sprite.name == AutotileRuleTables.FallbackSpriteId)
+                if (sprite != null && sprite.name == fallbackId)
                 {
                     return sprite;
                 }

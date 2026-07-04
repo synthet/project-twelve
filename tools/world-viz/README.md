@@ -53,6 +53,13 @@ The `src/core/` modules are a faithful port of `Assets/Scripts/Sandbox/`:
 
 Only edited chunks are stored in a save; everything else regenerates from the seed.
 
+## Autotile rendering (`tools/tile-viz`)
+
+For **sprite-sheet autotile** resolution and PNG compositing (same mask/resolver logic as
+`Assets/Scripts/Visual/Tiles/`), use the sibling package [`../tile-viz`](../tile-viz).
+world-viz stays flat-colour for fast terrain inspection; tile-viz loads JSON snippets/spaces/worlds
+and optional licensed PNGs under `--assets-root`.
+
 ## Fidelity & the golden fixture
 
 The one piece that cannot be ported by inspection is Unity's `Mathf.PerlinNoise`
