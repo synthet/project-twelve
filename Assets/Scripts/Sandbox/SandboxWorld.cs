@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 
 [DefaultExecutionOrder(-100)]
@@ -209,7 +210,11 @@ public sealed class SandboxWorld : MonoBehaviour
 
     public void SaveToPath(string path)
     {
-        SandboxSaveData saveData = new SandboxSaveData { seed = seed };
+        SandboxSaveData saveData = new SandboxSaveData
+        {
+            seed = seed,
+            tilePalette = RegistryPalette.Capture(SandboxRegistries.Tiles)
+        };
         foreach (KeyValuePair<Vector2Int, SandboxChunk> pair in chunks)
         {
             if (!pair.Value.HasEdits)
@@ -258,12 +263,20 @@ public sealed class SandboxWorld : MonoBehaviour
         seed = saveData.seed;
         chunks.Clear();
 
+        // Palette saves remap saved runtime indices to the live registry; version-1 prototype
+        // saves carry no palette and store the fixed legacy numbering instead.
+        int[] paletteRemap = saveData.HasTilePalette
+            ? saveData.tilePalette.BuildRemap(SandboxRegistries.Tiles)
+            : null;
+
         foreach (SandboxChunkSaveData chunkData in saveData.chunks)
         {
             SandboxChunk chunk = GenerateChunk(chunkData.Coord);
             foreach (SandboxTileEditData edit in chunkData.edits)
             {
-                chunk.SetLocalTile(edit.localX, edit.localY, edit.tile, false);
+                SandboxTile tile = edit.tile;
+                tile.id = ResolveSavedTileId(tile.id, paletteRemap, chunkData, edit);
+                chunk.SetLocalTile(edit.localX, edit.localY, tile, false);
             }
 
             chunk.MarkHasEdits();
@@ -278,6 +291,38 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         MarkAllLoadedRenderersDirty();
+    }
+
+    /// <summary>
+    /// Maps a saved tile id to a live registry runtime index: through the save's palette remap
+    /// when present, otherwise through the fixed legacy numbering of version-1 prototype saves.
+    /// Fails loudly on ids outside either table rather than silently corrupting tiles.
+    /// </summary>
+    private static int ResolveSavedTileId(
+        int savedId,
+        int[] paletteRemap,
+        SandboxChunkSaveData chunkData,
+        SandboxTileEditData edit)
+    {
+        if (paletteRemap != null)
+        {
+            if (savedId < 0 || savedId >= paletteRemap.Length)
+            {
+                throw new System.InvalidOperationException(
+                    $"Saved tile id {savedId} at chunk ({chunkData.x}, {chunkData.y}) local ({edit.localX}, {edit.localY}) is outside the save palette.");
+            }
+
+            return paletteRemap[savedId];
+        }
+
+        IReadOnlyList<string> legacy = SandboxCoreContent.LegacyTileIdToStringId;
+        if (savedId < 0 || savedId >= legacy.Count)
+        {
+            throw new System.InvalidOperationException(
+                $"Legacy tile id {savedId} at chunk ({chunkData.x}, {chunkData.y}) local ({edit.localX}, {edit.localY}) is outside the legacy tile-id table.");
+        }
+
+        return SandboxRegistries.Tiles.GetIndex(legacy[savedId]);
     }
 
     private void RestorePlayerPosition(Vector2 position)
