@@ -159,10 +159,24 @@ EditMode export tests green (or Unity unavailability recorded as the explicit bl
 
 ## Phase 1 — Inner-cavity normalization (one shape at a time)
 
-**Primary risk: over-broad inner-cavity detection.** `TryRemapCavityInnerEdgeMask` (new) is
-the right idea but easy to make too broad — fixing windows while breaking caves, cliffs, and
-roof edges. Mitigate with fixture-by-fixture implementation, a negative test for every
-predicate, and the decision trace from Phase 0C.
+> **Phase 1 status — evidence-driven finding.** A baseline capture of every cavity fixture
+> (`inner-cavity.test.js`, backed by the Phase 0C `normalizationTrace`) shows the isolated
+> 1×1 / 2×1 / 1×2 / door cavities **already resolve correctly**: lintels normalize to underside
+> `17` via the existing `cavityUnderside` normalizer, embedded window inner walls read as edge
+> `8`/`8f` straight from the raw rule, thin (1-wide) walls read as vertical shaft `21`, and
+> corners as `7`/`15`. Every cavity fixture already matches its `expect`. **No
+> `TryRemapCavityInnerEdgeMask` predicate is warranted for these shapes** — adding one would be
+> a remap with no defect to fix (the over-broad-detection risk below). Phase 1 therefore
+> *locks* the correct behavior with positive tests (lintel → `17`, embedded wall → `8`) and
+> negative guards (cavityUnderside stays clear of slopes, walls, overhangs, undersides,
+> corners). A genuinely-broken inner-cavity configuration must be captured as a new fixture
+> before any new predicate is added.
+
+**Primary risk: over-broad inner-cavity detection.** `TryRemapCavityInnerEdgeMask` (hypothetical)
+is easy to make too broad — fixing windows while breaking caves, cliffs, and roof edges. It is
+**not implemented** because no current fixture demonstrates a defect it would fix. If one is
+found, mitigate with fixture-by-fixture implementation, a negative test for every predicate, and
+the decision trace from Phase 0C.
 
 Intended remaps (existing rules only, no new sprite IDs): inner vertical strips move toward
 rule `8` / `8f`; lintels avoid noisy `18` and move toward `17`. This complements the existing
