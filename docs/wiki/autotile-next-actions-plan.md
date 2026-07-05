@@ -49,7 +49,8 @@ Grounding for every phase below. These are the real APIs the work extends.
 | Snippet fixtures | `tools/tile-viz/test/fixtures/snippets/*.json` |
 | Parity/regression tests | `tools/tile-viz/test/integration-regression-fixtures.test.js` |
 | Unity fixture export | `AutotileFixtureExportTests`, `AutotileRulesFixtureExportTests`, `AutotileVisualTests` (EditMode) |
-| Rule spec | [`docs/wiki/ground-autotile-32-rules.md`](ground-autotile-32-rules.md) |
+| Rule spec (32 masks) | [`docs/wiki/ground-autotile-32-rules.md`](ground-autotile-32-rules.md) |
+| Algorithm reference | [`docs/wiki/autotile-algorithm.md`](autotile-algorithm.md) |
 | Visual contract | [`docs/VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md) |
 
 Current normalization flags surfaced on both debug surfaces: `stairInterior`,
