@@ -3,14 +3,14 @@ type: Task
 id: P2-FLUID-001
 title: "[P2-FLUID-001] Specify simple liquid simulation constraints."
 description: Cellular-automaton fluid with per-cell amount, mass conservation, active-set sleep/wake, per-tick budget, and save persistence rules.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/34"
 github_issue_status: created
 resource: wiki/tickets/p2-fluid-001-specify-simple-liquid-simulation-constraints.md
 tags: [docs, wiki, ticket, fluids, simulation, p2]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-04T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
@@ -137,9 +137,20 @@ for each active cell c, bottom-up (row scan order from seeded PRNG):
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Fluid constants and rules documented in `simulation-systems.md` before implementation.
-- [ ] Conservation, settling, U-tube, determinism, and wake EditMode tests pass.
-- [ ] Profiler evidence for budget and sleeping-lake cost attached.
-- [ ] Follow-up tasks created for lava/interactions and fluid rendering polish.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Fluid constants and rules documented in `simulation-systems.md` and `08-liquids.md`
+      (§ "P2-FLUID-001 specification") before implementation (2026-07-04).
+- [x] Implementation landed under `Assets/Scripts/Sandbox/Fluid/` (`SandboxFluidSimulator`,
+      `SandboxFluidConstants`, `ISandboxFluidGrid`, `SandboxWorldFluidGrid`, `SandboxFluidController`)
+      with the `SetTile` wake hook (`SandboxWorld.TileFluidWakeRequested`) and fluid read/write on
+      `SandboxWorld`/`SandboxChunk` (2026-07-04).
+- [~] Conservation, settling, U-tube, determinism, and wake EditMode tests authored in
+      `Assets/Tests/EditMode/SandboxFluidSimulatorTests.cs` (with `FluidTestGrid`). *Not executed:
+      the Unity Editor is unavailable in this headless environment. Run before merge:*
+      `Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+- [ ] Profiler evidence for budget and sleeping-lake cost attached. *(Requires the Unity Editor /
+      Play Mode; see acceptance criteria.)*
+- [ ] Follow-up tasks created for lava/interactions and fluid rendering polish. *(Recorded as
+      out-of-scope follow-ups in `08-liquids.md`; the fluid render overlay and P2-SAVE-001 fluid
+      persistence coupling are the tracked next steps — deferred to maintainer triage.)*
