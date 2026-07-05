@@ -231,6 +231,17 @@ write tests that fail solely because a weighted variant changed.
 
 ## Phase 2 — Roof slope symmetry
 
+> **Phase 2 status — evidence-driven finding.** On a geometrically symmetric hill
+> (`symmetric-pyramid.json`) the resolver already produces **mirror-symmetric output for every
+> cell, ground and cover** — see `roof-slope-symmetry.test.js`. The anchor
+> `roof-slope-left-vs-right` fixture is *not* a clean geometric mirror (its two slopes have
+> different profiles — irregular 1-then-2-wide on the left, regular 2:1 on the right), so it
+> only supports the author's designated cap pairs, which also mirror correctly. No ground-mask
+> asymmetry bug reproduces in the resolver; Phase 2 locks the symmetry as an anti-regression.
+> Any residual "brown chunk under grass" seen in a full scene is therefore not a resolver
+> symmetry defect and must be reproduced as a concrete fixture (or chased in the render/mesh
+> path, Phase 3) before further ground changes.
+
 The "brown chunk under grass" issue may be a **cover↔ground coordination bug**, not just a
 ground sprite bug. Try ground-mask normalization first; inspect cover only if ground IDs are
 already structurally correct but pixels still read wrong.
@@ -250,16 +261,19 @@ changing ground masks risks new regressions — fix the coordinating layer inste
 
 ### Structural mirror invariant
 
-Anchor slopes to `roof-slope-left-vs-right.json`. Required invariant for paired cells:
+Anchor a clean geometric mirror with `symmetric-pyramid.json` (and check the designated cap
+pairs on `roof-slope-left-vs-right.json`). Required invariant for paired cells:
 
 ```text
-left slope normalized mask == horizontalMirror(right slope normalized mask)
 left spriteId == right spriteId
-left flipX != right flipX
+left normalized mask == horizontalMirror(right normalized mask)
+flipX: opposite when the mask is asymmetric; both false when the mask is self-mirror
 ```
 
-If the invariant cannot hold for a given pair, require a **written exception** in the fixture
-explaining why. Cover-coordination tests:
+The last line is the corrected rule — a naive "left flipX != right flipX" is wrong for
+self-mirror masks (e.g. fill `9`, bottom edge `17`), where the correct `flipX` is `false` on
+both sides. If the invariant cannot hold for a given pair, require a **written exception** in
+the fixture explaining why. Cover-coordination tests:
 
 ```text
 cover mask and ground mask agree on slope chirality
