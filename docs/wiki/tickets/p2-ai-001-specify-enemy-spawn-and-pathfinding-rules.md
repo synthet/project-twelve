@@ -3,14 +3,14 @@ type: Task
 id: P2-AI-001
 title: "[P2-AI-001] Specify enemy spawn and pathfinding rules."
 description: Grid A* navigation with jump/fall edges derived from collision solidity, plus spawn rules bounded by distance, light, and loaded chunks.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/32"
 github_issue_status: created
 resource: wiki/tickets/p2-ai-001-specify-enemy-spawn-and-pathfinding-rules.md
 tags: [docs, wiki, ticket, ai, pathfinding, p2]
-timestamp: 2026-07-04T17:52:00Z
+timestamp: 2026-07-05T21:05:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/spec-driven-development-tasks.md"
@@ -145,7 +145,7 @@ believably, and spawning feels dangerous underground without popping in on scree
       rules, world adapter, `SandboxEnemySpawner`/`SandboxEnemyAgent`) with nav-dirty wiring in
       `SandboxChunk`/`SandboxWorld` (2026-07-04; adopted decisions recorded in
       `09-pathfinding.md` § "Implementation notes").
-- [x] Pathfinding and spawn EditMode fixtures pass. EditMode run 2026-07-04: 199/199 passed — see `TestResults/editmode.xml`, `Logs/unity-editmode-tests.log` (Unity 6000.5.1f1).
+- [x] Pathfinding and spawn EditMode fixtures pass. EditMode run 2026-07-05 on master @ `e5ea587`: 245/247 passed full suite; `SandboxNavPathfinderTests` 20/20, `SandboxSpawnRulesTests` 18/18 — see `TestResults/editmode.xml`, `Logs/unity-editmode-tests.log` (Unity 6000.5.1f1).
 - [ ] Play-mode chase capture attached. *(Requires the Unity Editor; see acceptance criteria.)*
 - [ ] Follow-up tasks created for flying archetypes, combat, and nav scaling. *(Combat/loot is
       already tracked by P4-CONTENT-001 (#44); flying/swimming archetypes and waypoint-graph
