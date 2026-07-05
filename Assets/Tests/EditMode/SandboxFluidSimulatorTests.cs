@@ -294,8 +294,9 @@ public sealed class SandboxFluidSimulatorTests
     }
 
     /// <summary>
-    /// A single air column (x = 2) walled on both sides, sitting on a shelf at y = 1, with open
-    /// space below the shelf. Removing the shelf tile drains the column downward.
+    /// A single air column (x = 2) walled on both sides, sitting on a shelf at y = 1, with a
+    /// matching one-wide well below the shelf (x = 2 open, x = 1 and x = 3 solid). Removing the
+    /// shelf tile drains the column straight down into the well without spreading sideways.
     /// </summary>
     private static FluidTestGrid BuildWalledColumnOnShelf()
     {
@@ -305,6 +306,6 @@ public sealed class SandboxFluidSimulatorTests
             ".#.#.",  // y = 3
             ".#.#.",  // y = 2
             "#####",  // y = 1  (shelf)
-            "....."); // y = 0  (space below the shelf)
+            ".#.#."); // y = 0  (one-wide well below the shelf)
     }
 }
