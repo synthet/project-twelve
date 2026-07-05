@@ -90,6 +90,14 @@ public sealed class SandboxWorld : MonoBehaviour
         return chunk.GetLocalTile(local.x, local.y);
     }
 
+    /// <summary>
+    /// Raised for every <see cref="SetTile"/> edit with the edited world tile coordinate, so the
+    /// liquid simulation can re-wake the affected fluid cells (P2-FLUID-001 FR3). Waking is done
+    /// here, in the single edit choke point, rather than synchronously simulating flow inside the
+    /// edit. No subscribers means no cost.
+    /// </summary>
+    public event System.Action<int, int> TileFluidWakeRequested;
+
     public void SetTile(int x, int y, int tileId)
     {
         Vector2Int chunkCoord = WorldToChunkCoord(x, y);
@@ -98,6 +106,26 @@ public sealed class SandboxWorld : MonoBehaviour
         chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId));
         EnsureRenderer(chunkCoord);
         MarkBorderNeighborsDirty(chunks, chunkCoord, local.x, local.y);
+        TileFluidWakeRequested?.Invoke(x, y);
+    }
+
+    /// <summary>Current fluid amount (0.0–1.0+ under pressure) at a world tile coordinate.</summary>
+    public float GetTileFluid(int x, int y)
+    {
+        return GetTile(x, y).fluid;
+    }
+
+    /// <summary>
+    /// Writes the fluid amount at a world tile coordinate, leaving the tile id untouched. Used by
+    /// <see cref="ProjectTwelve.Sandbox.Fluid.SandboxWorldFluidGrid"/>; see
+    /// <see cref="SandboxChunk.SetLocalFluid"/> for why fluid writes do not mark chunks dirty.
+    /// </summary>
+    public void SetTileFluid(int x, int y, float amount)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        SandboxChunk chunk = GetOrCreateChunk(chunkCoord);
+        Vector2Int local = WorldToLocalCoord(x, y);
+        chunk.SetLocalFluid(local.x, local.y, amount);
     }
 
     /// <summary>

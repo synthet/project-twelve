@@ -69,6 +69,23 @@ public sealed class SandboxChunk
         NavVersion++;
     }
 
+    /// <summary>
+    /// Writes the fluid amount on a local tile, leaving its id/light/metadata untouched. Fluid
+    /// writes intentionally do NOT set the edit/dirty flags or bump the nav version: the liquid
+    /// simulation rewrites many cells every tick, so marking each as an edit would balloon saves
+    /// and force constant rebuilds. Persistence of fluid amounts is owned by P2-SAVE-001; until it
+    /// lands, fluid state is transient across save/load (see docs/wiki/08-liquids.md § Saves).
+    /// </summary>
+    public void SetLocalFluid(int x, int y, float amount)
+    {
+        if (!IsLocalInBounds(x, y))
+        {
+            return;
+        }
+
+        tiles[x, y].fluid = amount;
+    }
+
     public void MarkClean()
     {
         IsDirty = false;
