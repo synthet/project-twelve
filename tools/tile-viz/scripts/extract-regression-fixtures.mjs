@@ -23,6 +23,7 @@ const regions = [
     xmax: -86,
     ymin: 27,
     ymax: 31,
+    halo: 2,
     expectCoords: [
       [-105, 31], [-102, 30], [-104, 30], [-101, 29],
       [-91, 27], [-89, 28], [-87, 29], [-86, 29],
@@ -34,6 +35,7 @@ const regions = [
     xmax: -95,
     ymin: 24,
     ymax: 28,
+    halo: 1,
     expectCoords: [[-97, 27], [-97, 25]],
   },
   {
@@ -41,8 +43,20 @@ const regions = [
     xmin: -118,
     xmax: -106,
     ymin: 26,
-    ymax: 28,
-    expectCoords: [[-114, 28], [-111, 28], [-113, 27], [-111, 27], [-114, 26]],
+    ymax: 29,
+    halo: 1,
+    expectCoords: [
+      [-114, 29], [-113, 29], [-114, 28], [-111, 28],
+      [-113, 27], [-111, 27], [-114, 26],
+    ],
+    targetExpect: [
+      { x: -114, y: 29, ground: { spriteId: '17' } },
+      { x: -113, y: 29, ground: { spriteId: '17' } },
+      { x: -114, y: 28, ground: { spriteId: '8', flipX: true } },
+      { x: -111, y: 28, ground: { spriteId: '8' } },
+      { x: -113, y: 27, ground: { spriteId: '2' } },
+      { x: -111, y: 27, ground: { spriteId: '11' } },
+    ],
   },
   {
     name: 'dirt-gap-left-vertical-wall',
@@ -50,23 +64,35 @@ const regions = [
     xmax: -102,
     ymin: 16,
     ymax: 20,
+    halo: 1,
     expectCoords: [[-105, 19], [-105, 18], [-105, 17], [-104, 18]],
   },
 ];
 
 function buildSnippet(space, region) {
+  const halo = region.halo ?? 1;
+  const haloXMin = region.xmin - halo;
+  const haloXMax = region.xmax + halo;
+  const haloYMin = region.ymin - halo;
+  const haloYMax = region.ymax + halo;
+
+  const tileKeys = new Set();
   const tiles = [];
-  for (let y = region.ymin; y <= region.ymax; y++) {
-    for (let x = region.xmin; x <= region.xmax; x++) {
+
+  for (let y = haloYMin; y <= haloYMax; y++) {
+    for (let x = haloXMin; x <= haloXMax; x++) {
       const tile = getTile(space, x, y);
       if (tile.id === 0) continue;
+      const key = `${x},${y}`;
+      if (tileKeys.has(key)) continue;
+      tileKeys.add(key);
       tiles.push({ x, y, id: tile.id, light: tile.light ?? 4 });
     }
   }
 
   tiles.sort((a, b) => b.y - a.y || a.x - b.x);
 
-  return {
+  const snippet = {
     format: 'project-twelve/tile-space/v1',
     kind: 'snippet',
     name: region.name,
@@ -74,8 +100,14 @@ function buildSnippet(space, region) {
     width: region.xmax - region.xmin + 1,
     height: region.ymax - region.ymin + 1,
     tiles,
-    expect: [],
+    baselineExpect: [],
   };
+
+  if (region.targetExpect) {
+    snippet.targetExpect = region.targetExpect;
+  }
+
+  return snippet;
 }
 
 function groundExpect(reportTile) {
@@ -86,18 +118,18 @@ function groundExpect(reportTile) {
   return entry;
 }
 
-function fillExpectsFromSnippetReport(snippet, expectCoords) {
+function fillBaselineExpectsFromSnippetReport(snippet, expectCoords) {
   const snippetSpace = loadTileSpace(snippet, snippetsDir);
   const snippetReport = buildAutotileReport(snippetSpace);
   const byKey = new Map(snippetReport.tiles.map((t) => [`${t.x},${t.y}`, t]));
-  snippet.expect = [];
+  snippet.baselineExpect = [];
   for (const [x, y] of expectCoords) {
     const tile = byKey.get(`${x},${y}`);
     if (!tile) {
       throw new Error(`${snippet.name}: missing report tile (${x},${y}) in snippet-local context`);
     }
     const exp = groundExpect(tile);
-    if (exp) snippet.expect.push(exp);
+    if (exp) snippet.baselineExpect.push(exp);
   }
 }
 
@@ -108,11 +140,14 @@ function main() {
 
   for (const region of regions) {
     const snippet = buildSnippet(space, region);
-    fillExpectsFromSnippetReport(snippet, region.expectCoords);
+    fillBaselineExpectsFromSnippetReport(snippet, region.expectCoords);
 
     const outPath = path.join(snippetsDir, `${region.name}.json`);
     fs.writeFileSync(outPath, `${JSON.stringify(snippet, null, 2)}\n`);
-    process.stderr.write(`wrote ${outPath} (${snippet.tiles.length} tiles, ${snippet.expect.length} expects)\n`);
+    process.stderr.write(
+      `wrote ${outPath} (${snippet.tiles.length} tiles, ${snippet.baselineExpect.length} baseline expects`
+        + `${snippet.targetExpect ? `, ${snippet.targetExpect.length} target expects` : ''})\n`,
+    );
   }
 
   // Alias window fixtures to existing hole snippets (same topology, clearer names for cavity work).

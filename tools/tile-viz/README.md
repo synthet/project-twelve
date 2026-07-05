@@ -68,3 +68,18 @@ npm test
 - `render.test.js` — PNG golden (skipped without licensed assets)
 
 Set `TILE_VIZ_ASSETS_ROOT` to override the default licensed tiles path for render tests.
+
+## Drift RCA scripts
+
+See [`docs/wiki/autotile-drift-rca.md`](../../docs/wiki/autotile-drift-rca.md) for the full playbook.
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/diff-tile-space.mjs` | Compare two space fixtures (world tile id drift) |
+| `scripts/export-autotile-baseline.mjs` | Build sparse autotile baseline from a capture |
+| `scripts/compare-autotile-baseline.mjs` | Field-level diff vs baseline (ground/cover) |
+| `scripts/log-autotile-debug-cells.mjs` | MCP-style per-cell report (`--compact`, optional coords) |
+| `scripts/render-capture.mjs` | Render space capture to PNG (`--scale 32 --flat-light`) |
+| `scripts/diff-png.mjs` | Pixel diff two PNGs (Unity screenshot vs golden) |
+
+Play Mode MCP companions: `world_export_tile_space`, `autotile_diff_baseline` (see [`AGENTS.md`](../../AGENTS.md)).

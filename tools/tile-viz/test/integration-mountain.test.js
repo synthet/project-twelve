@@ -18,6 +18,16 @@ const spotChecks = [
   { x: -90, y: 12, ground: { spriteId: '9', flipX: false } },
 ];
 
+const windowLintelSpots = [
+  { x: -114, y: 29, ground: { spriteId: '17', flipX: false } },
+  { x: -113, y: 29, ground: { spriteId: '17', flipX: false } },
+  { x: -114, y: 28, ground: { spriteId: '8', flipX: true } },
+  { x: -111, y: 28, ground: { spriteId: '8', flipX: false } },
+  { x: -113, y: 27, ground: { spriteId: '2', flipX: false } },
+  { x: -111, y: 27, ground: { spriteId: '11', flipX: false } },
+  { x: -114, y: 26, ground: { spriteId: '9', flipX: false } },
+];
+
 test('sandbox-scene-mountain integration spot checks', () => {
   const space = loadTileSpaceFromFile(CAPTURE);
   const report = buildAutotileReport(space);
@@ -36,6 +46,20 @@ test('sandbox-scene-mountain integration spot checks', () => {
     }
     if (check.ground?.flipX !== undefined) {
       assert.equal(tile.autotile.ground?.flipX, check.ground.flipX);
+    }
+  }
+});
+
+test('sandbox-scene-mountain window lintel subregion spot checks', () => {
+  const space = loadTileSpaceFromFile(CAPTURE);
+  const report = buildAutotileReport(space);
+
+  for (const check of windowLintelSpots) {
+    const tile = report.tiles.find((t) => t.x === check.x && t.y === check.y);
+    assert.ok(tile, `(${check.x},${check.y}) missing from report`);
+    assert.equal(tile.autotile.ground?.spriteId, check.ground.spriteId, `(${check.x},${check.y}) ground sprite`);
+    if (check.ground.flipX !== undefined) {
+      assert.equal(tile.autotile.ground?.flipX, check.ground.flipX, `(${check.x},${check.y}) flipX`);
     }
   }
 });

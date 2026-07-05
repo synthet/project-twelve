@@ -361,6 +361,136 @@ namespace ProjectTwelve.RuntimeMcp
                         includeAir,
                         includeAutotile: true);
                 }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "world_export_tile_space",
+                "Export a rectangular world region as project-twelve/tile-space/v1 JSON (legacy tile ids).",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["xMin"] = new JObject { ["type"] = "integer" },
+                        ["yMin"] = new JObject { ["type"] = "integer" },
+                        ["xMax"] = new JObject { ["type"] = "integer" },
+                        ["yMax"] = new JObject { ["type"] = "integer" },
+                        ["centerX"] = areaProperties["centerX"],
+                        ["centerY"] = areaProperties["centerY"],
+                        ["x"] = areaProperties["x"],
+                        ["y"] = areaProperties["y"],
+                        ["radius"] = areaProperties["radius"],
+                        ["radiusX"] = areaProperties["radiusX"],
+                        ["radiusY"] = areaProperties["radiusY"],
+                        ["aroundPlayer"] = areaProperties["aroundPlayer"],
+                        ["name"] = new JObject { ["type"] = "string", ["description"] = "Fixture name (default runtime-export)." },
+                        ["writeFile"] = new JObject
+                        {
+                            ["type"] = "boolean",
+                            ["description"] = "When true, also writes JSON to Application.persistentDataPath and returns filePath."
+                        }
+                    }
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    if (!McpTileDebug.TryResolveBounds(
+                            args,
+                            world,
+                            McpTileDebug.MaxDiffScanCells,
+                            out int xMin,
+                            out int yMin,
+                            out int xMax,
+                            out int yMax,
+                            out string boundsError))
+                    {
+                        throw new System.InvalidOperationException(boundsError);
+                    }
+
+                    bool writeFile = args.Value<bool?>("writeFile") ?? false;
+                    string name = args["name"]?.Value<string>();
+                    return McpTileDebug.BuildTileSpaceExport(
+                        world,
+                        xMin,
+                        yMin,
+                        xMax,
+                        yMax,
+                        writeFile,
+                        name);
+                }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "autotile_diff_baseline",
+                "Compare live autotile resolution against a committed baseline; returns mismatches only.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["xMin"] = new JObject { ["type"] = "integer" },
+                        ["yMin"] = new JObject { ["type"] = "integer" },
+                        ["xMax"] = new JObject { ["type"] = "integer" },
+                        ["yMax"] = new JObject { ["type"] = "integer" },
+                        ["centerX"] = areaProperties["centerX"],
+                        ["centerY"] = areaProperties["centerY"],
+                        ["x"] = areaProperties["x"],
+                        ["y"] = areaProperties["y"],
+                        ["radius"] = areaProperties["radius"],
+                        ["radiusX"] = areaProperties["radiusX"],
+                        ["radiusY"] = areaProperties["radiusY"],
+                        ["aroundPlayer"] = areaProperties["aroundPlayer"],
+                        ["baselineName"] = new JObject
+                        {
+                            ["type"] = "string",
+                            ["description"] = "Baseline file stem (default sandbox-scene-mountain)."
+                        },
+                        ["maxDiffs"] = new JObject
+                        {
+                            ["type"] = "integer",
+                            ["description"] = "Maximum mismatch entries returned (default 100)."
+                        },
+                        ["compareLayer"] = new JObject
+                        {
+                            ["type"] = "string",
+                            ["enum"] = new JArray("all", "ground", "cover"),
+                            ["description"] = "Which autotile layer to compare (default all)."
+                        }
+                    }
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    if (!McpTileDebug.TryResolveBounds(
+                            args,
+                            world,
+                            McpTileDebug.MaxDiffScanCells,
+                            out int xMin,
+                            out int yMin,
+                            out int xMax,
+                            out int yMax,
+                            out string boundsError))
+                    {
+                        throw new System.InvalidOperationException(boundsError);
+                    }
+
+                    string baselineName = args["baselineName"]?.Value<string>() ?? "sandbox-scene-mountain";
+                    int maxDiffs = args["maxDiffs"]?.Value<int>() ?? 100;
+                    if (maxDiffs < 1)
+                    {
+                        maxDiffs = 1;
+                    }
+
+                    string compareLayer = args["compareLayer"]?.Value<string>() ?? "all";
+                    return McpTileDebug.BuildAutotileDiffBaseline(
+                        world,
+                        world.TileVisualCatalog,
+                        xMin,
+                        yMin,
+                        xMax,
+                        yMax,
+                        baselineName,
+                        maxDiffs,
+                        compareLayer);
+                }));
         }
 
         private static SandboxWorld RequireWorld()

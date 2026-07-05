@@ -691,6 +691,51 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
+    public void AutotileMaskBuilder_CavityInnerEdgeLintel_RemapsDiagonalBodyToUndersideRule17()
+    {
+        int[,] lintelCorner = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 0 }
+        };
+
+        bool SharesGroup(int x, int y) => y == 29;
+        bool IsSolid(int x, int y)
+        {
+            if (y == 30)
+            {
+                return true;
+            }
+
+            if (y == 29)
+            {
+                return true;
+            }
+
+            if (y == 28 && x == -113)
+            {
+                return false;
+            }
+
+            return y == 28;
+        }
+
+        Assert.IsTrue(AutotileMaskBuilder.TryRemapCavityInnerEdgeMask(
+            lintelCorner,
+            SharesGroup,
+            IsSolid,
+            -114,
+            29,
+            out int[,] remapped));
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, remapped, out bool flipX);
+        Assert.AreEqual("17", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
     public void AutotileMaskBuilder_CliffFaceWithSideMass_ResolvesVendorFaceSprites()
     {
         AutotileTileset tileset = CreateFullGroundTileset();

@@ -4,7 +4,7 @@ title: Ground Autotile Rule Spec — PixelFantasy 32-Tile Ground Sheets
 description: Canonical 32 ground autotile masks, mirrored scenarios, and acceptance checks for PixelFantasy 128×64 terrain sheets.
 resource: wiki/ground-autotile-32-rules.md
 tags: [docs, wiki, autotile, visual, p1, reference]
-timestamp: 2026-07-04T23:55:00Z
+timestamp: 2026-07-05T06:00:00Z
 okf_version: 0.1
 ---
 
@@ -145,4 +145,6 @@ Important visual sanity checks:
 - cave ceilings / hanging undersides should use the authored underside family (`14`–`17`, `31`), not flipped top sprites
 - side-connected cliff runs may use side-cap variants such as `7`, `8`, `22`, `24`, `27`, `30`, depending on the normalized topology
 - dirt/stone re-entrant material lips should not collapse into fill `9/10`
+- window/hole inner-cavity lintels should resolve `17` (underside), not diagonal-body `18`, when a south-row diagonal opens into the carved void (`dirt-window-inner-edges` fixture)
+- inner vertical window frames should resolve `8` (+`flipX` when chirality requires), not outside-corner `0`, when halo-correct neighbor context is present
 - top-left and top-right corners should be visually paired; avoid accidental mirrored dirt-noise artifacts if an authored opposite sprite exists

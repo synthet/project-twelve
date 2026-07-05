@@ -78,6 +78,38 @@ public sealed class AutotileDebugTests
         Assert.IsNotNull(AutotileDebugMeshBuilder.GetDigitAtlas());
     }
 
+    [Test]
+    public void AutotileBaselineStore_LoadsMountainBaselineInEditor()
+    {
+        AutotileBaselineStore.ClearCache();
+        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline = AutotileBaselineStore.TryLoad("sandbox-scene-mountain");
+        Assert.NotNull(baseline, "Expected mountain baseline under StreamingAssets or tools/tile-viz/test/fixtures/baselines");
+        Assert.IsTrue(baseline.ContainsKey(new Vector2Int(-114, 29)), "Window lintel cell missing from baseline");
+    }
+
+    [Test]
+    public void AutotileBaselineCompare_DetectsSpriteMismatch()
+    {
+        var baseline = new BaselineCell(
+            tileId: 1,
+            groundSpriteId: "17",
+            groundFlipX: false,
+            innerCavity: true,
+            coverRendered: false,
+            coverSpriteId: null,
+            coverFlipX: false);
+
+        var resolve = new AutotileGroundResolveResult(
+            hasGroundTileset: true,
+            resolved: true,
+            spriteId: "18",
+            flipX: false,
+            tilesetName: "Humus",
+            mask: null);
+
+        Assert.IsFalse(AutotileBaselineCompare.GroundMatches(1, resolve, baseline));
+    }
+
     private static AutotileTileset CreateGroundTileset()
     {
         Texture2D texture = new Texture2D(16, 16);

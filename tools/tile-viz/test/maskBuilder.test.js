@@ -10,6 +10,7 @@ import {
   buildGroundMaskDetailed,
   buildSolidGroundMask,
   buildVisualGroundMask,
+  tryRemapCavityInnerEdgeMask,
   tryRemapMaterialBoundaryCornerMask,
 } from '../src/visual/maskBuilder.js';
 import { loadRuleTables } from '../src/visual/ruleTables.js';
@@ -94,6 +95,34 @@ test('pillar mask stays 21 not 22 or 25', () => {
   assert.equal(result.flipX, false);
   assert.notEqual(result.spriteId, '22');
   assert.notEqual(result.spriteId, '25');
+});
+
+test('cavity lintel with diagonal opening remaps to underside 17', () => {
+  const mask = [
+    [1, 1, 1],
+    [1, 1, 1],
+    [1, 1, 0],
+  ];
+  const sharesGround = (x, y) => y === 29;
+  const isSolid = (x, y) => {
+    if (y === 30) return true;
+    if (y === 29) return true;
+    if (y === 28 && x === -113) return false;
+    if (y === 28) return true;
+    return false;
+  };
+  const remapped = tryRemapCavityInnerEdgeMask(mask, sharesGround, isSolid, -114, 29);
+  assert.ok(remapped);
+  const result = resolveSpriteId(tileset(), remapped);
+  assert.equal(result.spriteId, '17');
+});
+
+test('dirt-window-inner-edges target lintel resolves 17 not 18', () => {
+  const space = loadTileSpaceFromFile(path.join(__dirname, 'fixtures', 'snippets', 'dirt-window-inner-edges.json'));
+  const report = buildAutotileReport(space);
+  const tile = report.tiles.find((t) => t.x === -114 && t.y === 29);
+  assert.equal(tile.autotile.ground.spriteId, '17');
+  assert.equal(tile.autotile.ground.normalization.innerCavity, true);
 });
 
 test('foreign solid below does not trigger cavity underside remap', () => {

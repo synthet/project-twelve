@@ -12,35 +12,37 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SNIPPETS_DIR = path.join(__dirname, '..', 'test', 'fixtures', 'snippets');
 const EXPECTED_DIR = path.join(__dirname, '..', 'test', 'fixtures', 'expected');
 
-function toExpected(report) {
+const only = process.argv.slice(2);
+
+function toUnityExpected(report) {
   return {
     name: report.name,
     tiles: report.tiles.map((t) => {
-      const entry = {
-        x: t.x,
-        y: t.y,
-        tileId: t.tileId,
-        autotile: {},
-      };
+      const entry = { x: t.x, y: t.y };
       if (t.autotile.ground) {
-        entry.autotile.ground = {
-          tileset: t.autotile.ground.tileset,
-          materialGroup: t.autotile.ground.materialGroup,
-          rawMask: t.autotile.ground.rawMask,
-          normalizedMask: t.autotile.ground.normalizedMask,
-          mask: t.autotile.ground.mask,
-          matchingSpriteIds: t.autotile.ground.matchingSpriteIds,
-          matchedRuleId: t.autotile.ground.matchedRuleId,
-          spriteId: t.autotile.ground.spriteId,
-          flipX: t.autotile.ground.flipX,
-          finalSpriteId: t.autotile.ground.finalSpriteId,
-          partnerSubstitution: t.autotile.ground.partnerSubstitution,
-          neighborTileIds: t.autotile.ground.neighborTileIds,
-          resolved: t.autotile.ground.resolved,
+        const g = t.autotile.ground;
+        entry.ground = {
+          tileset: g.tileset,
+          materialGroup: g.materialGroup,
+          visualMask: g.visualMask,
+          solidMask: g.solidMask,
+          connectivityMask: g.connectivityMask,
+          rawMask: g.rawMask ?? g.connectivityMask,
+          normalizedMask: g.normalizedMask ?? g.mask,
+          mask: g.mask,
+          normalization: g.normalization,
+          matchingSpriteIds: g.matchingSpriteIds,
+          matchedRuleId: g.matchedRuleId,
+          spriteId: g.spriteId,
+          flipX: g.flipX,
+          finalSpriteId: g.finalSpriteId,
+          partnerSubstitution: g.partnerSubstitution,
+          neighborTileIds: g.neighborTileIds,
+          resolved: g.resolved,
         };
       }
       if (t.autotile.cover) {
-        entry.autotile.cover = { ...t.autotile.cover };
+        entry.cover = { ...t.autotile.cover };
       }
       return entry;
     }),
@@ -48,10 +50,15 @@ function toExpected(report) {
 }
 
 fs.mkdirSync(EXPECTED_DIR, { recursive: true });
-for (const file of fs.readdirSync(SNIPPETS_DIR).filter((f) => f.endsWith('.json'))) {
+const files = fs.readdirSync(SNIPPETS_DIR).filter((f) => f.endsWith('.json'));
+for (const file of files) {
+  const base = file.replace(/\.json$/, '');
+  if (only.length > 0 && !only.includes(base) && !only.includes(file)) {
+    continue;
+  }
   const space = loadTileSpaceFromFile(path.join(SNIPPETS_DIR, file));
   const report = buildAutotileReport(space);
   const out = path.join(EXPECTED_DIR, file);
-  fs.writeFileSync(out, `${JSON.stringify(toExpected(report), null, 2)}\n`);
+  fs.writeFileSync(out, `${JSON.stringify(toUnityExpected(report), null, 2)}\n`);
   process.stderr.write(`wrote ${out}\n`);
 }

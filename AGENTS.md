@@ -15,6 +15,16 @@ which tools they may use.
 - When you change a skill/command/agent, run the sync and commit both trees in the **same PR**
   (see [`.agent/SKILL_CHANGE_AST10_REVIEW.md`](.agent/SKILL_CHANGE_AST10_REVIEW.md)).
 
+## Session start (all agents)
+
+**Every new chat or resumed session** — before modifying code or claiming work:
+
+1. **Read** [`.agent-memory/memory.md`](.agent-memory/memory.md) (compact: `python scripts/agent-memory/context.py`).
+2. **Prefer repo evidence** (files, tests, docs) over memory when they conflict.
+3. **At session end**, log durable learnings via `/log-session` — do not hand-edit `memory.md` during implementation.
+
+Always-on rule: `.claude/rules/agent-memory.md` (mirrored to `.cursor/rules/agent-memory.mdc`). Skill: [`.claude/skills/agent-memory/SKILL.md`](.claude/skills/agent-memory/SKILL.md).
+
 ## Commands
 
 ```bash
@@ -134,6 +144,8 @@ MCP client.
 | `tiles_area` | read | Rectangular tile dump with ASCII grid; bounds via `xMin`…`yMax` or `centerX`/`centerY` + `radius`, optional `aroundPlayer`. |
 | `tile_autotile` | read | Autotile masks, neighbor connectivity, matching rule ids, and resolved ground/cover sprites at `{ x, y }`. |
 | `tiles_autotile_area` | read | Same autotile debug as `tile_autotile` for each solid tile in a region (`maxCells` default 400). |
+| `world_export_tile_space` | read | Export a world region as `project-twelve/tile-space/v1` JSON (legacy tile ids); optional `writeFile`. |
+| `autotile_diff_baseline` | read | Compare live autotile vs committed baseline; returns mismatches only (`maxDiffs` default 100). |
 | `perf` | read | Smoothed FPS and frame time (ms). |
 
 Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_PORT`).

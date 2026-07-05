@@ -228,10 +228,11 @@ public sealed class AutotileFixtureExportTests
         AppendMask(sb, "mask", mask);
         sb.AppendFormat(
             ci,
-            ",\"normalization\":{{\"stairInterior\":{0},\"cavityUnderside\":{1},\"materialBoundary\":{2}}}",
+            ",\"normalization\":{{\"stairInterior\":{0},\"cavityUnderside\":{1},\"materialBoundary\":{2},\"innerCavity\":{3}}}",
             maskBuild.StairInteriorRemap ? "true" : "false",
             maskBuild.CavityUndersideRemap ? "true" : "false",
-            maskBuild.MaterialBoundaryRemap ? "true" : "false");
+            maskBuild.MaterialBoundaryRemap ? "true" : "false",
+            maskBuild.InnerCavityRemap ? "true" : "false");
         sb.AppendFormat(
             ci,
             ",\"matchedRuleId\":\"{0}\",\"spriteId\":\"{0}\",\"flipX\":{1},\"finalSpriteId\":\"{0}\",\"partnerSubstitution\":false,",

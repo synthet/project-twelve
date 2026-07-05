@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using ProjectTwelve.Sandbox.Registry;
@@ -114,7 +115,8 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private static GroundAutotileDebugMode CycleGroundAutotileDebugMode(GroundAutotileDebugMode mode)
     {
-        int next = ((int)mode + 1) % 4;
+        int count = Enum.GetValues(typeof(GroundAutotileDebugMode)).Length;
+        int next = ((int)mode + 1) % count;
         return (GroundAutotileDebugMode)next;
     }
 

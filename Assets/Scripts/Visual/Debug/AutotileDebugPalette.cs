@@ -47,6 +47,22 @@ namespace ProjectTwelve.Visual.AutotileDebug
         /// </summary>
         public static Color FlipMarkerColor => new Color(1f, 0.35f, 0.2f, 0.95f);
 
+        /// <summary>
+        /// Baseline mismatch highlight.
+        /// </summary>
+        public static Color MismatchColor => new Color(1f, 0.1f, 0.1f, 0.85f);
+
+        /// <summary>
+        /// Cover-layer debug tint (complements ground hues).
+        /// </summary>
+        public static Color ColorForCoverSpriteId(string spriteId)
+        {
+            Color baseColor = ColorForSpriteId(spriteId);
+            Color rgb = Color.HSVToRGB(Mathf.Repeat(baseColor.r + 0.45f, 1f), 0.85f, 0.95f);
+            rgb.a = OverlayAlpha;
+            return rgb;
+        }
+
         private static Color ColorFromIndex(int index, float saturation, float value)
         {
             float hue = Mathf.Repeat(index * GoldenRatioConjugate, 1f);

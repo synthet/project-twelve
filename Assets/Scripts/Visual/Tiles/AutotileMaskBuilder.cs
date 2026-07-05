@@ -15,6 +15,7 @@ namespace ProjectTwelve.Visual.Tiles
         public bool StairInteriorRemap { get; }
         public bool CavityUndersideRemap { get; }
         public bool MaterialBoundaryRemap { get; }
+        public bool InnerCavityRemap { get; }
 
         /// <summary>
         /// Ordered applied/skipped decision trace for the normalizers (see the Autotile Next
@@ -29,7 +30,8 @@ namespace ProjectTwelve.Visual.Tiles
             int[,] finalMask,
             bool stairInteriorRemap,
             bool cavityUndersideRemap,
-            bool materialBoundaryRemap)
+            bool materialBoundaryRemap,
+            bool innerCavityRemap = false)
         {
             VisualMask = visualMask;
             SolidMask = solidMask;
@@ -38,6 +40,7 @@ namespace ProjectTwelve.Visual.Tiles
             StairInteriorRemap = stairInteriorRemap;
             CavityUndersideRemap = cavityUndersideRemap;
             MaterialBoundaryRemap = materialBoundaryRemap;
+            InnerCavityRemap = innerCavityRemap;
             NormalizationTrace = AutotileMaskBuilder.BuildNormalizationTrace(
                 stairInteriorRemap,
                 cavityUndersideRemap,
@@ -106,7 +109,8 @@ namespace ProjectTwelve.Visual.Tiles
                 isSurfaceTile,
                 out bool stairInteriorRemap,
                 out bool cavityUndersideRemap,
-                out bool materialBoundaryRemap);
+                out bool materialBoundaryRemap,
+                out bool innerCavityRemap);
 
             return new GroundMaskBuildResult(
                 visualMask,
@@ -115,7 +119,8 @@ namespace ProjectTwelve.Visual.Tiles
                 finalMask,
                 stairInteriorRemap,
                 cavityUndersideRemap,
-                materialBoundaryRemap);
+                materialBoundaryRemap,
+                innerCavityRemap);
         }
 
         /// <summary>
@@ -264,6 +269,7 @@ namespace ProjectTwelve.Visual.Tiles
                 isSurfaceTile,
                 out _,
                 out _,
+                out _,
                 out _);
         }
 
@@ -276,16 +282,30 @@ namespace ProjectTwelve.Visual.Tiles
             Func<int, int, bool> isSurfaceTile,
             out bool stairInteriorRemap,
             out bool cavityUndersideRemap,
-            out bool materialBoundaryRemap)
+            out bool materialBoundaryRemap,
+            out bool innerCavityRemap)
         {
             stairInteriorRemap = false;
             cavityUndersideRemap = false;
             materialBoundaryRemap = false;
+            innerCavityRemap = false;
 
             if (TryRemapStairInteriorDiagonalMask(mask, isSurfaceTile, worldX, worldY, out int[,] stairInterior))
             {
                 stairInteriorRemap = true;
                 return stairInterior;
+            }
+
+            if (TryRemapCavityInnerEdgeMask(
+                    mask,
+                    sharesGroundGroup,
+                    isSolid,
+                    worldX,
+                    worldY,
+                    out int[,] innerCavity))
+            {
+                innerCavityRemap = true;
+                return innerCavity;
             }
 
             if (TryRemapCavityBridgeToUnderside(
@@ -357,6 +377,136 @@ namespace ProjectTwelve.Visual.Tiles
                 { 1, 1, 1 }
             };
             return true;
+        }
+
+        /// <summary>
+        /// Window/hole lintels and inner vertical strips inside cavities often match outside-body
+        /// rules (18, 0) even though they should read as underside (17) or inner face (8).
+        /// </summary>
+        internal static bool TryRemapCavityInnerEdgeMask(
+            int[,] mask,
+            Func<int, int, bool> sharesGroundGroup,
+            Func<int, int, bool> isSolid,
+            int worldX,
+            int worldY,
+            out int[,] remapped)
+        {
+            remapped = null;
+            if (sharesGroundGroup == null || isSolid == null)
+            {
+                return false;
+            }
+
+            if (!sharesGroundGroup(worldX - 1, worldY) || !sharesGroundGroup(worldX + 1, worldY))
+            {
+                return false;
+            }
+
+            if (!isSolid(worldX, worldY + 1))
+            {
+                return false;
+            }
+
+            if (mask[1, 0] != 1 || mask[0, 1] != 1 || mask[2, 1] != 1)
+            {
+                return false;
+            }
+
+            if (TryRemapCavityLintelToUnderside(mask, isSolid, worldX, worldY, out remapped))
+            {
+                return true;
+            }
+
+            if (!isSolid(worldX, worldY - 1)
+                && TryRemapCavityInnerVerticalMask(mask, sharesGroundGroup, worldX, worldY, out remapped))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        internal static bool TryRemapCavityLintelToUnderside(
+            int[,] mask,
+            Func<int, int, bool> isSolid,
+            int worldX,
+            int worldY,
+            out int[,] remapped)
+        {
+            remapped = null;
+            if (!HasFilledSouthRow(mask))
+            {
+                return false;
+            }
+
+            if (mask[0, 2] != 0 && mask[2, 2] != 0)
+            {
+                return false;
+            }
+
+            bool cavityBelow = !isSolid(worldX, worldY - 1)
+                || !isSolid(worldX - 1, worldY - 1)
+                || !isSolid(worldX + 1, worldY - 1);
+            if (!cavityBelow)
+            {
+                return false;
+            }
+
+            remapped = FullUndersideMask();
+            return true;
+        }
+
+        internal static bool TryRemapCavityInnerVerticalMask(
+            int[,] mask,
+            Func<int, int, bool> sharesGroundGroup,
+            int worldX,
+            int worldY,
+            out int[,] remapped)
+        {
+            remapped = null;
+            bool westOpenOutsideCorner = mask[0, 0] == 0 && mask[0, 1] == 1 && mask[1, 1] == 1
+                && mask[1, 2] == 1 && mask[2, 2] == 1;
+            bool eastOpenOutsideCorner = mask[2, 0] == 0 && mask[2, 1] == 1 && mask[1, 1] == 1
+                && mask[1, 2] == 1 && mask[0, 2] == 1;
+            if (!westOpenOutsideCorner && !eastOpenOutsideCorner)
+            {
+                return false;
+            }
+
+            if (westOpenOutsideCorner && !sharesGroundGroup(worldX + 1, worldY))
+            {
+                return false;
+            }
+
+            if (eastOpenOutsideCorner && !sharesGroundGroup(worldX - 1, worldY))
+            {
+                return false;
+            }
+
+            remapped = westOpenOutsideCorner
+                ? WestOpenVerticalMask()
+                : EastOpenVerticalMask();
+            return true;
+        }
+
+        internal static int[,] WestOpenVerticalMask()
+        {
+            return new[,]
+            {
+                { 0, 1, 1 },
+                { 0, 1, 1 },
+                { 0, 1, 1 }
+            };
+        }
+
+        internal static int[,] EastOpenVerticalMask()
+        {
+            return new[,]
+            {
+                { 1, 1, 0 },
+                { 1, 1, 0 },
+                { 1, 1, 0 }
+            };
         }
 
         /// <summary>

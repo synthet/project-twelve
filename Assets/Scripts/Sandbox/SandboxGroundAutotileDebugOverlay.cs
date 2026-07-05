@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
@@ -11,6 +12,7 @@ using UnityEngine;
 public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
 {
     private const int SortingOrder = 40;
+    private const string DefaultBaselineName = "sandbox-scene-mountain";
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -37,6 +39,11 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
             meshRenderer.enabled = false;
             return;
         }
+
+        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline =
+            mode == GroundAutotileDebugMode.MismatchBaseline
+                ? AutotileBaselineStore.TryLoad(DefaultBaselineName)
+                : null;
 
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
@@ -65,33 +72,21 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                     continue;
                 }
 
-                Color markerColor = mode == GroundAutotileDebugMode.ColorByTileId
-                    ? AutotileDebugPalette.ColorForTileId(tile.id)
-                    : AutotileDebugPalette.ColorForSpriteId(resolve.SpriteId);
-
-                AutotileDebugMeshBuilder.AppendTileMarker(
+                AppendCellDebug(
                     vertices,
                     triangles,
                     uvs,
                     colors,
+                    mode,
+                    visualCatalog,
+                    tileLookup,
+                    tile,
                     localX,
                     localY,
+                    worldCoord,
                     tileSize,
-                    markerColor);
-
-                if (mode == GroundAutotileDebugMode.SpriteIdLabel && resolve.Resolved)
-                {
-                    AutotileDebugMeshBuilder.AppendSpriteIdLabel(
-                        vertices,
-                        triangles,
-                        uvs,
-                        colors,
-                        localX,
-                        localY,
-                        tileSize,
-                        resolve.SpriteId,
-                        resolve.FlipX);
-                }
+                    resolve,
+                    baseline);
             }
         }
 
@@ -119,6 +114,182 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         meshRenderer.sharedMaterial = GetOverlayMaterial();
         meshRenderer.sortingOrder = SortingOrder;
         meshRenderer.enabled = true;
+    }
+
+    private static void AppendCellDebug(
+        List<Vector3> vertices,
+        List<int> triangles,
+        List<Vector2> uvs,
+        List<Color> colors,
+        GroundAutotileDebugMode mode,
+        SandboxTileVisualCatalog visualCatalog,
+        Func<int, int, SandboxTile> tileLookup,
+        SandboxTile tile,
+        int localX,
+        int localY,
+        Vector2Int worldCoord,
+        float tileSize,
+        AutotileGroundResolveResult resolve,
+        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline)
+    {
+        if (mode == GroundAutotileDebugMode.MismatchBaseline)
+        {
+            if (baseline == null
+                || !baseline.TryGetValue(worldCoord, out BaselineCell expected)
+                || AutotileBaselineCompare.GroundMatches(
+                    AutotileBaselineCompare.ToLegacyTileId(tile.id),
+                    resolve,
+                    expected))
+            {
+                return;
+            }
+
+            AutotileDebugMeshBuilder.AppendTileMarker(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                AutotileDebugPalette.MismatchColor);
+            return;
+        }
+
+        if (mode == GroundAutotileDebugMode.CoverSpriteIdLabel)
+        {
+            if (!TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover))
+            {
+                return;
+            }
+
+            AutotileDebugMeshBuilder.AppendTileMarker(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                AutotileDebugPalette.ColorForCoverSpriteId(cover.SpriteId));
+
+            AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                cover.SpriteId,
+                cover.FlipX);
+            return;
+        }
+
+        if (mode == GroundAutotileDebugMode.GroundCoverSplit)
+        {
+            Color groundColor = AutotileDebugPalette.ColorForSpriteId(resolve.SpriteId);
+            AutotileDebugMeshBuilder.AppendTileMarker(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                groundColor);
+
+            if (TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover))
+            {
+                AutotileDebugMeshBuilder.AppendHalfTileMarker(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    AutotileDebugPalette.ColorForCoverSpriteId(cover.SpriteId),
+                    topHalf: true);
+            }
+
+            return;
+        }
+
+        Color markerColor = mode == GroundAutotileDebugMode.ColorByTileId
+            ? AutotileDebugPalette.ColorForTileId(tile.id)
+            : AutotileDebugPalette.ColorForSpriteId(resolve.SpriteId);
+
+        AutotileDebugMeshBuilder.AppendTileMarker(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            localX,
+            localY,
+            tileSize,
+            markerColor);
+
+        if (mode == GroundAutotileDebugMode.SpriteIdLabel && resolve.Resolved)
+        {
+            AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                resolve.SpriteId,
+                resolve.FlipX);
+        }
+    }
+
+    private static bool TryResolveCover(
+        SandboxTileVisualCatalog visualCatalog,
+        Func<int, int, SandboxTile> tileLookup,
+        SandboxTile tile,
+        Vector2Int worldCoord,
+        out CoverResolveResult result)
+    {
+        result = default;
+        SandboxTile tileAbove = tileLookup(worldCoord.x, worldCoord.y + 1);
+        if (!visualCatalog.ShouldRenderGrassCover(tile.id, tileAbove)
+            || !visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset tileset))
+        {
+            return false;
+        }
+
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) =>
+            {
+                SandboxTile neighbor = tileLookup(x, y);
+                return visualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
+            },
+            (x, y) => tileLookup(x, y).IsSolid,
+            worldCoord.x,
+            worldCoord.y);
+
+        Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+        if (sprite == null)
+        {
+            return false;
+        }
+
+        result = new CoverResolveResult(sprite.name, flipX);
+        return true;
+    }
+
+    private readonly struct CoverResolveResult
+    {
+        public CoverResolveResult(string spriteId, bool flipX)
+        {
+            SpriteId = spriteId;
+            FlipX = flipX;
+        }
+
+        public string SpriteId { get; }
+        public bool FlipX { get; }
     }
 
     private void EnsureComponents()

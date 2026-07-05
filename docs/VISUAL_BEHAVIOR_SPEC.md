@@ -4,7 +4,7 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-05T04:55:00Z
+timestamp: 2026-07-05T06:00:00Z
 ---
 
 # Visual Behavior Specification
@@ -45,16 +45,18 @@ For each offset `(dx, dy)` from the tile when building `visualMask`:
 After connectivity is built, `NormalizeGroundMask` may remap the mask:
 
 1. **Stair-step interior support** — when a one-sided upper diagonal gap is caused by a neighboring grass surface step and the lower support row is filled, remap the support tile to the all-connected interior mask so descending/ascending slopes do not repeat diagonal corner sprites down the dirt body.
-2. **Material-boundary corners** — when a foreign solid sits west or east (`isSolid` true but not same ground group) and the connectivity mask has that side column open with same-group tiles filling the south row, clear the south mask row so lip tiles resolve to corner caps (`16`, `24`) instead of horizontal run ends (`0`) or west-open strips (`8`).
+2. **Inner-cavity edges** — window/hole lintels and inner vertical strips inside carved cavities may remap outside-body rules (`18`, `0`) to the underside family (`17`) or inner-face family (`8` + `flipX`) when same-group arms exist east/west, mass exists north, and a south-row diagonal opens into adjacent air. Corner lintels may have solid dirt directly below while the cavity opens diagonally (east/west below).
+3. **Cavity-bridge lintels** — one-tile-wide bridge masks (`25`) over holes remap to continuous underside (`17`) when corner cells continue on both sides.
+4. **Material-boundary corners** — when a foreign solid sits west or east (`isSolid` true but not same ground group) and the connectivity mask has that side column open with same-group tiles filling the south row, clear the south mask row so lip tiles resolve to corner caps (`16`, `24`) instead of horizontal run ends (`0`) or west-open strips (`8`).
 
-There is deliberately **no** underside or vertical-face mask remapping:
+There is deliberately **no generic** underside or external-cliff face remapping:
 
-- **Undersides / cave ceilings** resolve through the authored underside family (`14`–`17`, `31`, bottom caps `29`/`16`) from their raw masks. Flipping mask rows to reuse top-edge sprites renders top decoration at the bottom of a mass — upside down.
-- **Vertical cliff faces** with mass on one side resolve to the authored face sprites (`8` + `flipX`, cap `22` + `flipX` under a surface tile, outside corners `0`/`16`). Remapping them to the pillar strip (`21`) draws a double-outlined band that does not blend into the adjacent body. True 1-wide pillars already resolve `28`/`21`/`29` from their raw masks.
+- **External undersides / cave ceilings** resolve through the authored underside family (`14`–`17`, `31`, bottom caps `29`/`16`) from their raw masks. Flipping mask rows to reuse top-edge sprites renders top decoration at the bottom of a mass — upside down. Inner-cavity and bridge lintel remaps (items 2–3) are explicit, fixture-backed exceptions for carved voids.
+- **External vertical cliff faces** with mass on one side resolve to the authored face sprites (`8` + `flipX`, cap `22` + `flipX` under a surface tile, outside corners `0`/`16`). Remapping them to the pillar strip (`21`) draws a double-outlined band that does not blend into the adjacent body. True 1-wide pillars already resolve `28`/`21`/`29` from their raw masks. Inner-cavity vertical strips (item 2) may remap outside-corner `0` to inner-face `8` when a hole sits directly below.
 
 Callers must pass an explicit `isSolid(x,y)` predicate when building ground masks so south blend-below can distinguish foreign solids from air while side boundaries stay disconnected in the connectivity pass.
 
-Debug reports (tile-viz autotile JSON, runtime MCP `tile_autotile`) expose `visualMask`, `solidMask`, `connectivityMask`, `finalMask`/`mask`, and normalization flags (`stairInterior`, `cavityUnderside`, `materialBoundary`).
+Debug reports (tile-viz autotile JSON, runtime MCP `tile_autotile`) expose `visualMask`, `solidMask`, `connectivityMask`, `finalMask`/`mask`, and normalization flags (`stairInterior`, `innerCavity`, `cavityUnderside`, `materialBoundary`).
 
 ### Material-boundary anti-regressions
 
@@ -255,7 +257,29 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 
 ## 10. Play Mode ground autotile debug overlay
 
-`SandboxWorld` exposes `GroundAutotileDebugMode` (inspector + **F3** cycle): `Off`, `ColorBySpriteId`, `SpriteIdLabel`, `ColorByTileId`. When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid ground autotile cells using the same resolve path as chunk rendering (`AutotileGroundResolve`). `SpriteIdLabel` prints the resolved sprite id (0–31) and a flip notch when `flipX` is true.
+`SandboxWorld` exposes `GroundAutotileDebugMode` (inspector + **F3** cycle):
+
+| Mode | Purpose |
+|------|---------|
+| `Off` | No overlay |
+| `ColorBySpriteId` | Tint each solid cell by resolved ground sprite id |
+| `SpriteIdLabel` | Ground sprite id digits + flip notch |
+| `ColorByTileId` | Tint by registry tile id |
+| `CoverSpriteIdLabel` | Cover sprite id on grass surface cells |
+| `GroundCoverSplit` | Ground marker (full cell) + cover marker (top half) |
+| `MismatchBaseline` | Red highlight where live ground resolve ≠ committed baseline |
+
+When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
+
+### Drift RCA tooling
+
+See [wiki/autotile-drift-rca.md](wiki/autotile-drift-rca.md) for the layered playbook (world tile diff → autotile baseline diff → PNG compare). Offline scripts live under `tools/tile-viz/scripts/`; Play Mode MCP tools: `world_export_tile_space`, `autotile_diff_baseline`.
+
+### Mesh compositing vs tile-viz blit
+
+Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendSprite`, anchoring sprite mesh vertices to the logical cell via **sprite bounds** (not pivot). Horizontal flip mirrors within the cell width. This matches tile-viz `blitSprite` when sprite ids and `flipX` agree.
+
+If Play Mode labels match tile-viz but art still diverges on asymmetric sprites, route autotile quads through `AppendFixedCellQuad` (full 16×16 cell UV span) as a parity fallback. No remap is applied unless the Phase 3 gate fails (labels match, pixels differ).
 
 ---
 

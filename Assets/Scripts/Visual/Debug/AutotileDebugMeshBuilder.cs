@@ -105,6 +105,28 @@ namespace ProjectTwelve.Visual.AutotileDebug
         }
 
         /// <summary>
+        /// Appends a half-height marker (top or bottom half of the cell).
+        /// </summary>
+        public static void AppendHalfTileMarker(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int localX,
+            int localY,
+            float tileSize,
+            Color fillColor,
+            bool topHalf)
+        {
+            float left = localX * tileSize + tileSize * MarkerInset;
+            float right = (localX + 1) * tileSize - tileSize * MarkerInset;
+            float mid = (localY + 0.5f) * tileSize;
+            float bottom = topHalf ? mid : localY * tileSize + tileSize * MarkerInset;
+            float top = topHalf ? (localY + 1) * tileSize - tileSize * MarkerInset : mid;
+            AppendQuad(vertices, triangles, uvs, colors, left, right, bottom, top, ZOffset - 0.001f, SolidFillUv, fillColor);
+        }
+
+        /// <summary>
         /// Appends digit quads and an optional flip marker for sprite id labels.
         /// </summary>
         public static void AppendSpriteIdLabel(

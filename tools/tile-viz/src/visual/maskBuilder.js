@@ -65,7 +65,7 @@ export function buildGroundMask(sharesGroundGroup, worldX, worldY, isSolid = sha
  *   solidMask: number[][]|null,
  *   connectivityMask: number[][],
  *   finalMask: number[][],
- *   normalization: { stairInterior: boolean, cavityUnderside: boolean, materialBoundary: boolean },
+ *   normalization: { stairInterior: boolean, cavityUnderside: boolean, materialBoundary: boolean, innerCavity: boolean },
  * }}
  */
 export function buildGroundMaskDetailed(
@@ -180,7 +180,7 @@ export function normalizeGroundMask(
 
 /**
  * @param {number[][]} mask
- * @returns {{ mask: number[][], normalization: { stairInterior: boolean, cavityUnderside: boolean, materialBoundary: boolean } }}
+ * @returns {{ mask: number[][], normalization: { stairInterior: boolean, cavityUnderside: boolean, materialBoundary: boolean, innerCavity: boolean } }}
  */
 export function normalizeGroundMaskDetailed(
   mask,
@@ -194,12 +194,19 @@ export function normalizeGroundMaskDetailed(
     stairInterior: false,
     cavityUnderside: false,
     materialBoundary: false,
+    innerCavity: false,
   };
 
   const stairInterior = tryRemapStairInteriorDiagonalMask(mask, isSurfaceTile, worldX, worldY);
   if (stairInterior) {
     normalization.stairInterior = true;
     return { mask: stairInterior, normalization };
+  }
+
+  const innerCavity = tryRemapCavityInnerEdgeMask(mask, sharesGroundGroup, isSolid, worldX, worldY);
+  if (innerCavity) {
+    normalization.innerCavity = true;
+    return { mask: innerCavity, normalization };
   }
 
   const cavityUnderside = tryRemapCavityBridgeToUnderside(mask, sharesGroundGroup, isSolid, worldX, worldY);
@@ -251,6 +258,97 @@ export function tryRemapStairInteriorDiagonalMask(mask, isSurfaceTile = null, wo
     [1, 1, 1],
     [1, 1, 1],
     [1, 1, 1],
+  ];
+}
+
+/**
+ * Window/hole lintels and inner vertical strips inside cavities often match outside-body
+ * rules (18, 0) even though they should read as underside (17) or inner face (8).
+ *
+ * @param {number[][]} mask
+ * @returns {number[][]|null}
+ */
+export function tryRemapCavityInnerEdgeMask(mask, sharesGroundGroup, isSolid, worldX, worldY) {
+  if (!sharesGroundGroup || !isSolid) {
+    return null;
+  }
+
+  if (!sharesGroundGroup(worldX - 1, worldY) || !sharesGroundGroup(worldX + 1, worldY)) {
+    return null;
+  }
+
+  if (!isSolid(worldX, worldY + 1)) {
+    return null;
+  }
+
+  if (mask[1][0] !== 1 || mask[0][1] !== 1 || mask[2][1] !== 1) {
+    return null;
+  }
+
+  const lintel = tryRemapCavityLintelToUnderside(mask, isSolid, worldX, worldY);
+  if (lintel) {
+    return lintel;
+  }
+
+  if (!isSolid(worldX, worldY - 1)) {
+    return tryRemapCavityInnerVerticalMask(mask, sharesGroundGroup, worldX, worldY);
+  }
+
+  return null;
+}
+
+function tryRemapCavityLintelToUnderside(mask, isSolid, worldX, worldY) {
+  if (!hasFilledSouthRow(mask)) {
+    return null;
+  }
+
+  if (mask[0][2] !== 0 && mask[2][2] !== 0) {
+    return null;
+  }
+
+  const cavityBelow = !isSolid(worldX, worldY - 1)
+    || !isSolid(worldX - 1, worldY - 1)
+    || !isSolid(worldX + 1, worldY - 1);
+  if (!cavityBelow) {
+    return null;
+  }
+
+  return fullUndersideMask();
+}
+
+function tryRemapCavityInnerVerticalMask(mask, sharesGroundGroup, worldX, worldY) {
+  const westOpenOutsideCorner = mask[0][0] === 0 && mask[0][1] === 1 && mask[1][1] === 1
+    && mask[1][2] === 1 && mask[2][2] === 1;
+  const eastOpenOutsideCorner = mask[2][0] === 0 && mask[2][1] === 1 && mask[1][1] === 1
+    && mask[1][2] === 1 && mask[0][2] === 1;
+  if (!westOpenOutsideCorner && !eastOpenOutsideCorner) {
+    return null;
+  }
+
+  if (westOpenOutsideCorner && !sharesGroundGroup(worldX + 1, worldY)) {
+    return null;
+  }
+
+  if (eastOpenOutsideCorner && !sharesGroundGroup(worldX - 1, worldY)) {
+    return null;
+  }
+
+  return westOpenOutsideCorner ? westOpenVerticalMask() : eastOpenVerticalMask();
+}
+
+function westOpenVerticalMask() {
+  return [
+    [0, 1, 1],
+    [0, 1, 1],
+    [0, 1, 1],
+  ];
+}
+
+function eastOpenVerticalMask() {
+  return [
+    [1, 1, 0],
+    [1, 1, 0],
+    [1, 1, 0],
   ];
 }
 

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using ProjectTwelve.Sandbox.Registry;
+using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ namespace ProjectTwelve.RuntimeMcp
     {
         public const int DefaultRadius = 2;
         public const int MaxAreaCells = 400;
+        public const int MaxDiffScanCells = 10000;
 
         /// <summary>
         /// Resolves inclusive world-tile bounds from explicit min/max or center + radius arguments.
@@ -285,7 +288,8 @@ namespace ProjectTwelve.RuntimeMcp
                 {
                     ["stairInterior"] = maskBuild.StairInteriorRemap,
                     ["cavityUnderside"] = maskBuild.CavityUndersideRemap,
-                    ["materialBoundary"] = maskBuild.MaterialBoundaryRemap
+                    ["materialBoundary"] = maskBuild.MaterialBoundaryRemap,
+                    ["innerCavity"] = maskBuild.InnerCavityRemap
                 },
                 ["normalizationTrace"] = new JArray(maskBuild.NormalizationTrace),
                 ["matchingSpriteIds"] = FindMatchingSpriteIds(tileset.Rules, maskBuild.FinalMask),
@@ -595,5 +599,210 @@ namespace ProjectTwelve.RuntimeMcp
 
             return builder.ToString();
         }
+
+        /// <summary>
+        /// Exports a rectangular world region as project-twelve/tile-space/v1 space JSON.
+        /// </summary>
+        public static JObject BuildTileSpaceExport(
+            SandboxWorld world,
+            int xMin,
+            int yMin,
+            int xMax,
+            int yMax,
+            bool writeFile,
+            string name)
+        {
+            JArray tiles = new JArray();
+            for (int y = yMin; y <= yMax; y++)
+            {
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    SandboxTile tile = world.GetTile(x, y);
+                    if (!tile.IsSolid)
+                    {
+                        continue;
+                    }
+
+                    tiles.Add(new JObject
+                    {
+                        ["x"] = x,
+                        ["y"] = y,
+                        ["id"] = RuntimeIndexToLegacyTileId(tile.id),
+                        ["light"] = tile.light,
+                    });
+                }
+            }
+
+            JObject space = new JObject
+            {
+                ["format"] = "project-twelve/tile-space/v1",
+                ["kind"] = "space",
+                ["name"] = string.IsNullOrWhiteSpace(name) ? "runtime-export" : name,
+                ["xMin"] = xMin,
+                ["yMin"] = yMin,
+                ["xMax"] = xMax,
+                ["yMax"] = yMax,
+                ["tiles"] = tiles,
+            };
+
+            if (writeFile)
+            {
+                string fileName = $"tile-space-{DateTime.UtcNow:yyyyMMdd-HHmmss}.json";
+                string path = Path.Combine(Application.persistentDataPath, fileName);
+                File.WriteAllText(path, space.ToString(Newtonsoft.Json.Formatting.Indented));
+                space["filePath"] = path;
+            }
+
+            return space;
+        }
+
+        /// <summary>
+        /// Compares live autotile resolution against a committed baseline; returns mismatches only.
+        /// </summary>
+        public static JObject BuildAutotileDiffBaseline(
+            SandboxWorld world,
+            SandboxTileVisualCatalog catalog,
+            int xMin,
+            int yMin,
+            int xMax,
+            int yMax,
+            string baselineName,
+            int maxDiffs,
+            string compareLayer)
+        {
+            IReadOnlyDictionary<Vector2Int, BaselineCell> baseline = AutotileBaselineStore.TryLoad(
+                string.IsNullOrWhiteSpace(baselineName) ? "sandbox-scene-mountain" : baselineName);
+            if (baseline == null)
+            {
+                throw new InvalidOperationException(
+                    $"Autotile baseline '{baselineName}' not found under StreamingAssets/AutotileBaselines.");
+            }
+
+            bool compareGround = compareLayer != "cover";
+            bool compareCover = compareLayer != "ground";
+            JArray diffs = new JArray();
+            int compared = 0;
+            int matched = 0;
+            int missingBaseline = 0;
+
+            for (int y = yMin; y <= yMax; y++)
+            {
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    SandboxTile tile = world.GetTile(x, y);
+                    if (!tile.IsSolid)
+                    {
+                        continue;
+                    }
+
+                    compared++;
+                    Vector2Int key = new Vector2Int(x, y);
+                    if (!baseline.TryGetValue(key, out BaselineCell expected))
+                    {
+                        missingBaseline++;
+                        if (diffs.Count < maxDiffs)
+                        {
+                            diffs.Add(new JObject
+                            {
+                                ["x"] = x,
+                                ["y"] = y,
+                                ["errors"] = new JArray("missing in baseline"),
+                            });
+                        }
+
+                        continue;
+                    }
+
+                    JObject autotile = BuildAutotilePayload(world, catalog, x, y, tile);
+                    List<string> errors = new List<string>();
+
+                    if (compareGround)
+                    {
+                        if (AutotileBaselineCompare.ToLegacyTileId(tile.id) != expected.TileId)
+                        {
+                            errors.Add($"tileId: expected {expected.TileId}, got {AutotileBaselineCompare.ToLegacyTileId(tile.id)}");
+                        }
+
+                        JObject ground = autotile["ground"] as JObject;
+                        string actualSprite = ground?["spriteId"]?.Value<string>();
+                        bool actualFlip = ground?["flipX"]?.Value<bool>() ?? false;
+                        if (actualSprite != expected.GroundSpriteId)
+                        {
+                            errors.Add($"ground.spriteId: expected {expected.GroundSpriteId}, got {actualSprite}");
+                        }
+
+                        if (actualFlip != expected.GroundFlipX)
+                        {
+                            errors.Add($"ground.flipX: expected {expected.GroundFlipX}, got {actualFlip}");
+                        }
+                    }
+
+                    if (compareCover)
+                    {
+                        JObject cover = autotile["cover"] as JObject;
+                        bool actualRendered = cover?["rendered"]?.Value<bool>() ?? false;
+                        if (actualRendered != expected.CoverRendered)
+                        {
+                            errors.Add($"cover.rendered: expected {expected.CoverRendered}, got {actualRendered}");
+                        }
+                        else if (actualRendered)
+                        {
+                            string actualCoverSprite = cover?["spriteId"]?.Value<string>();
+                            bool actualCoverFlip = cover?["flipX"]?.Value<bool>() ?? false;
+                            if (actualCoverSprite != expected.CoverSpriteId)
+                            {
+                                errors.Add($"cover.spriteId: expected {expected.CoverSpriteId}, got {actualCoverSprite}");
+                            }
+
+                            if (actualCoverFlip != expected.CoverFlipX)
+                            {
+                                errors.Add($"cover.flipX: expected {expected.CoverFlipX}, got {actualCoverFlip}");
+                            }
+                        }
+                    }
+
+                    if (errors.Count == 0)
+                    {
+                        matched++;
+                        continue;
+                    }
+
+                    if (diffs.Count < maxDiffs)
+                    {
+                        diffs.Add(new JObject
+                        {
+                            ["x"] = x,
+                            ["y"] = y,
+                            ["errors"] = new JArray(errors),
+                        });
+                    }
+                }
+            }
+
+            return new JObject
+            {
+                ["baselineName"] = baselineName,
+                ["compareLayer"] = compareLayer ?? "all",
+                ["xMin"] = xMin,
+                ["yMin"] = yMin,
+                ["xMax"] = xMax,
+                ["yMax"] = yMax,
+                ["summary"] = new JObject
+                {
+                    ["compared"] = compared,
+                    ["matched"] = matched,
+                    ["mismatched"] = compared - matched - missingBaseline,
+                    ["missingBaseline"] = missingBaseline,
+                    ["truncated"] = diffs.Count >= maxDiffs,
+                },
+                ["diffs"] = diffs,
+            };
+        }
+
+        /// <summary>
+        /// Maps a registry runtime tile index to legacy P1 tile-viz id (0–7).
+        /// </summary>
+        public static int RuntimeIndexToLegacyTileId(int runtimeIndex) =>
+            AutotileBaselineCompare.ToLegacyTileId(runtimeIndex);
     }
 }

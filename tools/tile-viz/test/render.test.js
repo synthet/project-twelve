@@ -25,24 +25,28 @@ const renderFixtures = [
   'slope-descending-long',
   'material-boundary-horizontal',
   'dirt-stone-reentrant-west',
+  'sandbox-scene-mountain',
 ];
 
 for (const fixture of renderFixtures) {
   test(`render ${fixture} PNG matches golden hash`, {
     skip: assetsAvailable ? false : `licensed assets not found at ${humusPath} (set TILE_VIZ_ASSETS_ROOT)`,
   }, () => {
-    const snippetPath = path.join(__dirname, 'fixtures', 'snippets', `${fixture}.json`);
+    const isCapture = fixture === 'sandbox-scene-mountain';
+    const fixtureDir = isCapture ? 'captures' : 'snippets';
+    const snippetPath = path.join(__dirname, 'fixtures', fixtureDir, `${fixture}.json`);
     const goldenPath = path.join(RENDER_DIR, `${fixture}.png`);
+    const scale = isCapture ? 32 : 16;
     const goldenExists = fs.existsSync(goldenPath);
     if (!goldenExists) {
       const space = loadTileSpaceFromFile(snippetPath);
-      const png = renderAutotilePng(space, { assetsRoot, scale: 16, flatLight: true });
+      const png = renderAutotilePng(space, { assetsRoot, scale, flatLight: true });
       fs.mkdirSync(RENDER_DIR, { recursive: true });
       fs.writeFileSync(goldenPath, png);
     }
 
     const space = loadTileSpaceFromFile(snippetPath);
-    const png = renderAutotilePng(space, { assetsRoot, scale: 16, flatLight: true });
+    const png = renderAutotilePng(space, { assetsRoot, scale, flatLight: true });
     const golden = fs.readFileSync(goldenPath);
     assert.equal(png.length, golden.length, 'PNG byte length differs from golden');
     assert.deepEqual(png, golden);

@@ -1,5 +1,5 @@
 // Regression fixtures for inner-cavity, roof slope chirality, and one-sided lips.
-// Captures current tile-viz resolver output in snippet-local context (baseline for Unity parity).
+// Captures current tile-viz resolver output in halo-correct snippet context (baseline for Unity parity).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadTileSpaceFromFile } from '../src/io/tileSpace.js';
-import { buildAutotileReport } from '../src/report/autotileJson.js';
+import { buildAutotileReport, assertExpectations } from '../src/report/autotileJson.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SNIPPETS = path.join(__dirname, 'fixtures', 'snippets');
@@ -25,9 +25,13 @@ function groundAt(byKey, x, y) {
   return tile.autotile.ground;
 }
 
+function baselineExpects(space) {
+  return space.baselineExpect?.length ? space.baselineExpect : space.expect ?? [];
+}
+
 test('one-sided-house-lip keeps sprite 24 (not 25) for single-side cells', () => {
-  const { byKey } = reportAt('one-sided-house-lip.json');
-  for (const exp of loadTileSpaceFromFile(path.join(SNIPPETS, 'one-sided-house-lip.json')).expect) {
+  const { space, byKey } = reportAt('one-sided-house-lip.json');
+  for (const exp of baselineExpects(space)) {
     const g = groundAt(byKey, exp.x, exp.y);
     assert.equal(g.spriteId, '24', `(${exp.x},${exp.y})`);
     assert.notEqual(g.spriteId, '25');
@@ -45,10 +49,51 @@ test('roof-slope-left-vs-right captures paired left/right cap cells', () => {
   assert.equal(rightCap.flipX, false);
 });
 
+test('roof-slope-left-vs-right cover caps mirror chirality', () => {
+  const { byKey } = reportAt('roof-slope-left-vs-right.json');
+  const leftCap = byKey.get('-102,30');
+  const rightCap = byKey.get('-87,29');
+  assert.equal(leftCap.autotile.cover?.spriteId, '3');
+  assert.equal(leftCap.autotile.cover?.flipX, true);
+  assert.equal(rightCap.autotile.cover?.spriteId, '3');
+  assert.equal(rightCap.autotile.cover?.flipX, false);
+});
+
+test('roof-slope-left-vs-right tread steps mirror cover chirality', () => {
+  const { byKey } = reportAt('roof-slope-left-vs-right.json');
+  const leftTread = groundAt(byKey, -104, 30);
+  const rightTread = groundAt(byKey, -88, 28);
+  assert.equal(leftTread.spriteId, '2');
+  assert.equal(rightTread.spriteId, '2');
+  const leftCover = byKey.get('-104,30').autotile.cover;
+  const rightCover = byKey.get('-88,28').autotile.cover;
+  assert.equal(leftCover.spriteId, '5');
+  assert.equal(leftCover.flipX, true);
+  assert.equal(rightCover.spriteId, '5');
+  assert.equal(rightCover.flipX, false);
+});
+
 test('dirt-window-inner-edges resolves without partner substitution', () => {
-  const { byKey } = reportAt('dirt-window-inner-edges.json');
-  for (const exp of loadTileSpaceFromFile(path.join(SNIPPETS, 'dirt-window-inner-edges.json')).expect) {
+  const { space, byKey } = reportAt('dirt-window-inner-edges.json');
+  for (const exp of baselineExpects(space)) {
     const g = groundAt(byKey, exp.x, exp.y);
     assert.equal(g.partnerSubstitution, false, `(${exp.x},${exp.y})`);
   }
+});
+
+test('dirt-window-inner-edges baseline matches halo-correct capture at inner verticals', () => {
+  const { byKey } = reportAt('dirt-window-inner-edges.json');
+  const left = groundAt(byKey, -114, 28);
+  const right = groundAt(byKey, -111, 28);
+  assert.equal(left.spriteId, '8');
+  assert.equal(left.flipX, true);
+  assert.equal(right.spriteId, '8');
+  assert.equal(right.flipX, false);
+});
+
+test('dirt-window-inner-edges meets targetExpect after inner-cavity normalization', () => {
+  const space = loadTileSpaceFromFile(path.join(SNIPPETS, 'dirt-window-inner-edges.json'));
+  const report = buildAutotileReport(space);
+  const errors = assertExpectations(space, report, space.targetExpect ?? []);
+  assert.equal(errors.length, 0, errors.join('\n'));
 });
