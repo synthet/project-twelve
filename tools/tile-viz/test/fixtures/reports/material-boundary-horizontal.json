@@ -1,0 +1,338 @@
+{
+  "format": "project-twelve/autotile-report/v1",
+  "name": "material-boundary-horizontal",
+  "xMin": 0,
+  "yMin": 19,
+  "xMax": 3,
+  "yMax": 20,
+  "width": 4,
+  "height": 2,
+  "ascii": [
+    "###%",
+    "%%%%"
+  ],
+  "tiles": [
+    {
+      "x": 0,
+      "y": 20,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "24"
+          ],
+          "spriteId": "24",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 1,
+      "y": 20,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "25"
+          ],
+          "spriteId": "25",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 2,
+      "y": 20,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "24"
+          ],
+          "spriteId": "24",
+          "flipX": true,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 3,
+      "y": 20,
+      "tileId": 3,
+      "tileName": "Stone",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Rocks",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "28",
+            "29"
+          ],
+          "spriteId": "28",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 0,
+      "y": 19,
+      "tileId": 3,
+      "tileName": "Stone",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Rocks",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "24"
+          ],
+          "spriteId": "24",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 1,
+      "y": 19,
+      "tileId": 3,
+      "tileName": "Stone",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Rocks",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "25"
+          ],
+          "spriteId": "25",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 2,
+      "y": 19,
+      "tileId": 3,
+      "tileName": "Stone",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Rocks",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "25"
+          ],
+          "spriteId": "25",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "tileId": 3,
+      "tileName": "Stone",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Rocks",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "7",
+            "15"
+          ],
+          "spriteId": "7",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    }
+  ]
+}

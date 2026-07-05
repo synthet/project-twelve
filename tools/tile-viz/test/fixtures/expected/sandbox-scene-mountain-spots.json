@@ -1,0 +1,39 @@
+{
+  "spots": [
+    {
+      "x": -113,
+      "y": 26,
+      "ground": {
+        "spriteId": "2",
+        "flipX": false
+      }
+    },
+    {
+      "x": -112,
+      "y": 26,
+      "ground": {
+        "spriteId": "2",
+        "flipX": false
+      }
+    },
+    {
+      "x": -117,
+      "y": 25,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false
+      }
+    },
+    {
+      "x": -90,
+      "y": 12,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false
+      }
+    }
+  ],
+  "antiRegression": {
+    "dirtOnStoneMustNotUseFangSprites": []
+  }
+}

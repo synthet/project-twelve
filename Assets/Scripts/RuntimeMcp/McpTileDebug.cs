@@ -237,7 +237,7 @@ namespace ProjectTwelve.RuntimeMcp
             int y,
             SandboxTile tile)
         {
-            if (!catalog.TryGetGroundTileset(tile.id, out AutotileTileset tileset))
+            if (catalog == null || !catalog.TryGetGroundTileset(tile.id, out AutotileTileset tileset))
             {
                 payload["ground"] = new JObject
                 {
@@ -247,16 +247,47 @@ namespace ProjectTwelve.RuntimeMcp
                 return;
             }
 
-            int[,] mask = BuildGroundMask(world, catalog, tile, x, y);
-            Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+            bool SharesGround(int nx, int ny)
+            {
+                SandboxTile neighbor = world.GetTile(nx, ny);
+                return catalog.SharesGroundAutotileGroup(tile.id, neighbor.id);
+            }
+
+            bool IsSolid(int nx, int ny) => world.GetTile(nx, ny).IsSolid;
+
+            bool IsSurfaceTile(int nx, int ny)
+            {
+                SandboxTile surface = world.GetTile(nx, ny);
+                return surface.id == SandboxRegistries.GrassIndex && !world.GetTile(nx, ny + 1).IsSolid;
+            }
+
+            GroundMaskBuildResult maskBuild = AutotileMaskBuilder.BuildGroundMaskDetailed(
+                SharesGround,
+                IsSolid,
+                x,
+                y,
+                IsSurfaceTile);
+            Sprite sprite = AutotileResolver.ResolveSprite(tileset, maskBuild.FinalMask, out bool flipX);
+
             payload["ground"] = new JObject
             {
                 ["tileset"] = tileset.Name,
-                ["mask"] = MaskToJson(mask),
+                ["visualMask"] = MaskToJson(maskBuild.VisualMask),
+                ["solidMask"] = maskBuild.SolidMask != null ? MaskToJson(maskBuild.SolidMask) : null,
+                ["connectivityMask"] = MaskToJson(maskBuild.ConnectivityMask),
+                ["mask"] = MaskToJson(maskBuild.FinalMask),
+                ["normalizedMask"] = MaskToJson(maskBuild.FinalMask),
                 ["maskLayout"] = "mask[x][y]; x=west..east, y=north..south",
-                ["matchingSpriteIds"] = FindMatchingSpriteIds(tileset.Rules, mask),
+                ["normalization"] = new JObject
+                {
+                    ["stairInterior"] = maskBuild.StairInteriorRemap,
+                    ["cavityUnderside"] = maskBuild.CavityUndersideRemap,
+                    ["materialBoundary"] = maskBuild.MaterialBoundaryRemap
+                },
+                ["matchingSpriteIds"] = FindMatchingSpriteIds(tileset.Rules, maskBuild.FinalMask),
                 ["spriteId"] = sprite != null ? sprite.name : null,
                 ["flipX"] = flipX,
+                ["partnerSubstitution"] = false,
                 ["resolved"] = sprite != null
             };
         }
@@ -353,23 +384,6 @@ namespace ProjectTwelve.RuntimeMcp
             }
 
             neighbors[label] = entry;
-        }
-
-        private static int[,] BuildGroundMask(
-            SandboxWorld world,
-            SandboxTileVisualCatalog catalog,
-            SandboxTile center,
-            int worldX,
-            int worldY)
-        {
-            return AutotileMaskBuilder.BuildGroundMask(
-                (x, y) =>
-                {
-                    SandboxTile neighbor = world.GetTile(x, y);
-                    return catalog.SharesGroundAutotileGroup(center.id, neighbor.id);
-                },
-                worldX,
-                worldY);
         }
 
         private static int[,] BuildCoverMask(

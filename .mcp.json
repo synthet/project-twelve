@@ -25,5 +25,24 @@
       "args": ["--no-warmup", "ABSOLUTE_PATH_TO_THIS_REPO"]
     }
   },
-  "mcpServers": {}
+  "mcpServers": {
+    "project-twelve-unity-mcp": {
+      "command": "C:\\Users\\dmnsy\\.unity\\relay\\relay_win.exe",
+      "args": [
+        "--mcp"
+      ],
+      "env": {
+        "UNITY_PROJECT_PATH": "D:\\Projects\\project-twelve"
+      }
+    },
+    "project-twelve-ingame-mcp": {
+      "url": "http://127.0.0.1:8765/mcp",
+      "type": "http"
+    },
+    "project-twelve-fff-mcp": {
+      "type": "stdio",
+      "command": "C:\\Users\\dmnsy\\AppData\\Local\\fff-mcp\\bin\\fff-mcp.exe",
+      "args": ["--no-warmup", "D:\\Projects\\project-twelve"]
+    }
+  }
 }

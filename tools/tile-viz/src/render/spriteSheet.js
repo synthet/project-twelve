@@ -135,9 +135,11 @@ function samplePixel(src, x, y) {
 
  * @param {boolean} extrude include 1px bleed from adjacent sheet cells
 
+ * @param {number} [destSize] output cell size in pixels (defaults to the sprite's native size)
+
  */
 
-export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [255, 255, 255], extrude = true) {
+export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [255, 255, 255], extrude = true, destSize = rect.w) {
   const pad = extrude ? 1 : 0;
   const spanW = rect.w + pad * 2;
   const spanH = rect.h + pad * 2;
@@ -145,11 +147,13 @@ export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [
   const xMax = rect.x + rect.w - 1;
   const yMin = rect.y;
   const yMax = rect.y + rect.h - 1;
+  const outW = destSize;
+  const outH = destSize;
 
-  for (let py = 0; py < rect.h; py++) {
-    for (let px = 0; px < rect.w; px++) {
-      const fx = rect.w <= 1 ? 0.5 : px / (rect.w - 1);
-      const fy = rect.h <= 1 ? 0.5 : py / (rect.h - 1);
+  for (let py = 0; py < outH; py++) {
+    for (let px = 0; px < outW; px++) {
+      const fx = outW <= 1 ? 0.5 : px / (outW - 1);
+      const fy = outH <= 1 ? 0.5 : py / (outH - 1);
       const sampleFx = flipX ? 1 - fx : fx;
       // Clamp extrude to this cell's bounds — do not bleed from adjacent sheet cells.
       let srcX = rect.x - pad + sampleFx * (spanW - 1);

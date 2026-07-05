@@ -163,7 +163,9 @@ public sealed class SandboxSaveLoadTests
 
     private string TempFile(string name)
     {
-        string path = Path.Combine(Application.temporaryCachePath, "sandbox-save-tests", name);
+        string dir = Path.Combine(Application.temporaryCachePath, "sandbox-save-tests");
+        Directory.CreateDirectory(dir);
+        string path = Path.Combine(dir, name);
         tempFiles.Add(path);
         return path;
     }

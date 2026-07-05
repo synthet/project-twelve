@@ -1,0 +1,50 @@
+{
+
+  "format": "project-twelve/tile-space/v1",
+
+  "kind": "snippet",
+
+  "name": "vertical-wall-run",
+
+  "origin": { "x": 0, "y": 0 },
+
+  "width": 3,
+
+  "height": 5,
+
+  "tiles": [
+
+    { "x": 0, "y": 4, "id": 1, "light": 4 },
+
+    { "x": 0, "y": 3, "id": 1, "light": 4 },
+
+    { "x": 0, "y": 2, "id": 1, "light": 4 },
+
+    { "x": 1, "y": 2, "id": 1, "light": 4 },
+
+    { "x": 2, "y": 2, "id": 1, "light": 4 },
+
+    { "x": 1, "y": 1, "id": 1, "light": 4 },
+
+    { "x": 2, "y": 1, "id": 1, "light": 4 },
+
+    { "x": 1, "y": 0, "id": 1, "light": 4 },
+
+    { "x": 2, "y": 0, "id": 1, "light": 4 }
+
+  ],
+
+  "expect": [
+
+    { "x": 0, "y": 4, "ground": { "spriteId": "28" } },
+
+    { "x": 0, "y": 3, "ground": { "spriteId": "21" } },
+
+    { "x": 0, "y": 2, "ground": { "spriteId": "15", "flipX": true } },
+
+    { "x": 1, "y": 2, "ground": { "spriteId": "23", "flipX": true } }
+
+  ]
+
+}
+

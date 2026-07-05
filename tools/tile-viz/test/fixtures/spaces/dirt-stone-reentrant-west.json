@@ -1,0 +1,20 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "space",
+  "name": "dirt-stone-reentrant-west",
+  "xMin": 0,
+  "yMin": 0,
+  "xMax": 2,
+  "yMax": 2,
+  "tiles": [
+    { "x": 0, "y": 2, "id": 3, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 1, "y": 2, "id": 2, "light": 15, "fluid": 0, "metadata": 0 },
+    { "x": 2, "y": 2, "id": 2, "light": 15, "fluid": 0, "metadata": 0 },
+    { "x": 0, "y": 1, "id": 3, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 1, "y": 1, "id": 1, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 2, "y": 1, "id": 1, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 0, "y": 0, "id": 3, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 1, "y": 0, "id": 3, "light": 4, "fluid": 0, "metadata": 0 },
+    { "x": 2, "y": 0, "id": 1, "light": 4, "fluid": 0, "metadata": 0 }
+  ]
+}

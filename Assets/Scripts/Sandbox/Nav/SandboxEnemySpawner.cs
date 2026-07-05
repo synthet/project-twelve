@@ -35,7 +35,7 @@ namespace ProjectTwelve.Sandbox.Nav
         {
             if (world == null)
             {
-                world = FindFirstObjectByType<SandboxWorld>();
+                world = FindAnyObjectByType<SandboxWorld>();
             }
 
             if (viewCamera == null)

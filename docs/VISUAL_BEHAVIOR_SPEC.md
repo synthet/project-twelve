@@ -1,3 +1,12 @@
+---
+type: Specification
+title: Visual Behavior Specification
+description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
+resource: VISUAL_BEHAVIOR_SPEC.md
+tags: [docs, visual, autotile, rendering]
+timestamp: 2026-07-05T04:55:00Z
+---
+
 # Visual Behavior Specification
 
 > **Authority:** ProjectTwelve-owned behavioral contract for autotiling, character composition, creature animation, and effects.
@@ -17,10 +26,46 @@ Masks are **3×3 int grids** indexed `[x, y]` where:
 
 ### Ground mask construction
 
-For each offset `(dx, dy)` from the tile:
+Build at least two conceptual masks before rule matching:
+
+| Mask | Predicate | Purpose |
+|------|-----------|---------|
+| `visualMask` | Same ground autotile group only | Visual connectivity — foreign stone/dirt never connects on sides or north |
+| `solidMask` | Any solid tile (`isSolid`) | Physical support and exposure context |
+| `connectivityMask` | `visualMask` + south-row foreign-solid blend | Pre-normalization resolver input |
+| `finalMask` | `NormalizeGroundMask(connectivityMask, …)` | Mask passed to `AutotileResolver` |
+
+For each offset `(dx, dy)` from the tile when building `visualMask`:
 
 - Cardinal neighbors (N, S, E, W): `1` if the neighbor **shares the ground autotile group**, else `0`.
 - Corner neighbors: `1` only if **both** adjacent cardinals are connected **and** the corner tile shares the group.
+
+**South blend-below** — when composing `connectivityMask` from `visualMask` and `solidMask`, only the south row (S, SW, SE at `y == 2`) may inherit foreign-solid support: a neighbor below counts as connected when `isSolid` is true even if the group differs. This lets buried tiles resting on another material (e.g. dirt over stone) resolve as interior/top families instead of underside roots. Side and north neighbors **never** blend across materials.
+
+After connectivity is built, `NormalizeGroundMask` may remap the mask:
+
+1. **Stair-step interior support** — when a one-sided upper diagonal gap is caused by a neighboring grass surface step and the lower support row is filled, remap the support tile to the all-connected interior mask so descending/ascending slopes do not repeat diagonal corner sprites down the dirt body.
+2. **Material-boundary corners** — when a foreign solid sits west or east (`isSolid` true but not same ground group) and the connectivity mask has that side column open with same-group tiles filling the south row, clear the south mask row so lip tiles resolve to corner caps (`16`, `24`) instead of horizontal run ends (`0`) or west-open strips (`8`).
+
+There is deliberately **no** underside or vertical-face mask remapping:
+
+- **Undersides / cave ceilings** resolve through the authored underside family (`14`–`17`, `31`, bottom caps `29`/`16`) from their raw masks. Flipping mask rows to reuse top-edge sprites renders top decoration at the bottom of a mass — upside down.
+- **Vertical cliff faces** with mass on one side resolve to the authored face sprites (`8` + `flipX`, cap `22` + `flipX` under a surface tile, outside corners `0`/`16`). Remapping them to the pillar strip (`21`) draws a double-outlined band that does not blend into the adjacent body. True 1-wide pillars already resolve `28`/`21`/`29` from their raw masks.
+
+Callers must pass an explicit `isSolid(x,y)` predicate when building ground masks so south blend-below can distinguish foreign solids from air while side boundaries stay disconnected in the connectivity pass.
+
+Debug reports (tile-viz autotile JSON, runtime MCP `tile_autotile`) expose `visualMask`, `solidMask`, `connectivityMask`, `finalMask`/`mask`, and normalization flags (`stairInterior`, `cavityUnderside`, `materialBoundary`).
+
+### Material-boundary anti-regressions
+
+Fixture-backed guarantees at dirt/stone boundaries:
+
+- `24 + flipX` must not collapse to bridge sprite `25` (one-sided lips only).
+- Pillar strip `21` must not be replaced by side-cap `22` without matching topology.
+- Stone neighbors must not count as same-material dirt connectivity on W/E/N.
+- Stone neighbors may count as solid support on the south row only.
+- Foreign solid below must not automatically trigger air-underside behavior.
+- Foreign solid beside dirt must not force interior fill `9`/`10` at re-entrant corners.
 
 ### Cover mask construction
 
@@ -28,7 +73,8 @@ Start from the cover connectivity mask (grass connects only to grass).
 
 Then, for west and east cardinals at `[0,1]` and `[2,1]`:
 
-- If a **solid ground body** exists beside the cover tile (neighbor and neighbor-above are both solid, any tileset), set that cardinal to `2` instead of `0` or `1`. This marks cliff/edge cover overlays.
+- If a **solid ground body** exists on the same row beside the cover tile, set that cardinal to `2` instead of `0` or `1`. This marks cliff/edge cover overlays beside dirt/stone bodies.
+- If a **solid column** exists directly above the neighbor cell, also set that cardinal to `2` (vertical cliff beside the grass run).
 
 Cover rules may use mask values `0`, `1`, and `2`.
 
@@ -74,12 +120,16 @@ MatchColumns(M, flipColumns):
 ### Resolution order
 
 1. Collect all rules where `MatchRows(M, flipInput=false)`.
-2. If none, collect rules where `MatchRows(M, flipInput=true)` and set output `flipX = true`.
-3. If none, collect rules where `MatchColumns(M, flipColumns=true)` and set output `flipX = true`.
-4. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
-5. Fallback sprite id `"20"` for 32-sprite ground tilesets; `"0"` for cover tilesets when no rule matches or sprite missing.
-6. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
-7. **Single-sprite tilesets** (e.g. Rocks when the catalog lists one sprite) skip rule matching and always use the lone sprite. Standard ground sheets such as BricksA, BricksB, BricksC, BricksD, and Humus use **32 sprites** and the ground rule table.
+2. If none, collect rules where `MatchRows(M, flipInput=true)`; return the matched rule's `spriteId` with `flipX = true` (vendor PixelFantasy behavior).
+3. If none, collect rules where `MatchColumns(M, flipColumns=true)`; return the matched rule's `spriteId` with `flipX = true`.
+4. Cover tilesets (6 sprites) use the same flip-pass contract.
+5. Optional authored partner substitution (`AutotileGroundSpritePartners`) is **disabled** until fixture-validated; see [`wiki/ground-autotile-32-rules.md`](wiki/ground-autotile-32-rules.md) § Mirroring policy.
+6. If multiple matches, pick by **weighted deterministic hash** (`AutotileResolver`).
+7. Fallback sprite id `"20"` for 32-sprite ground tilesets; `"0"` for cover tilesets when no rule matches or sprite missing.
+8. Ground tilesets use **32 sprites** ⇒ ground rule table. Other counts ⇒ cover rule table.
+9. **Single-sprite tilesets** (e.g. Rocks when the catalog lists one sprite) skip rule matching and always use the lone sprite. Standard ground sheets such as BricksA, BricksB, BricksC, BricksD, and Humus use **32 sprites** and the ground rule table.
+
+PixelFantasy 128×64 ground sheets may contain artist-authored left/right variants on the sprite sheet, but the resolver must not substitute a different sprite ID unless mask topology proves equivalence. Prefer `flipX = true` on the matched rule. Rule table: [`wiki/ground-autotile-32-rules.md`](wiki/ground-autotile-32-rules.md).
 
 Rule tables are stored in `AutotileRuleTables`.
 
@@ -200,6 +250,12 @@ Given mount base texture and character layer pixels:
 | Props | 16 | Point | Individual sprites |
 
 Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (submodule) and populate catalogs under `Assets/_Licensed/Settings/Visual/`.
+
+---
+
+## 10. Play Mode ground autotile debug overlay
+
+`SandboxWorld` exposes `GroundAutotileDebugMode` (inspector + **F3** cycle): `Off`, `ColorBySpriteId`, `SpriteIdLabel`, `ColorByTileId`. When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid ground autotile cells using the same resolve path as chunk rendering (`AutotileGroundResolve`). `SpriteIdLabel` prints the resolved sprite id (0–31) and a flip notch when `flipX` is true.
 
 ---
 

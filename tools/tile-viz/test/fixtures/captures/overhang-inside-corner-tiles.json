@@ -1,0 +1,76 @@
+{
+  "name": "overhang-inside-corner",
+  "xMin": 0,
+  "yMin": 0,
+  "xMax": 3,
+  "yMax": 2,
+  "width": 4,
+  "height": 3,
+  "includeAir": true,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 2,
+      "tileId": 2,
+      "light": 15,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "tileId": 2,
+      "light": 15,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    }
+  ]
+}

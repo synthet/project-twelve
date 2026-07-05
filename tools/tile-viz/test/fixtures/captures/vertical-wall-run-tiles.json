@@ -1,0 +1,84 @@
+{
+  "name": "vertical-wall-run",
+  "xMin": 0,
+  "yMin": 0,
+  "xMax": 2,
+  "yMax": 4,
+  "width": 3,
+  "height": 5,
+  "includeAir": true,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 4,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    }
+  ]
+}

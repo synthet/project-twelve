@@ -1,0 +1,381 @@
+{
+  "format": "project-twelve/autotile-report/v1",
+  "name": "vertical-wall-run",
+  "xMin": 0,
+  "yMin": 0,
+  "xMax": 2,
+  "yMax": 4,
+  "width": 3,
+  "height": 5,
+  "ascii": [
+    "#..",
+    "#..",
+    "###",
+    ".##",
+    ".##"
+  ],
+  "tiles": [
+    {
+      "x": 0,
+      "y": 4,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "28",
+            "29"
+          ],
+          "spriteId": "28",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "21"
+          ],
+          "spriteId": "21",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "7"
+          ],
+          "spriteId": "7",
+          "flipX": true,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              1
+            ]
+          ],
+          "matchingSpriteIds": [
+            "23"
+          ],
+          "spriteId": "23",
+          "flipX": true,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "0"
+          ],
+          "spriteId": "0",
+          "flipX": true,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "24"
+          ],
+          "spriteId": "24",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "24"
+          ],
+          "spriteId": "24",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              1
+            ]
+          ],
+          "matchingSpriteIds": [
+            "0",
+            "16"
+          ],
+          "spriteId": "0",
+          "flipX": false,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "tileId": 1,
+      "tileName": "Dirt",
+      "solid": true,
+      "light": 4,
+      "autotile": {
+        "ground": {
+          "tileset": "Humus",
+          "mask": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "matchingSpriteIds": [
+            "0"
+          ],
+          "spriteId": "0",
+          "flipX": true,
+          "resolved": true
+        },
+        "cover": {
+          "rendered": false,
+          "reason": "Cover applies to grass surface tiles only."
+        }
+      }
+    }
+  ]
+}

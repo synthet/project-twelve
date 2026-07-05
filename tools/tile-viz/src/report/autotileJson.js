@@ -1,6 +1,10 @@
 // MCP-style autotile debug report for a tile space.
 
-import { buildCoverMask, buildGroundMask, maskToJson } from '../visual/maskBuilder.js';
+import {
+  buildCoverMask,
+  buildGroundMaskDetailed,
+  maskToJson,
+} from '../visual/maskBuilder.js';
 import {
   DEFAULT_CATALOG,
   getCoverTilesetName,
@@ -93,19 +97,34 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
   const groundName = getGroundTilesetName(tile.id, catalog);
   if (groundName && tilesets.has(groundName)) {
     const ts = tilesets.get(groundName);
-    const mask = buildGroundMask(
-      (nx, ny) => sharesGroundAutotileGroup(tile.id, getTile(space, nx, ny).id, catalog),
-      x,
-      y,
-    );
+    const sharesGround = (nx, ny) => sharesGroundAutotileGroup(tile.id, getTile(space, nx, ny).id, catalog);
+    const isSolid = (nx, ny) => getTile(space, nx, ny).id !== TileId.Air;
+    const isSurfaceTile = (nx, ny) => {
+      const surface = getTile(space, nx, ny);
+      return surface.id === TileId.Grass && getTile(space, nx, ny + 1).id === TileId.Air;
+    };
+    const maskBuild = buildGroundMaskDetailed(sharesGround, x, y, isSolid, isSurfaceTile);
+    const mask = maskBuild.finalMask;
     const rules = ts.rules ?? getRulesForSpriteCount(ts.spriteCount ?? GROUND_SPRITE_COUNT, tables);
     const resolved = resolveSpriteId(ts, mask);
     entry.autotile.ground = {
       tileset: groundName,
+      materialGroup: groundName,
+      visualMask: maskToJson(maskBuild.visualMask),
+      solidMask: maskBuild.solidMask ? maskToJson(maskBuild.solidMask) : null,
+      connectivityMask: maskToJson(maskBuild.connectivityMask),
+      rawMask: maskToJson(maskBuild.connectivityMask),
+      normalizedMask: maskToJson(mask),
       mask: maskToJson(mask),
+      normalization: maskBuild.normalization,
       matchingSpriteIds: findMatchingSpriteIds(rules, mask),
+      matchedRuleId: resolved.spriteId,
       spriteId: resolved.spriteId,
       flipX: resolved.flipX,
+      finalSpriteId: resolved.spriteId,
+      partnerSubstitution: false,
+      neighborTileIds: buildNeighborTileIds(space, x, y),
+      neighborMaterials: buildNeighborMaterials(space, x, y),
       resolved: resolved.resolved,
     };
   }
@@ -146,6 +165,39 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
   }
 
   return entry;
+}
+
+function buildNeighborTileIds(space, x, y) {
+  const ids = [];
+  for (let dx = -1; dx <= 1; dx++) {
+    const column = [];
+    for (let dy = 1; dy >= -1; dy--) {
+      column.push(getTile(space, x + dx, y + dy).id);
+    }
+    ids.push(column);
+  }
+  return ids;
+}
+
+function buildNeighborMaterials(space, x, y) {
+  const labels = ['NW', 'N', 'NE', 'W', 'E', 'SW', 'S', 'SE'];
+  const offsets = [
+    [-1, 1],
+    [0, 1],
+    [1, 1],
+    [-1, 0],
+    [1, 0],
+    [-1, -1],
+    [0, -1],
+    [1, -1],
+  ];
+  const materials = {};
+  for (let i = 0; i < labels.length; i++) {
+    const [dx, dy] = offsets[i];
+    const neighbor = getTile(space, x + dx, y + dy);
+    materials[labels[i]] = TILE_NAMES[neighbor.id] ?? 'Unknown';
+  }
+  return materials;
 }
 
 export function assertExpectations(space, report) {

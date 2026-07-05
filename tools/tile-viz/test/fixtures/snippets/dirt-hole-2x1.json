@@ -1,0 +1,26 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "dirt-hole-2x1",
+  "origin": { "x": 0, "y": 0 },
+  "width": 4,
+  "height": 3,
+  "tiles": [
+    { "x": 0, "y": 2, "id": 1, "light": 4 },
+    { "x": 1, "y": 2, "id": 1, "light": 4 },
+    { "x": 2, "y": 2, "id": 1, "light": 4 },
+    { "x": 3, "y": 2, "id": 1, "light": 4 },
+    { "x": 0, "y": 1, "id": 1, "light": 4 },
+    { "x": 3, "y": 1, "id": 1, "light": 4 },
+    { "x": 0, "y": 0, "id": 1, "light": 4 },
+    { "x": 1, "y": 0, "id": 1, "light": 4 },
+    { "x": 2, "y": 0, "id": 1, "light": 4 },
+    { "x": 3, "y": 0, "id": 1, "light": 4 }
+  ],
+  "expect": [
+    { "x": 1, "y": 2, "ground": { "spriteId": "17" } },
+    { "x": 2, "y": 2, "ground": { "spriteId": "17" } },
+    { "x": 1, "y": 0, "ground": { "spriteId": "17" } },
+    { "x": 2, "y": 0, "ground": { "spriteId": "17" } }
+  ]
+}

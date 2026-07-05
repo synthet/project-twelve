@@ -1,0 +1,48 @@
+{
+
+  "format": "project-twelve/tile-space/v1",
+
+  "kind": "snippet",
+
+  "name": "overhang-inside-corner",
+
+  "origin": { "x": 0, "y": 0 },
+
+  "width": 4,
+
+  "height": 3,
+
+  "tiles": [
+
+    { "x": 1, "y": 2, "id": 2, "light": 15 },
+
+    { "x": 2, "y": 2, "id": 2, "light": 15 },
+
+    { "x": 1, "y": 1, "id": 1, "light": 4 },
+
+    { "x": 2, "y": 1, "id": 1, "light": 4 },
+
+    { "x": 3, "y": 1, "id": 1, "light": 4 },
+
+    { "x": 1, "y": 0, "id": 1, "light": 4 },
+
+    { "x": 2, "y": 0, "id": 1, "light": 4 },
+
+    { "x": 3, "y": 0, "id": 1, "light": 4 }
+
+  ],
+
+  "expect": [
+
+    { "x": 1, "y": 1, "ground": { "spriteId": "8", "flipX": false } },
+
+    { "x": 2, "y": 1, "ground": { "spriteId": "11", "flipX": true } },
+
+    { "x": 3, "y": 1, "ground": { "spriteId": "0", "flipX": true } },
+
+    { "x": 1, "y": 0, "ground": { "spriteId": "16" } }
+
+  ]
+
+}
+

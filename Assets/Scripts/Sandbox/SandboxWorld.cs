@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using ProjectTwelve.Sandbox.Registry;
+using ProjectTwelve.Visual.AutotileDebug;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 [DefaultExecutionOrder(-100)]
 public sealed class SandboxWorld : MonoBehaviour
@@ -25,8 +29,13 @@ public sealed class SandboxWorld : MonoBehaviour
     [SerializeField] private SandboxTileVisualCatalog tileVisualCatalog;
     [SerializeField] private float tileSize = 1f;
 
+    [Header("Debug")]
+    [SerializeField] private GroundAutotileDebugMode groundAutotileDebugMode;
+
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
+    private readonly Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay> debugOverlays =
+        new Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay>();
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
     private float nextChunkRefreshTime;
 
@@ -35,6 +44,9 @@ public sealed class SandboxWorld : MonoBehaviour
 
     /// <summary>Visual catalog used for autotile mesh rendering and debug tooling.</summary>
     public SandboxTileVisualCatalog TileVisualCatalog => tileVisualCatalog;
+
+    /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
+    public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
 
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
@@ -68,6 +80,8 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void Update()
     {
+        HandleDebugHotkey();
+
         if (Time.time >= nextChunkRefreshTime)
         {
             RefreshLoadedChunks();
@@ -75,6 +89,33 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         RebuildDirtyChunks();
+    }
+
+    private void HandleDebugHotkey()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            groundAutotileDebugMode = CycleGroundAutotileDebugMode(groundAutotileDebugMode);
+            MarkAllLoadedRenderersDirty();
+        }
+#endif
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (Application.isPlaying)
+        {
+            MarkAllLoadedRenderersDirty();
+        }
+    }
+#endif
+
+    private static GroundAutotileDebugMode CycleGroundAutotileDebugMode(GroundAutotileDebugMode mode)
+    {
+        int next = ((int)mode + 1) % 4;
+        return (GroundAutotileDebugMode)next;
     }
 
     public SandboxTile GetTile(int x, int y)
@@ -445,6 +486,7 @@ public sealed class SandboxWorld : MonoBehaviour
             MarkRenderedFaceNeighborsDirty(coord, chunks, renderers.Keys);
             SandboxChunkRenderer chunkRenderer = renderers[coord];
             renderers.Remove(coord);
+            debugOverlays.Remove(coord);
             if (Application.isPlaying)
             {
                 Destroy(chunkRenderer.gameObject);
@@ -487,12 +529,19 @@ public sealed class SandboxWorld : MonoBehaviour
         rebuildScratch.AddRange(GetChunksNeedingRebuild(renderers.Keys, chunks));
         foreach (Vector2Int coord in rebuildScratch)
         {
-            renderers[coord].Rebuild(
-                chunks[coord],
+            SandboxChunk chunk = chunks[coord];
+            SandboxChunkRenderer renderer = renderers[coord];
+            renderer.Rebuild(
+                chunk,
                 tileSize,
                 tileMaterial,
                 tileVisualCatalog,
                 GetTile);
+
+            if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
+            {
+                overlay.Rebuild(chunk, tileSize, groundAutotileDebugMode, tileVisualCatalog, GetTile);
+            }
         }
     }
 
@@ -554,9 +603,23 @@ public sealed class SandboxWorld : MonoBehaviour
         chunkRenderer.transform.SetParent(transform, false);
         chunkRenderer.transform.position = new Vector3(chunkCoord.x * SandboxChunk.Size * tileSize, chunkCoord.y * SandboxChunk.Size * tileSize, 0f);
         renderers.Add(chunkCoord, chunkRenderer);
+        debugOverlays[chunkCoord] = EnsureDebugOverlay(chunkRenderer);
         chunk.NeedsRenderRebuild = true;
         chunk.NeedsColliderRebuild = true;
         MarkRenderedFaceNeighborsDirty(chunkCoord, chunks, renderers.Keys);
+    }
+
+    private static SandboxGroundAutotileDebugOverlay EnsureDebugOverlay(SandboxChunkRenderer chunkRenderer)
+    {
+        Transform existing = chunkRenderer.transform.Find("GroundAutotileDebug");
+        if (existing != null && existing.TryGetComponent(out SandboxGroundAutotileDebugOverlay overlay))
+        {
+            return overlay;
+        }
+
+        GameObject debugObject = new GameObject("GroundAutotileDebug");
+        debugObject.transform.SetParent(chunkRenderer.transform, false);
+        return debugObject.AddComponent<SandboxGroundAutotileDebugOverlay>();
     }
 
     /// <summary>

@@ -43,6 +43,7 @@
 | Asset integration requirements | `docs/wiki/15-assets-integration.md` | Sprites, atlases, animations, rotations, and Unity/engine asset seams. |
 
 | Visual behavior | `docs/VISUAL_BEHAVIOR_SPEC.md` | Autotile, character sheet, animation API contracts. |
+| Ground autotile 32 rules | `docs/wiki/ground-autotile-32-rules.md` | PixelFantasy mask table, mirrored scenarios, acceptance checks. |
 
 | Visual machine setup | `docs/VISUAL_SETUP.md` | Local catalog import and inspector wiring. |
 

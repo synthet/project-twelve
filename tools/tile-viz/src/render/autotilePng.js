@@ -69,7 +69,7 @@ export function renderAutotilePng(space, options = {}) {
         const ts = tilesets.get(name);
         if (ts && spriteId != null) {
           const rect = spriteRect(spriteId, ts.layout, ts.png);
-          blitSprite(ts.png, rect, rgba, pixelW, px, py, flipX, tint, options.extrude !== false);
+          blitSprite(ts.png, rect, rgba, pixelW, px, py, flipX, tint, options.extrude !== false, scale);
         }
       }
 
@@ -78,7 +78,7 @@ export function renderAutotilePng(space, options = {}) {
         const ts = tilesets.get(name);
         if (ts && spriteId != null) {
           const rect = spriteRect(spriteId, ts.layout, ts.png);
-          blitSprite(ts.png, rect, rgba, pixelW, px, py, flipX, [255, 255, 255], options.extrude !== false);
+          blitSprite(ts.png, rect, rgba, pixelW, px, py, flipX, [255, 255, 255], options.extrude !== false, scale);
         }
       }
     }

@@ -83,7 +83,7 @@ test('grass cover east end resolves to sprite 3 with flipX', () => {
   assert.equal(result.flipX, true);
 });
 
-test('ground east run end resolves to sprite 0 with flipX', () => {
+test('ground east run end resolves to rule 0 with flipX', () => {
   const tables = loadRuleTables(DATA_DIR);
   const mask = [
     [0, 1, 1],
@@ -94,6 +94,58 @@ test('ground east run end resolves to sprite 0 with flipX', () => {
   const result = resolveSpriteId(tileset, mask);
   assert.equal(result.spriteId, '0');
   assert.equal(result.flipX, true);
+});
+
+test('one-sided lip column mirror resolves to rule 24 with flipX', () => {
+  const tables = loadRuleTables(DATA_DIR);
+  const mask = [
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 0, 0],
+  ];
+  const tileset = { spriteCount: 32, rules: tables.ground.rules };
+  const result = resolveSpriteId(tileset, mask);
+  assert.equal(result.spriteId, '24');
+  assert.equal(result.flipX, true);
+  assert.notEqual(result.spriteId, '25');
+});
+
+test('vertical pillar mask stays sprite 21 without flipX', () => {
+  const tables = loadRuleTables(DATA_DIR);
+  const rule21 = tables.ground.rules.find((r) => r.spriteId === '21');
+  const mask = patternToMask(rule21.pattern);
+  const tileset = { spriteCount: 32, rules: tables.ground.rules };
+  const result = resolveSpriteId(tileset, mask);
+  assert.equal(result.spriteId, '21');
+  assert.equal(result.flipX, false);
+  assert.notEqual(result.spriteId, '22');
+  assert.notEqual(result.spriteId, '25');
+});
+
+test('bridge-shaped mask remains sprite 25 and is not used for vertical pillar remap', () => {
+  const tables = loadRuleTables(DATA_DIR);
+  const mask = [
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 1, 0],
+  ];
+  const tileset = { spriteCount: 32, rules: tables.ground.rules };
+  const result = resolveSpriteId(tileset, mask);
+  assert.equal(result.spriteId, '25');
+  assert.equal(result.flipX, false);
+});
+
+test('side-mass vertical mask resolves to sprite 22 only for its own topology', () => {
+  const tables = loadRuleTables(DATA_DIR);
+  const mask = [
+    [0, 0, 0],
+    [1, 1, 1],
+    [0, 1, 1],
+  ];
+  const tileset = { spriteCount: 32, rules: tables.ground.rules };
+  const result = resolveSpriteId(tileset, mask);
+  assert.equal(result.spriteId, '22');
+  assert.equal(result.flipX, false);
 });
 
 test('cover unmatched mask falls back to sprite 0', () => {
@@ -125,8 +177,9 @@ test('JS resolver matches Unity-exported expected fixtures', {
   for (const file of fs.readdirSync(EXPECTED_DIR)) {
     if (!file.endsWith('.json')) continue;
     const expected = JSON.parse(fs.readFileSync(path.join(EXPECTED_DIR, file), 'utf8'));
+    if (!Array.isArray(expected.tiles)) continue;
     for (const tile of expected.tiles) {
-      const ground = tile.ground;
+      const ground = tile.autotile?.ground ?? tile.ground;
       if (ground?.mask) {
         const tileset = { spriteCount: 32, rules: loadRuleTables(DATA_DIR).ground.rules };
         const mask = ground.mask.map((col) => col.slice());

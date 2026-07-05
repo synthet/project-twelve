@@ -16,8 +16,9 @@
     { "x": 3, "y": 19, "id": 3, "light": 4 }
   ],
   "expect": [
-    { "x": 0, "y": 20, "ground": { "spriteId": "24" } },
-    { "x": 2, "y": 20, "ground": { "spriteId": "24", "flipX": true } },
-    { "x": 0, "y": 19, "ground": { "spriteId": "24" } }
+    { "x": 0, "y": 20, "ground": { "spriteId": "0", "flipX": false } },
+    { "x": 1, "y": 20, "ground": { "spriteId": "2", "flipX": false } },
+    { "x": 2, "y": 20, "ground": { "spriteId": "2", "flipX": false } },
+    { "x": 0, "y": 19, "ground": { "spriteId": "24", "flipX": false } }
   ]
 }

@@ -1,0 +1,76 @@
+{
+  "name": "material-boundary-horizontal",
+  "xMin": 0,
+  "yMin": 19,
+  "xMax": 3,
+  "yMax": 20,
+  "width": 4,
+  "height": 2,
+  "includeAir": true,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 20,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 20,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 20,
+      "tileId": 1,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 0,
+      "y": 19,
+      "tileId": 3,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 1,
+      "y": 19,
+      "tileId": 3,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 2,
+      "y": 19,
+      "tileId": 3,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 3,
+      "y": 20,
+      "tileId": 3,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "tileId": 3,
+      "light": 4,
+      "fluid": 0,
+      "metadata": 0
+    }
+  ]
+}

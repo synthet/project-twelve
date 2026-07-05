@@ -45,9 +45,9 @@ namespace ProjectTwelve.Visual.Tiles
             }
 
             Bounds bounds = sprite.bounds;
-            Vector2 pivotWorld = new Vector2(
-                x * tileSize - bounds.min.x,
-                y * tileSize - bounds.min.y);
+            float cellWidth = bounds.max.x - bounds.min.x;
+            float cellOriginX = x * tileSize;
+            float cellOriginY = y * tileSize;
 
             float uMin = float.PositiveInfinity;
             float uMax = float.NegativeInfinity;
@@ -60,9 +60,14 @@ namespace ProjectTwelve.Visual.Tiles
             int start = vertices.Count;
             for (int i = 0; i < spriteVerts.Length; i++)
             {
-                float localX = flipX ? -spriteVerts[i].x : spriteVerts[i].x;
-                float localY = spriteVerts[i].y;
-                vertices.Add(new Vector3(pivotWorld.x + localX, pivotWorld.y + localY, zOffset));
+                float offsetX = spriteVerts[i].x - bounds.min.x;
+                if (flipX)
+                {
+                    offsetX = cellWidth - offsetX;
+                }
+
+                float offsetY = spriteVerts[i].y - bounds.min.y;
+                vertices.Add(new Vector3(cellOriginX + offsetX, cellOriginY + offsetY, zOffset));
 
                 Vector2 uv = spriteUvs[i];
                 if (flipX)
@@ -74,9 +79,51 @@ namespace ProjectTwelve.Visual.Tiles
                 colors.Add(color);
             }
 
-            for (int i = 0; i < spriteTriangles.Length; i++)
+            AppendSpriteTriangles(triangles, start, spriteTriangles, flipX);
+        }
+
+        /// <summary>
+        /// Maps a sprite vertex to world X using bounds-relative cell anchoring (matches tile-viz blit flip).
+        /// </summary>
+        internal static float ComputeWorldX(
+            int cellX,
+            float tileSize,
+            Sprite sprite,
+            float spriteLocalX,
+            bool flipX)
+        {
+            Bounds bounds = sprite.bounds;
+            float cellWidth = bounds.max.x - bounds.min.x;
+            float offsetX = spriteLocalX - bounds.min.x;
+            if (flipX)
+            {
+                offsetX = cellWidth - offsetX;
+            }
+
+            return cellX * tileSize + offsetX;
+        }
+
+        private static void AppendSpriteTriangles(
+            List<int> triangles,
+            int start,
+            ushort[] spriteTriangles,
+            bool flipX)
+        {
+            if (!flipX)
+            {
+                for (int i = 0; i < spriteTriangles.Length; i++)
+                {
+                    triangles.Add(start + spriteTriangles[i]);
+                }
+
+                return;
+            }
+
+            for (int i = 0; i + 2 < spriteTriangles.Length; i += 3)
             {
                 triangles.Add(start + spriteTriangles[i]);
+                triangles.Add(start + spriteTriangles[i + 2]);
+                triangles.Add(start + spriteTriangles[i + 1]);
             }
         }
 
@@ -119,15 +166,20 @@ namespace ProjectTwelve.Visual.Tiles
             }
 
             Bounds bounds = sprite.bounds;
-            Vector2 pivotWorld = new Vector2(
-                x * tileSize - bounds.min.x,
-                y * tileSize - bounds.min.y);
+            float cellWidth = bounds.max.x - bounds.min.x;
+            float cellOriginX = x * tileSize;
+            float cellOriginY = y * tileSize;
 
             for (int i = 0; i < spriteVerts.Length; i++)
             {
-                float localX = flipX ? -spriteVerts[i].x : spriteVerts[i].x;
-                float worldX = pivotWorld.x + localX;
-                float worldY = pivotWorld.y + spriteVerts[i].y;
+                float offsetX = spriteVerts[i].x - bounds.min.x;
+                if (flipX)
+                {
+                    offsetX = cellWidth - offsetX;
+                }
+
+                float worldX = cellOriginX + offsetX;
+                float worldY = cellOriginY + (spriteVerts[i].y - bounds.min.y);
                 left = Mathf.Min(left, worldX);
                 right = Mathf.Max(right, worldX);
                 bottom = Mathf.Min(bottom, worldY);

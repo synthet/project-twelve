@@ -71,6 +71,55 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
+    public void AutotileResolver_OneSidedLipColumnMirror_ResolvesRule24WithFlipX()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        int[,] mask = new[,]
+        {
+            { 0, 1, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("24", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_VerticalPillarMask_StaysSprite21WithoutFlipX()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        int[,] mask = VerticalRunMask();
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("21", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileResolver_EastReentrantCorner_ResolvesRule16WithFlipX()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        int[,] eastCornerMask = new[,]
+        {
+            { 1, 1, 0 },
+            { 1, 1, 0 },
+            { 0, 0, 0 }
+        };
+
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, eastCornerMask, out bool flipX);
+
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual("16", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
     public void AutotileResolver_CoverUnmatchedMask_FallsBackToSprite0()
     {
         AutotileTileset tileset = CreateCoverTileset();
@@ -332,7 +381,7 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
-    public void AutotileMaskBuilder_MaterialBoundary_BreaksGroundConnectivity()
+    public void AutotileMaskBuilder_MaterialBoundary_BlendsSouthButNotNorth()
     {
         const int worldX = 10;
         const int worldY = 5;
@@ -347,10 +396,11 @@ public sealed class AutotileVisualTests
 
                 return x == worldX && (y == worldY || y == worldY + 1);
             },
+            (x, y) => x == worldX && (y == worldY - 1 || y == worldY || y == worldY + 1),
             worldX,
             worldY);
 
-        Assert.AreEqual(0, dirtMask[1, 2], "Dirt should not connect to stone below.");
+        Assert.AreEqual(1, dirtMask[1, 2], "Foreign solid below should count as south support.");
 
         int[,] stoneMask = AutotileMaskBuilder.BuildGroundMask(
             (x, y) =>
@@ -362,6 +412,7 @@ public sealed class AutotileVisualTests
 
                 return x == worldX && (y == worldY - 1 || y == worldY - 2);
             },
+            (x, y) => x == worldX && (y == worldY || y == worldY - 1 || y == worldY - 2),
             worldX,
             worldY - 1);
 
@@ -369,9 +420,307 @@ public sealed class AutotileVisualTests
 
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite dirtSprite = AutotileResolver.ResolveSprite(tileset, dirtMask, out _);
-        Sprite stoneSprite = AutotileResolver.ResolveSprite(tileset, stoneMask, out _);
-        Assert.AreEqual(ResolveVendorStyle(dirtMask), dirtSprite.name);
-        Assert.AreEqual(ResolveVendorStyle(stoneMask), stoneSprite.name);
+        Assert.AreEqual("21", dirtSprite.name, "Dirt column should continue into the stone below.");
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_MaterialBoundaryCorner_RemapsWestLipToCornerCap()
+    {
+        const int worldX = 5;
+        const int worldY = 6;
+
+        int[,] mask = AutotileMaskBuilder.BuildGroundMask(
+            (x, y) =>
+                (x == worldX && (y == worldY || y == worldY - 1))
+                || (x == worldX + 1 && y == worldY),
+            (x, y) =>
+                (x == worldX && (y == worldY || y == worldY - 1))
+                || (x == worldX + 1 && y == worldY)
+                || (x == worldX - 1 && y == worldY),
+            worldX,
+            worldY);
+
+        Assert.AreEqual(0, mask[0, 2]);
+        Assert.AreEqual(1, mask[1, 1]);
+        Assert.AreEqual(1, mask[2, 1]);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+        Assert.AreEqual("6", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_MaterialBoundaryCorner_RemapsWestLipWithNorthConnectedToRule16()
+    {
+        const int worldX = 5;
+        const int worldY = 6;
+
+        int[,] mask = AutotileMaskBuilder.BuildGroundMask(
+            (x, y) =>
+                (x == worldX && (y == worldY || y == worldY - 1 || y == worldY + 1))
+                || (x == worldX + 1 && (y == worldY || y == worldY + 1)),
+            (x, y) =>
+                (x == worldX && (y == worldY || y == worldY - 1 || y == worldY + 1))
+                || (x == worldX + 1 && (y == worldY || y == worldY + 1))
+                || (x == worldX - 1 && y == worldY),
+            worldX,
+            worldY);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
+        Assert.AreEqual("12", resolved.name);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_VisualMask_ExcludesForeignStoneOnSides()
+    {
+        const int worldX = 10;
+        const int worldY = 5;
+
+        int[,] visual = AutotileMaskBuilder.BuildVisualGroundMask(
+            (x, y) => x == worldX && (y == worldY || y == worldY + 1),
+            worldX,
+            worldY);
+
+        Assert.AreEqual(0, visual[0, 1], "Stone west must not appear in visual mask.");
+        Assert.AreEqual(0, visual[2, 1]);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_SolidMask_IncludesForeignStoneBelow()
+    {
+        const int worldX = 10;
+        const int worldY = 5;
+
+        int[,] solid = AutotileMaskBuilder.BuildSolidGroundMask(
+            (x, y) => x == worldX && (y == worldY - 1 || y == worldY || y == worldY + 1),
+            worldX,
+            worldY);
+
+        Assert.AreEqual(1, solid[1, 2], "Foreign solid below counts in solid mask.");
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_DetailedResult_ReportsMaterialBoundaryNormalization()
+    {
+        GroundMaskBuildResult result = AutotileMaskBuilder.BuildGroundMaskDetailed(
+            (x, y) => x >= 0 && x <= 2 && y == 20,
+            (x, y) => y == 19 ? x >= 0 && x <= 3 : x >= 0 && x <= 3 && y == 20,
+            2,
+            20,
+            null);
+
+        Assert.IsFalse(result.MaterialBoundaryRemap);
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, result.FinalMask, out bool flipX);
+        Assert.AreEqual("2", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_ReentrantDirtBesideStone_ResolvesRule11NotInteriorFill()
+    {
+        GroundMaskBuildResult result = AutotileMaskBuilder.BuildGroundMaskDetailed(
+            (x, y) =>
+                (x == 1 && (y == 1 || y == 2))
+                || (x == 2 && (y == 1 || y == 2)),
+            (x, y) =>
+                (x == 0 && y >= 0 && y <= 2)
+                || (x == 1 && y >= 0 && y <= 2)
+                || (x == 2 && y >= 0 && y <= 2),
+            1,
+            1,
+            null);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, result.FinalMask, out _);
+        Assert.AreEqual("11", resolved.name);
+        Assert.AreNotEqual("9", resolved.name);
+        Assert.AreNotEqual("10", resolved.name);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_CeilingUnderside_ResolvesAuthoredUndersideSprites()
+    {
+        // Ceiling-attached middle: mass above and to both sides, air below (mask[x, y] columns).
+        int[,] ceilingMiddle = new[,]
+        {
+            { 1, 1, 0 },
+            { 1, 1, 0 },
+            { 1, 1, 0 }
+        };
+
+        int[,] normalized = AutotileMaskBuilder.NormalizeGroundMask(ceilingMiddle, null, null, 0, 0, null);
+        Assert.AreEqual(ceilingMiddle, normalized, "Underside masks must not be remapped to top families.");
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite middle = AutotileResolver.ResolveSprite(tileset, ceilingMiddle, out bool middleFlip);
+        Assert.AreEqual("17", middle.name, "Cave ceiling middle should use the authored underside sprite.");
+        Assert.IsFalse(middleFlip);
+
+        // Hanging platform west corner: mass above and east, air west/below.
+        int[,] hangingCorner = new[,]
+        {
+            { 0, 0, 0 },
+            { 1, 1, 0 },
+            { 1, 1, 0 }
+        };
+
+        Sprite corner = AutotileResolver.ResolveSprite(tileset, hangingCorner, out bool cornerFlip);
+        Assert.AreEqual("16", corner.name, "Hanging corner should use the authored underside cap.");
+        Assert.IsFalse(cornerFlip);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_StairInteriorDiagonal_RemapsBesideSurfaceStep()
+    {
+        int[,] stairSupport = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 0, 1, 1 }
+        };
+
+        Assert.IsTrue(AutotileMaskBuilder.TryRemapStairInteriorDiagonalMask(
+            stairSupport,
+            (x, y) => x == 1 && y == 0,
+            0,
+            0,
+            out int[,] remapped));
+
+        Assert.AreEqual(1, remapped[0, 0]);
+        Assert.AreEqual(1, remapped[1, 0]);
+        Assert.AreEqual(1, remapped[2, 0]);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, remapped, out bool flipX);
+        Assert.IsTrue(resolved.name == "9" || resolved.name == "10");
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_StairInteriorDiagonal_KeepsOverhangCornerWithoutSurfaceStep()
+    {
+        int[,] overhangCorner = new[,]
+        {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 0, 1, 1 }
+        };
+
+        Assert.IsFalse(AutotileMaskBuilder.TryRemapStairInteriorDiagonalMask(
+            overhangCorner,
+            (x, y) => false,
+            0,
+            0,
+            out _));
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, overhangCorner, out bool flipX);
+        Assert.AreEqual("11", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_CavityBridgeLintel_RemapsToUndersideRule17()
+    {
+        int[,] bridge = new[,]
+        {
+            { 0, 1, 0 },
+            { 0, 1, 0 },
+            { 0, 1, 0 }
+        };
+
+        Assert.IsTrue(AutotileMaskBuilder.IsBridgeMask(bridge));
+
+        bool SharesGroup(int x, int y) => y == 2 && x >= 0 && x <= 2;
+        bool IsSolid(int x, int y) => SharesGroup(x, y);
+
+        Assert.IsTrue(AutotileMaskBuilder.TryRemapCavityBridgeToUnderside(
+            bridge,
+            SharesGroup,
+            IsSolid,
+            1,
+            2,
+            out int[,] remapped));
+
+        Assert.AreEqual(1, remapped[0, 0]);
+        Assert.AreEqual(0, remapped[0, 2]);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, remapped, out bool flipX);
+        Assert.AreEqual("17", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_CliffFaceWithSideMass_ResolvesVendorFaceSprites()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        bool IsDirt(int x, int y) => (x == 0 || x == 1) && y >= 2 && y <= 4;
+
+        // West face of the column: open west, mass east → authored west-open face, no pillar remap.
+        int[,] westFace = AutotileMaskBuilder.BuildGroundMask(IsDirt, IsDirt, 0, 3);
+        Sprite west = AutotileResolver.ResolveSprite(tileset, westFace, out bool westFlip);
+        Assert.AreEqual("8", west.name, "Face with side mass must not collapse to pillar sprite 21.");
+        Assert.IsFalse(westFlip);
+
+        // East face mirrors via flipX on the same sprite id (vendor baseline).
+        int[,] eastFace = AutotileMaskBuilder.BuildGroundMask(IsDirt, IsDirt, 1, 3);
+        Sprite east = AutotileResolver.ResolveSprite(tileset, eastFace, out bool eastFlip);
+        Assert.AreEqual("8", east.name);
+        Assert.IsTrue(eastFlip);
+
+        // Face top cap keeps its outside-corner mask.
+        int[,] topCap = AutotileMaskBuilder.BuildGroundMask(IsDirt, IsDirt, 0, 4);
+        Sprite cap = AutotileResolver.ResolveSprite(tileset, topCap, out bool capFlip);
+        Assert.AreEqual("0", cap.name);
+        Assert.IsFalse(capFlip);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_VerticalWallRun_ResolvesTopMiddleBottomCaps()
+    {
+        AutotileTileset tileset = CreateFullGroundTileset();
+        bool IsDirt(int x, int y) =>
+            (x == 0 && y >= 2 && y <= 4)
+            || (x >= 1 && x <= 2 && y >= 0 && y <= 2);
+
+        AssertVerticalWallSprite(tileset, 0, 4, IsDirt, "28", false);
+        AssertVerticalWallSprite(tileset, 0, 3, IsDirt, "21", false);
+        AssertVerticalWallSprite(tileset, 0, 2, IsDirt, "15", true);
+    }
+
+    private static void AssertVerticalWallSprite(
+        AutotileTileset tileset,
+        int worldX,
+        int worldY,
+        Func<int, int, bool> isDirt,
+        string expectedSpriteId,
+        bool expectedFlipX)
+    {
+        int[,] mask = AutotileMaskBuilder.BuildGroundMask(
+            isDirt,
+            isDirt,
+            worldX,
+            worldY);
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
+        Assert.IsNotNull(resolved);
+        Assert.AreEqual(expectedSpriteId, resolved.name);
+        Assert.AreEqual(expectedFlipX, flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_CoverCliffNeighbor_MarksSameRowGroundBody()
+    {
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) => y == 5 && x == 4,
+            (x, y) => y == 5 && x == 6,
+            5,
+            5);
+
+        Assert.AreEqual(2, mask[2, 1], "Dirt body east of grass should mark cliff cover.");
     }
 
     [Test]
@@ -415,6 +764,46 @@ public sealed class AutotileVisualTests
             16f);
 
         Assert.IsTrue(AutotileSpriteMeshBuilder.SpansFullTileCell(2, 4, tileSize, sprite, flipX: true));
+    }
+
+    [Test]
+    public void SpriteMeshQuad_FlipX_AsymmetricBounds_MirrorsWithinCell()
+    {
+        const float tileSize = 1f;
+        const int x = 2;
+        const int y = 4;
+        Sprite sprite = Sprite.Create(
+            new Texture2D(16, 16),
+            new Rect(0, 0, 16, 16),
+            new Vector2(0f, 0f),
+            16f);
+
+        AutotileSpriteMeshBuilder.GetTileCellBounds(
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX: false,
+            out float unflippedLeft,
+            out float unflippedRight,
+            out _,
+            out _);
+        AutotileSpriteMeshBuilder.GetTileCellBounds(
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX: true,
+            out float flippedLeft,
+            out float flippedRight,
+            out _,
+            out _);
+
+        Assert.AreEqual(x * tileSize, unflippedLeft, 0.0001f);
+        Assert.AreEqual((x + 1) * tileSize, unflippedRight, 0.0001f);
+        Assert.AreEqual(x * tileSize, flippedLeft, 0.0001f);
+        Assert.AreEqual((x + 1) * tileSize, flippedRight, 0.0001f);
+        Assert.IsTrue(AutotileSpriteMeshBuilder.SpansFullTileCell(x, y, tileSize, sprite, flipX: true));
     }
 
     [Test]

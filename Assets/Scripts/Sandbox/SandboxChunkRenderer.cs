@@ -137,12 +137,10 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return;
         }
 
-        int[,] mask = AutotileMaskBuilder.BuildGroundMask(
-            (x, y) =>
-            {
-                SandboxTile neighbor = tileLookup(x, y);
-                return visualCatalog.SharesGroundAutotileGroup(tile.id, neighbor.id);
-            },
+        int[,] mask = AutotileGroundResolve.BuildGroundMask(
+            visualCatalog,
+            tileLookup,
+            tile,
             worldCoord.x,
             worldCoord.y);
 

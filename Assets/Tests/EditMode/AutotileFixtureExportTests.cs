@@ -20,6 +20,27 @@ public sealed class AutotileFixtureExportTests
         "dug-west-gap.json",
         "material-boundary-vertical.json",
         "material-boundary-horizontal.json",
+        "platform-grass-corners.json",
+        "vertical-wall-run.json",
+        "ceiling-underside.json",
+        "overhang-inside-corner.json",
+        "dirt-stone-reentrant-west.json",
+        "corner-sides-left-right.json",
+        "slope-ascending-stair-run.json",
+        "slope-descending-stair-run.json",
+        "slope-ascending-long.json",
+        "slope-descending-long.json",
+        "floating-clusters.json",
+        "dirt-over-stone-slab.json",
+        "floating-platform-underside.json",
+        "dirt-hole-1x1.json",
+        "dirt-hole-2x1.json",
+        "dirt-hole-1x2.json",
+        "dirt-hole-door.json",
+        "roof-slope-left-vs-right.json",
+        "one-sided-house-lip.json",
+        "dirt-window-inner-edges.json",
+        "dirt-gap-left-vertical-wall.json",
     };
 
     [Test]
@@ -157,23 +178,67 @@ public sealed class AutotileFixtureExportTests
             return;
         }
 
-        int[,] mask = AutotileMaskBuilder.BuildGroundMask(
-            (nx, ny) =>
-            {
-                Vector2Int key = new Vector2Int(nx, ny);
-                return space.TryGetValue(key, out SandboxTile neighbor)
-                    && SharesGroundGroup(tile.id, neighbor.id);
-            },
+        bool SharesGround(int nx, int ny)
+        {
+            Vector2Int key = new Vector2Int(nx, ny);
+            return space.TryGetValue(key, out SandboxTile neighbor)
+                && SharesGroundGroup(tile.id, neighbor.id);
+        }
+
+        bool IsSolid(int nx, int ny)
+        {
+            Vector2Int key = new Vector2Int(nx, ny);
+            return space.TryGetValue(key, out SandboxTile neighbor) && neighbor.IsSolid;
+        }
+
+        bool IsSurfaceTile(int nx, int ny)
+        {
+            Vector2Int key = new Vector2Int(nx, ny);
+            Vector2Int aboveKey = new Vector2Int(nx, ny + 1);
+            space.TryGetValue(aboveKey, out SandboxTile above);
+            return space.TryGetValue(key, out SandboxTile neighbor)
+                && neighbor.id == SandboxTileIds.Grass
+                && !above.IsSolid;
+        }
+
+        GroundMaskBuildResult maskBuild = AutotileMaskBuilder.BuildGroundMaskDetailed(
+            SharesGround,
+            IsSolid,
             x,
-            y);
+            y,
+            IsSurfaceTile);
+        int[,] mask = maskBuild.FinalMask;
         string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
         sb.AppendFormat(ci, "\"tileset\":\"{0}\",", groundName);
-        AppendMask(sb, mask);
+        sb.AppendFormat(ci, "\"materialGroup\":\"{0}\",", groundName);
+        AppendMask(sb, "visualMask", maskBuild.VisualMask);
+        sb.Append(',');
+        if (maskBuild.SolidMask != null)
+        {
+            AppendMask(sb, "solidMask", maskBuild.SolidMask);
+            sb.Append(',');
+        }
+
+        AppendMask(sb, "connectivityMask", maskBuild.ConnectivityMask);
+        sb.Append(',');
+        AppendMask(sb, "rawMask", maskBuild.ConnectivityMask);
+        sb.Append(',');
+        AppendMask(sb, "normalizedMask", mask);
+        sb.Append(',');
+        AppendMask(sb, "mask", mask);
         sb.AppendFormat(
             ci,
-            ",\"spriteId\":\"{0}\",\"flipX\":{1},\"resolved\":true",
+            ",\"normalization\":{{\"stairInterior\":{0},\"cavityUnderside\":{1},\"materialBoundary\":{2}}}",
+            maskBuild.StairInteriorRemap ? "true" : "false",
+            maskBuild.CavityUndersideRemap ? "true" : "false",
+            maskBuild.MaterialBoundaryRemap ? "true" : "false");
+        sb.AppendFormat(
+            ci,
+            ",\"matchedRuleId\":\"{0}\",\"spriteId\":\"{0}\",\"flipX\":{1},\"finalSpriteId\":\"{0}\",\"partnerSubstitution\":false,",
             spriteId ?? "null",
             flipX ? "true" : "false");
+        AppendNeighborTileIds(sb, space, x, y);
+        sb.Append(",\"resolved\":true");
         sb.Append('}');
     }
 
@@ -289,7 +354,14 @@ public sealed class AutotileFixtureExportTests
 
     private static void AppendMask(StringBuilder sb, int[,] mask)
     {
-        sb.Append("\"mask\":[");
+        AppendMask(sb, "mask", mask);
+    }
+
+    private static void AppendMask(StringBuilder sb, string propertyName, int[,] mask)
+    {
+        sb.Append('"');
+        sb.Append(propertyName);
+        sb.Append("\":[");
         for (int mx = 0; mx < 3; mx++)
         {
             sb.Append('[');
@@ -308,6 +380,38 @@ public sealed class AutotileFixtureExportTests
             {
                 sb.Append(',');
             }
+        }
+
+        sb.Append(']');
+    }
+
+    private static void AppendNeighborTileIds(
+        StringBuilder sb,
+        Dictionary<Vector2Int, SandboxTile> space,
+        int x,
+        int y)
+    {
+        sb.Append("\"neighborTileIds\":[");
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            if (dx > -1)
+            {
+                sb.Append(',');
+            }
+
+            sb.Append('[');
+            for (int dy = 1; dy >= -1; dy--)
+            {
+                if (dy < 1)
+                {
+                    sb.Append(',');
+                }
+
+                Vector2Int key = new Vector2Int(x + dx, y + dy);
+                sb.Append(space.TryGetValue(key, out SandboxTile neighbor) ? neighbor.id : SandboxTileIds.Air);
+            }
+
+            sb.Append(']');
         }
 
         sb.Append(']');
