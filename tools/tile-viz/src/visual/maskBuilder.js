@@ -92,7 +92,39 @@ export function buildGroundMaskDetailed(
     connectivityMask,
     finalMask,
     normalization,
+    normalizationTrace: buildNormalizationTrace(normalization),
   };
+}
+
+/**
+ * Ordered normalizers, evaluated first-match-wins. The trace and the C# side
+ * (AutotileMaskBuilder.NormalizationOrder) must stay in lockstep.
+ * @type {ReadonlyArray<{ key: string, appliedReason: string }>}
+ */
+export const NORMALIZATION_ORDER = [
+  { key: 'stairInterior', appliedReason: 'diagonal step -> interior fill' },
+  { key: 'cavityUnderside', appliedReason: 'bridge -> underside' },
+  { key: 'materialBoundary', appliedReason: 'south row cleared' },
+];
+
+/**
+ * Ordered decision trace derived from the normalization flags. Because the
+ * normalizers short-circuit on first match, at most one flag is set: every
+ * normalizer before it reads "skipped", the matching one reads "applied", and
+ * normalizers after it are never evaluated (and so are omitted).
+ * @param {{ [key: string]: boolean }} normalization
+ * @returns {string[]}
+ */
+export function buildNormalizationTrace(normalization) {
+  const trace = [];
+  for (const { key, appliedReason } of NORMALIZATION_ORDER) {
+    if (normalization[key]) {
+      trace.push(`${key}: applied: ${appliedReason}`);
+      return trace;
+    }
+    trace.push(`${key}: skipped`);
+  }
+  return trace;
 }
 
 /**

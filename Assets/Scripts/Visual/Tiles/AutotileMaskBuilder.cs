@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ProjectTwelve.Visual.Tiles
 {
@@ -14,6 +15,12 @@ namespace ProjectTwelve.Visual.Tiles
         public bool StairInteriorRemap { get; }
         public bool CavityUndersideRemap { get; }
         public bool MaterialBoundaryRemap { get; }
+
+        /// <summary>
+        /// Ordered applied/skipped decision trace for the normalizers (see the Autotile Next
+        /// Actions Plan, Phase 0C). Mirrors the tile-viz trace field-for-field.
+        /// </summary>
+        public string[] NormalizationTrace { get; }
 
         public GroundMaskBuildResult(
             int[,] visualMask,
@@ -31,6 +38,10 @@ namespace ProjectTwelve.Visual.Tiles
             StairInteriorRemap = stairInteriorRemap;
             CavityUndersideRemap = cavityUndersideRemap;
             MaterialBoundaryRemap = materialBoundaryRemap;
+            NormalizationTrace = AutotileMaskBuilder.BuildNormalizationTrace(
+                stairInteriorRemap,
+                cavityUndersideRemap,
+                materialBoundaryRemap);
         }
     }
 
@@ -105,6 +116,46 @@ namespace ProjectTwelve.Visual.Tiles
                 stairInteriorRemap,
                 cavityUndersideRemap,
                 materialBoundaryRemap);
+        }
+
+        /// <summary>
+        /// Ordered normalizers, evaluated first-match-wins. The trace and the tile-viz side
+        /// (<c>NORMALIZATION_ORDER</c> in maskBuilder.js) must stay in lockstep.
+        /// </summary>
+        private static readonly (string Key, string AppliedReason)[] NormalizationOrder =
+        {
+            ("stairInterior", "diagonal step -> interior fill"),
+            ("cavityUnderside", "bridge -> underside"),
+            ("materialBoundary", "south row cleared"),
+        };
+
+        /// <summary>
+        /// Builds the ordered applied/skipped decision trace from the normalization flags.
+        /// Because the normalizers short-circuit on first match, at most one flag is set: every
+        /// normalizer before it reads "skipped", the matching one reads "applied", and normalizers
+        /// after it are never evaluated (and so are omitted). Mirrors <c>buildNormalizationTrace</c>
+        /// in maskBuilder.js.
+        /// </summary>
+        public static string[] BuildNormalizationTrace(
+            bool stairInterior,
+            bool cavityUnderside,
+            bool materialBoundary)
+        {
+            bool[] flags = { stairInterior, cavityUnderside, materialBoundary };
+            List<string> trace = new List<string>(NormalizationOrder.Length);
+            for (int i = 0; i < NormalizationOrder.Length; i++)
+            {
+                (string key, string appliedReason) = NormalizationOrder[i];
+                if (flags[i])
+                {
+                    trace.Add($"{key}: applied: {appliedReason}");
+                    return trace.ToArray();
+                }
+
+                trace.Add($"{key}: skipped");
+            }
+
+            return trace.ToArray();
         }
 
         /// <summary>

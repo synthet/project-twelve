@@ -269,12 +269,15 @@ namespace ProjectTwelve.RuntimeMcp
                 IsSurfaceTile);
             Sprite sprite = AutotileResolver.ResolveSprite(tileset, maskBuild.FinalMask, out bool flipX);
 
+            string spriteId = sprite != null ? sprite.name : null;
             payload["ground"] = new JObject
             {
                 ["tileset"] = tileset.Name,
+                ["materialGroup"] = tileset.Name,
                 ["visualMask"] = MaskToJson(maskBuild.VisualMask),
                 ["solidMask"] = maskBuild.SolidMask != null ? MaskToJson(maskBuild.SolidMask) : null,
                 ["connectivityMask"] = MaskToJson(maskBuild.ConnectivityMask),
+                ["rawMask"] = MaskToJson(maskBuild.ConnectivityMask),
                 ["mask"] = MaskToJson(maskBuild.FinalMask),
                 ["normalizedMask"] = MaskToJson(maskBuild.FinalMask),
                 ["maskLayout"] = "mask[x][y]; x=west..east, y=north..south",
@@ -284,9 +287,12 @@ namespace ProjectTwelve.RuntimeMcp
                     ["cavityUnderside"] = maskBuild.CavityUndersideRemap,
                     ["materialBoundary"] = maskBuild.MaterialBoundaryRemap
                 },
+                ["normalizationTrace"] = new JArray(maskBuild.NormalizationTrace),
                 ["matchingSpriteIds"] = FindMatchingSpriteIds(tileset.Rules, maskBuild.FinalMask),
-                ["spriteId"] = sprite != null ? sprite.name : null,
+                ["matchedRuleId"] = spriteId,
+                ["spriteId"] = spriteId,
                 ["flipX"] = flipX,
+                ["finalSpriteId"] = spriteId,
                 ["partnerSubstitution"] = false,
                 ["resolved"] = sprite != null
             };

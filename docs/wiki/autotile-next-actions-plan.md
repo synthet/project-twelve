@@ -54,14 +54,18 @@ Grounding for every phase below. These are the real APIs the work extends.
 
 Current normalization flags surfaced on both debug surfaces: `stairInterior`,
 `cavityUnderside`, `materialBoundary`. There is **no** `TryRemapCavityInnerEdgeMask` yet —
-that is the new Phase 1 predicate. There is **no** `normalizationTrace` yet — that is Phase 0C.
+that is the new Phase 1 predicate.
 
-> **C#/JS debug drift to reconcile in Phase 0C.** The JS report already emits
-> `finalSpriteId`, `matchedRuleId`, `rawMask`, and `neighborMaterials`; the C# MCP payload
-> does not. Whatever `normalizationTrace` shape lands must be added to **both**
-> `McpTileDebug.AppendGroundAutotile` and `autotileJson.buildTileAutotile` with identical
-> field names, and the drift above should be closed at the same time so parity diffs stay
-> field-for-field.
+> **Phase 0 status.** 0A (baseline/target vocabulary) and 0C (`normalizationTrace` + C#/JS
+> field parity) are **implemented**. 0B (Unity expected-JSON export) is **blocked** in the
+> headless container: Unity 6000.5.1f1 is not installed, so EditMode export tests were added
+> but not run here. `normalizationTrace` is derived from the normalization flags by a shared
+> helper — `buildNormalizationTrace` (maskBuilder.js) and `AutotileMaskBuilder.BuildNormalizationTrace`
+> (C#) — sharing one order and label set so the trace is parity-correct by construction. The
+> scalar/mask fields the JS report carried that the C# MCP lacked (`materialGroup`, `rawMask`,
+> `matchedRuleId`, `finalSpriteId`) are now emitted on both. Neighbor context remains an
+> **intentional shape difference**, not drift: C# exposes it via the payload-level `neighbors`
+> object, JS via the ground-block `neighborTileIds` / `neighborMaterials`.
 
 ## Sequencing
 

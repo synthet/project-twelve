@@ -519,6 +519,42 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
+    public void AutotileMaskBuilder_BuildNormalizationTrace_MirrorsTileVizVocabulary()
+    {
+        // Must stay field-for-field identical to buildNormalizationTrace in tile-viz maskBuilder.js.
+        CollectionAssert.AreEqual(
+            new[] { "stairInterior: skipped", "cavityUnderside: skipped", "materialBoundary: skipped" },
+            AutotileMaskBuilder.BuildNormalizationTrace(false, false, false));
+
+        CollectionAssert.AreEqual(
+            new[] { "stairInterior: skipped", "cavityUnderside: applied: bridge -> underside" },
+            AutotileMaskBuilder.BuildNormalizationTrace(false, true, false));
+
+        CollectionAssert.AreEqual(
+            new[] { "stairInterior: applied: diagonal step -> interior fill" },
+            AutotileMaskBuilder.BuildNormalizationTrace(true, false, false));
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_DetailedResult_TraceIsConsistentWithFlags()
+    {
+        GroundMaskBuildResult result = AutotileMaskBuilder.BuildGroundMaskDetailed(
+            (x, y) => x >= 0 && x <= 2 && y == 20,
+            (x, y) => y == 19 ? x >= 0 && x <= 3 : x >= 0 && x <= 3 && y == 20,
+            2,
+            20,
+            null);
+
+        Assert.IsNotNull(result.NormalizationTrace);
+        Assert.AreEqual(
+            AutotileMaskBuilder.BuildNormalizationTrace(
+                result.StairInteriorRemap,
+                result.CavityUndersideRemap,
+                result.MaterialBoundaryRemap),
+            result.NormalizationTrace);
+    }
+
+    [Test]
     public void AutotileMaskBuilder_ReentrantDirtBesideStone_ResolvesRule11NotInteriorFill()
     {
         GroundMaskBuildResult result = AutotileMaskBuilder.BuildGroundMaskDetailed(

@@ -48,6 +48,21 @@ function inferKind(doc) {
   return 'snippet';
 }
 
+/**
+ * Resolves the baseline/target expectation vocabulary (see the Autotile Next Actions
+ * Plan, Phase 0A). `baselineExpect` captures current resolver output for parity/regression
+ * tracking; `targetExpect` captures desired visual acceptance after a fix. The legacy
+ * `expect` field is treated as `baselineExpect`, and `expect` on the returned space stays
+ * bound to the baseline set so existing callers keep working.
+ * @param {object} doc
+ * @returns {{ expect: object[], baselineExpect: object[], targetExpect: object[] }}
+ */
+function resolveExpectations(doc) {
+  const baselineExpect = doc.baselineExpect ?? doc.expect ?? [];
+  const targetExpect = doc.targetExpect ?? baselineExpect;
+  return { expect: baselineExpect, baselineExpect, targetExpect };
+}
+
 function loadSnippet(doc) {
   const originX = doc.origin?.x ?? 0;
   const originY = doc.origin?.y ?? 0;
@@ -81,7 +96,7 @@ function loadSnippet(doc) {
     xMax: originX + width - 1,
     yMax: originY + height - 1,
     tiles,
-    expect: doc.expect ?? [],
+    ...resolveExpectations(doc),
     raw: doc,
   };
 }
@@ -101,7 +116,7 @@ function loadSpace(doc) {
     xMax: doc.xMax,
     yMax: doc.yMax,
     tiles,
-    expect: doc.expect ?? [],
+    ...resolveExpectations(doc),
     raw: doc,
   };
 }
@@ -146,7 +161,7 @@ function loadWorld(doc, baseDir) {
     xMax: region.xMax,
     yMax: region.yMax,
     tiles,
-    expect: doc.expect ?? [],
+    ...resolveExpectations(doc),
     params,
     raw: doc,
   };

@@ -117,6 +117,7 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
       normalizedMask: maskToJson(mask),
       mask: maskToJson(mask),
       normalization: maskBuild.normalization,
+      normalizationTrace: maskBuild.normalizationTrace,
       matchingSpriteIds: findMatchingSpriteIds(rules, mask),
       matchedRuleId: resolved.spriteId,
       spriteId: resolved.spriteId,
@@ -200,8 +201,12 @@ function buildNeighborMaterials(space, x, y) {
   return materials;
 }
 
-export function assertExpectations(space, report) {
-  const expect = space.expect ?? [];
+export function assertExpectations(space, report, options = {}) {
+  const which = options.which ?? 'baseline';
+  const expect =
+    which === 'target'
+      ? space.targetExpect ?? space.expect ?? []
+      : space.baselineExpect ?? space.expect ?? [];
   const errors = [];
   for (const exp of expect) {
     const found = report.tiles.find((t) => t.x === exp.x && t.y === exp.y);
