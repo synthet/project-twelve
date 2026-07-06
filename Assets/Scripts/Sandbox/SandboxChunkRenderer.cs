@@ -22,6 +22,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private static readonly int IronOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:iron_ore");
     private static readonly int SilverOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:silver_ore");
     private static readonly int GoldOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:gold_ore");
+    private static readonly HashSet<string> MissingOverrideSpriteWarnings = new HashSet<string>();
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -106,6 +107,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
         Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
+        bool skippedMissingSprite = false;
 
         for (int localX = 0; localX < SandboxChunk.Size; localX++)
         {
@@ -118,7 +120,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 }
 
                 Vector2Int worldCoord = SandboxWorld.ChunkLocalToWorld(chunk.Coord, localX, localY);
-                AddGroundTile(
+                skippedMissingSprite |= AddGroundTile(
                     groundLayers,
                     visualCatalog,
                     tileLookup,
@@ -129,14 +131,23 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     localY,
                     worldCoord,
                     tileSize);
-                AddCoverTile(coverLayers, visualCatalog, tileLookup, visualOverrides, tile, localX, localY, worldCoord, tileSize);
+                skippedMissingSprite |= AddCoverTile(
+                    coverLayers,
+                    visualCatalog,
+                    tileLookup,
+                    visualOverrides,
+                    tile,
+                    localX,
+                    localY,
+                    worldCoord,
+                    tileSize);
             }
         }
 
-        ApplyLayeredMesh(groundLayers, coverLayers, material, chunk, tileSize);
+        ApplyLayeredMesh(groundLayers, coverLayers, material, chunk, tileSize, skippedMissingSprite);
     }
 
-    private static void AddGroundTile(
+    private static bool AddGroundTile(
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
@@ -150,7 +161,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     {
         if (!visualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset tileset))
         {
-            return;
+            return false;
         }
 
         int[,] mask = AutotileGroundResolve.BuildGroundMask(
@@ -160,22 +171,22 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             worldCoord.x,
             worldCoord.y);
 
-        Sprite sprite;
+        string spriteId;
         bool flipX;
         if (visualOverrideLookup != null
-            && visualOverrideLookup(worldCoord.x, worldCoord.y, out SandboxVisualOverride runtimeOverride)
-            && tileset.TryGetSprite(runtimeOverride.SpriteId, out sprite))
+            && visualOverrideLookup(worldCoord.x, worldCoord.y, out SandboxVisualOverride visualOverride))
         {
-            flipX = runtimeOverride.FlipX;
+            spriteId = visualOverride.SpriteId;
+            flipX = visualOverride.FlipX;
         }
         else
         {
-            sprite = AutotileResolver.ResolveSprite(tileset, mask, out flipX);
+            spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out flipX);
         }
 
-        if (sprite == null)
+        if (!TryResolveAutotileSprite(tileset, spriteId, "ground", worldCoord, out Sprite sprite))
         {
-            return;
+            return true;
         }
 
         AddResolvedSpriteQuad(
@@ -191,9 +202,10 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             flipX,
             GetTileLightColor(tile),
             zOffset: 0f);
+        return false;
     }
 
-    private static void AddCoverTile(
+    private static bool AddCoverTile(
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
@@ -208,7 +220,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         if (!visualCatalog.ShouldRenderGrassCover(tile.id, tileAbove)
             || !visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset tileset))
         {
-            return;
+            return false;
         }
 
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
@@ -221,10 +233,10 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             worldCoord.x,
             worldCoord.y);
 
-        Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
-        if (sprite == null)
+        string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
+        if (!TryResolveAutotileSprite(tileset, spriteId, "cover", worldCoord, out Sprite sprite))
         {
-            return;
+            return true;
         }
 
         AddResolvedSpriteQuad(
@@ -240,6 +252,46 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             flipX,
             GetTileLightColor(tile),
             zOffset: -0.01f);
+        return false;
+    }
+
+    private static bool TryResolveAutotileSprite(
+        AutotileTileset tileset,
+        string spriteId,
+        string layer,
+        Vector2Int worldCoord,
+        out Sprite sprite)
+    {
+        if (AutotileResolver.TryGetSpriteById(tileset, spriteId, out sprite))
+        {
+            return true;
+        }
+
+        WarnMissingOverrideSpriteOnce(tileset, layer, spriteId, worldCoord);
+        return false;
+    }
+
+    internal static void WarnMissingOverrideSpriteOnce(
+        AutotileTileset tileset,
+        string layer,
+        string spriteId,
+        Vector2Int worldCoord)
+    {
+        string tilesetName = tileset != null ? tileset.Name : "<null>";
+        string key = $"{tilesetName}|{layer}|{spriteId}";
+        if (!MissingOverrideSpriteWarnings.Add(key))
+        {
+            return;
+        }
+
+        Debug.LogWarning(
+            "SandboxChunkRenderer: missing autotile override sprite; ignoring visual entry " +
+            $"at cell ({worldCoord.x}, {worldCoord.y}), layer '{layer}', tileset '{tilesetName}', sprite id '{spriteId}'.");
+    }
+
+    internal static void ClearMissingOverrideSpriteWarningsForTests()
+    {
+        MissingOverrideSpriteWarnings.Clear();
     }
 
     private void ApplyLayeredMesh(
@@ -247,10 +299,23 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Dictionary<Texture2D, MeshLayer> coverLayers,
         Material material,
         SandboxChunk chunk,
-        float tileSize)
+        float tileSize,
+        bool skippedMissingSprite)
     {
         if (groundLayers.Count == 0 && coverLayers.Count == 0)
         {
+            if (skippedMissingSprite)
+            {
+                ApplySingleSubmesh(
+                    new List<Vector3>(),
+                    new List<int>(),
+                    new List<Vector2>(),
+                    new List<Color>(),
+                    ResolveMaterial(material),
+                    chunk);
+                return;
+            }
+
             RebuildLegacyAtlasTiles(chunk, tileSize, material);
             return;
         }
