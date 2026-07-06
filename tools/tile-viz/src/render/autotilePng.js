@@ -29,6 +29,7 @@ export function renderAutotilePng(space, options = {}) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const tilesets = loadTilesetsFromManifest(manifest, assetsRoot);
   const report = buildAutotileReport(space, { manifest, includeAir: true });
+  applyVisualOverrides(report, options.visualOverrides);
   const grid = spaceToSampledGrid(space);
   const pixelW = grid.width * scale;
   const pixelH = grid.height * scale;
@@ -91,4 +92,106 @@ export function renderAutotilePng(space, options = {}) {
     rgb[i * 3 + 2] = rgba[i * 4 + 2];
   }
   return encodePng(pixelW, pixelH, rgb);
+}
+
+
+function normalizeVisualOverrideLayer(layer) {
+  if (!layer || typeof layer !== 'object') {
+    return null;
+  }
+  const out = {};
+  for (const key of ['tileset', 'spriteId', 'flipX', 'rendered']) {
+    if (layer[key] !== undefined) {
+      out[key] = layer[key];
+    }
+  }
+  if (out.spriteId !== undefined) {
+    out.spriteId = Number(out.spriteId);
+  }
+  if (out.flipX !== undefined) {
+    out.flipX = Boolean(out.flipX);
+  }
+  if (out.rendered !== undefined) {
+    out.rendered = Boolean(out.rendered);
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+function visualOverrideEntries(sidecar) {
+  if (!sidecar) {
+    return [];
+  }
+  const source = Array.isArray(sidecar) ? sidecar : (sidecar.overrides ?? sidecar.tiles ?? sidecar.visualOverrides ?? sidecar);
+  if (Array.isArray(source)) {
+    return source;
+  }
+  if (source && typeof source === 'object') {
+    return Object.entries(source).map(([key, value]) => {
+      const [x, y] = key.split(',').map((v) => Number(v.trim()));
+      return { x, y, ...value };
+    });
+  }
+  return [];
+}
+
+/**
+ * Apply sidecar visual overrides to an autotile report after normal resolver output.
+ * Supported shapes:
+ *   { "overrides": [{ "x": 0, "y": 1, "ground": { "tileset": "Humus", "spriteId": 4, "flipX": false } }] }
+ *   { "0,1": { "cover": { "tileset": "GrassA", "spriteId": 2, "flipX": true, "rendered": true } } }
+ * @param {object} report
+ * @param {object|Array<object>|undefined} sidecar
+ * @returns {object}
+ */
+export function applyVisualOverrides(report, sidecar) {
+  const entries = visualOverrideEntries(sidecar);
+  if (!entries.length) {
+    return report;
+  }
+
+  const reportByKey = new Map(report.tiles.map((t) => [`${t.x},${t.y}`, t]));
+  for (const entry of entries) {
+    const x = Number(entry.x);
+    const y = Number(entry.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      continue;
+    }
+    const tile = reportByKey.get(`${x},${y}`);
+    if (!tile) {
+      continue;
+    }
+    tile.autotile ??= {};
+    for (const layerName of ['ground', 'cover']) {
+      const layer = normalizeVisualOverrideLayer(entry[layerName]);
+      if (!layer) {
+        continue;
+      }
+      tile.autotile[layerName] = {
+        ...(tile.autotile[layerName] ?? {}),
+        ...layer,
+        visualOverride: true,
+      };
+    }
+  }
+  return report;
+}
+
+export function listVisualOverrides(sidecar) {
+  return visualOverrideEntries(sidecar)
+    .map((entry) => {
+      const layers = [];
+      for (const layerName of ['ground', 'cover']) {
+        const layer = normalizeVisualOverrideLayer(entry[layerName]);
+        if (layer) {
+          const bits = [`${layerName}`];
+          if (layer.tileset !== undefined) bits.push(`tileset=${layer.tileset}`);
+          if (layer.spriteId !== undefined) bits.push(`spriteId=${layer.spriteId}`);
+          if (layer.flipX !== undefined) bits.push(`flipX=${layer.flipX}`);
+          if (layer.rendered !== undefined) bits.push(`rendered=${layer.rendered}`);
+          layers.push(bits.join(' '));
+        }
+      }
+      return { x: Number(entry.x), y: Number(entry.y), layers };
+    })
+    .filter((entry) => Number.isFinite(entry.x) && Number.isFinite(entry.y) && entry.layers.length);
 }
