@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
+public delegate bool SandboxVisualOverrideLookup(int x, int y, out SandboxVisualOverride visualOverride);
+
 [DefaultExecutionOrder(-100)]
 public sealed class SandboxWorld : MonoBehaviour
 {
@@ -38,6 +40,7 @@ public sealed class SandboxWorld : MonoBehaviour
     private readonly Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay> debugOverlays =
         new Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay>();
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
+    private readonly Dictionary<Vector2Int, SandboxVisualOverride> visualOverrides = new Dictionary<Vector2Int, SandboxVisualOverride>();
     private float nextChunkRefreshTime;
 
     public float TileSize => tileSize;
@@ -48,6 +51,9 @@ public sealed class SandboxWorld : MonoBehaviour
 
     /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
+
+    /// <summary>Runtime-only visual sprite overrides keyed by world tile coordinate.</summary>
+    public IReadOnlyDictionary<Vector2Int, SandboxVisualOverride> VisualOverrides => visualOverrides;
 
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
@@ -140,6 +146,59 @@ public sealed class SandboxWorld : MonoBehaviour
     /// edit. No subscribers means no cost.
     /// </summary>
     public event System.Action<int, int> TileFluidWakeRequested;
+
+    public bool TryGetVisualOverride(int x, int y, out SandboxVisualOverride visualOverride)
+    {
+        return visualOverrides.TryGetValue(new Vector2Int(x, y), out visualOverride);
+    }
+
+    public void SetVisualOverride(int x, int y, string spriteId, bool flipX)
+    {
+        visualOverrides[new Vector2Int(x, y)] = new SandboxVisualOverride(spriteId, flipX);
+        MarkTileVisualDirty(x, y);
+    }
+
+    public bool ClearVisualOverride(int x, int y)
+    {
+        bool removed = visualOverrides.Remove(new Vector2Int(x, y));
+        if (removed)
+        {
+            MarkTileVisualDirty(x, y);
+        }
+
+        return removed;
+    }
+
+    public string SaveVisualOverridesToPath(string path)
+    {
+        Newtonsoft.Json.Linq.JArray overrides = new Newtonsoft.Json.Linq.JArray();
+        foreach (KeyValuePair<Vector2Int, SandboxVisualOverride> pair in visualOverrides)
+        {
+            overrides.Add(new Newtonsoft.Json.Linq.JObject
+            {
+                ["x"] = pair.Key.x,
+                ["y"] = pair.Key.y,
+                ["layer"] = "ground",
+                ["spriteId"] = pair.Value.SpriteId,
+                ["flipX"] = pair.Value.FlipX
+            });
+        }
+
+        Newtonsoft.Json.Linq.JObject document = new Newtonsoft.Json.Linq.JObject
+        {
+            ["schema"] = "project-twelve/visual-overrides/v1",
+            ["overrides"] = overrides
+        };
+
+        string directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        File.WriteAllText(path, document.ToString(Newtonsoft.Json.Formatting.Indented));
+        return path;
+    }
 
     public void SetTile(int x, int y, int tileId)
     {
@@ -566,7 +625,8 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileSize,
                 tileMaterial,
                 tileVisualCatalog,
-                GetTile);
+                GetTile,
+                TryGetVisualOverride);
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
             {
@@ -596,6 +656,15 @@ public sealed class SandboxWorld : MonoBehaviour
         }
     }
 
+
+    private void MarkTileVisualDirty(int x, int y)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        if (chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            chunk.NeedsRenderRebuild = true;
+        }
+    }
 
     private void MarkAllLoadedRenderersDirty()
     {
@@ -677,4 +746,18 @@ public sealed class SandboxWorld : MonoBehaviour
         int result = value % divisor;
         return result < 0 ? result + divisor : result;
     }
+}
+
+
+/// <summary>Runtime-only ground sprite override for a world tile.</summary>
+public readonly struct SandboxVisualOverride
+{
+    public SandboxVisualOverride(string spriteId, bool flipX)
+    {
+        SpriteId = spriteId;
+        FlipX = flipX;
+    }
+
+    public string SpriteId { get; }
+    public bool FlipX { get; }
 }

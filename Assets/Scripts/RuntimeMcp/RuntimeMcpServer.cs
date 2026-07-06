@@ -58,6 +58,7 @@ namespace ProjectTwelve.RuntimeMcp
         {
             Application.runInBackground = true;
             GameplayMcpTools.Register(dispatcher, this);
+            VisualOverrideMcpTools.Register(dispatcher);
             StartListener();
 #if UNITY_EDITOR
             EditorApplication.update += PumpPendingRequests;
