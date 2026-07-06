@@ -151,7 +151,20 @@ Hash combines flip flag and all mask cell values (order: x outer, y inner).
 
 ---
 
-## 4. Character sprite sheet contract
+## 4. Visual override debug annotations
+
+Visual overrides are **debug annotations** layered onto terrain presentation after the normal autotile decision has been made. They are intentionally non-authoritative:
+
+- They do **not** write tile IDs, tile definitions, save data, or generated chunks.
+- They do **not** alter collision, solidity, lighting, navigation, terrain generation, fluid simulation, or runtime world queries.
+- They do **not** change the mask or resolver contract described above; the normal ground/cover autotile report remains the source of truth for diagnosing resolver drift.
+- They may temporarily substitute the sprite/flip emitted by the renderer or tile-viz compositor so agents and humans can mark suspect cells, test a visual hypothesis, or attach a compact reproduction to an RCA.
+
+Treat any `*.visual-overrides.json` file as diagnostic evidence beside a capture, not as content data. If a visual override makes a scene look correct, the follow-up fix still belongs in the canonical tile mapping, mask builder, resolver, import data, or mesh compositor as appropriate.
+
+---
+
+## 5. Character sprite sheet contract
 
 | Property | Value |
 |----------|-------|
@@ -180,7 +193,7 @@ Special cases:
 
 ---
 
-## 5. Character locomotion animator API
+## 6. Character locomotion animator API
 
 Shared bool parameters (exactly one true for locomotion):
 
@@ -204,7 +217,7 @@ Trigger parameters for actions:
 
 ---
 
-## 6. Monster locomotion API
+## 7. Monster locomotion API
 
 Bool parameters: `Idle`, `Ready`, `Walk`, `Run`, `Jump`, `Die`
 
@@ -214,7 +227,7 @@ Triggers: `Attack`, `Hit`, `Fire` (per creature animator).
 
 ---
 
-## 7. Effects
+## 8. Effects
 
 `EffectCatalog` ScriptableObject holds:
 
@@ -233,7 +246,7 @@ Known clip names: `Run`, `Jump`, `Fall`, `Dash`, `Brake`.
 
 ---
 
-## 8. Mount compositing
+## 9. Mount compositing
 
 Given mount base texture and character layer pixels:
 
@@ -243,7 +256,7 @@ Given mount base texture and character layer pixels:
 
 ---
 
-## 9. Import conventions (local licensed art)
+## 10. Import conventions (local licensed art)
 
 | Asset type | PPU | Filter | Notes |
 |------------|-----|--------|-------|
@@ -255,7 +268,7 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 
 ---
 
-## 10. Play Mode ground autotile debug overlay
+## 11. Play Mode ground autotile debug overlay
 
 `SandboxWorld` exposes `GroundAutotileDebugMode` (inspector + **F3** cycle):
 
