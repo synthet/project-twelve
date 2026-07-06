@@ -16,13 +16,31 @@ public sealed class SandboxVisualOverrideSaveData
     public bool HasOverrides => overrides != null && overrides.Count > 0;
 }
 
+/// <summary>
+/// JSON-facing sidecar entry for a single sandbox visual override.
+/// Keep coordinates as top-level integers so saved JSON has machine-readable x/y fields.
+/// </summary>
 [Serializable]
 public sealed class SandboxVisualOverrideEntrySaveData
 {
     public int x;
     public int y;
-    public string visualKey;
-    public int variant;
+    public int spriteId;
+    public bool flipX;
 
-    public Vector2Int Coord => new Vector2Int(x, y);
+    public Vector2Int ToCoord()
+    {
+        return new Vector2Int(x, y);
+    }
+
+    public static SandboxVisualOverrideEntrySaveData FromRuntime(Vector2Int coord, int spriteId, bool flipX = false)
+    {
+        return new SandboxVisualOverrideEntrySaveData
+        {
+            x = coord.x,
+            y = coord.y,
+            spriteId = spriteId,
+            flipX = flipX
+        };
+    }
 }
