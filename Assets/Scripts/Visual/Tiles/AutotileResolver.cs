@@ -70,6 +70,30 @@ namespace ProjectTwelve.Visual.Tiles
             return GetSpriteById(tileset, spriteId);
         }
 
+        /// <summary>
+        /// Finds the resolved sprite id without substituting a fallback sprite.
+        /// </summary>
+        public static bool TryGetSpriteById(AutotileTileset tileset, string spriteId, out Sprite sprite)
+        {
+            sprite = null;
+            if (tileset?.Sprites == null || string.IsNullOrEmpty(spriteId))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < tileset.Sprites.Count; i++)
+            {
+                Sprite candidate = tileset.Sprites[i];
+                if (candidate != null && candidate.name == spriteId)
+                {
+                    sprite = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static int FindRuleIndex(IReadOnlyList<AutotileRule> rules, int[,] mask, MatchPass pass)
         {
             List<AutotileRule> matches = new List<AutotileRule>();

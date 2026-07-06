@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 public sealed class AutotileVisualTests
 {
@@ -134,6 +135,37 @@ public sealed class AutotileVisualTests
 
         Assert.IsNotNull(resolved);
         Assert.AreEqual("0", resolved.name);
+    }
+
+    [Test]
+    public void AutotileResolver_TryGetSpriteById_DoesNotFallbackForMissingSprite()
+    {
+        AutotileTileset tileset = CreateCoverTileset();
+
+        bool found = AutotileResolver.TryGetSpriteById(tileset, "missing-sidecar-id", out Sprite sprite);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(sprite);
+    }
+
+    [Test]
+    public void SandboxChunkRenderer_MissingOverrideSpriteWarning_IsDeduplicatedAndContextual()
+    {
+        SandboxChunkRenderer.ClearMissingOverrideSpriteWarningsForTests();
+        AutotileTileset tileset = new AutotileTileset("Humus", new Texture2D(16, 16), CreateSprites("0"));
+        Vector2Int firstCell = new Vector2Int(12, 34);
+        Vector2Int secondCell = new Vector2Int(56, 78);
+
+        LogAssert.Expect(
+            LogType.Warning,
+            "SandboxChunkRenderer: missing autotile override sprite; ignoring visual entry " +
+            "at cell (12, 34), layer 'ground', tileset 'Humus', sprite id 'missing-sidecar-id'.");
+
+        SandboxChunkRenderer.WarnMissingOverrideSpriteOnce(tileset, "ground", "missing-sidecar-id", firstCell);
+        SandboxChunkRenderer.WarnMissingOverrideSpriteOnce(tileset, "ground", "missing-sidecar-id", secondCell);
+        SandboxChunkRenderer.WarnMissingOverrideSpriteOnce(tileset, "ground", "missing-sidecar-id", firstCell);
+
+        LogAssert.NoUnexpectedReceived();
     }
 
     [Test]
