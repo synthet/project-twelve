@@ -279,6 +279,19 @@ See [wiki/autotile-drift-rca.md](wiki/autotile-drift-rca.md) for the layered pla
 
 Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendSprite`, anchoring sprite mesh vertices to the logical cell via **sprite bounds** (not pivot). Horizontal flip mirrors within the cell width. This matches tile-viz `blitSprite` when sprite ids and `flipX` agree.
 
+#### Visual override transform contract
+
+Visual overrides that need sprite-space transforms must use the same UV/sample-corner mapping in Unity and tile-viz. The canonical operation order is:
+
+1. Start with untransformed sprite UVs/cell sample coordinates.
+2. Apply `flipX` as a horizontal mirror inside the sprite rect.
+3. Apply `flipY` as a vertical mirror inside the sprite rect.
+4. Apply `rotationDegrees` clockwise around the sprite rect center.
+
+`rotationDegrees` accepts only quarter-turn values: `0`, `90`, `180`, and `270`. Callers may pass negative equivalent quarter-turns; implementations normalize by modulo 360, so `-90` is `270`, `-180` is `180`, and `-270` is `90`. Any non-quarter-turn input is invalid and must fail fast rather than being rounded.
+
+The operation order is intentionally not commutative. For asymmetric sprites, `flipX=true, flipY=false, rotationDegrees=90` is distinct from rotating first and then flipping. Tests must use asymmetric fixtures so each transform combination maps to a distinct output.
+
 If Play Mode labels match tile-viz but art still diverges on asymmetric sprites, route autotile quads through `AppendFixedCellQuad` (full 16×16 cell UV span) as a parity fallback. No remap is applied unless the Phase 3 gate fails (labels match, pixels differ).
 
 ---

@@ -49,6 +49,51 @@ public sealed class AutotileMeshFlipTests
         AssertCellBoundsMatch(x, y, tileSize, sprite, flipX: true);
     }
 
+
+    [Test]
+    public void VisualTransform_NormalizesNegativeQuarterTurns_AndRejectsInvalidAngles()
+    {
+        Assert.AreEqual(270, AutotileSpriteMeshBuilder.NormalizeRotationDegrees(-90));
+        Assert.AreEqual(180, AutotileSpriteMeshBuilder.NormalizeRotationDegrees(-180));
+        Assert.AreEqual(90, AutotileSpriteMeshBuilder.NormalizeRotationDegrees(450));
+        Assert.Throws<System.ArgumentOutOfRangeException>(() => AutotileSpriteMeshBuilder.NormalizeRotationDegrees(45));
+    }
+
+    [Test]
+    public void VisualTransform_AppliesFlipXThenFlipYThenClockwiseRotation()
+    {
+        Vector2 transformed = AutotileSpriteMeshBuilder.TransformUv(
+            new Vector2(0f, 0f),
+            0f,
+            1f,
+            0f,
+            1f,
+            flipX: true,
+            flipY: false,
+            rotationDegrees: 90);
+
+        Assert.AreEqual(new Vector2(0f, 0f), transformed);
+        Assert.AreNotEqual(new Vector2(1f, 1f), transformed, "Transform order must not rotate before flipX.");
+    }
+
+    [Test]
+    public void VisualTransform_AsymmetricCorners_ProduceEightDistinctMappings()
+    {
+        HashSet<string> outputs = new HashSet<string>();
+        foreach (bool flipX in new[] { false, true })
+        {
+            foreach (bool flipY in new[] { false, true })
+            {
+                foreach (int rotationDegrees in new[] { 0, 90, 180, 270 })
+                {
+                    outputs.Add(CornerMappingKey(flipX, flipY, rotationDegrees));
+                }
+            }
+        }
+
+        Assert.AreEqual(8, outputs.Count, "The square's D4 transform group should produce eight distinct asymmetric corner mappings.");
+    }
+
     [Test]
     public void Resolver_FlipEdgeRules_KeepSpriteIdWithoutPartnerSubstitution()
     {
@@ -72,6 +117,27 @@ public sealed class AutotileMeshFlipTests
         Assert.AreEqual("24", resolved.name);
         Assert.IsTrue(flipX);
         Assert.AreNotEqual("25", resolved.name);
+    }
+
+
+    private static string CornerMappingKey(bool flipX, bool flipY, int rotationDegrees)
+    {
+        Vector2[] corners =
+        {
+            new Vector2(0f, 0f),
+            new Vector2(1f, 0f),
+            new Vector2(1f, 1f),
+            new Vector2(0f, 1f),
+        };
+
+        List<string> mapped = new List<string>();
+        foreach (Vector2 corner in corners)
+        {
+            Vector2 uv = AutotileSpriteMeshBuilder.TransformUv(corner, 0f, 1f, 0f, 1f, flipX, flipY, rotationDegrees);
+            mapped.Add($"{uv.x:0},{uv.y:0}");
+        }
+
+        return string.Join("|", mapped);
     }
 
     private static void AssertCellBoundsMatch(int x, int y, float tileSize, Sprite sprite, bool flipX)
