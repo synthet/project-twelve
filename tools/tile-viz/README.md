@@ -32,8 +32,39 @@ node src/cli.js render --space test/fixtures/snippets/grass-cover-middle.json \
   --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
   --scale 16 --png out.png
 
+# Render sprite PNG with visual override sidecar data
+node src/cli.js render --space test/fixtures/snippets/grass-cover-middle.json \
+  --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
+  --visual-overrides visual-overrides.json --scale 16 --png out.png
+
+# List visual override sidecar entries
+node src/cli.js list-visual-overrides --visual-overrides visual-overrides.json
+
 # Convert runtime MCP dump to tile-space JSON
 node src/cli.js import-mcp --file ../world-viz/mcp-dirt-stone.json --out test/fixtures/spaces/dirt-stone.json
+```
+
+## Visual override sidecars
+
+`render` accepts `--visual-overrides <file>` to replace resolved ground and/or cover visuals after the normal autotile report has been built. The sidecar can be an `overrides[]` list or coordinate-keyed object:
+
+```json
+{
+  "overrides": [
+    {
+      "x": 0,
+      "y": 1,
+      "ground": { "tileset": "Humus", "spriteId": 4, "flipX": false },
+      "cover": { "tileset": "GrassA", "spriteId": 2, "flipX": true, "rendered": true }
+    }
+  ]
+}
+```
+
+Use this exact command to inspect a sidecar before rendering:
+
+```bash
+node src/cli.js list-visual-overrides --visual-overrides visual-overrides.json
 ```
 
 ## JSON formats (`project-twelve/tile-space/v1`)
