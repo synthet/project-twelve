@@ -140,13 +140,43 @@ namespace ProjectTwelve.Visual.AutotileDebug
             string spriteId,
             bool flipX)
         {
+            AppendSpriteIdLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                spriteId,
+                flipX,
+                AutotileDebugPalette.LabelColor,
+                0f);
+        }
+
+        /// <summary>
+        /// Appends digit quads using a custom tint and vertical offset within the tile.
+        /// </summary>
+        public static void AppendSpriteIdLabel(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int localX,
+            int localY,
+            float tileSize,
+            string spriteId,
+            bool flipX,
+            Color labelColor,
+            float verticalOffsetTiles)
+        {
             if (!TryParseSpriteId(spriteId, out int value))
             {
                 return;
             }
 
             float centerX = (localX + 0.5f) * tileSize;
-            float centerY = (localY + 0.5f) * tileSize;
+            float centerY = (localY + 0.5f + verticalOffsetTiles) * tileSize;
             float digitWidth = tileSize * 0.22f;
             float digitHeight = tileSize * 0.28f;
 
@@ -173,7 +203,7 @@ namespace ProjectTwelve.Visual.AutotileDebug
                     top,
                     ZOffset - 0.001f,
                     digitUv,
-                    AutotileDebugPalette.LabelColor);
+                    labelColor);
             }
 
             if (flipX)
