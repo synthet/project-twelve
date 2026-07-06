@@ -37,6 +37,7 @@ follows. Controls:
 | Left mouse button | Break the tile under the cursor (within edit range) |
 | Right mouse button | Place a tile under the cursor (within edit range) |
 | `F5` / `F9` | Save / load the world to `Application.persistentDataPath` |
+| Visual Override Mode + `F5` | Save the world and `sandbox-world.visual-overrides.json` sidecar; normal `F9` load is unchanged |
 
 ## Project Structure
 
