@@ -41,7 +41,9 @@ public sealed class SandboxWorld : MonoBehaviour
     private readonly Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay> debugOverlays =
         new Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay>();
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
+    private readonly AutotileVisualOverrideMap autotileVisualOverrides = new AutotileVisualOverrideMap();
     private readonly Dictionary<Vector2Int, SandboxVisualOverride> visualOverrides = new Dictionary<Vector2Int, SandboxVisualOverride>();
+    private SandboxVisualOverrideSaveData visualOverrideSaveData = new SandboxVisualOverrideSaveData();
     private float nextChunkRefreshTime;
 
     public float TileSize => tileSize;
@@ -50,10 +52,11 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>Visual catalog used for autotile mesh rendering and debug tooling.</summary>
     public SandboxTileVisualCatalog TileVisualCatalog => tileVisualCatalog;
 
+    /// <summary>Rendering-only autotile sprite overrides, keyed outside tile identity and generation.</summary>
+    public AutotileVisualOverrideMap AutotileVisualOverrides => autotileVisualOverrides;
+
     /// <summary>Presentation metadata loaded from the sidecar next to the simulation save.</summary>
     public SandboxVisualOverrideSaveData VisualOverrideSaveData => visualOverrideSaveData;
-
-    private SandboxVisualOverrideSaveData visualOverrideSaveData = new SandboxVisualOverrideSaveData();
 
     /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
@@ -699,6 +702,7 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileMaterial,
                 tileVisualCatalog,
                 GetTile,
+                autotileVisualOverrides,
                 ShouldApplyDebugVisualOverrides ? TryGetVisualOverride : null);
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))

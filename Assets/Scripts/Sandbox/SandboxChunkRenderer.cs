@@ -39,13 +39,14 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Material material,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides = null,
         SandboxVisualOverrideLookup visualOverrideLookup = null)
     {
         EnsureComponents();
 
         if (visualCatalog != null && visualCatalog.HasAutotileSources && tileLookup != null)
         {
-            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup, visualOverrideLookup);
+            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup, visualOverrides, visualOverrideLookup);
         }
         else
         {
@@ -101,6 +102,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Material material,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides,
         SandboxVisualOverrideLookup visualOverrideLookup)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
@@ -122,6 +124,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     groundLayers,
                     visualCatalog,
                     tileLookup,
+                    visualOverrides,
                     visualOverrideLookup,
                     tile,
                     localX,
@@ -132,6 +135,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     coverLayers,
                     visualCatalog,
                     tileLookup,
+                    visualOverrides,
                     tile,
                     localX,
                     localY,
@@ -147,6 +151,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides,
         SandboxVisualOverrideLookup visualOverrideLookup,
         SandboxTile tile,
         int localX,
@@ -184,8 +189,19 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return true;
         }
 
-        MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: 0f);
+        AddResolvedSpriteQuad(
+            layers,
+            visualOverrides,
+            worldCoord,
+            AutotileVisualOverrideMap.GroundLayer,
+            tileset,
+            localX,
+            localY,
+            tileSize,
+            sprite,
+            flipX,
+            GetTileLightColor(tile),
+            zOffset: 0f);
         return false;
     }
 
@@ -193,6 +209,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides,
         SandboxTile tile,
         int localX,
         int localY,
@@ -222,8 +239,19 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return true;
         }
 
-        MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: -0.01f);
+        AddResolvedSpriteQuad(
+            layers,
+            visualOverrides,
+            worldCoord,
+            AutotileVisualOverrideMap.CoverLayer,
+            tileset,
+            localX,
+            localY,
+            tileSize,
+            sprite,
+            flipX,
+            GetTileLightColor(tile),
+            zOffset: -0.01f);
         return false;
     }
 
@@ -386,6 +414,57 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         return layer;
     }
 
+
+    private static void AddResolvedSpriteQuad(
+        Dictionary<Texture2D, MeshLayer> layers,
+        AutotileVisualOverrideMap visualOverrides,
+        Vector2Int worldCoord,
+        string layerName,
+        AutotileTileset tileset,
+        int x,
+        int y,
+        float tileSize,
+        Sprite normalSprite,
+        bool normalFlipX,
+        Color color,
+        float zOffset)
+    {
+        Sprite sprite = normalSprite;
+        bool flipX = normalFlipX;
+        bool useFixedCellQuad = false;
+
+        if (visualOverrides != null
+            && visualOverrides.TryGetOverride(worldCoord, layerName, tileset.Name, out string overrideSpriteId)
+            && tileset.TryGetSprite(overrideSpriteId, out Sprite overrideSprite))
+        {
+            sprite = overrideSprite;
+            flipX = false;
+            useFixedCellQuad = true;
+        }
+
+        MeshLayer meshLayer = GetOrCreateLayer(layers, sprite.texture);
+        if (useFixedCellQuad)
+        {
+            AutotileSpriteMeshBuilder.AppendFixedCellQuad(
+                meshLayer.Vertices,
+                meshLayer.Triangles,
+                meshLayer.Uvs,
+                meshLayer.Colors,
+                x,
+                y,
+                tileSize,
+                sprite,
+                flipX,
+                color,
+                zOffset,
+                flipY: false,
+                rotationDegrees: 0);
+            return;
+        }
+
+        AddSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
+    }
+
     private static void AddSpriteQuad(
         MeshLayer layer,
         int x,
@@ -408,25 +487,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             flipX,
             color,
             zOffset);
-    }
-
-    private static Sprite FindSpriteById(AutotileTileset tileset, string spriteId)
-    {
-        if (tileset?.Sprites == null || string.IsNullOrEmpty(spriteId))
-        {
-            return null;
-        }
-
-        for (int i = 0; i < tileset.Sprites.Count; i++)
-        {
-            Sprite sprite = tileset.Sprites[i];
-            if (sprite != null && sprite.name == spriteId)
-            {
-                return sprite;
-            }
-        }
-
-        return null;
     }
 
     private static Material CreateMaterialForTexture(Material template, Texture2D texture)

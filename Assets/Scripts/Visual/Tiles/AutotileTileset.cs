@@ -19,6 +19,25 @@ namespace ProjectTwelve.Visual.Tiles
         public Texture2D Texture => texture;
         public IReadOnlyList<Sprite> Sprites => sprites;
 
+        public bool TryGetSprite(string spriteId, out Sprite sprite)
+        {
+            if (!string.IsNullOrEmpty(spriteId) && sprites != null)
+            {
+                for (int i = 0; i < sprites.Count; i++)
+                {
+                    Sprite candidate = sprites[i];
+                    if (candidate != null && candidate.name == spriteId)
+                    {
+                        sprite = candidate;
+                        return true;
+                    }
+                }
+            }
+
+            sprite = null;
+            return false;
+        }
+
         public AutotileTileset()
         {
         }
