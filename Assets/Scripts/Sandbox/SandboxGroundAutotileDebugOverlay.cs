@@ -42,6 +42,7 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
 
         IReadOnlyDictionary<Vector2Int, BaselineCell> baseline =
             mode == GroundAutotileDebugMode.MismatchBaseline
+                || mode == GroundAutotileDebugMode.VisualOverrideLabel
                 ? AutotileBaselineStore.TryLoad(DefaultBaselineName)
                 : null;
 
@@ -132,6 +133,25 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         AutotileGroundResolveResult resolve,
         IReadOnlyDictionary<Vector2Int, BaselineCell> baseline)
     {
+        if (mode == GroundAutotileDebugMode.VisualOverrideLabel)
+        {
+            AppendVisualOverrideLabels(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                visualCatalog,
+                tileLookup,
+                tile,
+                localX,
+                localY,
+                worldCoord,
+                tileSize,
+                resolve,
+                baseline);
+            return;
+        }
+
         if (mode == GroundAutotileDebugMode.MismatchBaseline)
         {
             if (baseline == null
@@ -243,6 +263,115 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 resolve.SpriteId,
                 resolve.FlipX);
         }
+    }
+
+
+    private static void AppendVisualOverrideLabels(
+        List<Vector3> vertices,
+        List<int> triangles,
+        List<Vector2> uvs,
+        List<Color> colors,
+        SandboxTileVisualCatalog visualCatalog,
+        Func<int, int, SandboxTile> tileLookup,
+        SandboxTile tile,
+        int localX,
+        int localY,
+        Vector2Int worldCoord,
+        float tileSize,
+        AutotileGroundResolveResult ground,
+        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline)
+    {
+        if (baseline == null || !baseline.TryGetValue(worldCoord, out BaselineCell snapshot))
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(snapshot.GroundSpriteId))
+        {
+            Color color = GetOverrideLabelColor(
+                visualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset groundTileset) ? groundTileset : null,
+                snapshot.GroundSpriteId,
+                snapshot.GroundFlipX,
+                ground.Resolved,
+                ground.SpriteId,
+                ground.FlipX);
+            AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                snapshot.GroundSpriteId,
+                snapshot.GroundFlipX,
+                color,
+                verticalOffsetTiles: -0.18f);
+        }
+
+        bool coverRendered = TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover);
+        if (snapshot.CoverRendered && !string.IsNullOrEmpty(snapshot.CoverSpriteId))
+        {
+            Color color = GetOverrideLabelColor(
+                visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset coverTileset) ? coverTileset : null,
+                snapshot.CoverSpriteId,
+                snapshot.CoverFlipX,
+                coverRendered,
+                cover.SpriteId,
+                cover.FlipX);
+            AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                snapshot.CoverSpriteId,
+                snapshot.CoverFlipX,
+                color,
+                verticalOffsetTiles: 0.18f);
+        }
+    }
+
+    private static Color GetOverrideLabelColor(
+        AutotileTileset tileset,
+        string savedSpriteId,
+        bool savedFlipX,
+        bool currentRendered,
+        string currentSpriteId,
+        bool currentFlipX)
+    {
+        if (!TilesetHasSprite(tileset, savedSpriteId))
+        {
+            return AutotileDebugPalette.MissingOverrideSpriteColor;
+        }
+
+        if (!currentRendered || currentSpriteId != savedSpriteId || currentFlipX != savedFlipX)
+        {
+            return AutotileDebugPalette.AutoSnapshotMismatchColor;
+        }
+
+        return AutotileDebugPalette.ValidOverrideColor;
+    }
+
+    private static bool TilesetHasSprite(AutotileTileset tileset, string spriteId)
+    {
+        if (tileset?.Sprites == null || string.IsNullOrEmpty(spriteId))
+        {
+            return false;
+        }
+
+        for (int i = 0; i < tileset.Sprites.Count; i++)
+        {
+            Sprite sprite = tileset.Sprites[i];
+            if (sprite != null && sprite.name == spriteId)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool TryResolveCover(

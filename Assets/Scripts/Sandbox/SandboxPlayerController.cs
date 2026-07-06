@@ -14,6 +14,8 @@ public sealed class SandboxPlayerController : MonoBehaviour
     [SerializeField] private string placeTileId = "core:dirt";
     [SerializeField] private float editRange = 6f;
     [SerializeField] private string saveFileName = "sandbox-world.json";
+    [SerializeField] private bool visualOverrideModeActive;
+    [SerializeField] private string visualOverrideSidecarFileName = "sandbox-world.visual-overrides.json";
 
     private const float GroundProbeDistance = 0.12f;
     private const float GroundNormalThreshold = 0.5f;
@@ -192,7 +194,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void HandleTileEditing()
     {
-        if (world == null || mainCamera == null)
+        if (world == null || mainCamera == null || !world.IsDebugOverrideModeEnabled)
         {
             return;
         }
@@ -214,28 +216,53 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return;
         }
 
-        world.SetTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
+        world.TrySetDebugOverrideTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
     }
 
     private void HandleSaveLoadShortcuts()
     {
-        if (world == null)
+        if (world == null || !world.IsDebugOverrideModeEnabled)
         {
             return;
         }
 
         string path = Path.Combine(Application.persistentDataPath, saveFileName);
-        if (WasSavePressed())
+        SandboxSaveLoadShortcutRouter.ShortcutCommand command = SandboxSaveLoadShortcutRouter.Resolve(
+            WasSavePressed(),
+            WasLoadPressed(),
+            visualOverrideModeActive);
+
+        if (command == SandboxSaveLoadShortcutRouter.ShortcutCommand.SaveWorld
+            || command == SandboxSaveLoadShortcutRouter.ShortcutCommand.SaveWorldAndVisualOverrideSidecar)
         {
             world.SaveToPath(path);
             Debug.Log($"Saved sandbox world and player position to {path}");
+
+            if (command == SandboxSaveLoadShortcutRouter.ShortcutCommand.SaveWorldAndVisualOverrideSidecar)
+            {
+                SaveVisualOverrideSidecar();
+            }
+
+            return;
         }
 
-        if (WasLoadPressed())
+        if (command == SandboxSaveLoadShortcutRouter.ShortcutCommand.LoadWorld)
         {
             world.LoadFromPath(path);
             Debug.Log($"Loaded sandbox world and player position from {path}");
         }
+    }
+
+    private void SaveVisualOverrideSidecar()
+    {
+        string path = Path.Combine(Application.persistentDataPath, visualOverrideSidecarFileName);
+        string json = JsonUtility.ToJson(new VisualOverrideSidecarSaveData
+        {
+            version = 1,
+            savedAtUtc = System.DateTime.UtcNow.ToString("O")
+        }, true);
+        File.WriteAllText(path, json);
+        Debug.Log($"Saved visual override sidecar to {path}");
     }
 
     private float ReadHorizontalInput()
@@ -492,5 +519,44 @@ public static class SandboxPhysicsMaterials
 
             return zeroFriction;
         }
+    }
+}
+
+[System.Serializable]
+internal sealed class VisualOverrideSidecarSaveData
+{
+    public int version;
+    public string savedAtUtc;
+}
+
+/// <summary>
+/// Pure shortcut router for sandbox save/load keys so EditMode tests can cover key conflicts
+/// without synthesizing Unity input events.
+/// </summary>
+internal static class SandboxSaveLoadShortcutRouter
+{
+    internal enum ShortcutCommand
+    {
+        None,
+        SaveWorld,
+        SaveWorldAndVisualOverrideSidecar,
+        LoadWorld
+    }
+
+    internal static ShortcutCommand Resolve(bool savePressed, bool loadPressed, bool visualOverrideModeActive)
+    {
+        if (savePressed)
+        {
+            return visualOverrideModeActive
+                ? ShortcutCommand.SaveWorldAndVisualOverrideSidecar
+                : ShortcutCommand.SaveWorld;
+        }
+
+        if (loadPressed)
+        {
+            return ShortcutCommand.LoadWorld;
+        }
+
+        return ShortcutCommand.None;
     }
 }

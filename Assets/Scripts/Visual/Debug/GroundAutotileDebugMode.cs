@@ -12,5 +12,6 @@ namespace ProjectTwelve.Visual.AutotileDebug
         CoverSpriteIdLabel = 4,
         GroundCoverSplit = 5,
         MismatchBaseline = 6,
+        VisualOverrideLabel = 7,
     }
 }

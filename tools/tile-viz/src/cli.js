@@ -6,7 +6,7 @@ import path from 'node:path';
 
 import { loadTileSpaceFromFile, exportMcpToSpace } from './io/tileSpace.js';
 import { buildAutotileReport, assertExpectations } from './report/autotileJson.js';
-import { renderAutotilePng } from './render/autotilePng.js';
+import { listVisualOverrides, renderAutotilePng } from './render/autotilePng.js';
 
 const USAGE = `tile-viz — offline autotile resolver and sprite compositor
 
@@ -15,10 +15,12 @@ Usage:
   tile-viz render --space <file.json> --assets-root <dir> --png <out> [options]
   tile-viz test-fixture --space <file.json>
   tile-viz import-mcp --file <mcp.json> --out <space.json>
+  tile-viz list-visual-overrides --visual-overrides <file>
 
 Options:
   --scale <int>           pixels per tile for PNG (default 16)
   --manifest <file>       tileset manifest (default data/tileset-manifest.json)
+  --visual-overrides <file> sidecar JSON with per-cell ground/cover sprite overrides
   --assets-root <dir>     licensed Tiles root (Ground/, Cover/)
   --flat-light            skip underground light dimming in PNG
   --no-cover              skip grass cover layer in PNG
@@ -74,6 +76,9 @@ function main() {
     case 'import-mcp':
       cmdImportMcp(args);
       break;
+    case 'list-visual-overrides':
+      cmdListVisualOverrides(args);
+      break;
     default:
       fail(`unknown command "${cmd}"`);
   }
@@ -101,6 +106,16 @@ function cmdResolve(args) {
   }
 }
 
+function loadVisualOverrides(args) {
+  if (!args['visual-overrides']) {
+    return undefined;
+  }
+  if (args['visual-overrides'] === true) {
+    fail(`${args._[0]} requires --visual-overrides <file>`);
+  }
+  return JSON.parse(fs.readFileSync(args['visual-overrides'], 'utf8'));
+}
+
 function cmdRender(args) {
   const space = requireSpace(args);
   if (!args['assets-root'] || args['assets-root'] === true) {
@@ -110,6 +125,7 @@ function cmdRender(args) {
     fail('render requires --png <file>');
   }
   const scale = args.scale ? Number(args.scale) | 0 : 16;
+  const visualOverrides = loadVisualOverrides(args);
   const buf = renderAutotilePng(space, {
     assetsRoot: args['assets-root'],
     manifest: args.manifest,
@@ -117,6 +133,7 @@ function cmdRender(args) {
     flatLight: args['flat-light'] === true,
     noCover: args['no-cover'] === true,
     extrude: args['no-extrude'] !== true,
+    visualOverrides,
   });
   fs.mkdirSync(path.dirname(path.resolve(args.png)), { recursive: true });
   fs.writeFileSync(args.png, buf);
@@ -145,6 +162,17 @@ function cmdImportMcp(args) {
   }
   exportMcpToSpace(args.file, args.out);
   process.stderr.write(`wrote ${args.out}\n`);
+}
+
+function cmdListVisualOverrides(args) {
+  if (!args['visual-overrides']) {
+    fail('list-visual-overrides requires --visual-overrides <file>');
+  }
+  const visualOverrides = loadVisualOverrides(args);
+  const entries = listVisualOverrides(visualOverrides);
+  for (const entry of entries) {
+    process.stdout.write(`${entry.x},${entry.y}: ${entry.layers.join('; ')}\n`);
+  }
 }
 
 main();

@@ -151,7 +151,20 @@ Hash combines flip flag and all mask cell values (order: x outer, y inner).
 
 ---
 
-## 4. Character sprite sheet contract
+## 4. Visual override debug annotations
+
+Visual overrides are **debug annotations** layered onto terrain presentation after the normal autotile decision has been made. They are intentionally non-authoritative:
+
+- They do **not** write tile IDs, tile definitions, save data, or generated chunks.
+- They do **not** alter collision, solidity, lighting, navigation, terrain generation, fluid simulation, or runtime world queries.
+- They do **not** change the mask or resolver contract described above; the normal ground/cover autotile report remains the source of truth for diagnosing resolver drift.
+- They may temporarily substitute the sprite/flip emitted by the renderer or tile-viz compositor so agents and humans can mark suspect cells, test a visual hypothesis, or attach a compact reproduction to an RCA.
+
+Treat any `*.visual-overrides.json` file as diagnostic evidence beside a capture, not as content data. If a visual override makes a scene look correct, the follow-up fix still belongs in the canonical tile mapping, mask builder, resolver, import data, or mesh compositor as appropriate.
+
+---
+
+## 5. Character sprite sheet contract
 
 | Property | Value |
 |----------|-------|
@@ -180,7 +193,7 @@ Special cases:
 
 ---
 
-## 5. Character locomotion animator API
+## 6. Character locomotion animator API
 
 Shared bool parameters (exactly one true for locomotion):
 
@@ -204,7 +217,7 @@ Trigger parameters for actions:
 
 ---
 
-## 6. Monster locomotion API
+## 7. Monster locomotion API
 
 Bool parameters: `Idle`, `Ready`, `Walk`, `Run`, `Jump`, `Die`
 
@@ -214,7 +227,7 @@ Triggers: `Attack`, `Hit`, `Fire` (per creature animator).
 
 ---
 
-## 7. Effects
+## 8. Effects
 
 `EffectCatalog` ScriptableObject holds:
 
@@ -233,7 +246,7 @@ Known clip names: `Run`, `Jump`, `Fall`, `Dash`, `Brake`.
 
 ---
 
-## 8. Mount compositing
+## 9. Mount compositing
 
 Given mount base texture and character layer pixels:
 
@@ -243,7 +256,7 @@ Given mount base texture and character layer pixels:
 
 ---
 
-## 9. Import conventions (local licensed art)
+## 10. Import conventions (local licensed art)
 
 | Asset type | PPU | Filter | Notes |
 |------------|-----|--------|-------|
@@ -255,7 +268,7 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 
 ---
 
-## 10. Play Mode ground autotile debug overlay
+## 11. Play Mode ground autotile debug overlay
 
 `SandboxWorld` exposes `GroundAutotileDebugMode` (inspector + **F3** cycle):
 
@@ -268,6 +281,7 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 | `CoverSpriteIdLabel` | Cover sprite id on grass surface cells |
 | `GroundCoverSplit` | Ground marker (full cell) + cover marker (top half) |
 | `MismatchBaseline` | Red highlight where live ground resolve ≠ committed baseline |
+| `VisualOverrideLabel` | Ground and cover saved override/snapshot sprite labels; no label without saved state, cyan when valid, magenta when the saved sprite is missing from the current tileset, yellow when the saved auto snapshot differs from the current auto result |
 
 When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
 
@@ -278,6 +292,19 @@ See [wiki/autotile-drift-rca.md](wiki/autotile-drift-rca.md) for the layered pla
 ### Mesh compositing vs tile-viz blit
 
 Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendSprite`, anchoring sprite mesh vertices to the logical cell via **sprite bounds** (not pivot). Horizontal flip mirrors within the cell width. This matches tile-viz `blitSprite` when sprite ids and `flipX` agree.
+
+#### Visual override transform contract
+
+Visual overrides that need sprite-space transforms must use the same UV/sample-corner mapping in Unity and tile-viz. The canonical operation order is:
+
+1. Start with untransformed sprite UVs/cell sample coordinates.
+2. Apply `flipX` as a horizontal mirror inside the sprite rect.
+3. Apply `flipY` as a vertical mirror inside the sprite rect.
+4. Apply `rotationDegrees` clockwise around the sprite rect center.
+
+`rotationDegrees` accepts only quarter-turn values: `0`, `90`, `180`, and `270`. Callers may pass negative equivalent quarter-turns; implementations normalize by modulo 360, so `-90` is `270`, `-180` is `180`, and `-270` is `90`. Any non-quarter-turn input is invalid and must fail fast rather than being rounded.
+
+The operation order is intentionally not commutative. For asymmetric sprites, `flipX=true, flipY=false, rotationDegrees=90` is distinct from rotating first and then flipping. Tests must use asymmetric fixtures so each transform combination maps to a distinct output.
 
 If Play Mode labels match tile-viz but art still diverges on asymmetric sprites, route autotile quads through `AppendFixedCellQuad` (full 16×16 cell UV span) as a parity fallback. No remap is applied unless the Phase 3 gate fails (labels match, pixels differ).
 

@@ -983,7 +983,9 @@ public sealed class AutotileVisualTests
             sprite,
             flipX: false,
             Color.white,
-            zOffset: 0f);
+            zOffset: 0f,
+            flipY: false,
+            rotationDegrees: 0);
 
         Assert.AreEqual(new Vector3(2f, 5f, 0f), vertices[0]);
         Assert.AreEqual(new Vector3(3f, 6f, 0f), vertices[2]);
