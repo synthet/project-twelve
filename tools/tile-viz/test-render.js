@@ -10,6 +10,12 @@ const snippetPath = path.join(__dirname, 'test', 'fixtures', 'snippets', 'dirt-s
 const space = loadTileSpaceFromFile(snippetPath);
 const assetsRoot = path.join(__dirname, '..', '..', 'Assets', '_Licensed', 'PixelFantasy', 'PixelTileEngine', 'Tiles');
 
+const humusPath = path.join(assetsRoot, 'Ground', 'Humus.png');
+if (!fs.existsSync(humusPath)) {
+  console.log(`Skipping render smoke test; licensed assets not found at ${humusPath}`);
+  process.exit(0);
+}
+
 const pngTest = renderAutotilePng(space, { assetsRoot, scale: 32, flatLight: true });
 fs.writeFileSync(path.join(__dirname, 'out-slope', 'test-output.png'), pngTest);
 

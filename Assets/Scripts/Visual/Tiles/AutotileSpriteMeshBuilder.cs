@@ -25,7 +25,9 @@ namespace ProjectTwelve.Visual.Tiles
             Sprite sprite,
             bool flipX,
             Color color,
-            float zOffset)
+            float zOffset,
+            bool flipY = false,
+            int rotationDegrees = 0)
         {
             if (sprite == null)
             {
@@ -40,7 +42,7 @@ namespace ProjectTwelve.Visual.Tiles
                 || spriteUvs == null || spriteUvs.Length == 0
                 || spriteTriangles == null || spriteTriangles.Length == 0)
             {
-                AppendFixedCellQuad(vertices, triangles, uvs, colors, x, y, tileSize, sprite, flipX, color, zOffset);
+                AppendFixedCellQuad(vertices, triangles, uvs, colors, x, y, tileSize, sprite, flipX, color, zOffset, flipY, rotationDegrees);
                 return;
             }
 
@@ -49,13 +51,8 @@ namespace ProjectTwelve.Visual.Tiles
             float cellOriginX = x * tileSize;
             float cellOriginY = y * tileSize;
 
-            float uMin = float.PositiveInfinity;
-            float uMax = float.NegativeInfinity;
-            for (int i = 0; i < spriteUvs.Length; i++)
-            {
-                uMin = Mathf.Min(uMin, spriteUvs[i].x);
-                uMax = Mathf.Max(uMax, spriteUvs[i].x);
-            }
+            GetSpriteUvBounds(spriteUvs, out float uMin, out float uMax, out float vMin, out float vMax);
+            int normalizedRotation = NormalizeRotationDegrees(rotationDegrees);
 
             int start = vertices.Count;
             for (int i = 0; i < spriteVerts.Length; i++)
@@ -69,11 +66,7 @@ namespace ProjectTwelve.Visual.Tiles
                 float offsetY = spriteVerts[i].y - bounds.min.y;
                 vertices.Add(new Vector3(cellOriginX + offsetX, cellOriginY + offsetY, zOffset));
 
-                Vector2 uv = spriteUvs[i];
-                if (flipX)
-                {
-                    uv.x = uMin + uMax - uv.x;
-                }
+                Vector2 uv = TransformUv(spriteUvs[i], uMin, uMax, vMin, vMax, flipX, flipY, normalizedRotation);
 
                 uvs.Add(uv);
                 colors.Add(color);
@@ -210,9 +203,11 @@ namespace ProjectTwelve.Visual.Tiles
             Sprite sprite,
             bool flipX,
             Color color,
-            float zOffset)
+            float zOffset,
+            bool flipY,
+            int rotationDegrees)
         {
-            Rect uv = GetSpriteUv(sprite, flipX);
+            UvCorners uv = GetSpriteUvCorners(sprite, flipX, flipY, rotationDegrees);
             float left = x * tileSize;
             float right = left + tileSize;
             float bottom = y * tileSize;
@@ -224,10 +219,10 @@ namespace ProjectTwelve.Visual.Tiles
             vertices.Add(new Vector3(right, top, zOffset));
             vertices.Add(new Vector3(left, top, zOffset));
 
-            uvs.Add(new Vector2(uv.xMin, uv.yMin));
-            uvs.Add(new Vector2(uv.xMax, uv.yMin));
-            uvs.Add(new Vector2(uv.xMax, uv.yMax));
-            uvs.Add(new Vector2(uv.xMin, uv.yMax));
+            uvs.Add(uv.BottomLeft);
+            uvs.Add(uv.BottomRight);
+            uvs.Add(uv.TopRight);
+            uvs.Add(uv.TopLeft);
 
             triangles.Add(start);
             triangles.Add(start + 2);
@@ -242,7 +237,56 @@ namespace ProjectTwelve.Visual.Tiles
             colors.Add(color);
         }
 
-        private static Rect GetSpriteUv(Sprite sprite, bool flipX)
+        internal static int NormalizeRotationDegrees(int rotationDegrees)
+        {
+            int normalized = rotationDegrees % 360;
+            if (normalized < 0)
+            {
+                normalized += 360;
+            }
+
+            return normalized switch
+            {
+                0 or 90 or 180 or 270 => normalized,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(rotationDegrees), rotationDegrees, "Visual override rotationDegrees must normalize to 0, 90, 180, or 270.")
+            };
+        }
+
+        internal static Vector2 TransformUv(Vector2 uv, float uMin, float uMax, float vMin, float vMax, bool flipX, bool flipY, int rotationDegrees)
+        {
+            float uSpan = uMax - uMin;
+            float vSpan = vMax - vMin;
+            float u = uSpan == 0f ? 0.5f : (uv.x - uMin) / uSpan;
+            float v = vSpan == 0f ? 0.5f : (uv.y - vMin) / vSpan;
+
+            if (flipX)
+            {
+                u = 1f - u;
+            }
+
+            if (flipY)
+            {
+                v = 1f - v;
+            }
+
+            switch (NormalizeRotationDegrees(rotationDegrees))
+            {
+                case 90:
+                    (u, v) = (v, 1f - u);
+                    break;
+                case 180:
+                    u = 1f - u;
+                    v = 1f - v;
+                    break;
+                case 270:
+                    (u, v) = (1f - v, u);
+                    break;
+            }
+
+            return new Vector2(uMin + u * uSpan, vMin + v * vSpan);
+        }
+
+        private static UvCorners GetSpriteUvCorners(Sprite sprite, bool flipX, bool flipY, int rotationDegrees)
         {
             Rect rect = sprite.textureRect;
             Texture2D texture = sprite.texture;
@@ -251,14 +295,42 @@ namespace ProjectTwelve.Visual.Tiles
             float vMin = rect.y / texture.height;
             float vMax = (rect.y + rect.height) / texture.height;
 
-            if (flipX)
+            return new UvCorners(
+                TransformUv(new Vector2(uMin, vMin), uMin, uMax, vMin, vMax, flipX, flipY, rotationDegrees),
+                TransformUv(new Vector2(uMax, vMin), uMin, uMax, vMin, vMax, flipX, flipY, rotationDegrees),
+                TransformUv(new Vector2(uMax, vMax), uMin, uMax, vMin, vMax, flipX, flipY, rotationDegrees),
+                TransformUv(new Vector2(uMin, vMax), uMin, uMax, vMin, vMax, flipX, flipY, rotationDegrees));
+        }
+
+        private static void GetSpriteUvBounds(Vector2[] spriteUvs, out float uMin, out float uMax, out float vMin, out float vMax)
+        {
+            uMin = float.PositiveInfinity;
+            uMax = float.NegativeInfinity;
+            vMin = float.PositiveInfinity;
+            vMax = float.NegativeInfinity;
+            for (int i = 0; i < spriteUvs.Length; i++)
             {
-                float swap = uMin;
-                uMin = uMax;
-                uMax = swap;
+                uMin = Mathf.Min(uMin, spriteUvs[i].x);
+                uMax = Mathf.Max(uMax, spriteUvs[i].x);
+                vMin = Mathf.Min(vMin, spriteUvs[i].y);
+                vMax = Mathf.Max(vMax, spriteUvs[i].y);
+            }
+        }
+
+        private readonly struct UvCorners
+        {
+            public UvCorners(Vector2 bottomLeft, Vector2 bottomRight, Vector2 topRight, Vector2 topLeft)
+            {
+                BottomLeft = bottomLeft;
+                BottomRight = bottomRight;
+                TopRight = topRight;
+                TopLeft = topLeft;
             }
 
-            return new Rect(uMin, vMin, uMax - uMin, vMax - vMin);
+            public Vector2 BottomLeft { get; }
+            public Vector2 BottomRight { get; }
+            public Vector2 TopRight { get; }
+            public Vector2 TopLeft { get; }
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+  "format": "project-twelve/visual-overrides/v1",
+  "overrides": [
+    {
+      "x": 1,
+      "y": 1,
+      "layer": "ground",
+      "spriteId": "17",
+      "flipX": false,
+      "flipY": false,
+      "rotationDegrees": 0
+    }
+  ]
+}

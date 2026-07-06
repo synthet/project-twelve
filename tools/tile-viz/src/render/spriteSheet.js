@@ -98,6 +98,44 @@ export function spriteRect(spriteIndex, layout, png) {
 
 
 
+export function normalizeRotationDegrees(rotationDegrees = 0) {
+  const normalized = ((rotationDegrees % 360) + 360) % 360;
+  if (![0, 90, 180, 270].includes(normalized)) {
+    throw new RangeError(`Visual override rotationDegrees must normalize to 0, 90, 180, or 270; got ${rotationDegrees}`);
+  }
+  return normalized;
+}
+
+export function transformSpriteUv(u, v, { flipX = false, flipY = false, rotationDegrees = 0 } = {}) {
+  let tx = u;
+  let ty = v;
+
+  if (flipX) {
+    tx = 1 - tx;
+  }
+
+  if (flipY) {
+    ty = 1 - ty;
+  }
+
+  switch (normalizeRotationDegrees(rotationDegrees)) {
+    case 90:
+      [tx, ty] = [ty, 1 - tx];
+      break;
+    case 180:
+      tx = 1 - tx;
+      ty = 1 - ty;
+      break;
+    case 270:
+      [tx, ty] = [1 - ty, tx];
+      break;
+    default:
+      break;
+  }
+
+  return { u: tx, v: ty };
+}
+
 function clamp(value, min, max) {
 
   return Math.min(max, Math.max(min, value));
@@ -136,10 +174,11 @@ function samplePixel(src, x, y) {
  * @param {boolean} extrude include 1px bleed from adjacent sheet cells
 
  * @param {number} [destSize] output cell size in pixels (defaults to the sprite's native size)
+ * @param {{ flipY?: boolean, rotationDegrees?: number }} [transform]
 
  */
 
-export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [255, 255, 255], extrude = true, destSize = rect.w) {
+export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [255, 255, 255], extrude = true, destSize = rect.w, transform = {}) {
   const pad = extrude ? 1 : 0;
   const spanW = rect.w + pad * 2;
   const spanH = rect.h + pad * 2;
@@ -154,10 +193,14 @@ export function blitSprite(src, rect, dest, destW, destX, destY, flipX, tint = [
     for (let px = 0; px < outW; px++) {
       const fx = outW <= 1 ? 0.5 : px / (outW - 1);
       const fy = outH <= 1 ? 0.5 : py / (outH - 1);
-      const sampleFx = flipX ? 1 - fx : fx;
+      const { u: sampleFx, v: sampleFy } = transformSpriteUv(fx, 1 - fy, {
+        flipX,
+        flipY: transform.flipY ?? false,
+        rotationDegrees: transform.rotationDegrees ?? 0,
+      });
       // Clamp extrude to this cell's bounds — do not bleed from adjacent sheet cells.
       let srcX = rect.x - pad + sampleFx * (spanW - 1);
-      let srcY = rect.y - pad + fy * (spanH - 1);
+      let srcY = rect.y - pad + (1 - sampleFy) * (spanH - 1);
       srcX = clamp(srcX, xMin, xMax);
       srcY = clamp(srcY, yMin, yMax);
       const [r, g, b, a] = samplePixel(src, Math.round(srcX), Math.round(srcY));

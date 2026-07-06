@@ -38,13 +38,14 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float tileSize,
         Material material,
         SandboxTileVisualCatalog visualCatalog,
-        Func<int, int, SandboxTile> tileLookup)
+        Func<int, int, SandboxTile> tileLookup,
+        SandboxVisualOverrideLookup visualOverrideLookup = null)
     {
         EnsureComponents();
 
         if (visualCatalog != null && visualCatalog.HasAutotileSources && tileLookup != null)
         {
-            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup);
+            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup, visualOverrideLookup);
         }
         else
         {
@@ -99,7 +100,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float tileSize,
         Material material,
         SandboxTileVisualCatalog visualCatalog,
-        Func<int, int, SandboxTile> tileLookup)
+        Func<int, int, SandboxTile> tileLookup,
+        SandboxVisualOverrideLookup visualOverrideLookup)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
         Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
@@ -120,6 +122,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     groundLayers,
                     visualCatalog,
                     tileLookup,
+                    visualOverrideLookup,
                     tile,
                     localX,
                     localY,
@@ -144,6 +147,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        SandboxVisualOverrideLookup visualOverrideLookup,
         SandboxTile tile,
         int localX,
         int localY,
@@ -162,7 +166,19 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             worldCoord.x,
             worldCoord.y);
 
-        string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
+        string spriteId;
+        bool flipX;
+        if (visualOverrideLookup != null
+            && visualOverrideLookup(worldCoord.x, worldCoord.y, out SandboxVisualOverride visualOverride))
+        {
+            spriteId = visualOverride.SpriteId;
+            flipX = visualOverride.FlipX;
+        }
+        else
+        {
+            spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out flipX);
+        }
+
         if (!TryResolveAutotileSprite(tileset, spriteId, "ground", worldCoord, out Sprite sprite))
         {
             return true;
@@ -392,6 +408,25 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             flipX,
             color,
             zOffset);
+    }
+
+    private static Sprite FindSpriteById(AutotileTileset tileset, string spriteId)
+    {
+        if (tileset?.Sprites == null || string.IsNullOrEmpty(spriteId))
+        {
+            return null;
+        }
+
+        for (int i = 0; i < tileset.Sprites.Count; i++)
+        {
+            Sprite sprite = tileset.Sprites[i];
+            if (sprite != null && sprite.name == spriteId)
+            {
+                return sprite;
+            }
+        }
+
+        return null;
     }
 
     private static Material CreateMaterialForTexture(Material template, Texture2D texture)
