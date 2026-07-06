@@ -29,7 +29,9 @@ This ticket hardens the prototype save path (`Assets/Scripts/Sandbox/SandboxSave
 as diffs**; every save opens with a version header that drives forward migration; writes are
 atomic with a rolling backup; corrupted saves fail safely instead of destroying worlds. It also
 reserves the registry **palette** field (string ID → runtime index, P2-DATA-001) so tiles survive
-content reordering.
+content reordering. Presentation-only visual override metadata is not part of the production
+simulation save contract: it is persisted exclusively in a sidecar file next to the normal world
+save, and missing sidecars load as an empty override map.
 
 ## GitHub project linkage
 
@@ -68,6 +70,10 @@ updates, and content changes — the three ways sandbox games classically destro
 7. Migration: loads of version N < current run forward-migration steps N→N+1→…; migrating the
    current prototype `version=1` JSON save is the first migration (or an explicit documented
    break while pre-alpha — decision recorded in the spec, default: migrate).
+8. Visual override persistence: `SandboxSaveData` remains unchanged unless a separate production
+   save migration is explicitly approved. Presentation metadata uses a separate serializable
+   sidecar model such as `SandboxVisualOverrideSaveData`, written beside the normal save by
+   deriving names like `sandbox-world.visual-overrides.json` from `sandbox-world.json`.
 
 ### Non-functional requirements
 
@@ -108,6 +114,9 @@ updates, and content changes — the three ways sandbox games classically destro
 
 - `Assets/Scripts/Sandbox/SandboxSaveData.cs` — current v1 data shapes (baseline + migration source).
 - `Assets/Scripts/Sandbox/SandboxWorld.cs` — save/load orchestration and `IsDirtyForSave` flags.
+- `Assets/Scripts/Sandbox/Persistence/SandboxVisualOverrideSaveData.cs` — sidecar-only visual
+  override metadata; loaded after `SandboxWorld.LoadFromPath()` succeeds and never allowed to
+  mutate tile IDs, palette remapping, chunk edits, or player position.
 - P2-DATA-001 (palette), P2-GEN-001 (settings object), P2-INV-001 (inventory state),
   P2-FLUID-001 (fluid persistence) — coordinate field-level contracts with each.
 
@@ -119,11 +128,15 @@ updates, and content changes — the three ways sandbox games classically destro
 [globals] timeOfDay, flags
 [chunks]  count, then per dirty chunk:
           coord, encoding(editList | fullArray), gzip payload, checksum
+
+[sidecar: <save-name>.visual-overrides.<ext>]
+          version, presentation override map only; optional for backward compatibility
 ```
 
 ### Verification plan
 
-- EditMode: round-trip, migration, corruption, palette, and diff-threshold tests over temp files.
+- EditMode: round-trip, migration, corruption, palette, sidecar path/missing-sidecar compatibility,
+  and diff-threshold tests over temp files.
 - Manual: autosave + quit/reload session; simulated interrupt (debug hook) proving atomicity.
 - `Unity -batchmode … -testPlatform EditMode …` per `docs/wiki/quality-gates.md`.
 
@@ -139,6 +152,8 @@ updates, and content changes — the three ways sandbox games classically destro
 - [ ] GitHub issue URL is recorded in this ticket.
 - [ ] GitHub issue links back to this markdown ticket.
 - [ ] Format layout documented in `generation-and-saving.md` before implementation.
+- [ ] Sidecar visual override contract documented as the only required persistence path for
+      presentation metadata; missing sidecars verified as empty override maps.
 - [ ] Round-trip, migration, corruption, and palette EditMode tests pass.
 - [ ] Atomic-write interruption evidence attached.
 - [ ] Follow-up tasks created for region files, streaming writes, and cloud sync.

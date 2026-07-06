@@ -142,6 +142,46 @@ public sealed class SandboxSaveLoadTests
     }
 
     [Test]
+    public void SaveToPath_WritesVisualOverrideSidecarNextToSave()
+    {
+        SandboxWorld world = CreateWorld();
+        string path = TempFile("sandbox-world.json");
+
+        world.SaveToPath(path);
+
+        string sidecarPath = SandboxWorld.GetVisualOverrideSidecarPath(path);
+        tempFiles.Add(sidecarPath);
+        Assert.AreEqual(
+            Path.Combine(Path.GetDirectoryName(path), "sandbox-world.visual-overrides.json"),
+            sidecarPath);
+        Assert.IsTrue(File.Exists(sidecarPath), "Saving must write the visual override sidecar next to the normal save.");
+
+        SandboxVisualOverrideSaveData sidecar = JsonUtility.FromJson<SandboxVisualOverrideSaveData>(File.ReadAllText(sidecarPath));
+        Assert.IsFalse(sidecar.HasOverrides, "The default sidecar is an empty override map.");
+    }
+
+    [Test]
+    public void LoadFromPath_MissingVisualOverrideSidecarLoadsEmptyMapWithoutChangingTiles()
+    {
+        int stone = SandboxRegistries.Tiles.GetIndex("core:stone");
+        SandboxWorld savedWorld = CreateWorld();
+        savedWorld.SetTile(2, 3, stone);
+
+        string path = TempFile("missing-sidecar-save.json");
+        savedWorld.SaveToPath(path);
+        string sidecarPath = SandboxWorld.GetVisualOverrideSidecarPath(path);
+        tempFiles.Add(sidecarPath);
+        File.Delete(sidecarPath);
+
+        SandboxWorld loadedWorld = CreateWorld();
+        loadedWorld.LoadFromPath(path);
+
+        Assert.IsNotNull(loadedWorld.VisualOverrideSaveData, "Missing sidecar files must load as an empty override map.");
+        Assert.IsFalse(loadedWorld.VisualOverrideSaveData.HasOverrides, "Missing sidecar files must not be required for compatibility.");
+        Assert.AreEqual(stone, loadedWorld.GetTile(2, 3).id, "Loading sidecar metadata must not change simulation tile ids.");
+    }
+
+    [Test]
     public void LoadFromPath_MissingFileLogsWarningAndLeavesWorldUnchanged()
     {
         SandboxWorld world = CreateWorld();
