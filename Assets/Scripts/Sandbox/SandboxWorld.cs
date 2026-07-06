@@ -32,6 +32,7 @@ public sealed class SandboxWorld : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private GroundAutotileDebugMode groundAutotileDebugMode;
+    [SerializeField] private bool debugOverrideModeEnabled;
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
@@ -49,8 +50,29 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
 
+    /// <summary>True only when debug override mode is explicitly enabled in an Editor or development build.</summary>
+    public bool IsDebugOverrideModeEnabled => CanUseDebugOverrides(debugOverrideModeEnabled);
+
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
+
+    /// <summary>Build/runtime gate for tile-edit overrides, debug persistence shortcuts, and MCP writes.</summary>
+    public static bool CanUseDebugOverrides(bool requested)
+    {
+        if (!requested)
+        {
+            return false;
+        }
+
+#if UNITY_EDITOR
+        return true;
+#else
+        return Debug.isDebugBuild;
+#endif
+    }
+
+    /// <summary>Whether sidecar/override visual data should affect rendering in this world.</summary>
+    public bool ShouldApplyDebugVisualOverrides => IsDebugOverrideModeEnabled;
 
     /// <summary>Returns the current player world position when a player target is assigned.</summary>
     public bool TryGetPlayerWorldPosition(out Vector2 position)
@@ -140,6 +162,17 @@ public sealed class SandboxWorld : MonoBehaviour
     /// edit. No subscribers means no cost.
     /// </summary>
     public event System.Action<int, int> TileFluidWakeRequested;
+
+    public bool TrySetDebugOverrideTile(int x, int y, int tileId)
+    {
+        if (!IsDebugOverrideModeEnabled)
+        {
+            return false;
+        }
+
+        SetTile(x, y, tileId);
+        return true;
+    }
 
     public void SetTile(int x, int y, int tileId)
     {

@@ -192,7 +192,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void HandleTileEditing()
     {
-        if (world == null || mainCamera == null)
+        if (world == null || mainCamera == null || !world.IsDebugOverrideModeEnabled)
         {
             return;
         }
@@ -214,12 +214,12 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return;
         }
 
-        world.SetTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
+        world.TrySetDebugOverrideTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
     }
 
     private void HandleSaveLoadShortcuts()
     {
-        if (world == null)
+        if (world == null || !world.IsDebugOverrideModeEnabled)
         {
             return;
         }
