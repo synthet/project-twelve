@@ -47,6 +47,11 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>Visual catalog used for autotile mesh rendering and debug tooling.</summary>
     public SandboxTileVisualCatalog TileVisualCatalog => tileVisualCatalog;
 
+    /// <summary>Presentation metadata loaded from the sidecar next to the simulation save.</summary>
+    public SandboxVisualOverrideSaveData VisualOverrideSaveData => visualOverrideSaveData;
+
+    private SandboxVisualOverrideSaveData visualOverrideSaveData = new SandboxVisualOverrideSaveData();
+
     /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
 
@@ -353,6 +358,7 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         File.WriteAllText(path, JsonUtility.ToJson(saveData, true));
+        SaveVisualOverrideSidecar(path);
     }
 
     public void LoadFromPath(string path)
@@ -395,6 +401,40 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         MarkAllLoadedRenderersDirty();
+        LoadVisualOverrideSidecar(path);
+    }
+
+    public static string GetVisualOverrideSidecarPath(string savePath)
+    {
+        string directory = Path.GetDirectoryName(savePath);
+        string fileName = Path.GetFileNameWithoutExtension(savePath);
+        string extension = Path.GetExtension(savePath);
+        string sidecarName = $"{fileName}.visual-overrides{extension}";
+        return string.IsNullOrEmpty(directory) ? sidecarName : Path.Combine(directory, sidecarName);
+    }
+
+    private void SaveVisualOverrideSidecar(string savePath)
+    {
+        string sidecarPath = GetVisualOverrideSidecarPath(savePath);
+        string directory = Path.GetDirectoryName(sidecarPath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
+        File.WriteAllText(sidecarPath, JsonUtility.ToJson(visualOverrideSaveData, true));
+    }
+
+    private void LoadVisualOverrideSidecar(string savePath)
+    {
+        string sidecarPath = GetVisualOverrideSidecarPath(savePath);
+        visualOverrideSaveData = File.Exists(sidecarPath)
+            ? JsonUtility.FromJson<SandboxVisualOverrideSaveData>(File.ReadAllText(sidecarPath))
+            : new SandboxVisualOverrideSaveData();
+
+        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
+        visualOverrideSaveData.overrides ??= new List<SandboxVisualOverrideEntrySaveData>();
     }
 
     /// <summary>
