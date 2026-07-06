@@ -1,0 +1,53 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "visual-override-ground-flipx",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 3,
+  "height": 3,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 15
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "id": 1,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "id": 1,
+      "light": 15
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "id": 1,
+      "light": 15
+    }
+  ],
+  "expect": [
+    {
+      "x": 1,
+      "y": 1,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false
+      }
+    }
+  ]
+}

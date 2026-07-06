@@ -23,6 +23,7 @@ export function buildAutotileReport(space, options = {}) {
   const tables = options.tables ?? loadRuleTables(options.dataDir);
   const includeAir = options.includeAir ?? false;
   const tilesets = buildTilesetLookup(options.manifest, tables);
+  const visualOverrides = buildVisualOverrideLookup(space.visualOverrides);
 
   const tiles = [];
   const asciiRows = [];
@@ -40,7 +41,7 @@ export function buildAutotileReport(space, options = {}) {
       }
       line += TILE_GLYPHS[tile.id] ?? '?';
       if (tile.id !== TileId.Air || includeAir) {
-        tiles.push(buildTileAutotile(space, worldX, worldY, tile, catalog, tilesets, tables));
+        tiles.push(buildTileAutotile(space, worldX, worldY, tile, catalog, tilesets, tables, visualOverrides));
       }
     }
     asciiRows.push(line);
@@ -58,6 +59,44 @@ export function buildAutotileReport(space, options = {}) {
     ascii: asciiRows,
     tiles,
   };
+}
+
+
+function buildVisualOverrideLookup(overrides = []) {
+  const lookup = new Map();
+  for (const override of overrides) {
+    lookup.set(overrideKey(override.x, override.y, override.layer), override);
+  }
+  return lookup;
+}
+
+function overrideKey(x, y, layer) {
+  return `${x},${y},${layer}`;
+}
+
+function applyVisualOverride(layerInfo, override) {
+  if (!layerInfo || !override) {
+    return;
+  }
+  const auto = {
+    spriteId: layerInfo.spriteId,
+    flipX: layerInfo.flipX ?? false,
+    flipY: layerInfo.flipY ?? false,
+    rotationDegrees: layerInfo.rotationDegrees ?? 0,
+  };
+  layerInfo.auto = auto;
+  layerInfo.override = {
+    spriteId: override.spriteId,
+    flipX: override.flipX ?? false,
+    flipY: override.flipY ?? false,
+    rotationDegrees: override.rotationDegrees ?? 0,
+  };
+  layerInfo.spriteId = layerInfo.override.spriteId;
+  layerInfo.finalSpriteId = layerInfo.override.spriteId;
+  layerInfo.flipX = layerInfo.override.flipX;
+  layerInfo.flipY = layerInfo.override.flipY;
+  layerInfo.rotationDegrees = layerInfo.override.rotationDegrees;
+  layerInfo.overrideApplied = true;
 }
 
 function buildTilesetLookup(manifest, tables) {
@@ -83,7 +122,7 @@ function buildTilesetLookup(manifest, tables) {
   return lookup;
 }
 
-function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
+function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables, visualOverrides) {
   const entry = {
     x,
     y,
@@ -128,6 +167,7 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
       neighborMaterials: buildNeighborMaterials(space, x, y),
       resolved: resolved.resolved,
     };
+    applyVisualOverride(entry.autotile.ground, visualOverrides.get(overrideKey(x, y, 'ground')));
   }
 
   const above = getTile(space, x, y + 1);
@@ -152,6 +192,7 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables) {
         flipX: resolved.flipX,
         resolved: resolved.resolved,
       };
+      applyVisualOverride(entry.autotile.cover, visualOverrides.get(overrideKey(x, y, 'cover')));
     }
   } else if (tile.id === TileId.Grass) {
     entry.autotile.cover = {

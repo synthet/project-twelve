@@ -122,7 +122,32 @@ Isolation matrix:
 | `--no-cover` | F3 ground-only modes |
 | `--no-extrude` | check bleed vs wrong sprite |
 
-If ids match but pixels differ → see [VISUAL_BEHAVIOR_SPEC.md](../VISUAL_BEHAVIOR_SPEC.md) §10 mesh compositing gate (`AppendFixedCellQuad`).
+If ids match but pixels differ → see [VISUAL_BEHAVIOR_SPEC.md](../VISUAL_BEHAVIOR_SPEC.md) §11 mesh compositing gate (`AppendFixedCellQuad`).
+
+## Visual override evidence attachments
+
+When a cell-level visual override helps explain a drift report, attach the override file beside the tile-space capture and screenshot/diff artifacts. Use the `*.visual-overrides.json` suffix so the file is clearly diagnostic evidence rather than canonical world data.
+
+Recommended bundle for an agent diagnosis:
+
+1. The tile-space capture (`*.json`) exported from Play Mode or a reduced snippet.
+2. The visual override annotation (`*.visual-overrides.json`) that marks or substitutes the suspect cells.
+3. A rendered PNG produced with the override and, when possible, a baseline PNG without the override.
+4. The relevant per-cell debug report from `log-autotile-debug-cells.mjs` or runtime MCP `tile_autotile`.
+
+Example capture flow:
+
+```bash
+cd tools/tile-viz
+node scripts/log-autotile-debug-cells.mjs test/fixtures/captures/sandbox-scene-mountain.json --compact -114 29 -111 28
+node src/cli.js visual-overrides list --file out/sandbox-scene-mountain.visual-overrides.json
+node src/cli.js visual-overrides inspect --file out/sandbox-scene-mountain.visual-overrides.json --coords -114,29
+node scripts/render-capture.mjs test/fixtures/captures/sandbox-scene-mountain.json \
+  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
+  --png out/sandbox-scene-mountain.override.png --scale 32 --flat-light
+```
+
+The override file should describe only the cells under diagnosis and should not be copied into save files, generated captures, or resolver fixtures unless a test explicitly covers debug-mode behavior. If the override demonstrates the intended look, convert that finding into a normal resolver, catalog, or mesh-compositing fix and re-run the appropriate parity checks.
 
 ## When to re-freeze captures
 

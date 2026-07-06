@@ -34,6 +34,7 @@ public sealed class SandboxWorld : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private GroundAutotileDebugMode groundAutotileDebugMode;
+    [SerializeField] private bool debugOverrideModeEnabled;
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
@@ -49,14 +50,40 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>Visual catalog used for autotile mesh rendering and debug tooling.</summary>
     public SandboxTileVisualCatalog TileVisualCatalog => tileVisualCatalog;
 
+    /// <summary>Presentation metadata loaded from the sidecar next to the simulation save.</summary>
+    public SandboxVisualOverrideSaveData VisualOverrideSaveData => visualOverrideSaveData;
+
+    private SandboxVisualOverrideSaveData visualOverrideSaveData = new SandboxVisualOverrideSaveData();
+
     /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
 
     /// <summary>Runtime-only visual sprite overrides keyed by world tile coordinate.</summary>
     public IReadOnlyDictionary<Vector2Int, SandboxVisualOverride> VisualOverrides => visualOverrides;
 
+    /// <summary>True only when debug override mode is explicitly enabled in an Editor or development build.</summary>
+    public bool IsDebugOverrideModeEnabled => CanUseDebugOverrides(debugOverrideModeEnabled);
+
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
+
+    /// <summary>Build/runtime gate for tile-edit overrides, debug persistence shortcuts, and MCP writes.</summary>
+    public static bool CanUseDebugOverrides(bool requested)
+    {
+        if (!requested)
+        {
+            return false;
+        }
+
+#if UNITY_EDITOR
+        return true;
+#else
+        return Debug.isDebugBuild;
+#endif
+    }
+
+    /// <summary>Whether sidecar/override visual data should affect rendering in this world.</summary>
+    public bool ShouldApplyDebugVisualOverrides => IsDebugOverrideModeEnabled;
 
     /// <summary>Returns the current player world position when a player target is assigned.</summary>
     public bool TryGetPlayerWorldPosition(out Vector2 position)
@@ -198,6 +225,17 @@ public sealed class SandboxWorld : MonoBehaviour
 
         File.WriteAllText(path, document.ToString(Newtonsoft.Json.Formatting.Indented));
         return path;
+    }
+
+    public bool TrySetDebugOverrideTile(int x, int y, int tileId)
+    {
+        if (!IsDebugOverrideModeEnabled)
+        {
+            return false;
+        }
+
+        SetTile(x, y, tileId);
+        return true;
     }
 
     public void SetTile(int x, int y, int tileId)
@@ -379,6 +417,7 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         File.WriteAllText(path, JsonUtility.ToJson(saveData, true));
+        SaveVisualOverrideSidecar(path);
     }
 
     public void LoadFromPath(string path)
@@ -421,6 +460,40 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         MarkAllLoadedRenderersDirty();
+        LoadVisualOverrideSidecar(path);
+    }
+
+    public static string GetVisualOverrideSidecarPath(string savePath)
+    {
+        string directory = Path.GetDirectoryName(savePath);
+        string fileName = Path.GetFileNameWithoutExtension(savePath);
+        string extension = Path.GetExtension(savePath);
+        string sidecarName = $"{fileName}.visual-overrides{extension}";
+        return string.IsNullOrEmpty(directory) ? sidecarName : Path.Combine(directory, sidecarName);
+    }
+
+    private void SaveVisualOverrideSidecar(string savePath)
+    {
+        string sidecarPath = GetVisualOverrideSidecarPath(savePath);
+        string directory = Path.GetDirectoryName(sidecarPath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
+        File.WriteAllText(sidecarPath, JsonUtility.ToJson(visualOverrideSaveData, true));
+    }
+
+    private void LoadVisualOverrideSidecar(string savePath)
+    {
+        string sidecarPath = GetVisualOverrideSidecarPath(savePath);
+        visualOverrideSaveData = File.Exists(sidecarPath)
+            ? JsonUtility.FromJson<SandboxVisualOverrideSaveData>(File.ReadAllText(sidecarPath))
+            : new SandboxVisualOverrideSaveData();
+
+        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
+        visualOverrideSaveData.overrides ??= new List<SandboxVisualOverrideEntrySaveData>();
     }
 
     /// <summary>
@@ -626,7 +699,7 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileMaterial,
                 tileVisualCatalog,
                 GetTile,
-                TryGetVisualOverride);
+                ShouldApplyDebugVisualOverrides ? TryGetVisualOverride : null);
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
             {
