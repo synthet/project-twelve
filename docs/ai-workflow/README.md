@@ -23,7 +23,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Cursor mirror | `.cursor/{rules,commands,skills,agents}` | **Generated** from `.claude/` — do not edit by hand |
 | MCP template | `.cursor/mcp.example.json`, `.mcp.json` | Copy to gitignored `.cursor/mcp.json` to attach servers |
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks |
-| Project memory | `.agent-memory/` | log → dream → promote (see `CURSOR_USAGE.md`) |
+| Project memory | `.agent-memory/` | **Session start:** read `memory.md`; log → dream → promote (see `CURSOR_USAGE.md`; rule: `.claude/rules/agent-memory.md`) |
 | Workflow playbooks | `.agent/workflows/*.md` | spec / plan / implement / pr-ready / test-and-fix / … |
 | Unity C# rules (supplementary) | `.cursorrules` | Long-form Unity coding spec |
 

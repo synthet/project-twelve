@@ -4,7 +4,7 @@ title: Autotile Next Actions Plan
 description: Fixture-driven plan to finish ground autotile visual polish via mask normalization, negative-tested and gated, incorporating review feedback.
 resource: wiki/autotile-next-actions-plan.md
 tags: [docs, wiki, autotile, visual, plan]
-timestamp: 2026-07-05T00:00:00Z
+timestamp: 2026-07-05T22:00:00Z
 okf_version: 0.1
 ---
 
@@ -285,20 +285,39 @@ snippets) locked as anti-regressions; do not change partner substitution.
 
 ---
 
-## Phase 3 — Unity blit/mesh parity (GATED)
+## Cover layer RCA (post Phases 0–2)
 
-Default: do this **after** cavity and slope work, and only when the gate opens.
+> **Cover RCA status — evidence-driven finding (2026-07-05).** Offline drift RCA on the frozen
+> `sandbox-scene-mountain` capture reports **0 mismatches** for all 2642 solid cells on both
+> ground and cover fields (`compare-autotile-baseline.mjs --only ground|cover`). Spot cells:
+> hill peaks `(-102,30)` / `(-87,29)` render cover sprite **3** with correct `flipX`; window
+> lintel `(-114,29)` resolves ground **17** with cover off (`innerCavity: true`). tile-viz PNG:
+> golden matches `--with-cover` render (0 px diff); cover vs `--no-cover` differs on ~1.4% of
+> pixels (GrassA layer is visually active). **Conclusion:** cover resolver ids are correct on the
+> frozen capture; any Play Mode `MismatchBaseline` red while offline compare is 0 means **live
+> world data drift** (refresh capture/save) or **baseline failed to load** (device builds need
+> `StreamingAssets/AutotileBaselines/` — Editor falls back to `tools/tile-viz/test/fixtures/baselines/`).
+> EditMode `MountainCapture_FullBaselineGroundAndCoverParity` locks C# ground+cover vs baseline on
+> the capture. Phase 3 mesh/blit parity stays **gated** until Unity Game View PNG diff (same crop/
+> scale as tile-viz) shows pixels differ while ids match.
 
-```text
-If SpriteIdLabel + MCP + tile-viz all agree, but pixels differ visibly:
-    do Phase 3 mesh/blit parity.
-If IDs or masks still differ:
-    do NOT touch mesh — finish normalization first.
-```
+---
 
-tile-viz blits a full 16×16 cell; Unity uses sprite mesh vertices. The earlier `flipX` mesh
-bug proves rendering parity matters, but a full-cell blit rewrite is broader than mask
-normalization, so it stays gated.
+## Phase 3 — Unity blit/mesh parity (IMPLEMENTED)
+
+Gate opened: Play Mode ids matched baseline on slopes/island but pixels diverged; bottom-row
+cells also resolved fill `9` instead of underside `17` because procedural stone below `y=0`
+counted as solid south support (tile-viz treats off-space as air).
+
+**Shipped fixes (2026-07-05):**
+
+| Fix | Location |
+|-----|----------|
+| Exposure floor — neighbors below `autotileExposureFloorY` (default `0`) are air for `isSolid` | [`AutotileExposure.cs`](../../Assets/Scripts/Visual/Tiles/AutotileExposure.cs), [`SandboxWorld.cs`](../../Assets/Scripts/Sandbox/SandboxWorld.cs) |
+| Ground mesh parity — `AppendGroundAutotileSprite` uses full-cell UV quad when sprite mesh does not span the logical cell | [`AutotileSpriteMeshBuilder.cs`](../../Assets/Scripts/Visual/Tiles/AutotileSpriteMeshBuilder.cs), [`SandboxChunkRenderer.cs`](../../Assets/Scripts/Sandbox/SandboxChunkRenderer.cs) |
+
+Cover layer still uses sprite-mesh `AppendSprite`. Re-verify Play Mode ROI vs
+`render-roi-debug.mjs --no-cover` after Unity recompile.
 
 ### Option A — full-cell quad for autotiles (preferred if Phase 3 is needed)
 

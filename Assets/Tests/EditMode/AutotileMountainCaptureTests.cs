@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using ProjectTwelve.Sandbox.Registry;
+using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
@@ -46,6 +48,64 @@ public sealed class AutotileMountainCaptureTests
             Assert.AreEqual(expectedSpriteId, result.SpriteId, $"({x},{y}) spriteId");
             Assert.AreEqual(expectedFlipX, result.FlipX, $"({x},{y}) flipX");
         }
+    }
+
+    [Test]
+    public void MountainCapture_FullBaselineGroundAndCoverParity()
+    {
+        AutotileBaselineStore.ClearCache();
+        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline = AutotileBaselineStore.TryLoad("sandbox-scene-mountain");
+        if (baseline == null)
+        {
+            Assert.Ignore("Mountain autotile baseline missing from StreamingAssets or tools/tile-viz/test/fixtures/baselines");
+        }
+
+        Dictionary<Vector2Int, SandboxTile> space = LoadCaptureSpace(out _);
+        SandboxTileVisualCatalog catalog = CreateProductionLikeCatalog();
+
+        SandboxTile Lookup(int x, int y)
+        {
+            Vector2Int key = new Vector2Int(x, y);
+            return space.TryGetValue(key, out SandboxTile tile) ? tile : new SandboxTile(SandboxTileIds.Air);
+        }
+
+        var groundErrors = new StringBuilder();
+        var coverErrors = new StringBuilder();
+        int compared = 0;
+
+        foreach (KeyValuePair<Vector2Int, BaselineCell> entry in baseline)
+        {
+            if (!space.TryGetValue(entry.Key, out SandboxTile tile) || !tile.IsSolid)
+            {
+                continue;
+            }
+
+            compared++;
+            Vector2Int coord = entry.Key;
+            BaselineCell expected = entry.Value;
+            int legacyTileId = AutotileBaselineCompare.ToLegacyTileId(tile.id);
+
+            Assert.IsTrue(
+                AutotileGroundResolve.TryResolve(catalog, Lookup, tile, coord.x, coord.y, out AutotileGroundResolveResult ground),
+                $"({coord.x},{coord.y}) ground resolve failed");
+
+            if (!AutotileBaselineCompare.GroundMatches(legacyTileId, ground, expected))
+            {
+                groundErrors.AppendLine(
+                    $"({coord.x},{coord.y}) ground: legacyTile={legacyTileId} sprite={ground.SpriteId} flip={ground.FlipX} expected tile={expected.TileId} sprite={expected.GroundSpriteId} flip={expected.GroundFlipX}");
+            }
+
+            bool coverRendered = TryResolveCover(catalog, Lookup, tile, coord, out string coverSpriteId, out bool coverFlipX);
+            if (!AutotileBaselineCompare.CoverMatches(coverRendered, coverSpriteId, coverFlipX, expected))
+            {
+                coverErrors.AppendLine(
+                    $"({coord.x},{coord.y}) cover: rendered={coverRendered} sprite={coverSpriteId} flip={coverFlipX} expected rendered={expected.CoverRendered} sprite={expected.CoverSpriteId} flip={expected.CoverFlipX}");
+            }
+        }
+
+        Assert.Greater(compared, 2000, "Expected most baseline cells to exist in the mountain capture");
+        Assert.AreEqual(string.Empty, groundErrors.ToString(), "Ground baseline mismatches on mountain capture");
+        Assert.AreEqual(string.Empty, coverErrors.ToString(), "Cover baseline mismatches on mountain capture");
     }
 
     [Test]
@@ -156,6 +216,7 @@ public sealed class AutotileMountainCaptureTests
             CreateGroundTileset("Humus"),
             CreateGroundTileset("Rocks"),
         });
+        autotileCatalog.SetCoverTilesets(new List<AutotileTileset> { CreateCoverTileset("GrassA") });
 
         SandboxTileVisualCatalog catalog = ScriptableObject.CreateInstance<SandboxTileVisualCatalog>();
         var field = typeof(SandboxTileVisualCatalog).GetField(
@@ -181,6 +242,61 @@ public sealed class AutotileMountainCaptureTests
         }
 
         return new AutotileTileset(name, texture, sprites);
+    }
+
+    private static AutotileTileset CreateCoverTileset(string name)
+    {
+        var sprites = new List<Sprite>();
+        Texture2D texture = new Texture2D(16, 16);
+        for (int i = 0; i < 6; i++)
+        {
+            Sprite sprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, 16, 16),
+                new Vector2(0.5f, 0f),
+                16f);
+            sprite.name = i.ToString();
+            sprites.Add(sprite);
+        }
+
+        return new AutotileTileset(name, texture, sprites);
+    }
+
+    private static bool TryResolveCover(
+        SandboxTileVisualCatalog visualCatalog,
+        System.Func<int, int, SandboxTile> tileLookup,
+        SandboxTile tile,
+        Vector2Int worldCoord,
+        out string coverSpriteId,
+        out bool coverFlipX)
+    {
+        coverSpriteId = null;
+        coverFlipX = false;
+        SandboxTile tileAbove = tileLookup(worldCoord.x, worldCoord.y + 1);
+        if (!visualCatalog.ShouldRenderGrassCover(tile.id, tileAbove)
+            || !visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset tileset))
+        {
+            return false;
+        }
+
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (x, y) =>
+            {
+                SandboxTile neighbor = tileLookup(x, y);
+                return visualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
+            },
+            (x, y) => tileLookup(x, y).IsSolid,
+            worldCoord.x,
+            worldCoord.y);
+
+        Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out coverFlipX);
+        if (sprite == null)
+        {
+            return false;
+        }
+
+        coverSpriteId = sprite.name;
+        return true;
     }
 
     private static string FixturesDir() =>

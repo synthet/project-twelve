@@ -256,7 +256,8 @@ namespace ProjectTwelve.RuntimeMcp
                 return catalog.SharesGroundAutotileGroup(tile.id, neighbor.id);
             }
 
-            bool IsSolid(int nx, int ny) => world.GetTile(nx, ny).IsSolid;
+            bool IsSolid(int nx, int ny) =>
+                AutotileExposure.CreateIsSolid(world.GetTile, world.AutotileExposureFloorY)(nx, ny);
 
             bool IsSurfaceTile(int nx, int ny)
             {

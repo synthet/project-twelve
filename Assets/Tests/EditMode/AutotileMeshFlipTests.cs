@@ -119,6 +119,77 @@ public sealed class AutotileMeshFlipTests
         Assert.AreNotEqual("25", resolved.name);
     }
 
+    [Test]
+    public void AppendGroundAutotileSprite_AlwaysUsesFullCellQuad_EvenWhenMeshSpansCell()
+    {
+        const float tileSize = 1f;
+        const int x = 2;
+        const int y = 5;
+        Sprite sprite = Sprite.Create(
+            new Texture2D(16, 16),
+            new Rect(0, 0, 16, 16),
+            new Vector2(0f, 0f),
+            16f);
+
+        Assert.IsTrue(AutotileSpriteMeshBuilder.SpansFullTileCell(x, y, tileSize, sprite, flipX: false));
+
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Color> colors = new List<Color>();
+
+        AutotileSpriteMeshBuilder.AppendGroundAutotileSprite(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX: false,
+            Color.white,
+            zOffset: 0f);
+
+        Assert.AreEqual(4, vertices.Count);
+        Assert.AreEqual(x * tileSize, vertices[0].x, 0.0001f);
+        Assert.AreEqual(y * tileSize, vertices[0].y, 0.0001f);
+        Assert.AreEqual((x + 1) * tileSize, vertices[2].x, 0.0001f);
+        Assert.AreEqual((y + 1) * tileSize, vertices[2].y, 0.0001f);
+    }
+
+    [Test]
+    public void AppendGroundAutotileSprite_UsesFullCellQuad_WhenMeshDoesNotSpanCell()
+    {
+        const float tileSize = 1f;
+        const int x = 2;
+        const int y = 3;
+        Sprite sprite = CreateTightMeshSprite();
+
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Color> colors = new List<Color>();
+
+        AutotileSpriteMeshBuilder.AppendGroundAutotileSprite(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX: false,
+            Color.white,
+            zOffset: 0f);
+
+        Assert.AreEqual(4, vertices.Count);
+        Assert.AreEqual(x * tileSize, vertices[0].x, 0.0001f);
+        Assert.AreEqual(y * tileSize, vertices[0].y, 0.0001f);
+        Assert.AreEqual((x + 1) * tileSize, vertices[2].x, 0.0001f);
+        Assert.AreEqual((y + 1) * tileSize, vertices[2].y, 0.0001f);
+    }
 
     private static string CornerMappingKey(bool flipX, bool flipY, int rotationDegrees)
     {
@@ -138,6 +209,16 @@ public sealed class AutotileMeshFlipTests
         }
 
         return string.Join("|", mapped);
+    }
+
+    private static Sprite CreateTightMeshSprite()
+    {
+        Texture2D texture = new Texture2D(16, 16, TextureFormat.RGBA32, false);
+        Color32[] pixels = new Color32[16 * 16];
+        pixels[8 * 16 + 8] = new Color32(255, 255, 255, 255);
+        texture.SetPixels32(pixels);
+        texture.Apply();
+        return Sprite.Create(texture, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0f), 16f);
     }
 
     private static void AssertCellBoundsMatch(int x, int y, float tileSize, Sprite sprite, bool flipX)
@@ -168,69 +249,32 @@ public sealed class AutotileMeshFlipTests
         Assert.AreEqual(flipX, resolvedFlipX);
     }
 
-    private static int[,] WestOuterCornerMask() =>
-        new[,]
+    private static int[,] Mask(params int[] values)
+    {
+        int[,] mask = new int[3, 3];
+        for (int i = 0; i < values.Length; i++)
         {
-            { 0, 0, 0 },
-            { 0, 1, 1 },
-            { 0, 1, 1 }
-        };
+            mask[i % 3, i / 3] = values[i];
+        }
 
-    private static int[,] EastOuterCornerMask() =>
-        new[,]
-        {
-            { 0, 0, 0 },
-            { 1, 1, 0 },
-            { 1, 1, 0 }
-        };
+        return mask;
+    }
 
-    private static int[,] WestOpenFaceMask() =>
-        new[,]
-        {
-            { 0, 1, 1 },
-            { 0, 1, 1 },
-            { 0, 1, 1 }
-        };
+    private static int[,] WestOuterCornerMask() => Mask(0, 0, 0, 0, 1, 1, 0, 1, 1);
 
-    private static int[,] EastOpenFaceMask() =>
-        new[,]
-        {
-            { 1, 1, 0 },
-            { 1, 1, 0 },
-            { 1, 1, 0 }
-        };
+    private static int[,] EastOuterCornerMask() => Mask(0, 0, 0, 1, 1, 0, 1, 1, 0);
 
-    private static int[,] WestReentrantUndersideMask() =>
-        new[,]
-        {
-            { 0, 1, 1 },
-            { 0, 1, 1 },
-            { 0, 0, 0 }
-        };
+    private static int[,] WestOpenFaceMask() => Mask(0, 1, 1, 0, 1, 1, 0, 1, 1);
 
-    private static int[,] EastReentrantUndersideMask() =>
-        new[,]
-        {
-            { 1, 1, 0 },
-            { 1, 1, 0 },
-            { 0, 0, 0 }
-        };
+    private static int[,] EastOpenFaceMask() => Mask(1, 1, 0, 1, 1, 0, 1, 1, 0);
 
-    private static int[,] EastOneSidedLipMask() =>
-        new[,]
-        {
-            { 0, 1, 0 },
-            { 0, 1, 0 },
-            { 0, 0, 0 }
-        };
+    private static int[,] WestReentrantUndersideMask() => Mask(0, 1, 1, 0, 1, 1, 0, 0, 0);
 
-    private static int[,] BridgeMask() =>
-        new[,]
-        {
-            { 0, 0, 0 },
-            { 0, 1, 0 },
-            { 0, 0, 0 }
-        };
+    private static int[,] EastReentrantUndersideMask() => Mask(1, 1, 0, 1, 1, 0, 0, 0, 0);
+
+    private static int[,] EastOneSidedLipMask() => Mask(0, 0, 0, 1, 1, 0, 0, 0, 0);
+
+    private static int[,] BridgeMask() => Mask(0, 0, 0, 1, 1, 1, 0, 0, 0);
 
     private static AutotileTileset CreateGroundTileset()
     {

@@ -53,6 +53,17 @@ public sealed class AutotileDebugTests
     }
 
     [Test]
+    public void AutotileDebugMeshBuilder_MaskToCompactString_FormatsNorthToSouthRows()
+    {
+        int[,] mask = Mask(
+            0, 1, 1,
+            0, 1, 1,
+            0, 0, 0);
+
+        Assert.AreEqual("011/011/000", AutotileDebugMeshBuilder.MaskToCompactString(mask));
+    }
+
+    [Test]
     public void AutotileDebugMeshBuilder_LabelMode_AddsExtraVertices()
     {
         List<Vector3> vertices = new List<Vector3>();
@@ -108,6 +119,17 @@ public sealed class AutotileDebugTests
             mask: null);
 
         Assert.IsFalse(AutotileBaselineCompare.GroundMatches(1, resolve, baseline));
+    }
+
+    private static int[,] Mask(params int[] values)
+    {
+        int[,] mask = new int[3, 3];
+        for (int i = 0; i < values.Length; i++)
+        {
+            mask[i % 3, i / 3] = values[i];
+        }
+
+        return mask;
     }
 
     private static AutotileTileset CreateGroundTileset()

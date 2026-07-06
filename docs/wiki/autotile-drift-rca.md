@@ -4,7 +4,7 @@ title: Autotile Drift RCA Playbook
 description: Layered workflow to classify tile-viz vs Unity Play Mode autotile drift by world data, resolver ids, cover, and pixels.
 resource: wiki/autotile-drift-rca.md
 tags: [docs, wiki, rendering, autotile, p1, debug]
-timestamp: 2026-07-05T06:10:00Z
+timestamp: 2026-07-06T00:10:00Z
 ---
 
 # Autotile Drift RCA Playbook
@@ -81,7 +81,11 @@ Per-cell debug (offline):
 node scripts/log-autotile-debug-cells.mjs test/fixtures/snippets/dirt-window-inner-edges.json --compact -114 29 -111 28
 ```
 
-**F3 overlay:** cycle to `MismatchBaseline` — red cells are ground sprite/flip mismatches vs baseline (when world tile ids match).
+**F3 overlay:** cycle to `MismatchBaseline` — red cells are ground sprite/flip mismatches vs baseline (when world tile ids match). Use `ResolveDetail` for per-cell ground sprite id, flip notch, compact mask (`011/011/000` layout), and green/red baseline match tint.
+
+**Atlas layout:** when ids and masks match offline but pixels look rotated or inverted, run **ProjectTwelve → Visual → Validate Ground Autotile Sheets** in the Editor. Failures indicate TextureImporter slice order drift in `Assets/_Licensed/` — fix slices per [ground-autotile-32-rules.md](ground-autotile-32-rules.md); do not compensate in rule tables.
+
+**MCP `tile_autotile`:** returns full `groundMask` (3×3), `groundSpriteId`, and `flipX`. Compact mask string: `mask[wx,ny]/mask[wx,cy]/mask[wx,sy]` for north/center/south rows (west→east).
 
 ## Layer 3 — Cover layer
 
@@ -122,7 +126,7 @@ Isolation matrix:
 | `--no-cover` | F3 ground-only modes |
 | `--no-extrude` | check bleed vs wrong sprite |
 
-If ids match but pixels differ → see [VISUAL_BEHAVIOR_SPEC.md](../VISUAL_BEHAVIOR_SPEC.md) §11 mesh compositing gate (`AppendFixedCellQuad`).
+If ids match but pixels differ → see [VISUAL_BEHAVIOR_SPEC.md](../VISUAL_BEHAVIOR_SPEC.md) §11 mesh compositing gate (`AppendFixedCellQuad`). If tile-viz `--no-cover` PNG matches Unity after that fix but both look wrong, validate atlas slices next.
 
 ## Visual override evidence attachments
 

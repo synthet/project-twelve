@@ -40,13 +40,22 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides = null,
-        SandboxVisualOverrideLookup visualOverrideLookup = null)
+        SandboxVisualOverrideLookup visualOverrideLookup = null,
+        int autotileExposureFloorY = AutotileExposure.NoFloor)
     {
         EnsureComponents();
 
         if (visualCatalog != null && visualCatalog.HasAutotileSources && tileLookup != null)
         {
-            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup, visualOverrides, visualOverrideLookup);
+            RebuildAutotileMesh(
+                chunk,
+                tileSize,
+                material,
+                visualCatalog,
+                tileLookup,
+                visualOverrides,
+                visualOverrideLookup,
+                autotileExposureFloorY);
         }
         else
         {
@@ -56,6 +65,16 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         RebuildColliders(chunk, tileSize);
         chunk.NeedsRenderRebuild = false;
         chunk.NeedsColliderRebuild = false;
+    }
+
+    public void Rebuild(
+        SandboxChunk chunk,
+        float tileSize,
+        Material material,
+        SandboxTileVisualCatalog visualCatalog,
+        Func<int, int, SandboxTile> tileLookup)
+    {
+        Rebuild(chunk, tileSize, material, visualCatalog, tileLookup, null, null, AutotileExposure.NoFloor);
     }
 
     public void Rebuild(SandboxChunk chunk, float tileSize, Material material)
@@ -103,7 +122,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides,
-        SandboxVisualOverrideLookup visualOverrideLookup)
+        SandboxVisualOverrideLookup visualOverrideLookup,
+        int autotileExposureFloorY)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
         Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
@@ -130,7 +150,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     localX,
                     localY,
                     worldCoord,
-                    tileSize);
+                    tileSize,
+                    autotileExposureFloorY);
                 skippedMissingSprite |= AddCoverTile(
                     coverLayers,
                     visualCatalog,
@@ -157,7 +178,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         int localX,
         int localY,
         Vector2Int worldCoord,
-        float tileSize)
+        float tileSize,
+        int autotileExposureFloorY)
     {
         if (!visualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset tileset))
         {
@@ -169,7 +191,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             tileLookup,
             tile,
             worldCoord.x,
-            worldCoord.y);
+            worldCoord.y,
+            autotileExposureFloorY);
 
         string spriteId;
         bool flipX;
@@ -414,7 +437,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         return layer;
     }
 
-
     private static void AddResolvedSpriteQuad(
         Dictionary<Texture2D, MeshLayer> layers,
         AutotileVisualOverrideMap visualOverrides,
@@ -462,10 +484,41 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return;
         }
 
-        AddSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
+        if (layerName == AutotileVisualOverrideMap.GroundLayer)
+        {
+            AddGroundSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
+        }
+        else
+        {
+            AddCoverSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
+        }
     }
 
-    private static void AddSpriteQuad(
+    private static void AddGroundSpriteQuad(
+        MeshLayer layer,
+        int x,
+        int y,
+        float tileSize,
+        Sprite sprite,
+        bool flipX,
+        Color color,
+        float zOffset)
+    {
+        AutotileSpriteMeshBuilder.AppendGroundAutotileSprite(
+            layer.Vertices,
+            layer.Triangles,
+            layer.Uvs,
+            layer.Colors,
+            x,
+            y,
+            tileSize,
+            sprite,
+            flipX,
+            color,
+            zOffset);
+    }
+
+    private static void AddCoverSpriteQuad(
         MeshLayer layer,
         int x,
         int y,

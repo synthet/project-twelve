@@ -127,6 +127,76 @@ namespace ProjectTwelve.Visual.AutotileDebug
         }
 
         /// <summary>
+        /// Formats a 3×3 autotile mask as three slash-separated rows (north → south, west → east).
+        /// </summary>
+        public static string MaskToCompactString(int[,] mask)
+        {
+            if (mask == null || mask.GetLength(0) != 3 || mask.GetLength(1) != 3)
+            {
+                return string.Empty;
+            }
+
+            return string.Concat(
+                mask[0, 0], mask[1, 0], mask[2, 0], '/',
+                mask[0, 1], mask[1, 1], mask[2, 1], '/',
+                mask[0, 2], mask[1, 2], mask[2, 2]);
+        }
+
+        /// <summary>
+        /// Appends nine tiny 0/1 digits for the ground mask in the bottom of the cell.
+        /// </summary>
+        public static void AppendCompactMaskGrid(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int localX,
+            int localY,
+            float tileSize,
+            int[,] mask)
+        {
+            if (mask == null || mask.GetLength(0) != 3 || mask.GetLength(1) != 3)
+            {
+                return;
+            }
+
+            float cellLeft = localX * tileSize;
+            float cellBottom = localY * tileSize;
+            float digitWidth = tileSize * 0.09f;
+            float digitHeight = tileSize * 0.11f;
+            float rowGap = tileSize * 0.01f;
+            float gridWidth = digitWidth * 3f;
+            float gridHeight = digitHeight * 3f + rowGap * 2f;
+            float startX = cellLeft + (tileSize - gridWidth) * 0.5f;
+            float startY = cellBottom + tileSize * 0.06f;
+
+            for (int row = 0; row < 3; row++)
+            {
+                for (int col = 0; col < 3; col++)
+                {
+                    int value = Mathf.Clamp(mask[col, row], 0, 1);
+                    float left = startX + col * digitWidth;
+                    float right = left + digitWidth;
+                    float bottom = startY + row * (digitHeight + rowGap);
+                    float top = bottom + digitHeight;
+                    Rect digitUv = GetDigitUv(value);
+                    AppendQuad(
+                        vertices,
+                        triangles,
+                        uvs,
+                        colors,
+                        left,
+                        right,
+                        bottom,
+                        top,
+                        ZOffset - 0.003f,
+                        digitUv,
+                        AutotileDebugPalette.MaskDigitColor);
+                }
+            }
+        }
+
+        /// <summary>
         /// Appends digit quads and an optional flip marker for sprite id labels.
         /// </summary>
         public static void AppendSpriteIdLabel(

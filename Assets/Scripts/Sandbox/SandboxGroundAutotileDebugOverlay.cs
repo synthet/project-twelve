@@ -26,7 +26,8 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         float tileSize,
         GroundAutotileDebugMode mode,
         SandboxTileVisualCatalog visualCatalog,
-        Func<int, int, SandboxTile> tileLookup)
+        Func<int, int, SandboxTile> tileLookup,
+        int autotileExposureFloorY = AutotileExposure.NoFloor)
     {
         EnsureComponents();
 
@@ -43,6 +44,7 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         IReadOnlyDictionary<Vector2Int, BaselineCell> baseline =
             mode == GroundAutotileDebugMode.MismatchBaseline
                 || mode == GroundAutotileDebugMode.VisualOverrideLabel
+                || mode == GroundAutotileDebugMode.ResolveDetail
                 ? AutotileBaselineStore.TryLoad(DefaultBaselineName)
                 : null;
 
@@ -68,7 +70,8 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                         tile,
                         worldCoord.x,
                         worldCoord.y,
-                        out AutotileGroundResolveResult resolve))
+                        out AutotileGroundResolveResult resolve,
+                        autotileExposureFloorY))
                 {
                     continue;
                 }
@@ -173,6 +176,60 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 localY,
                 tileSize,
                 AutotileDebugPalette.MismatchColor);
+            return;
+        }
+
+        if (mode == GroundAutotileDebugMode.ResolveDetail)
+        {
+            Color tint = AutotileDebugPalette.ResolveDetailNeutralColor;
+            if (baseline != null && baseline.TryGetValue(worldCoord, out BaselineCell expected))
+            {
+                bool matches = AutotileBaselineCompare.GroundMatches(
+                    AutotileBaselineCompare.ToLegacyTileId(tile.id),
+                    resolve,
+                    expected);
+                tint = matches
+                    ? AutotileDebugPalette.BaselineMatchColor
+                    : AutotileDebugPalette.MismatchColor;
+            }
+
+            AutotileDebugMeshBuilder.AppendTileMarker(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                tint);
+
+            if (resolve.Resolved)
+            {
+                AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    resolve.SpriteId,
+                    resolve.FlipX);
+            }
+
+            if (resolve.Mask != null)
+            {
+                AutotileDebugMeshBuilder.AppendCompactMaskGrid(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    resolve.Mask);
+            }
+
             return;
         }
 

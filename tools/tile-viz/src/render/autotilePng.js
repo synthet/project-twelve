@@ -9,6 +9,7 @@ import { tileColor, lightBrightness, TileId } from '../../../world-viz/src/core/
 import { buildAutotileReport } from '../report/autotileJson.js';
 import { getTile, spaceToSampledGrid } from '../io/tileSpace.js';
 import { blitSprite, loadTilesetsFromManifest, spriteRect } from './spriteSheet.js';
+import { drawCellLabel, formatSpriteLabel } from './cellLabel.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_MANIFEST = path.join(__dirname, '..', '..', 'data', 'tileset-manifest.json');
@@ -81,6 +82,12 @@ export function renderAutotilePng(space, options = {}) {
           const rect = spriteRect(spriteId, ts.layout, ts.png);
           blitSprite(ts.png, rect, rgba, pixelW, px, py, flipX, [255, 255, 255], options.extrude !== false, scale);
         }
+      }
+
+      if (options.annotateGround && info?.autotile?.ground?.spriteId != null) {
+        const label = formatSpriteLabel(info.autotile.ground.spriteId, info.autotile.ground.flipX);
+        const labelScale = Math.max(2, Math.floor(scale / 16));
+        drawCellLabel(rgba, pixelW, px + 2, py + 2, label, [255, 255, 80], labelScale);
       }
     }
   }

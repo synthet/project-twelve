@@ -48,6 +48,21 @@ namespace ProjectTwelve.Visual.AutotileDebug
         public static Color FlipMarkerColor => new Color(1f, 0.35f, 0.2f, 0.95f);
 
         /// <summary>
+        /// Digit color for compact mask overlays.
+        /// </summary>
+        public static Color MaskDigitColor => new Color(0.95f, 0.95f, 1f, 0.95f);
+
+        /// <summary>
+        /// Baseline match highlight for resolve-detail overlay.
+        /// </summary>
+        public static Color BaselineMatchColor => new Color(0.2f, 0.9f, 0.35f, 0.75f);
+
+        /// <summary>
+        /// Neutral resolve-detail tint when baseline cell is unavailable.
+        /// </summary>
+        public static Color ResolveDetailNeutralColor => new Color(0.75f, 0.75f, 0.8f, 0.55f);
+
+        /// <summary>
         /// Baseline mismatch highlight.
         /// </summary>
         public static Color MismatchColor => new Color(1f, 0.1f, 0.1f, 0.85f);

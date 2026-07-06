@@ -97,7 +97,7 @@ namespace ProjectTwelve.Editor.Visual
                     return false;
                 }
 
-                if (!ValidateSpriteSheet(texture.name, sprites, subFolder == "Ground"))
+                if (!ValidateSpriteSheet(texture.name, sprites, subFolder == "Ground", texture))
                 {
                     return false;
                 }
@@ -109,54 +109,54 @@ namespace ProjectTwelve.Editor.Visual
             return true;
         }
 
-        private static bool ValidateSpriteSheet(string textureName, List<Sprite> sprites, bool isGroundSheet)
+        private static bool ValidateSpriteSheet(string textureName, List<Sprite> sprites, bool isGroundSheet, Texture2D texture)
         {
+            var errors = new List<string>();
             bool valid = true;
 
             if (isGroundSheet)
             {
-                for (int i = 0; i < AutotileRuleTables.GroundSpriteCount; i++)
+                if (!AutotileGroundSheetLayout.ValidateGroundSheet(textureName, texture, sprites, errors))
                 {
-                    if (i >= sprites.Count || sprites[i].name != i.ToString())
+                    valid = false;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < sprites.Count; i++)
+                {
+                    Sprite sprite = sprites[i];
+                    if (sprite == null)
                     {
-                        Debug.LogError(
-                            $"AutotileCatalogImporter: {textureName} sprite index {i} expected name \"{i}\" " +
-                            $"but got \"{(i < sprites.Count ? sprites[i].name : "missing")}\". " +
-                            "Ground sheets must expose contiguous matrix cells 0..31.");
-                        valid = false;
-                        break;
+                        Debug.LogWarning($"AutotileCatalogImporter: {textureName} sprite slot {i} is null.");
+                        continue;
+                    }
+
+                    if (!Mathf.Approximately(sprite.pixelsPerUnit, AutotileGroundSheetLayout.ExpectedPixelsPerUnit))
+                    {
+                        Debug.LogWarning(
+                            $"AutotileCatalogImporter: {textureName}/{sprite.name} PPU is {sprite.pixelsPerUnit} (expected 16).");
+                    }
+
+                    Bounds bounds = sprite.bounds;
+                    if (!Mathf.Approximately(bounds.size.x, 1f) || !Mathf.Approximately(bounds.size.y, 1f))
+                    {
+                        Debug.LogWarning(
+                            $"AutotileCatalogImporter: {textureName}/{sprite.name} bounds size is " +
+                            $"{bounds.size} (expected 1×1 world units at PPU 16).");
+                    }
+
+                    if (sprite.vertices == null || sprite.vertices.Length == 0)
+                    {
+                        Debug.LogWarning(
+                            $"AutotileCatalogImporter: {textureName}/{sprite.name} has no sprite mesh vertices.");
                     }
                 }
             }
 
-            for (int i = 0; i < sprites.Count; i++)
+            foreach (string error in errors)
             {
-                Sprite sprite = sprites[i];
-                if (sprite == null)
-                {
-                    Debug.LogWarning($"AutotileCatalogImporter: {textureName} sprite slot {i} is null.");
-                    continue;
-                }
-
-                if (!Mathf.Approximately(sprite.pixelsPerUnit, 16f))
-                {
-                    Debug.LogWarning(
-                        $"AutotileCatalogImporter: {textureName}/{sprite.name} PPU is {sprite.pixelsPerUnit} (expected 16).");
-                }
-
-                Bounds bounds = sprite.bounds;
-                if (!Mathf.Approximately(bounds.size.x, 1f) || !Mathf.Approximately(bounds.size.y, 1f))
-                {
-                    Debug.LogWarning(
-                        $"AutotileCatalogImporter: {textureName}/{sprite.name} bounds size is " +
-                        $"{bounds.size} (expected 1×1 world units at PPU 16).");
-                }
-
-                if (sprite.vertices == null || sprite.vertices.Length == 0)
-                {
-                    Debug.LogWarning(
-                        $"AutotileCatalogImporter: {textureName}/{sprite.name} has no sprite mesh vertices.");
-                }
+                Debug.LogError($"AutotileCatalogImporter: {error}");
             }
 
             return valid;

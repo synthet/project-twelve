@@ -9,7 +9,9 @@ Local consolidation for **ProjectTwelve** — external artifacts only (no model 
 
 ## When to use
 
-- **Session start:** Read `.agent-memory/memory.md`; prefer repo evidence on conflict.
+- **Session start (required):** Before modifying code, read `.agent-memory/memory.md` or run
+  `python scripts/agent-memory/context.py`. Prefer repo evidence on conflict. Enforced by always-on
+  rule `.claude/rules/agent-memory.md`.
 - **Session end / milestone:** Log durable learnings with `/log-session`.
 - **Periodic:** Run `/dream-memory`, review changelog, `/promote-memory` after human approval.
 

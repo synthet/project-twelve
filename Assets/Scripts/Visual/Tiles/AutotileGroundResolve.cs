@@ -46,7 +46,8 @@ namespace ProjectTwelve.Visual.Tiles
             SandboxTile tile,
             int worldX,
             int worldY,
-            out AutotileGroundResolveResult result)
+            out AutotileGroundResolveResult result,
+            int autotileExposureFloorY = AutotileExposure.NoFloor)
         {
             result = default;
             if (catalog == null || tileLookup == null || !tile.IsSolid)
@@ -60,7 +61,13 @@ namespace ProjectTwelve.Visual.Tiles
                 return false;
             }
 
-            int[,] mask = BuildGroundMask(catalog, tileLookup, tile, worldX, worldY);
+            int[,] mask = BuildGroundMask(
+                catalog,
+                tileLookup,
+                tile,
+                worldX,
+                worldY,
+                autotileExposureFloorY);
             Sprite sprite = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
             result = new AutotileGroundResolveResult(
                 hasGroundTileset: true,
@@ -80,15 +87,22 @@ namespace ProjectTwelve.Visual.Tiles
             Func<int, int, SandboxTile> tileLookup,
             SandboxTile tile,
             int worldX,
-            int worldY)
+            int worldY,
+            int autotileExposureFloorY = AutotileExposure.NoFloor)
         {
+            Func<int, int, bool> isSolid = AutotileExposure.CreateIsSolid(tileLookup, autotileExposureFloorY);
             return AutotileMaskBuilder.BuildGroundMask(
                 (x, y) =>
                 {
+                    if (autotileExposureFloorY != AutotileExposure.NoFloor && y < autotileExposureFloorY)
+                    {
+                        return false;
+                    }
+
                     SandboxTile neighbor = tileLookup(x, y);
                     return catalog.SharesGroundAutotileGroup(tile.id, neighbor.id);
                 },
-                (x, y) => tileLookup(x, y).IsSolid,
+                isSolid,
                 worldX,
                 worldY,
                 (x, y) =>

@@ -14,5 +14,11 @@ python3 -m pip install --quiet pyyaml
 
 python scripts/sync_assistant_trees.py --check
 
+if [ -f .agent-memory/memory.md ]; then
+  echo "--- Project memory (.agent-memory/memory.md) ---"
+  python scripts/agent-memory/context.py
+  echo "--- End project memory ---"
+fi
+
 cd tools/tile-viz && npm test
 cd ../world-viz && npm test

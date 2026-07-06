@@ -192,6 +192,44 @@ namespace ProjectTwelve.Visual.Tiles
                 && Mathf.Abs(top - (y + 1) * tileSize) < BoundsEpsilon;
         }
 
+        /// <summary>
+        /// Appends a ground autotile using full-cell UV mapping for tile-viz <c>blitSprite</c> parity.
+        /// Cover layers continue to use tight sprite mesh geometry via <see cref="AppendSprite"/>.
+        /// </summary>
+        public static void AppendGroundAutotileSprite(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int x,
+            int y,
+            float tileSize,
+            Sprite sprite,
+            bool flipX,
+            Color color,
+            float zOffset)
+        {
+            if (sprite == null)
+            {
+                return;
+            }
+
+            AppendFixedCellQuad(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                x,
+                y,
+                tileSize,
+                sprite,
+                flipX,
+                color,
+                zOffset,
+                flipY: false,
+                rotationDegrees: 0);
+        }
+
         public static void AppendFixedCellQuad(
             List<Vector3> vertices,
             List<int> triangles,

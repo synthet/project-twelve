@@ -4,7 +4,7 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-05T06:00:00Z
+timestamp: 2026-07-06T00:00:00Z
 ---
 
 # Visual Behavior Specification
@@ -55,6 +55,8 @@ There is deliberately **no generic** underside or external-cliff face remapping:
 - **External vertical cliff faces** with mass on one side resolve to the authored face sprites (`8` + `flipX`, cap `22` + `flipX` under a surface tile, outside corners `0`/`16`). Remapping them to the pillar strip (`21`) draws a double-outlined band that does not blend into the adjacent body. True 1-wide pillars already resolve `28`/`21`/`29` from their raw masks. Inner-cavity vertical strips (item 2) may remap outside-corner `0` to inner-face `8` when a hole sits directly below.
 
 Callers must pass an explicit `isSolid(x,y)` predicate when building ground masks so south blend-below can distinguish foreign solids from air while side boundaries stay disconnected in the connectivity pass.
+
+**Exposure floor** — Play Mode procedural fill below the saved world bottom (`y < autotileExposureFloorY`, default `0` on `SandboxWorld`) must not count as solid for autotile masks. Tile-viz treats off-space coordinates as air; without the floor clip, generated stone under `y=0` forces interior fill sprites on exposed underside cells. Implemented in `AutotileExposure.CreateIsSolid`.
 
 Debug reports (tile-viz autotile JSON, runtime MCP `tile_autotile`) expose `visualMask`, `solidMask`, `connectivityMask`, `finalMask`/`mask`, and normalization flags (`stairInterior`, `innerCavity`, `cavityUnderside`, `materialBoundary`).
 
@@ -282,8 +284,9 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 | `GroundCoverSplit` | Ground marker (full cell) + cover marker (top half) |
 | `MismatchBaseline` | Red highlight where live ground resolve ≠ committed baseline |
 | `VisualOverrideLabel` | Ground and cover saved override/snapshot sprite labels; no label without saved state, cyan when valid, magenta when the saved sprite is missing from the current tileset, yellow when the saved auto snapshot differs from the current auto result |
+| `ResolveDetail` | Ground sprite id + flip notch + compact 3×3 mask; green/red tint vs baseline |
 
-When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
+When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline`, `VisualOverrideLabel`, and `ResolveDetail` read `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
 
 ### Drift RCA tooling
 
@@ -291,7 +294,7 @@ See [wiki/autotile-drift-rca.md](wiki/autotile-drift-rca.md) for the layered pla
 
 ### Mesh compositing vs tile-viz blit
 
-Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendSprite`, anchoring sprite mesh vertices to the logical cell via **sprite bounds** (not pivot). Horizontal flip mirrors within the cell width. This matches tile-viz `blitSprite` when sprite ids and `flipX` agree.
+Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendGroundAutotileSprite` for ground layers: **always** a fixed 16×16 UV quad (`AppendFixedCellQuad`) to match tile-viz `blitSprite`, regardless of sprite mesh bounds. Cover layers still use `AppendSprite`. Horizontal flip mirrors within the cell width.
 
 #### Visual override transform contract
 
@@ -307,6 +310,8 @@ Visual overrides that need sprite-space transforms must use the same UV/sample-c
 The operation order is intentionally not commutative. For asymmetric sprites, `flipX=true, flipY=false, rotationDegrees=90` is distinct from rotating first and then flipping. Tests must use asymmetric fixtures so each transform combination maps to a distinct output.
 
 If Play Mode labels match tile-viz but art still diverges on asymmetric sprites, route autotile quads through `AppendFixedCellQuad` (full 16×16 cell UV span) as a parity fallback. No remap is applied unless the Phase 3 gate fails (labels match, pixels differ).
+
+Ground autotile sheets must be 128×64 with 32 sprites named `0`…`31` in canonical row-major layout. Validate via **ProjectTwelve → Visual → Validate Ground Autotile Sheets** (`AutotileGroundSheetValidator`); import fails on layout errors via `AutotileGroundSheetLayout`.
 
 ---
 

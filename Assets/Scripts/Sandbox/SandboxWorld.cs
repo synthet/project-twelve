@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.AutotileDebug;
+using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -35,6 +36,7 @@ public sealed class SandboxWorld : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private GroundAutotileDebugMode groundAutotileDebugMode;
     [SerializeField] private bool debugOverrideModeEnabled;
+    [SerializeField] private int autotileExposureFloorY = AutotileExposure.DefaultSandboxFloorY;
 
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
@@ -66,6 +68,11 @@ public sealed class SandboxWorld : MonoBehaviour
 
     /// <summary>True only when debug override mode is explicitly enabled in an Editor or development build.</summary>
     public bool IsDebugOverrideModeEnabled => CanUseDebugOverrides(debugOverrideModeEnabled);
+
+    /// <summary>
+    /// World Y below which autotile masks treat neighbors as air (tile-viz off-space parity).
+    /// </summary>
+    public int AutotileExposureFloorY => autotileExposureFloorY;
 
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
@@ -703,11 +710,18 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileVisualCatalog,
                 GetTile,
                 autotileVisualOverrides,
-                ShouldApplyDebugVisualOverrides ? TryGetVisualOverride : null);
+                ShouldApplyDebugVisualOverrides ? TryGetVisualOverride : null,
+                autotileExposureFloorY);
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
             {
-                overlay.Rebuild(chunk, tileSize, groundAutotileDebugMode, tileVisualCatalog, GetTile);
+                overlay.Rebuild(
+                    chunk,
+                    tileSize,
+                    groundAutotileDebugMode,
+                    tileVisualCatalog,
+                    GetTile,
+                    autotileExposureFloorY);
             }
         }
     }
