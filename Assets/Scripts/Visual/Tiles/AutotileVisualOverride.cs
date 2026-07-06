@@ -22,12 +22,12 @@ public sealed class AutotileVisualOverride
         this.flipX = flipX;
     }
 
-    public SandboxVisualOverrideSaveData ToSaveData()
+    public SandboxVisualOverrideEntrySaveData ToSaveData()
     {
-        return SandboxVisualOverrideSaveData.FromRuntime(coord, spriteId, flipX);
+        return SandboxVisualOverrideEntrySaveData.FromRuntime(coord, spriteId, flipX);
     }
 
-    public static AutotileVisualOverride FromSaveData(SandboxVisualOverrideSaveData saveData)
+    public static AutotileVisualOverride FromSaveData(SandboxVisualOverrideEntrySaveData saveData)
     {
         return new AutotileVisualOverride(saveData.ToCoord(), saveData.spriteId, saveData.flipX);
     }

@@ -32,8 +32,39 @@ node src/cli.js render --space test/fixtures/snippets/grass-cover-middle.json \
   --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
   --scale 16 --png out.png
 
+# Render sprite PNG with visual override sidecar data
+node src/cli.js render --space test/fixtures/snippets/grass-cover-middle.json \
+  --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
+  --visual-overrides visual-overrides.json --scale 16 --png out.png
+
+# List visual override sidecar entries
+node src/cli.js list-visual-overrides --visual-overrides visual-overrides.json
+
 # Convert runtime MCP dump to tile-space JSON
 node src/cli.js import-mcp --file ../world-viz/mcp-dirt-stone.json --out test/fixtures/spaces/dirt-stone.json
+```
+
+## Visual override sidecars
+
+`render` accepts `--visual-overrides <file>` to replace resolved ground and/or cover visuals after the normal autotile report has been built. The sidecar can be an `overrides[]` list or coordinate-keyed object:
+
+```json
+{
+  "overrides": [
+    {
+      "x": 0,
+      "y": 1,
+      "ground": { "tileset": "Humus", "spriteId": 4, "flipX": false },
+      "cover": { "tileset": "GrassA", "spriteId": 2, "flipX": true, "rendered": true }
+    }
+  ]
+}
+```
+
+Use this exact command to inspect a sidecar before rendering:
+
+```bash
+node src/cli.js list-visual-overrides --visual-overrides visual-overrides.json
 ```
 
 ## JSON formats (`project-twelve/tile-space/v1`)
@@ -56,6 +87,32 @@ See [`test/fixtures/snippets/`](test/fixtures/snippets/) for examples.
 
 Rule tables in `data/` are loaded by the Node resolver — do not edit by hand; regenerate
 from Unity or `node scripts/generate-rules-json.mjs` when C# tables change.
+
+## Visual override debug mode
+
+Visual overrides are optional debug annotations applied after normal autotile resolution and before PNG compositing. They are useful for marking or temporarily substituting individual cells while diagnosing drift, but they do not represent world state and should not be treated as fixture truth.
+
+Use `--visual-overrides <file.visual-overrides.json>` with render commands to apply an override file:
+
+```bash
+node src/cli.js render --space test/fixtures/captures/sandbox-scene-mountain.json \
+  --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
+  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
+  --scale 32 --flat-light --png out/sandbox-scene-mountain.override.png
+
+node scripts/render-capture.mjs test/fixtures/captures/sandbox-scene-mountain.json \
+  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
+  --png out/sandbox-scene-mountain.override.png --scale 32 --flat-light
+```
+
+List and inspect override files before attaching them to an RCA:
+
+```bash
+node src/cli.js visual-overrides list --file out/sandbox-scene-mountain.visual-overrides.json
+node src/cli.js visual-overrides inspect --file out/sandbox-scene-mountain.visual-overrides.json --coords -114,29
+```
+
+Attach the `*.visual-overrides.json` file with the matching tile-space capture, rendered PNG, and per-cell autotile report so another agent can reproduce the exact visual hypothesis without changing the capture or resolver baseline.
 
 ## Tests
 
