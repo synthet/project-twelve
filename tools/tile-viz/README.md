@@ -57,6 +57,32 @@ See [`test/fixtures/snippets/`](test/fixtures/snippets/) for examples.
 Rule tables in `data/` are loaded by the Node resolver — do not edit by hand; regenerate
 from Unity or `node scripts/generate-rules-json.mjs` when C# tables change.
 
+## Visual override debug mode
+
+Visual overrides are optional debug annotations applied after normal autotile resolution and before PNG compositing. They are useful for marking or temporarily substituting individual cells while diagnosing drift, but they do not represent world state and should not be treated as fixture truth.
+
+Use `--visual-overrides <file.visual-overrides.json>` with render commands to apply an override file:
+
+```bash
+node src/cli.js render --space test/fixtures/captures/sandbox-scene-mountain.json \
+  --assets-root ../../Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles \
+  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
+  --scale 32 --flat-light --png out/sandbox-scene-mountain.override.png
+
+node scripts/render-capture.mjs test/fixtures/captures/sandbox-scene-mountain.json \
+  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
+  --png out/sandbox-scene-mountain.override.png --scale 32 --flat-light
+```
+
+List and inspect override files before attaching them to an RCA:
+
+```bash
+node src/cli.js visual-overrides list --file out/sandbox-scene-mountain.visual-overrides.json
+node src/cli.js visual-overrides inspect --file out/sandbox-scene-mountain.visual-overrides.json --coords -114,29
+```
+
+Attach the `*.visual-overrides.json` file with the matching tile-space capture, rendered PNG, and per-cell autotile report so another agent can reproduce the exact visual hypothesis without changing the capture or resolver baseline.
+
 ## Tests
 
 ```bash
