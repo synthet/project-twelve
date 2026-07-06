@@ -199,7 +199,7 @@ namespace ProjectTwelve.Visual.Tiles
                 && Mathf.Abs(top - (y + 1) * tileSize) < BoundsEpsilon;
         }
 
-        private static void AppendFixedCellQuad(
+        public static void AppendFixedCellQuad(
             List<Vector3> vertices,
             List<int> triangles,
             List<Vector2> uvs,

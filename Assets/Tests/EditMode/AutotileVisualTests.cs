@@ -934,6 +934,63 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
+    public void AutotileVisualOverrideMap_KeysByCellLayerAndTileset()
+    {
+        AutotileVisualOverrideMap overrides = new AutotileVisualOverrideMap();
+        Vector2Int cell = new Vector2Int(3, 4);
+
+        overrides.SetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Humus", "17");
+
+        Assert.IsTrue(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Humus", out string spriteId));
+        Assert.AreEqual("17", spriteId);
+        Assert.IsFalse(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.CoverLayer, "Humus", out _));
+        Assert.IsFalse(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Rocks", out _));
+    }
+
+    [Test]
+    public void AutotileTileset_TryGetSpriteOnlyReturnsExactSpriteId()
+    {
+        AutotileTileset tileset = CreateTestTileset();
+
+        Assert.IsTrue(tileset.TryGetSprite("10", out Sprite sprite));
+        Assert.AreEqual("10", sprite.name);
+        Assert.IsFalse(tileset.TryGetSprite("missing", out _));
+    }
+
+    [Test]
+    public void SpriteMeshQuad_FixedCellOverridePathSpansFullTileCell()
+    {
+        const float tileSize = 1f;
+        Sprite sprite = Sprite.Create(
+            new Texture2D(16, 16),
+            new Rect(0, 0, 16, 16),
+            new Vector2(0.5f, 0.5f),
+            16f);
+
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Color> colors = new List<Color>();
+
+        AutotileSpriteMeshBuilder.AppendFixedCellQuad(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            2,
+            5,
+            tileSize,
+            sprite,
+            flipX: false,
+            Color.white,
+            zOffset: 0f);
+
+        Assert.AreEqual(new Vector3(2f, 5f, 0f), vertices[0]);
+        Assert.AreEqual(new Vector3(3f, 6f, 0f), vertices[2]);
+        Assert.AreEqual(6, triangles.Count);
+    }
+
+    [Test]
     public void SandboxTileVisualCatalog_OreTilesDoNotShareGroundGroup()
     {
         SandboxTileVisualCatalog catalog = ScriptableObject.CreateInstance<SandboxTileVisualCatalog>();

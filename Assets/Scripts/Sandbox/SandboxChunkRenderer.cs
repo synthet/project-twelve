@@ -37,13 +37,14 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float tileSize,
         Material material,
         SandboxTileVisualCatalog visualCatalog,
-        Func<int, int, SandboxTile> tileLookup)
+        Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides = null)
     {
         EnsureComponents();
 
         if (visualCatalog != null && visualCatalog.HasAutotileSources && tileLookup != null)
         {
-            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup);
+            RebuildAutotileMesh(chunk, tileSize, material, visualCatalog, tileLookup, visualOverrides);
         }
         else
         {
@@ -98,7 +99,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         float tileSize,
         Material material,
         SandboxTileVisualCatalog visualCatalog,
-        Func<int, int, SandboxTile> tileLookup)
+        Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
         Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
@@ -114,8 +116,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 }
 
                 Vector2Int worldCoord = SandboxWorld.ChunkLocalToWorld(chunk.Coord, localX, localY);
-                AddGroundTile(groundLayers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
-                AddCoverTile(coverLayers, visualCatalog, tileLookup, tile, localX, localY, worldCoord, tileSize);
+                AddGroundTile(groundLayers, visualCatalog, tileLookup, visualOverrides, tile, localX, localY, worldCoord, tileSize);
+                AddCoverTile(coverLayers, visualCatalog, tileLookup, visualOverrides, tile, localX, localY, worldCoord, tileSize);
             }
         }
 
@@ -126,6 +128,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides,
         SandboxTile tile,
         int localX,
         int localY,
@@ -150,14 +153,26 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return;
         }
 
-        MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: 0f);
+        AddResolvedSpriteQuad(
+            layers,
+            visualOverrides,
+            worldCoord,
+            AutotileVisualOverrideMap.GroundLayer,
+            tileset,
+            localX,
+            localY,
+            tileSize,
+            sprite,
+            flipX,
+            GetTileLightColor(tile),
+            zOffset: 0f);
     }
 
     private static void AddCoverTile(
         Dictionary<Texture2D, MeshLayer> layers,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides,
         SandboxTile tile,
         int localX,
         int localY,
@@ -187,8 +202,19 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return;
         }
 
-        MeshLayer layer = GetOrCreateLayer(layers, sprite.texture);
-        AddSpriteQuad(layer, localX, localY, tileSize, sprite, flipX, GetTileLightColor(tile), zOffset: -0.01f);
+        AddResolvedSpriteQuad(
+            layers,
+            visualOverrides,
+            worldCoord,
+            AutotileVisualOverrideMap.CoverLayer,
+            tileset,
+            localX,
+            localY,
+            tileSize,
+            sprite,
+            flipX,
+            GetTileLightColor(tile),
+            zOffset: -0.01f);
     }
 
     private void ApplyLayeredMesh(
@@ -296,6 +322,55 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         }
 
         return layer;
+    }
+
+
+    private static void AddResolvedSpriteQuad(
+        Dictionary<Texture2D, MeshLayer> layers,
+        AutotileVisualOverrideMap visualOverrides,
+        Vector2Int worldCoord,
+        string layerName,
+        AutotileTileset tileset,
+        int x,
+        int y,
+        float tileSize,
+        Sprite normalSprite,
+        bool normalFlipX,
+        Color color,
+        float zOffset)
+    {
+        Sprite sprite = normalSprite;
+        bool flipX = normalFlipX;
+        bool useFixedCellQuad = false;
+
+        if (visualOverrides != null
+            && visualOverrides.TryGetOverride(worldCoord, layerName, tileset.Name, out string overrideSpriteId)
+            && tileset.TryGetSprite(overrideSpriteId, out Sprite overrideSprite))
+        {
+            sprite = overrideSprite;
+            flipX = false;
+            useFixedCellQuad = true;
+        }
+
+        MeshLayer meshLayer = GetOrCreateLayer(layers, sprite.texture);
+        if (useFixedCellQuad)
+        {
+            AutotileSpriteMeshBuilder.AppendFixedCellQuad(
+                meshLayer.Vertices,
+                meshLayer.Triangles,
+                meshLayer.Uvs,
+                meshLayer.Colors,
+                x,
+                y,
+                tileSize,
+                sprite,
+                flipX,
+                color,
+                zOffset);
+            return;
+        }
+
+        AddSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
     }
 
     private static void AddSpriteQuad(
