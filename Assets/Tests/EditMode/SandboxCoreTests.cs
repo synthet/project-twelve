@@ -51,6 +51,38 @@ public sealed class SandboxCoreTests
         Assert.IsFalse(chunk.IsDirty);
     }
 
+
+    [Test]
+    public void SandboxWorld_DebugOverrideTileEdit_DisabledLeavesGeneratedTileUnchanged()
+    {
+        GameObject go = new GameObject("World");
+        try
+        {
+            SandboxWorld world = go.AddComponent<SandboxWorld>();
+            SandboxTile before = world.GetTile(0, 0);
+
+            bool edited = world.TrySetDebugOverrideTile(0, 0, SandboxTileIds.Stone);
+
+            Assert.IsFalse(edited);
+            Assert.IsFalse(world.IsDebugOverrideModeEnabled);
+            Assert.IsFalse(world.ShouldApplyDebugVisualOverrides);
+            Assert.AreEqual(before.id, world.GetTile(0, 0).id);
+        }
+        finally
+        {
+            Object.DestroyImmediate(go);
+        }
+    }
+
+    [Test]
+    public void SandboxWorld_CanUseDebugOverrides_RequiresExplicitFlag()
+    {
+        Assert.IsFalse(SandboxWorld.CanUseDebugOverrides(false));
+#if UNITY_EDITOR
+        Assert.IsTrue(SandboxWorld.CanUseDebugOverrides(true));
+#endif
+    }
+
     [TestCase(0, 0, 0, 0)]
     [TestCase(31, 31, 0, 0)]
     [TestCase(32, 0, 1, 0)]

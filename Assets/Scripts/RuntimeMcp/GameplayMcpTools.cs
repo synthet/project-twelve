@@ -36,6 +36,8 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 args =>
                 {
+                    RequireDebugOverrideMode();
+
                     SandboxPlayerController controller = FindPlayerController();
                     if (controller == null)
                     {
@@ -71,6 +73,8 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 _ =>
                 {
+                    RequireDebugOverrideMode();
+
                     SandboxPlayerController controller = FindPlayerController();
                     if (controller == null)
                     {
@@ -101,6 +105,8 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 args =>
                 {
+                    RequireDebugOverrideMode();
+
                     SandboxPlayerController controller = FindPlayerController();
                     if (controller == null)
                     {
@@ -138,16 +144,15 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 args =>
                 {
-                    SandboxWorld world = FindWorld();
-                    if (world == null)
-                    {
-                        throw new System.InvalidOperationException("SandboxWorld not found in scene.");
-                    }
+                    SandboxWorld world = RequireDebugOverrideMode();
 
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
                     int tileId = args["tileId"]?.Value<int>() ?? SandboxRegistries.AirIndex;
-                    world.SetTile(x, y, tileId);
+                    if (!world.TrySetDebugOverrideTile(x, y, tileId))
+                    {
+                        throw new System.InvalidOperationException(DebugOverrideDisabledMessage);
+                    }
 
                     SandboxTile tile = world.GetTile(x, y);
                     return new JObject
@@ -196,11 +201,7 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 args =>
                 {
-                    SandboxWorld world = FindWorld();
-                    if (world == null)
-                    {
-                        throw new System.InvalidOperationException("SandboxWorld not found in scene.");
-                    }
+                    SandboxWorld world = RequireWorld();
 
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
@@ -540,7 +541,9 @@ namespace ProjectTwelve.RuntimeMcp
             {
                 ["seed"] = world.Seed,
                 ["tileSize"] = world.TileSize,
-                ["loadedChunkCount"] = world.LoadedChunkCount
+                ["loadedChunkCount"] = world.LoadedChunkCount,
+                ["debugOverrideModeEnabled"] = world.IsDebugOverrideModeEnabled,
+                ["debugVisualOverridesApplied"] = world.ShouldApplyDebugVisualOverrides
             };
 
             if (world.TryGetPlayerWorldPosition(out Vector2 position))
@@ -557,6 +560,20 @@ namespace ProjectTwelve.RuntimeMcp
             }
 
             return result;
+        }
+
+        private const string DebugOverrideDisabledMessage =
+            "MCP write tools are disabled until SandboxWorld debug override mode is explicitly enabled in an Editor or development build.";
+
+        private static SandboxWorld RequireDebugOverrideMode()
+        {
+            SandboxWorld world = RequireWorld();
+            if (!world.IsDebugOverrideModeEnabled)
+            {
+                throw new System.InvalidOperationException(DebugOverrideDisabledMessage);
+            }
+
+            return world;
         }
 
         private static SandboxPlayerController FindPlayerController()

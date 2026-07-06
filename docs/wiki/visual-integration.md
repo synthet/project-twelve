@@ -75,6 +75,7 @@ flowchart LR
   AC[AutotileCatalog]
   Mask[AutotileMaskBuilder]
   Resolver[AutotileResolver]
+  Override[Optional visual override debug annotation]
   Renderer[SandboxChunkRenderer mesh]
 
   World --> Catalog
@@ -82,8 +83,17 @@ flowchart LR
   World --> Mask
   AC --> Resolver
   Mask --> Resolver
-  Resolver --> Renderer
+  Resolver --> Override
+  Override --> Renderer
 ```
+
+Terrain rendering is a three-stage presentation pipeline:
+
+1. **Normal autotile resolve** — world tile IDs plus the visual catalog build masks and resolve ground/cover sprite IDs and flip flags.
+2. **Optional visual override** — debug-only annotations may replace the emitted visual for selected cells after resolution, without mutating world state or resolver inputs.
+3. **Mesh emission** — `SandboxChunkRenderer` emits fixed-cell quads from the final presentation decision.
+
+Because overrides sit between resolve and mesh emission, they are useful for isolating renderer/compositor hypotheses while preserving the underlying tile IDs, collision, lighting, nav, and generation contract.
 
 ## Data flow (player avatar)
 

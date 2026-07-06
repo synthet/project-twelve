@@ -16,7 +16,13 @@ export const FORMAT = 'project-twelve/tile-space/v1';
  */
 export function loadTileSpaceFromFile(filePath) {
   const text = fs.readFileSync(filePath, 'utf8');
-  return loadTileSpace(JSON.parse(text), path.dirname(path.resolve(filePath)));
+  const resolvedPath = path.resolve(filePath);
+  const doc = JSON.parse(text);
+  const sidecarPath = resolvedPath.replace(/\.json$/i, '.visual-overrides');
+  if (fs.existsSync(sidecarPath) && doc.visualOverrides === undefined) {
+    doc.visualOverrides = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+  }
+  return loadTileSpace(doc, path.dirname(resolvedPath));
 }
 
 /**
@@ -97,6 +103,7 @@ function loadSnippet(doc) {
     yMax: originY + height - 1,
     tiles,
     ...resolveExpectations(doc),
+    visualOverrides: normalizeVisualOverrides(doc.visualOverrides),
     raw: doc,
   };
 }
@@ -117,6 +124,7 @@ function loadSpace(doc) {
     yMax: doc.yMax,
     tiles,
     ...resolveExpectations(doc),
+    visualOverrides: normalizeVisualOverrides(doc.visualOverrides),
     raw: doc,
   };
 }
@@ -162,6 +170,7 @@ function loadWorld(doc, baseDir) {
     yMax: region.yMax,
     tiles,
     ...resolveExpectations(doc),
+    visualOverrides: normalizeVisualOverrides(doc.visualOverrides),
     params,
     raw: doc,
   };
@@ -186,8 +195,28 @@ function normalizeMcpDump(doc) {
     yMax: doc.yMax,
     tiles,
     expect: [],
+    visualOverrides: normalizeVisualOverrides(doc.visualOverrides),
     raw: doc,
   };
+}
+
+
+function normalizeVisualOverrides(input) {
+  const list = Array.isArray(input) ? input : input?.overrides;
+  if (!Array.isArray(list)) {
+    return [];
+  }
+  return list
+    .filter((entry) => Number.isFinite(entry?.x) && Number.isFinite(entry?.y) && entry.layer)
+    .map((entry) => ({
+      x: entry.x,
+      y: entry.y,
+      layer: entry.layer,
+      spriteId: entry.spriteId != null ? String(entry.spriteId) : null,
+      flipX: entry.flipX ?? false,
+      flipY: entry.flipY ?? false,
+      rotationDegrees: entry.rotationDegrees ?? 0,
+    }));
 }
 
 function normalizeTile(t) {
