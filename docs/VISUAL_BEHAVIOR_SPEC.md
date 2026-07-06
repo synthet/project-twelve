@@ -268,6 +268,7 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 | `CoverSpriteIdLabel` | Cover sprite id on grass surface cells |
 | `GroundCoverSplit` | Ground marker (full cell) + cover marker (top half) |
 | `MismatchBaseline` | Red highlight where live ground resolve ≠ committed baseline |
+| `VisualOverrideLabel` | Ground and cover saved override/snapshot sprite labels; no label without saved state, cyan when valid, magenta when the saved sprite is missing from the current tileset, yellow when the saved auto snapshot differs from the current auto result |
 
 When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
 

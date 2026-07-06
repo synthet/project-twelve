@@ -52,6 +52,15 @@ namespace ProjectTwelve.Visual.AutotileDebug
         /// </summary>
         public static Color MismatchColor => new Color(1f, 0.1f, 0.1f, 0.85f);
 
+        /// <summary>Valid visual override label tint.</summary>
+        public static Color ValidOverrideColor => new Color(0f, 1f, 1f, 0.95f);
+
+        /// <summary>Missing override sprite label tint.</summary>
+        public static Color MissingOverrideSpriteColor => new Color(1f, 0f, 1f, 0.95f);
+
+        /// <summary>Saved auto snapshot drift label tint.</summary>
+        public static Color AutoSnapshotMismatchColor => new Color(1f, 0.9f, 0f, 0.95f);
+
         /// <summary>
         /// Cover-layer debug tint (complements ground hues).
         /// </summary>
