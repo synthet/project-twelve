@@ -21,7 +21,7 @@ test('extractCompareCell normalizes ground and cover fields', () => {
   const tile = report.tiles.find((t) => t.x === -113 && t.y === 26);
   assert.ok(tile);
   const cell = extractCompareCell(tile);
-  assert.equal(cell.ground.spriteId, '2');
+  assert.equal(cell.ground.spriteId, '0');
   assert.equal(cell.ground.flipX, false);
 });
 

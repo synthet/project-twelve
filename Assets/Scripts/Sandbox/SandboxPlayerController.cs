@@ -1,4 +1,6 @@
 using System.IO;
+using Newtonsoft.Json.Linq;
+using ProjectTwelve.Sandbox.Debug;
 using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
@@ -14,8 +16,16 @@ public sealed class SandboxPlayerController : MonoBehaviour
     [SerializeField] private string placeTileId = "core:dirt";
     [SerializeField] private float editRange = 6f;
     [SerializeField] private string saveFileName = "sandbox-world.json";
-    [SerializeField] private bool visualOverrideModeActive;
-    [SerializeField] private string visualOverrideSidecarFileName = "sandbox-world.visual-overrides.json";
+
+    private bool visualOverrideModeActive;
+    private SandboxVisualOverrideInput visualOverrideInput;
+
+    public bool VisualOverrideModeActive => visualOverrideModeActive;
+
+    public void SetVisualOverrideModeActive(bool active)
+    {
+        visualOverrideModeActive = active;
+    }
 
     private const float GroundProbeDistance = 0.12f;
     private const float GroundNormalThreshold = 0.5f;
@@ -73,9 +83,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
     private InputAction moveAction;
     private InputAction jumpAction;
-    private InputAction leftMouseAction;
-    private InputAction rightMouseAction;
-    private InputAction pointerPositionAction;
     private InputAction saveAction;
     private InputAction loadAction;
 #endif
@@ -101,9 +108,16 @@ public sealed class SandboxPlayerController : MonoBehaviour
             world.SetPlayerTarget(transform);
         }
 
+        visualOverrideInput = GetComponent<SandboxVisualOverrideInput>();
+
 #if ENABLE_INPUT_SYSTEM
         CreateInputActions();
 #endif
+    }
+
+    private void Start()
+    {
+        visualOverrideModeActive = visualOverrideInput != null && visualOverrideInput.VisualOverrideModeActive;
     }
 
     private void OnEnable()
@@ -111,9 +125,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         moveAction?.Enable();
         jumpAction?.Enable();
-        leftMouseAction?.Enable();
-        rightMouseAction?.Enable();
-        pointerPositionAction?.Enable();
         saveAction?.Enable();
         loadAction?.Enable();
 #endif
@@ -124,9 +135,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         moveAction?.Disable();
         jumpAction?.Disable();
-        leftMouseAction?.Disable();
-        rightMouseAction?.Disable();
-        pointerPositionAction?.Disable();
         saveAction?.Disable();
         loadAction?.Disable();
 #endif
@@ -137,9 +145,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         moveAction?.Dispose();
         jumpAction?.Dispose();
-        leftMouseAction?.Dispose();
-        rightMouseAction?.Dispose();
-        pointerPositionAction?.Dispose();
         saveAction?.Dispose();
         loadAction?.Dispose();
 #endif
@@ -194,34 +199,113 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void HandleTileEditing()
     {
+        EnsureMainCamera();
+
+        bool remove = SandboxScreenPointer.WasLeftButtonPressedThisFrame();
+        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame();
+        if (remove || place)
+        {
+            // #region agent log
+            AgentDebugLog.Write(
+                "A",
+                "SandboxPlayerController.HandleTileEditing",
+                "mouse button edge detected",
+                new JObject
+                {
+                    ["remove"] = remove,
+                    ["place"] = place,
+                    ["worldNull"] = world == null,
+                    ["cameraNull"] = mainCamera == null,
+                    ["debugEnabled"] = world != null && world.IsDebugOverrideModeEnabled,
+                    ["appFocused"] = Application.isFocused,
+                });
+            // #endregion
+        }
+
         if (world == null || mainCamera == null || !world.IsDebugOverrideModeEnabled)
         {
+            if (remove || place)
+            {
+                // #region agent log
+                AgentDebugLog.Write(
+                    "B",
+                    "SandboxPlayerController.HandleTileEditing",
+                    "early exit before edit",
+                    new JObject
+                    {
+                        ["worldNull"] = world == null,
+                        ["cameraNull"] = mainCamera == null,
+                        ["debugEnabled"] = world != null && world.IsDebugOverrideModeEnabled,
+                    });
+                // #endregion
+            }
+
             return;
         }
 
-        bool remove = WasRemoveTilePressed();
-        bool place = WasPlaceTilePressed();
         if (!remove && !place)
         {
             return;
         }
 
-        Vector2 pointer = ReadPointerPosition();
-        Vector3 mouseScreen = new Vector3(pointer.x, pointer.y, -mainCamera.transform.position.z);
-        Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(mouseScreen);
-        Vector2Int tile = world.WorldPositionToTile(mouseWorld);
-        Vector3 center = world.TileToWorldCenter(tile.x, tile.y);
-        if (Vector2.Distance(transform.position, center) > editRange)
+        if (!SandboxScreenPointer.TryReadWorldTile(mainCamera, world, out Vector2Int tile))
         {
+            // #region agent log
+            AgentDebugLog.Write(
+                "C",
+                "SandboxPlayerController.HandleTileEditing",
+                "TryReadWorldTile failed",
+                new JObject { ["remove"] = remove, ["place"] = place });
+            // #endregion
             return;
         }
 
-        world.TrySetDebugOverrideTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
+        SandboxScreenPointer.TryReadScreenPosition(out Vector2 screen);
+        Vector3 worldPoint = SandboxScreenPointer.ScreenToWorld2D(mainCamera, screen);
+        int tileIdBefore = world.GetTile(tile.x, tile.y).id;
+        int targetTileId = remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex;
+        bool edited = world.TrySetDebugOverrideTile(tile.x, tile.y, targetTileId);
+        int tileIdAfter = world.GetTile(tile.x, tile.y).id;
+
+        // #region agent log
+        AgentDebugLog.Write(
+            "F",
+            "SandboxPlayerController.HandleTileEditing",
+            "edit attempt completed",
+            new JObject
+            {
+                ["runId"] = "post-fix",
+                ["screenX"] = screen.x,
+                ["screenY"] = screen.y,
+                ["worldX"] = worldPoint.x,
+                ["worldY"] = worldPoint.y,
+                ["cameraX"] = mainCamera.transform.position.x,
+                ["cameraY"] = mainCamera.transform.position.y,
+                ["tileX"] = tile.x,
+                ["tileY"] = tile.y,
+                ["remove"] = remove,
+                ["place"] = place,
+                ["targetTileId"] = targetTileId,
+                ["tileIdBefore"] = tileIdBefore,
+                ["tileIdAfter"] = tileIdAfter,
+                ["edited"] = edited,
+                ["placeTileRuntimeIndex"] = placeTileRuntimeIndex,
+            },
+            "post-fix");
+        // #endregion
+    }
+
+    private void EnsureMainCamera()
+    {
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
     }
 
     private void HandleSaveLoadShortcuts()
     {
-        if (world == null || !world.IsDebugOverrideModeEnabled)
+        if (world == null)
         {
             return;
         }
@@ -237,12 +321,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
         {
             world.SaveToPath(path);
             Debug.Log($"Saved sandbox world and player position to {path}");
-
-            if (command == SandboxSaveLoadShortcutRouter.ShortcutCommand.SaveWorldAndVisualOverrideSidecar)
-            {
-                SaveVisualOverrideSidecar();
-            }
-
             return;
         }
 
@@ -251,18 +329,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
             world.LoadFromPath(path);
             Debug.Log($"Loaded sandbox world and player position from {path}");
         }
-    }
-
-    private void SaveVisualOverrideSidecar()
-    {
-        string path = Path.Combine(Application.persistentDataPath, visualOverrideSidecarFileName);
-        string json = JsonUtility.ToJson(new VisualOverrideSidecarSaveData
-        {
-            version = 1,
-            savedAtUtc = System.DateTime.UtcNow.ToString("O")
-        }, true);
-        File.WriteAllText(path, json);
-        Debug.Log($"Saved visual override sidecar to {path}");
     }
 
     private float ReadHorizontalInput()
@@ -330,48 +396,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #endif
     }
 
-    private bool WasRemoveTilePressed()
-    {
-#if ENABLE_INPUT_SYSTEM
-        if (leftMouseAction != null && leftMouseAction.WasPressedThisFrame())
-        {
-            return true;
-        }
-
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            return true;
-        }
-#endif
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        return Input.GetMouseButtonDown(0);
-#else
-        return false;
-#endif
-    }
-
-    private bool WasPlaceTilePressed()
-    {
-#if ENABLE_INPUT_SYSTEM
-        if (rightMouseAction != null && rightMouseAction.WasPressedThisFrame())
-        {
-            return true;
-        }
-
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
-        {
-            return true;
-        }
-#endif
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        return Input.GetMouseButtonDown(1);
-#else
-        return false;
-#endif
-    }
-
     private bool WasSavePressed()
     {
 #if ENABLE_INPUT_SYSTEM
@@ -414,28 +438,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
 #endif
     }
 
-    private Vector2 ReadPointerPosition()
-    {
-#if ENABLE_INPUT_SYSTEM
-        Vector2 pointer = pointerPositionAction?.ReadValue<Vector2>() ?? Vector2.zero;
-        if (pointer != Vector2.zero)
-        {
-            return pointer;
-        }
-
-        if (Mouse.current != null)
-        {
-            return Mouse.current.position.ReadValue();
-        }
-#endif
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        return Input.mousePosition;
-#else
-        return Vector2.zero;
-#endif
-    }
-
 #if ENABLE_INPUT_SYSTEM
     private void CreateInputActions()
     {
@@ -448,9 +450,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
             .With("Positive", "<Keyboard>/rightArrow");
 
         jumpAction = new InputAction("Jump", InputActionType.Button, "<Keyboard>/space");
-        leftMouseAction = new InputAction("RemoveTile", InputActionType.Button, "<Mouse>/leftButton");
-        rightMouseAction = new InputAction("PlaceTile", InputActionType.Button, "<Mouse>/rightButton");
-        pointerPositionAction = new InputAction("Pointer", InputActionType.Value, "<Mouse>/position");
         saveAction = new InputAction("Save", InputActionType.Button, "<Keyboard>/f5");
         loadAction = new InputAction("Load", InputActionType.Button, "<Keyboard>/f9");
     }
@@ -520,13 +519,6 @@ public static class SandboxPhysicsMaterials
             return zeroFriction;
         }
     }
-}
-
-[System.Serializable]
-internal sealed class VisualOverrideSidecarSaveData
-{
-    public int version;
-    public string savedAtUtc;
 }
 
 /// <summary>

@@ -87,28 +87,28 @@
       "x": 1,
       "y": 3,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {
       "x": 2,
       "y": 3,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {
       "x": 1,
       "y": 0,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {
       "x": 2,
       "y": 0,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {

@@ -107,7 +107,7 @@ function normalizeVisualOverrideLayer(layer) {
     return null;
   }
   const out = {};
-  for (const key of ['tileset', 'spriteId', 'flipX', 'rendered']) {
+  for (const key of ['tileset', 'spriteId', 'flipX', 'flipY', 'rotationDegrees', 'rendered']) {
     if (layer[key] !== undefined) {
       out[key] = layer[key];
     }
@@ -118,10 +118,35 @@ function normalizeVisualOverrideLayer(layer) {
   if (out.flipX !== undefined) {
     out.flipX = Boolean(out.flipX);
   }
+  if (out.flipY !== undefined) {
+    out.flipY = Boolean(out.flipY);
+  }
+  if (out.rotationDegrees !== undefined) {
+    out.rotationDegrees = Number(out.rotationDegrees);
+  }
   if (out.rendered !== undefined) {
     out.rendered = Boolean(out.rendered);
   }
   return Object.keys(out).length ? out : null;
+}
+
+function flatVisualOverrideLayer(entry) {
+  if (!entry?.layer) {
+    return null;
+  }
+  const layerName = String(entry.layer).toLowerCase();
+  const spriteId = entry.overrideSpriteId ?? entry.spriteId;
+  if (spriteId == null) {
+    return null;
+  }
+  return normalizeVisualOverrideLayer({
+    tileset: entry.tileset,
+    spriteId,
+    flipX: entry.overrideFlipX ?? entry.flipX ?? false,
+    flipY: entry.overrideFlipY ?? entry.flipY ?? false,
+    rotationDegrees: entry.rotation ?? entry.rotationDegrees ?? 0,
+    rendered: true,
+  });
 }
 
 function visualOverrideEntries(sidecar) {
@@ -168,6 +193,16 @@ export function applyVisualOverrides(report, sidecar) {
       continue;
     }
     tile.autotile ??= {};
+    const flatLayer = flatVisualOverrideLayer(entry);
+    if (flatLayer) {
+      const layerName = String(entry.layer).toLowerCase();
+      tile.autotile[layerName] = {
+        ...(tile.autotile[layerName] ?? {}),
+        ...flatLayer,
+        visualOverride: true,
+      };
+      continue;
+    }
     for (const layerName of ['ground', 'cover']) {
       const layer = normalizeVisualOverrideLayer(entry[layerName]);
       if (!layer) {
@@ -186,6 +221,25 @@ export function applyVisualOverrides(report, sidecar) {
 export function listVisualOverrides(sidecar) {
   return visualOverrideEntries(sidecar)
     .map((entry) => {
+      const flat = flatVisualOverrideLayer(entry);
+      if (flat) {
+        const layerName = String(entry.layer);
+        const auto = entry.autoSpriteId != null
+          ? `auto=${entry.autoSpriteId}${entry.autoFlipX ? 'f' : ''}`
+          : null;
+        const bits = [
+          `(${entry.x},${entry.y})`,
+          layerName,
+          entry.tileset ? String(entry.tileset) : null,
+          auto,
+          `desired=${flat.spriteId}`,
+        ];
+        if (flat.flipX) bits.push('flipX');
+        if (flat.flipY) bits.push('flipY');
+        if (flat.rotationDegrees) bits.push(`R${flat.rotationDegrees}`);
+        return { x: Number(entry.x), y: Number(entry.y), layers: [bits.filter(Boolean).join(' ')] };
+      }
+
       const layers = [];
       for (const layerName of ['ground', 'cover']) {
         const layer = normalizeVisualOverrideLayer(entry[layerName]);

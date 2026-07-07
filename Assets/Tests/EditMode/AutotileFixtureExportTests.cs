@@ -40,6 +40,8 @@ public sealed class AutotileFixtureExportTests
         "roof-slope-left-vs-right.json",
         "one-sided-house-lip.json",
         "dirt-window-inner-edges.json",
+        "mountain-window-corner.json",
+        "open-sky-bridge-lintel.json",
         "dirt-gap-left-vertical-wall.json",
     };
 

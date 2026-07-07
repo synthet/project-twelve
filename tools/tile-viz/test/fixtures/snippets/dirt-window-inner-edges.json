@@ -525,14 +525,16 @@
       "x": -114,
       "y": 29,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "18",
+        "flipX": true
       }
     },
     {
       "x": -113,
       "y": 29,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "17",
+        "flipX": false
       }
     },
     {
@@ -547,28 +549,32 @@
       "x": -111,
       "y": 28,
       "ground": {
-        "spriteId": "8"
+        "spriteId": "8",
+        "flipX": false
       }
     },
     {
       "x": -113,
       "y": 27,
       "ground": {
-        "spriteId": "2"
+        "spriteId": "25",
+        "flipX": false
       }
     },
     {
       "x": -111,
       "y": 27,
       "ground": {
-        "spriteId": "11"
+        "spriteId": "31",
+        "flipX": true
       }
     },
     {
       "x": -114,
       "y": 26,
       "ground": {
-        "spriteId": "9"
+        "spriteId": "16",
+        "flipX": true
       }
     }
   ],
@@ -577,14 +583,16 @@
       "x": -114,
       "y": 29,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "18",
+        "flipX": true
       }
     },
     {
       "x": -113,
       "y": 29,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "17",
+        "flipX": false
       }
     },
     {
@@ -599,21 +607,24 @@
       "x": -111,
       "y": 28,
       "ground": {
-        "spriteId": "8"
+        "spriteId": "8",
+        "flipX": false
       }
     },
     {
       "x": -113,
       "y": 27,
       "ground": {
-        "spriteId": "2"
+        "spriteId": "25",
+        "flipX": false
       }
     },
     {
       "x": -111,
       "y": 27,
       "ground": {
-        "spriteId": "11"
+        "spriteId": "31",
+        "flipX": true
       }
     }
   ]

@@ -69,6 +69,7 @@ public static class PlayerAvatarFactory
 
         StripDemoScripts(instance);
         StripPhysicsComponents(instance);
+        StripAudioListeners(instance);
 
         LayeredCharacterVisual visual = GetOrAddComponent<LayeredCharacterVisual>(instance);
         WireCreatureVisual(visual, instance);
@@ -95,6 +96,7 @@ public static class PlayerAvatarFactory
         avatarRoot = instance.transform;
         locomotion = driver;
         instance.SetActive(true);
+        SingleAudioListenerEnforcer.Enforce();
         return true;
     }
 
@@ -173,6 +175,15 @@ public static class PlayerAvatarFactory
         for (int i = 0; i < colliders.Length; i++)
         {
             DestroyComponentImmediate(colliders[i]);
+        }
+    }
+
+    private static void StripAudioListeners(GameObject root)
+    {
+        AudioListener[] listeners = root.GetComponentsInChildren<AudioListener>(true);
+        for (int i = 0; i < listeners.Length; i++)
+        {
+            DestroyComponentImmediate(listeners[i]);
         }
     }
 

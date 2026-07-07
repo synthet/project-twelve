@@ -11,7 +11,8 @@ namespace ProjectTwelve.Visual.AutotileDebug
         private const float MarkerInset = 0.075f;
         private const float ZOffset = -0.03f;
         private const int DigitCellPixels = 8;
-        private const int DigitColumns = 10;
+        private const int DigitColumns = 11;
+        private const int MinusGlyphIndex = 10;
         private static readonly Rect SolidFillUv = new Rect(0f, 0f, 1f / (DigitCellPixels * (DigitColumns + 1)), 1f);
 
         private static Texture2D digitAtlas;
@@ -27,10 +28,11 @@ namespace ProjectTwelve.Visual.AutotileDebug
             new[] { 0x7E, 0x06, 0x0C, 0x18, 0x30, 0x30, 0x30 }, // 7
             new[] { 0x3C, 0x66, 0x66, 0x3C, 0x66, 0x66, 0x3C }, // 8
             new[] { 0x3C, 0x66, 0x66, 0x3E, 0x06, 0x0C, 0x38 }, // 9
+            new[] { 0x00, 0x00, 0x00, 0x7E, 0x00, 0x00, 0x00 }, // minus
         };
 
         /// <summary>
-        /// Ensures the shared digit atlas texture exists (0–9 in a horizontal strip).
+        /// Ensures the shared digit atlas texture exists (0–9 and minus in a horizontal strip).
         /// </summary>
         public static Texture2D GetDigitAtlas()
         {
@@ -162,9 +164,9 @@ namespace ProjectTwelve.Visual.AutotileDebug
 
             float cellLeft = localX * tileSize;
             float cellBottom = localY * tileSize;
-            float digitWidth = tileSize * 0.09f;
-            float digitHeight = tileSize * 0.11f;
-            float rowGap = tileSize * 0.01f;
+            float digitWidth = tileSize * 0.12f;
+            float digitHeight = tileSize * 0.14f;
+            float rowGap = tileSize * 0.015f;
             float gridWidth = digitWidth * 3f;
             float gridHeight = digitHeight * 3f + rowGap * 2f;
             float startX = cellLeft + (tileSize - gridWidth) * 0.5f;
@@ -194,6 +196,49 @@ namespace ProjectTwelve.Visual.AutotileDebug
                         AutotileDebugPalette.MaskDigitColor);
                 }
             }
+        }
+
+        /// <summary>
+        /// Appends world tile X (top) and Y (bottom) as signed integer labels.
+        /// </summary>
+        public static void AppendCoordinateLabel(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int localX,
+            int localY,
+            float tileSize,
+            int worldX,
+            int worldY)
+        {
+            AppendSignedIntegerLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                worldX,
+                AutotileDebugPalette.LabelColor,
+                verticalOffsetTiles: -0.18f,
+                digitWidthScale: 0.18f,
+                digitHeightScale: 0.22f);
+
+            AppendSignedIntegerLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                worldY,
+                AutotileDebugPalette.LabelColor,
+                verticalOffsetTiles: 0.18f,
+                digitWidthScale: 0.18f,
+                digitHeightScale: 0.22f);
         }
 
         /// <summary>
@@ -245,36 +290,17 @@ namespace ProjectTwelve.Visual.AutotileDebug
                 return;
             }
 
-            float centerX = (localX + 0.5f) * tileSize;
-            float centerY = (localY + 0.5f + verticalOffsetTiles) * tileSize;
-            float digitWidth = tileSize * 0.22f;
-            float digitHeight = tileSize * 0.28f;
-
-            string text = value.ToString();
-            float totalWidth = text.Length * digitWidth;
-            float startX = centerX - totalWidth * 0.5f;
-            float bottom = centerY - digitHeight * 0.5f;
-            float top = centerY + digitHeight * 0.5f;
-
-            for (int i = 0; i < text.Length; i++)
-            {
-                int digit = text[i] - '0';
-                float left = startX + i * digitWidth;
-                float right = left + digitWidth;
-                Rect digitUv = GetDigitUv(digit);
-                AppendQuad(
-                    vertices,
-                    triangles,
-                    uvs,
-                    colors,
-                    left,
-                    right,
-                    bottom,
-                    top,
-                    ZOffset - 0.001f,
-                    digitUv,
-                    labelColor);
-            }
+            AppendSignedIntegerLabel(
+                vertices,
+                triangles,
+                uvs,
+                colors,
+                localX,
+                localY,
+                tileSize,
+                value,
+                labelColor,
+                verticalOffsetTiles);
 
             if (flipX)
             {
@@ -296,6 +322,55 @@ namespace ProjectTwelve.Visual.AutotileDebug
             }
         }
 
+        /// <summary>
+        /// Appends centered signed-integer digit quads within one tile cell.
+        /// </summary>
+        public static void AppendSignedIntegerLabel(
+            List<Vector3> vertices,
+            List<int> triangles,
+            List<Vector2> uvs,
+            List<Color> colors,
+            int localX,
+            int localY,
+            float tileSize,
+            int value,
+            Color labelColor,
+            float verticalOffsetTiles,
+            float digitWidthScale = 0.22f,
+            float digitHeightScale = 0.28f)
+        {
+            float centerX = (localX + 0.5f) * tileSize;
+            float centerY = (localY + 0.5f + verticalOffsetTiles) * tileSize;
+            float digitWidth = tileSize * digitWidthScale;
+            float digitHeight = tileSize * digitHeightScale;
+
+            string text = value.ToString();
+            float totalWidth = text.Length * digitWidth;
+            float startX = centerX - totalWidth * 0.5f;
+            float bottom = centerY - digitHeight * 0.5f;
+            float top = centerY + digitHeight * 0.5f;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int glyphIndex = text[i] == '-' ? MinusGlyphIndex : text[i] - '0';
+                float left = startX + i * digitWidth;
+                float right = left + digitWidth;
+                Rect digitUv = GetGlyphUv(glyphIndex);
+                AppendQuad(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    left,
+                    right,
+                    bottom,
+                    top,
+                    ZOffset - 0.001f,
+                    digitUv,
+                    labelColor);
+            }
+        }
+
         private static bool TryParseSpriteId(string spriteId, out int value)
         {
             value = 0;
@@ -304,9 +379,14 @@ namespace ProjectTwelve.Visual.AutotileDebug
 
         private static Rect GetDigitUv(int digit)
         {
-            digit = Mathf.Clamp(digit, 0, 9);
+            return GetGlyphUv(digit);
+        }
+
+        private static Rect GetGlyphUv(int glyphIndex)
+        {
+            glyphIndex = Mathf.Clamp(glyphIndex, 0, MinusGlyphIndex);
             float cell = 1f / (DigitColumns + 1);
-            return new Rect(cell + digit * cell, 0f, cell, 1f);
+            return new Rect(cell + glyphIndex * cell, 0f, cell, 1f);
         }
 
         private static void AppendQuad(

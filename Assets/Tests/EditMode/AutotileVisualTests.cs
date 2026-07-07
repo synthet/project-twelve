@@ -413,7 +413,7 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
-    public void AutotileMaskBuilder_MaterialBoundary_BlendsSouthButNotNorth()
+    public void AutotileMaskBuilder_MaterialBoundary_DoesNotBlendForeignSolidBelow()
     {
         const int worldX = 10;
         const int worldY = 5;
@@ -432,7 +432,7 @@ public sealed class AutotileVisualTests
             worldX,
             worldY);
 
-        Assert.AreEqual(1, dirtMask[1, 2], "Foreign solid below should count as south support.");
+        Assert.AreEqual(0, dirtMask[1, 2], "Vendor GetMask: foreign solid below must not connect.");
 
         int[,] stoneMask = AutotileMaskBuilder.BuildGroundMask(
             (x, y) =>
@@ -452,7 +452,7 @@ public sealed class AutotileVisualTests
 
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite dirtSprite = AutotileResolver.ResolveSprite(tileset, dirtMask, out _);
-        Assert.AreEqual("21", dirtSprite.name, "Dirt column should continue into the stone below.");
+        Assert.AreEqual("29", dirtSprite.name, "Dirt column over foreign stone reads vendor bottom cap.");
     }
 
     [Test]
@@ -478,8 +478,8 @@ public sealed class AutotileVisualTests
 
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out bool flipX);
-        Assert.AreEqual("6", resolved.name);
-        Assert.IsFalse(flipX);
+        Assert.AreEqual("7", resolved.name);
+        Assert.IsTrue(flipX);
     }
 
     [Test]
@@ -501,7 +501,7 @@ public sealed class AutotileVisualTests
 
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite resolved = AutotileResolver.ResolveSprite(tileset, mask, out _);
-        Assert.AreEqual("12", resolved.name);
+        Assert.AreEqual("30", resolved.name);
     }
 
     [Test]
@@ -546,8 +546,8 @@ public sealed class AutotileVisualTests
         Assert.IsFalse(result.MaterialBoundaryRemap);
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite resolved = AutotileResolver.ResolveSprite(tileset, result.FinalMask, out bool flipX);
-        Assert.AreEqual("2", resolved.name);
-        Assert.IsFalse(flipX);
+        Assert.AreEqual("24", resolved.name);
+        Assert.IsTrue(flipX);
     }
 
     [Test]
@@ -555,16 +555,16 @@ public sealed class AutotileVisualTests
     {
         // Must stay field-for-field identical to buildNormalizationTrace in tile-viz maskBuilder.js.
         CollectionAssert.AreEqual(
-            new[] { "stairInterior: skipped", "cavityUnderside: skipped", "materialBoundary: skipped" },
-            AutotileMaskBuilder.BuildNormalizationTrace(false, false, false));
+            new[] { "stairInterior: skipped", "innerCavity: skipped", "cavityUnderside: skipped", "materialBoundary: skipped" },
+            AutotileMaskBuilder.BuildNormalizationTrace(false, false, false, false));
 
         CollectionAssert.AreEqual(
-            new[] { "stairInterior: skipped", "cavityUnderside: applied: bridge -> underside" },
-            AutotileMaskBuilder.BuildNormalizationTrace(false, true, false));
+            new[] { "stairInterior: skipped", "innerCavity: skipped", "cavityUnderside: applied: bridge -> underside" },
+            AutotileMaskBuilder.BuildNormalizationTrace(false, false, true, false));
 
         CollectionAssert.AreEqual(
             new[] { "stairInterior: applied: diagonal step -> interior fill" },
-            AutotileMaskBuilder.BuildNormalizationTrace(true, false, false));
+            AutotileMaskBuilder.BuildNormalizationTrace(true, false, false, false));
     }
 
     [Test]
@@ -581,6 +581,7 @@ public sealed class AutotileVisualTests
         Assert.AreEqual(
             AutotileMaskBuilder.BuildNormalizationTrace(
                 result.StairInteriorRemap,
+                result.InnerCavityRemap,
                 result.CavityUndersideRemap,
                 result.MaterialBoundaryRemap),
             result.NormalizationTrace);
@@ -603,7 +604,7 @@ public sealed class AutotileVisualTests
 
         AutotileTileset tileset = CreateFullGroundTileset();
         Sprite resolved = AutotileResolver.ResolveSprite(tileset, result.FinalMask, out _);
-        Assert.AreEqual("11", resolved.name);
+        Assert.AreEqual("16", resolved.name);
         Assert.AreNotEqual("9", resolved.name);
         Assert.AreNotEqual("10", resolved.name);
     }
@@ -723,47 +724,81 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
-    public void AutotileMaskBuilder_CavityInnerEdgeLintel_RemapsDiagonalBodyToUndersideRule17()
+    public void AutotileMaskBuilder_CavityInnerCornerMask_PreservesVendorSprite18()
     {
-        int[,] lintelCorner = new[,]
+        int[,] westCorner = new[,]
         {
             { 1, 1, 1 },
             { 1, 1, 1 },
             { 1, 1, 0 }
         };
 
-        bool SharesGroup(int x, int y) => y == 29;
-        bool IsSolid(int x, int y)
-        {
-            if (y == 30)
-            {
-                return true;
-            }
-
-            if (y == 29)
-            {
-                return true;
-            }
-
-            if (y == 28 && x == -113)
-            {
-                return false;
-            }
-
-            return y == 28;
-        }
-
-        Assert.IsTrue(AutotileMaskBuilder.TryRemapCavityInnerEdgeMask(
-            lintelCorner,
-            SharesGroup,
-            IsSolid,
-            -114,
-            29,
-            out int[,] remapped));
+        Assert.IsTrue(AutotileMaskBuilder.IsCavityInnerCornerMask(westCorner));
+        Assert.IsFalse(AutotileMaskBuilder.TryRemapCavityLintelToUnderside(
+            westCorner,
+            (_, _) => true,
+            -104,
+            26,
+            out _));
 
         AutotileTileset tileset = CreateFullGroundTileset();
-        Sprite resolved = AutotileResolver.ResolveSprite(tileset, remapped, out bool flipX);
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, westCorner, out bool flipX);
+        Assert.AreEqual("18", resolved.name);
+        Assert.IsTrue(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_CavityFlatLintelSpan_StillResolvesUnderside17()
+    {
+        int[,] flatMiddle = new[,]
+        {
+            { 1, 1, 0 },
+            { 1, 1, 0 },
+            { 1, 1, 0 }
+        };
+
+        Assert.IsFalse(AutotileMaskBuilder.IsCavityInnerCornerMask(flatMiddle));
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, flatMiddle, out bool flipX);
         Assert.AreEqual("17", resolved.name);
+        Assert.IsFalse(flipX);
+    }
+
+    [Test]
+    public void AutotileMaskBuilder_OpenSkyBridgeLintel_ResolvesVendorRule25WithoutNormalization()
+    {
+        // Mirrors tools/tile-viz/test/fixtures/snippets/open-sky-bridge-lintel.json (center 0,1).
+        bool SharesGroup(int x, int y) =>
+            (y == 1 && x >= -1 && x <= 1)
+            || (y == 0 && (x == -1 || x == 1));
+
+        bool IsSolid(int x, int y) => SharesGroup(x, y);
+
+        GroundMaskBuildResult result = AutotileMaskBuilder.BuildGroundMaskDetailed(
+            SharesGroup,
+            IsSolid,
+            0,
+            1,
+            null);
+
+        Assert.IsFalse(result.StairInteriorRemap);
+        Assert.IsFalse(result.InnerCavityRemap);
+        Assert.IsFalse(result.CavityUndersideRemap);
+        Assert.IsFalse(result.MaterialBoundaryRemap);
+        Assert.AreEqual(0, result.FinalMask[0, 0]);
+        Assert.AreEqual(0, result.FinalMask[1, 0]);
+        Assert.AreEqual(0, result.FinalMask[2, 0]);
+        Assert.AreEqual(1, result.FinalMask[0, 1]);
+        Assert.AreEqual(1, result.FinalMask[1, 1]);
+        Assert.AreEqual(1, result.FinalMask[2, 1]);
+        Assert.AreEqual(0, result.FinalMask[0, 2]);
+        Assert.AreEqual(0, result.FinalMask[1, 2]);
+        Assert.AreEqual(0, result.FinalMask[2, 2]);
+
+        AutotileTileset tileset = CreateFullGroundTileset();
+        Sprite resolved = AutotileResolver.ResolveSprite(tileset, result.FinalMask, out bool flipX);
+        Assert.AreEqual("25", resolved.name);
         Assert.IsFalse(flipX);
     }
 
@@ -971,10 +1006,16 @@ public sealed class AutotileVisualTests
         AutotileVisualOverrideMap overrides = new AutotileVisualOverrideMap();
         Vector2Int cell = new Vector2Int(3, 4);
 
-        overrides.SetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Humus", "17");
+        overrides.SetOverride(new AutotileVisualOverride(
+            cell,
+            AutotileVisualLayer.Ground,
+            "Humus",
+            autoSpriteId: string.Empty,
+            autoFlipX: false,
+            overrideSpriteId: "17"));
 
-        Assert.IsTrue(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Humus", out string spriteId));
-        Assert.AreEqual("17", spriteId);
+        Assert.IsTrue(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Humus", out AutotileVisualOverride entry));
+        Assert.AreEqual("17", entry.overrideSpriteId);
         Assert.IsFalse(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.CoverLayer, "Humus", out _));
         Assert.IsFalse(overrides.TryGetOverride(cell, AutotileVisualOverrideMap.GroundLayer, "Rocks", out _));
     }

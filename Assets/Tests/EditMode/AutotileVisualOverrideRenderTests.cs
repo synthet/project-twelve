@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using ProjectTwelve.Visual.Tiles;
-using UnityEngine;
 
 public sealed class AutotileVisualOverrideRenderTests
 {
@@ -15,62 +14,103 @@ public sealed class AutotileVisualOverrideRenderTests
             { 1, 1, 0 }
         };
 
-        Sprite automatic = AutotileResolver.ResolveSprite(tileset, mask, out bool automaticFlipX);
-        VisualOverrideDecision decision = VisualOverrideDecision.Apply(
-            automatic.name,
+        string autoSpriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool automaticFlipX);
+        AutotileVisualOverride visualOverride = new AutotileVisualOverride(
+            new UnityEngine.Vector2Int(0, 0),
+            AutotileVisualLayer.Ground,
+            tileset.Name,
+            autoSpriteId,
             automaticFlipX,
-            new VisualOverride("17", flipX: false, flipY: false, rotationDegrees: 0));
+            "17",
+            overrideFlipX: false,
+            overrideFlipY: false,
+            rotationDegrees: 0);
 
-        Assert.AreEqual("31", decision.Auto.SpriteId);
-        Assert.IsTrue(decision.Auto.FlipX);
-        Assert.AreEqual("17", decision.Override.SpriteId);
-        Assert.IsFalse(decision.Override.FlipX);
-        Assert.IsFalse(decision.Override.FlipY);
-        Assert.AreEqual(0, decision.Override.RotationDegrees);
+        VisualOverrideResult decision = VisualOverrideDecision.Apply(autoSpriteId, automaticFlipX, visualOverride, tileset);
+
+        Assert.AreEqual("31", autoSpriteId);
+        Assert.IsTrue(automaticFlipX);
         Assert.AreEqual("17", decision.SpriteId);
         Assert.IsFalse(decision.FlipX);
+        Assert.IsFalse(decision.FlipY);
+        Assert.AreEqual(0, decision.RotationDegrees);
         Assert.IsTrue(decision.OverrideApplied);
     }
 
-    private readonly struct VisualOverride
+    [Test]
+    public void ApplyRotationAndFlipY_FromOverrideEntry()
     {
-        public VisualOverride(string spriteId, bool flipX, bool flipY, int rotationDegrees)
-        {
-            SpriteId = spriteId;
-            FlipX = flipX;
-            FlipY = flipY;
-            RotationDegrees = rotationDegrees;
-        }
+        AutotileTileset tileset = CreateFullGroundTileset();
+        AutotileVisualOverride visualOverride = new AutotileVisualOverride(
+            new UnityEngine.Vector2Int(0, 0),
+            AutotileVisualLayer.Ground,
+            tileset.Name,
+            "31",
+            true,
+            "17",
+            overrideFlipX: true,
+            overrideFlipY: true,
+            rotationDegrees: 180);
 
-        public string SpriteId { get; }
-        public bool FlipX { get; }
-        public bool FlipY { get; }
-        public int RotationDegrees { get; }
+        VisualOverrideResult decision = VisualOverrideDecision.Apply("31", true, visualOverride, tileset);
+
+        Assert.IsTrue(decision.OverrideApplied);
+        Assert.IsTrue(decision.FlipX);
+        Assert.IsTrue(decision.FlipY);
+        Assert.AreEqual(180, decision.RotationDegrees);
     }
 
-    private readonly struct VisualOverrideDecision
+    [Test]
+    public void MissingOverrideSprite_FallsBackToAuto()
     {
-        private VisualOverrideDecision(VisualOverride auto, VisualOverride visualOverride)
-        {
-            Auto = auto;
-            Override = visualOverride;
-            SpriteId = visualOverride.SpriteId;
-            FlipX = visualOverride.FlipX;
-            OverrideApplied = true;
-        }
+        AutotileTileset tileset = CreateFullGroundTileset();
+        AutotileVisualOverride visualOverride = new AutotileVisualOverride(
+            new UnityEngine.Vector2Int(0, 0),
+            AutotileVisualLayer.Ground,
+            tileset.Name,
+            "31",
+            true,
+            "999");
 
-        public VisualOverride Auto { get; }
-        public VisualOverride Override { get; }
-        public string SpriteId { get; }
-        public bool FlipX { get; }
-        public bool OverrideApplied { get; }
+        VisualOverrideResult decision = VisualOverrideDecision.Apply("8", false, visualOverride, tileset);
 
-        public static VisualOverrideDecision Apply(string autoSpriteId, bool autoFlipX, VisualOverride visualOverride)
+        Assert.IsFalse(decision.OverrideApplied);
+        Assert.AreEqual("8", decision.SpriteId);
+    }
+
+    [Test]
+    public void CoverOverride_UsesGrassASpriteDecision()
+    {
+        AutotileTileset tileset = CreateCoverTileset();
+        int[,] mask =
         {
-            return new VisualOverrideDecision(
-                new VisualOverride(autoSpriteId, autoFlipX, flipY: false, rotationDegrees: 0),
-                visualOverride);
-        }
+            { 0, 0, 0 },
+            { 1, 1, 1 },
+            { 0, 0, 0 }
+        };
+
+        string autoSpriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool automaticFlipX);
+        AutotileVisualOverride visualOverride = new AutotileVisualOverride(
+            new UnityEngine.Vector2Int(0, 0),
+            AutotileVisualLayer.Cover,
+            tileset.Name,
+            autoSpriteId,
+            automaticFlipX,
+            "3",
+            overrideFlipX: true);
+
+        VisualOverrideResult decision = VisualOverrideDecision.Apply(autoSpriteId, automaticFlipX, visualOverride, tileset);
+
+        Assert.AreEqual("4", autoSpriteId);
+        Assert.AreEqual("3", decision.SpriteId);
+        Assert.IsTrue(decision.FlipX);
+        Assert.IsTrue(decision.OverrideApplied);
+    }
+
+    private static AutotileTileset CreateCoverTileset()
+    {
+        string[] names = { "0", "1", "2", "3", "4", "5" };
+        return new AutotileTileset("GrassA", new UnityEngine.Texture2D(16, 16), CreateSprites(names));
     }
 
     private static AutotileTileset CreateFullGroundTileset()
@@ -81,16 +121,16 @@ public sealed class AutotileVisualOverrideRenderTests
             names[i] = i.ToString();
         }
 
-        return new AutotileTileset("Humus", new Texture2D(16, 16), CreateSprites(names));
+        return new AutotileTileset("Humus", new UnityEngine.Texture2D(16, 16), CreateSprites(names));
     }
 
-    private static System.Collections.Generic.List<Sprite> CreateSprites(params string[] names)
+    private static System.Collections.Generic.List<UnityEngine.Sprite> CreateSprites(params string[] names)
     {
-        Texture2D texture = new Texture2D(16, 16);
-        System.Collections.Generic.List<Sprite> sprites = new System.Collections.Generic.List<Sprite>();
+        UnityEngine.Texture2D texture = new UnityEngine.Texture2D(16, 16);
+        System.Collections.Generic.List<UnityEngine.Sprite> sprites = new System.Collections.Generic.List<UnityEngine.Sprite>();
         for (int i = 0; i < names.Length; i++)
         {
-            sprites.Add(Sprite.Create(texture, new Rect(0, 0, 16, 16), Vector2.one * 0.5f, 16));
+            sprites.Add(UnityEngine.Sprite.Create(texture, new UnityEngine.Rect(0, 0, 16, 16), UnityEngine.Vector2.one * 0.5f, 16));
             sprites[i].name = names[i];
         }
 

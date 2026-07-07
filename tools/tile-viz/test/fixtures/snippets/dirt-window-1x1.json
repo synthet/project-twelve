@@ -63,14 +63,14 @@
       "x": 1,
       "y": 2,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {
       "x": 1,
       "y": 0,
       "ground": {
-        "spriteId": "17"
+        "spriteId": "25"
       }
     },
     {

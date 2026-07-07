@@ -85,6 +85,30 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     }
 
     /// <summary>
+    /// Returns whether cover visual overrides can be edited at the given cell (exposed grass surface).
+    /// </summary>
+    public bool CanEditCoverAt(int tileId, SandboxTile tileAbove, out AutotileTileset tileset)
+    {
+        tileset = null;
+        return TryGetCoverTileset(tileId, out tileset) && ShouldRenderGrassCover(tileId, tileAbove);
+    }
+
+    /// <summary>
+    /// Returns whether cover visual overrides can be edited at the given world coordinate.
+    /// </summary>
+    public bool CanEditCoverAt(System.Func<int, int, SandboxTile> tileLookup, int x, int y, out AutotileTileset tileset)
+    {
+        tileset = null;
+        SandboxTile tile = tileLookup(x, y);
+        if (!tile.IsSolid)
+        {
+            return false;
+        }
+
+        return CanEditCoverAt(tile.id, tileLookup(x, y + 1), out tileset);
+    }
+
+    /// <summary>
     /// Returns whether two grass tiles should connect for cover autotiling.
     /// </summary>
     public bool SharesCoverAutotileGroup(int tileIdA, int tileIdB)

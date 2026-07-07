@@ -18,8 +18,8 @@ namespace ProjectTwelve.Visual.Tiles
         public const int DefaultSandboxFloorY = 0;
 
         /// <summary>
-        /// Builds an <c>isSolid</c> predicate for ground mask south-row blend. Tiles below
-        /// <paramref name="exposureFloorY"/> never count as solid (tile-viz off-space air parity).
+        /// Builds an <c>isSolid</c> predicate for solid-mask debug and retained normalizer helpers.
+        /// Tiles below <paramref name="exposureFloorY"/> never count as solid (tile-viz off-space air parity).
         /// </summary>
         public static Func<int, int, bool> CreateIsSolid(
             Func<int, int, SandboxTile> tileLookup,

@@ -12,7 +12,6 @@ using UnityEngine;
 public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
 {
     private const int SortingOrder = 40;
-    private const string DefaultBaselineName = "sandbox-scene-mountain";
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -27,11 +26,14 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         GroundAutotileDebugMode mode,
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
+        AutotileVisualOverrideMap visualOverrides = null,
         int autotileExposureFloorY = AutotileExposure.NoFloor)
     {
         EnsureComponents();
+        mode = GroundAutotileDebugModes.Normalize(mode);
 
         if (mode == GroundAutotileDebugMode.Off
+            || mode == GroundAutotileDebugMode.VisualOverrideEdit
             || visualCatalog == null
             || !visualCatalog.HasAutotileSources
             || tileLookup == null)
@@ -40,13 +42,6 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
             meshRenderer.enabled = false;
             return;
         }
-
-        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline =
-            mode == GroundAutotileDebugMode.MismatchBaseline
-                || mode == GroundAutotileDebugMode.VisualOverrideLabel
-                || mode == GroundAutotileDebugMode.ResolveDetail
-                ? AutotileBaselineStore.TryLoad(DefaultBaselineName)
-                : null;
 
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
@@ -90,7 +85,7 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                     worldCoord,
                     tileSize,
                     resolve,
-                    baseline);
+                    visualOverrides);
             }
         }
 
@@ -134,7 +129,7 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         Vector2Int worldCoord,
         float tileSize,
         AutotileGroundResolveResult resolve,
-        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline)
+        AutotileVisualOverrideMap visualOverrides)
     {
         if (mode == GroundAutotileDebugMode.VisualOverrideLabel)
         {
@@ -151,115 +146,7 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 worldCoord,
                 tileSize,
                 resolve,
-                baseline);
-            return;
-        }
-
-        if (mode == GroundAutotileDebugMode.MismatchBaseline)
-        {
-            if (baseline == null
-                || !baseline.TryGetValue(worldCoord, out BaselineCell expected)
-                || AutotileBaselineCompare.GroundMatches(
-                    AutotileBaselineCompare.ToLegacyTileId(tile.id),
-                    resolve,
-                    expected))
-            {
-                return;
-            }
-
-            AutotileDebugMeshBuilder.AppendTileMarker(
-                vertices,
-                triangles,
-                uvs,
-                colors,
-                localX,
-                localY,
-                tileSize,
-                AutotileDebugPalette.MismatchColor);
-            return;
-        }
-
-        if (mode == GroundAutotileDebugMode.ResolveDetail)
-        {
-            Color tint = AutotileDebugPalette.ResolveDetailNeutralColor;
-            if (baseline != null && baseline.TryGetValue(worldCoord, out BaselineCell expected))
-            {
-                bool matches = AutotileBaselineCompare.GroundMatches(
-                    AutotileBaselineCompare.ToLegacyTileId(tile.id),
-                    resolve,
-                    expected);
-                tint = matches
-                    ? AutotileDebugPalette.BaselineMatchColor
-                    : AutotileDebugPalette.MismatchColor;
-            }
-
-            AutotileDebugMeshBuilder.AppendTileMarker(
-                vertices,
-                triangles,
-                uvs,
-                colors,
-                localX,
-                localY,
-                tileSize,
-                tint);
-
-            if (resolve.Resolved)
-            {
-                AutotileDebugMeshBuilder.AppendSpriteIdLabel(
-                    vertices,
-                    triangles,
-                    uvs,
-                    colors,
-                    localX,
-                    localY,
-                    tileSize,
-                    resolve.SpriteId,
-                    resolve.FlipX);
-            }
-
-            if (resolve.Mask != null)
-            {
-                AutotileDebugMeshBuilder.AppendCompactMaskGrid(
-                    vertices,
-                    triangles,
-                    uvs,
-                    colors,
-                    localX,
-                    localY,
-                    tileSize,
-                    resolve.Mask);
-            }
-
-            return;
-        }
-
-        if (mode == GroundAutotileDebugMode.CoverSpriteIdLabel)
-        {
-            if (!TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover))
-            {
-                return;
-            }
-
-            AutotileDebugMeshBuilder.AppendTileMarker(
-                vertices,
-                triangles,
-                uvs,
-                colors,
-                localX,
-                localY,
-                tileSize,
-                AutotileDebugPalette.ColorForCoverSpriteId(cover.SpriteId));
-
-            AutotileDebugMeshBuilder.AppendSpriteIdLabel(
-                vertices,
-                triangles,
-                uvs,
-                colors,
-                localX,
-                localY,
-                tileSize,
-                cover.SpriteId,
-                cover.FlipX);
+                visualOverrides);
             return;
         }
 
@@ -276,6 +163,22 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 tileSize,
                 groundColor);
 
+            if (resolve.Resolved)
+            {
+                AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    resolve.SpriteId,
+                    resolve.FlipX,
+                    AutotileDebugPalette.LabelColor,
+                    verticalOffsetTiles: -0.18f);
+            }
+
             if (TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover))
             {
                 AutotileDebugMeshBuilder.AppendHalfTileMarker(
@@ -288,14 +191,28 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                     tileSize,
                     AutotileDebugPalette.ColorForCoverSpriteId(cover.SpriteId),
                     topHalf: true);
+
+                AutotileDebugMeshBuilder.AppendSpriteIdLabel(
+                    vertices,
+                    triangles,
+                    uvs,
+                    colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    cover.SpriteId,
+                    cover.FlipX,
+                    AutotileDebugPalette.LabelColor,
+                    verticalOffsetTiles: 0.18f);
             }
 
             return;
         }
 
-        Color markerColor = mode == GroundAutotileDebugMode.ColorByTileId
-            ? AutotileDebugPalette.ColorForTileId(tile.id)
-            : AutotileDebugPalette.ColorForSpriteId(resolve.SpriteId);
+        if (mode != GroundAutotileDebugMode.SpriteIdLabel)
+        {
+            return;
+        }
 
         AutotileDebugMeshBuilder.AppendTileMarker(
             vertices,
@@ -305,9 +222,9 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
             localX,
             localY,
             tileSize,
-            markerColor);
+            AutotileDebugPalette.ColorForSpriteId(resolve.SpriteId));
 
-        if (mode == GroundAutotileDebugMode.SpriteIdLabel && resolve.Resolved)
+        if (resolve.Resolved)
         {
             AutotileDebugMeshBuilder.AppendSpriteIdLabel(
                 vertices,
@@ -336,22 +253,26 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         Vector2Int worldCoord,
         float tileSize,
         AutotileGroundResolveResult ground,
-        IReadOnlyDictionary<Vector2Int, BaselineCell> baseline)
+        AutotileVisualOverrideMap visualOverrides)
     {
-        if (baseline == null || !baseline.TryGetValue(worldCoord, out BaselineCell snapshot))
+        if (visualOverrides == null || !visualOverrides.HasOverrides)
         {
             return;
         }
 
-        if (!string.IsNullOrEmpty(snapshot.GroundSpriteId))
+        if (visualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset groundTileset)
+            && visualOverrides.TryGetOverride(
+                worldCoord,
+                AutotileVisualLayer.Ground,
+                groundTileset.Name,
+                out AutotileVisualOverride groundOverride))
         {
-            Color color = GetOverrideLabelColor(
-                visualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset groundTileset) ? groundTileset : null,
-                snapshot.GroundSpriteId,
-                snapshot.GroundFlipX,
-                ground.Resolved,
+            VisualOverrideResult groundDecision = VisualOverrideDecision.Apply(
                 ground.SpriteId,
-                ground.FlipX);
+                ground.FlipX,
+                groundOverride,
+                groundTileset);
+            Color color = GetOverrideLabelColor(groundTileset, groundDecision);
             AutotileDebugMeshBuilder.AppendSpriteIdLabel(
                 vertices,
                 triangles,
@@ -360,22 +281,27 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 localX,
                 localY,
                 tileSize,
-                snapshot.GroundSpriteId,
-                snapshot.GroundFlipX,
+                groundDecision.SpriteId,
+                groundDecision.FlipX,
                 color,
                 verticalOffsetTiles: -0.18f);
         }
 
         bool coverRendered = TryResolveCover(visualCatalog, tileLookup, tile, worldCoord, out CoverResolveResult cover);
-        if (snapshot.CoverRendered && !string.IsNullOrEmpty(snapshot.CoverSpriteId))
+        if (coverRendered
+            && visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset coverTileset)
+            && visualOverrides.TryGetOverride(
+                worldCoord,
+                AutotileVisualLayer.Cover,
+                coverTileset.Name,
+                out AutotileVisualOverride coverOverride))
         {
-            Color color = GetOverrideLabelColor(
-                visualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset coverTileset) ? coverTileset : null,
-                snapshot.CoverSpriteId,
-                snapshot.CoverFlipX,
-                coverRendered,
+            VisualOverrideResult coverDecision = VisualOverrideDecision.Apply(
                 cover.SpriteId,
-                cover.FlipX);
+                cover.FlipX,
+                coverOverride,
+                coverTileset);
+            Color color = GetOverrideLabelColor(coverTileset, coverDecision);
             AutotileDebugMeshBuilder.AppendSpriteIdLabel(
                 vertices,
                 triangles,
@@ -384,27 +310,21 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
                 localX,
                 localY,
                 tileSize,
-                snapshot.CoverSpriteId,
-                snapshot.CoverFlipX,
+                coverDecision.SpriteId,
+                coverDecision.FlipX,
                 color,
                 verticalOffsetTiles: 0.18f);
         }
     }
 
-    private static Color GetOverrideLabelColor(
-        AutotileTileset tileset,
-        string savedSpriteId,
-        bool savedFlipX,
-        bool currentRendered,
-        string currentSpriteId,
-        bool currentFlipX)
+    private static Color GetOverrideLabelColor(AutotileTileset tileset, VisualOverrideResult decision)
     {
-        if (!TilesetHasSprite(tileset, savedSpriteId))
+        if (!TilesetHasSprite(tileset, decision.SpriteId))
         {
             return AutotileDebugPalette.MissingOverrideSpriteColor;
         }
 
-        if (!currentRendered || currentSpriteId != savedSpriteId || currentFlipX != savedFlipX)
+        if (!decision.OverrideApplied)
         {
             return AutotileDebugPalette.AutoSnapshotMismatchColor;
         }
@@ -513,5 +433,55 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
             mainTexture = AutotileDebugMeshBuilder.GetDigitAtlas(),
         };
         return overlayMaterial;
+    }
+}
+
+/// <summary>
+/// Top-left hover HUD with world/chunk/local tile coordinates
+/// while any F3 ground autotile debug overlay mode is active.
+/// </summary>
+[DisallowMultipleComponent]
+public sealed class SandboxGroundAutotileDebugHud : MonoBehaviour
+{
+    [SerializeField] private SandboxWorld world;
+    [SerializeField] private Camera targetCamera;
+
+    private void Awake()
+    {
+        if (world == null)
+        {
+            world = GetComponent<SandboxWorld>();
+        }
+
+        if (targetCamera == null)
+        {
+            targetCamera = Camera.main;
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (world == null || !GroundAutotileDebugModes.IsOverlayActive(world.GroundAutotileDebugMode))
+        {
+            return;
+        }
+
+        if (targetCamera == null)
+        {
+            targetCamera = Camera.main;
+        }
+
+        if (targetCamera == null)
+        {
+            return;
+        }
+
+        if (!SandboxScreenPointer.TryReadWorldTile(targetCamera, world, out Vector2Int tile))
+        {
+            return;
+        }
+
+        string text = GroundAutotileDebugCoordinates.FormatHoverCoordinates(tile.x, tile.y);
+        GUI.Label(new Rect(12f, 12f, 480f, 48f), text);
     }
 }

@@ -1,0 +1,53 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "open-sky-bridge-lintel",
+  "origin": {
+    "x": -1,
+    "y": 0
+  },
+  "width": 3,
+  "height": 2,
+  "tiles": [
+    {
+      "x": -1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    }
+  ],
+  "targetExpect": [
+    {
+      "x": 0,
+      "y": 1,
+      "ground": {
+        "spriteId": "25",
+        "flipX": false
+      }
+    }
+  ]
+}

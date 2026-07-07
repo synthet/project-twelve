@@ -103,6 +103,7 @@ export function buildGroundMaskDetailed(
  */
 export const NORMALIZATION_ORDER = [
   { key: 'stairInterior', appliedReason: 'diagonal step -> interior fill' },
+  { key: 'innerCavity', appliedReason: 'flat lintel span -> underside' },
   { key: 'cavityUnderside', appliedReason: 'bridge -> underside' },
   { key: 'materialBoundary', appliedReason: 'south row cleared' },
 ];
@@ -128,32 +129,16 @@ export function buildNormalizationTrace(normalization) {
 }
 
 /**
+ * Vendor-aligned connectivity mask: same-material blob only (PixelTileEngine GetMask).
+ * isSolid is ignored; use buildSolidGroundMask for physical-support debug context.
  * @param {(x: number, y: number) => boolean} sharesGroundGroup
  * @param {number} worldX
  * @param {number} worldY
+ * @param {(x: number, y: number) => boolean|null} [_isSolid]
  * @returns {number[][]}
  */
-export function buildConnectivityGroundMask(sharesGroundGroup, worldX, worldY, isSolid = null) {
-  if (isSolid === null) {
-    return buildVisualGroundMask(sharesGroundGroup, worldX, worldY);
-  }
-
-  const has = (dx, dy) => sharesGroundGroup(worldX + dx, worldY + dy);
-  const checkSupport = (dx, dy) => has(dx, dy) || (dy <= 0 && isSolid(worldX + dx, worldY + dy));
-
-  return [
-    [
-      checkSupport(-1, 1) && checkSupport(-1, 0) && checkSupport(0, 1) ? 1 : 0,
-      checkSupport(-1, 0) ? 1 : 0,
-      checkSupport(-1, -1) && checkSupport(-1, 0) && checkSupport(0, -1) ? 1 : 0,
-    ],
-    [checkSupport(0, 1) ? 1 : 0, 1, checkSupport(0, -1) ? 1 : 0],
-    [
-      checkSupport(1, 1) && checkSupport(1, 0) && checkSupport(0, 1) ? 1 : 0,
-      checkSupport(1, 0) ? 1 : 0,
-      checkSupport(1, -1) && checkSupport(1, 0) && checkSupport(0, -1) ? 1 : 0,
-    ],
-  ];
+export function buildConnectivityGroundMask(sharesGroundGroup, worldX, worldY, _isSolid = null) {
+  return buildVisualGroundMask(sharesGroundGroup, worldX, worldY);
 }
 
 /**
@@ -197,30 +182,17 @@ export function normalizeGroundMaskDetailed(
     innerCavity: false,
   };
 
-  const stairInterior = tryRemapStairInteriorDiagonalMask(mask, isSurfaceTile, worldX, worldY);
-  if (stairInterior) {
-    normalization.stairInterior = true;
-    return { mask: stairInterior, normalization };
-  }
-
-  const innerCavity = tryRemapCavityInnerEdgeMask(mask, sharesGroundGroup, isSolid, worldX, worldY);
-  if (innerCavity) {
-    normalization.innerCavity = true;
-    return { mask: innerCavity, normalization };
-  }
-
-  const cavityUnderside = tryRemapCavityBridgeToUnderside(mask, sharesGroundGroup, isSolid, worldX, worldY);
-  if (cavityUnderside) {
-    normalization.cavityUnderside = true;
-    return { mask: cavityUnderside, normalization };
-  }
-
-  const boundary = tryRemapMaterialBoundaryCornerMask(mask, sharesGroundGroup, isSolid, worldX, worldY);
-  if (boundary) {
-    normalization.materialBoundary = true;
-    return { mask: boundary, normalization };
-  }
-
+  // Vendor alignment: the base PixelTileEngine autotiler has no normalization layer — it resolves
+  // the raw blob mask directly (exact match -> mirror -> fallback). The project normalization remaps
+  // (stairInterior / innerCavity / cavityUnderside / materialBoundary) are intentionally disabled so
+  // ground resolution matches vendor behavior exactly. The tryRemap* helpers are retained for
+  // reference/tests but are no longer invoked here. Keep this in lockstep with the C#
+  // AutotileMaskBuilder.NormalizeGroundMask pass-through.
+  void sharesGroundGroup;
+  void isSolid;
+  void worldX;
+  void worldY;
+  void isSurfaceTile;
   return { mask, normalization };
 }
 
@@ -302,6 +274,10 @@ function tryRemapCavityLintelToUnderside(mask, isSolid, worldX, worldY) {
     return null;
   }
 
+  if (isCavityInnerCornerMask(mask)) {
+    return null;
+  }
+
   if (mask[0][2] !== 0 && mask[2][2] !== 0) {
     return null;
   }
@@ -371,6 +347,20 @@ function fullUndersideMask() {
 
 function hasFilledSouthRow(mask) {
   return mask[0][2] === 1 || mask[1][2] === 1 || mask[2][2] === 1;
+}
+
+function isCavityInnerCornerMask(mask) {
+  const southWestNotch = mask[0][2] === 1 && mask[1][2] === 1 && mask[2][2] === 0;
+  const southEastNotch = mask[0][2] === 0 && mask[1][2] === 1 && mask[2][2] === 1;
+  if (southWestNotch || southEastNotch) {
+    return true;
+  }
+
+  const eastReentrant = mask[2][0] === 0 && mask[1][0] === 1 && mask[0][0] === 1
+    && mask[0][2] === 1 && mask[1][2] === 1 && mask[2][2] === 1;
+  const westReentrant = mask[0][0] === 0 && mask[1][0] === 1 && mask[2][0] === 1
+    && mask[0][2] === 1 && mask[1][2] === 1 && mask[2][2] === 1;
+  return eastReentrant || westReentrant;
 }
 
 /**

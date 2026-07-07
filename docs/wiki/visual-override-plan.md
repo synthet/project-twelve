@@ -4,7 +4,7 @@ title: Visual Override Mode Plan
 description: Shortcut and persistence plan for sandbox visual override editing.
 resource: visual-override-plan.md
 tags: [docs, visual, debug, shortcuts]
-timestamp: 2026-07-06T00:00:00Z
+timestamp: 2026-07-06T04:00:00Z
 ---
 
 # Visual Override Mode Plan
@@ -19,6 +19,21 @@ Visual Override Mode is a debug/editing mode for saving visual-only adjustments 
 | Normal sandbox play | `F9` | Load `sandbox-world.json` through `SandboxWorld.LoadFromPath`. |
 | Visual Override Mode | `F5` | Save `sandbox-world.json` and the visual override sidecar `sandbox-world.visual-overrides.json`. |
 | Visual Override Mode | `F9` | Unchanged normal load of `sandbox-world.json`; visual override saving never uses `F9`. |
+| Debug gate on (`debugOverrideModeEnabled`) | `F8` | Toggle Visual Override Mode (logs state to Console). |
+| Visual Override Mode active | `Tab` | Switch Ground / Cover layer for the hovered cell. Cover edits apply only on **exposed grass** (air directly above). |
+| Visual Override Mode active | `[` / `]` | Previous / next override sprite id (ground: 0–31; GrassA cover: 0–5). |
+| Visual Override Mode active | `Shift` + `[` / `]` | Jump override sprite id by 8 on ground, or by the cover tileset size (6 for GrassA). |
+| Visual Override Mode active | `X` / `Y` | Toggle override `flipX` / `flipY`. |
+| Visual Override Mode active | `R` / `Shift` + `R` | Rotate override +90° / −90°. |
+| Visual Override Mode active | `C` | Clear override on selected cell/layer. |
+| Visual Override Mode active | `N` | Cycle override note preset. |
+| Always | `F3` | Cycle ground autotile debug overlays (includes `VisualOverrideLabel`). |
+
+F8 logs:
+
+- Gate closed: `Visual Override Mode unavailable (enable debugOverrideModeEnabled in Editor or use a development build).`
+- Toggle on: `Visual Override Mode: ON — Tab layer, [/] sprite, X/Y flip, R rotate, C clear, F5 save sidecar.`
+- Toggle off: `Visual Override Mode: OFF`
 
 ## Regression guard
 

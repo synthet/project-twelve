@@ -2,23 +2,94 @@
   "format": "project-twelve/tile-space/v1",
   "kind": "snippet",
   "name": "material-boundary-horizontal",
-  "origin": { "x": 0, "y": 19 },
+  "origin": {
+    "x": 0,
+    "y": 19
+  },
   "width": 4,
   "height": 2,
   "tiles": [
-    { "x": 0, "y": 20, "id": 1, "light": 4 },
-    { "x": 1, "y": 20, "id": 1, "light": 4 },
-    { "x": 2, "y": 20, "id": 1, "light": 4 },
-    { "x": 0, "y": 19, "id": 3, "light": 4 },
-    { "x": 1, "y": 19, "id": 3, "light": 4 },
-    { "x": 2, "y": 19, "id": 3, "light": 4 },
-    { "x": 3, "y": 20, "id": 3, "light": 4 },
-    { "x": 3, "y": 19, "id": 3, "light": 4 }
+    {
+      "x": 0,
+      "y": 20,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 20,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 20,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 19,
+      "id": 3,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 19,
+      "id": 3,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 19,
+      "id": 3,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 20,
+      "id": 3,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "id": 3,
+      "light": 4
+    }
   ],
   "expect": [
-    { "x": 0, "y": 20, "ground": { "spriteId": "0", "flipX": false } },
-    { "x": 1, "y": 20, "ground": { "spriteId": "2", "flipX": false } },
-    { "x": 2, "y": 20, "ground": { "spriteId": "2", "flipX": false } },
-    { "x": 0, "y": 19, "ground": { "spriteId": "24", "flipX": false } }
+    {
+      "x": 0,
+      "y": 20,
+      "ground": {
+        "spriteId": "24",
+        "flipX": false
+      }
+    },
+    {
+      "x": 1,
+      "y": 20,
+      "ground": {
+        "spriteId": "25",
+        "flipX": false
+      }
+    },
+    {
+      "x": 2,
+      "y": 20,
+      "ground": {
+        "spriteId": "24",
+        "flipX": true
+      }
+    },
+    {
+      "x": 0,
+      "y": 19,
+      "ground": {
+        "spriteId": "24",
+        "flipX": false
+      }
+    }
   ]
 }

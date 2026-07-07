@@ -52,23 +52,8 @@ namespace ProjectTwelve.Visual.AutotileDebug
         /// </summary>
         public static Color MaskDigitColor => new Color(0.95f, 0.95f, 1f, 0.95f);
 
-        /// <summary>
-        /// Baseline match highlight for resolve-detail overlay.
-        /// </summary>
-        public static Color BaselineMatchColor => new Color(0.2f, 0.9f, 0.35f, 0.75f);
-
-        /// <summary>
-        /// Neutral resolve-detail tint when baseline cell is unavailable.
-        /// </summary>
-        public static Color ResolveDetailNeutralColor => new Color(0.75f, 0.75f, 0.8f, 0.55f);
-
-        /// <summary>
-        /// Baseline mismatch highlight.
-        /// </summary>
-        public static Color MismatchColor => new Color(1f, 0.1f, 0.1f, 0.85f);
-
         /// <summary>Valid visual override label tint.</summary>
-        public static Color ValidOverrideColor => new Color(0f, 1f, 1f, 0.95f);
+        public static Color ValidOverrideColor => new Color(0.1f, 0.85f, 0.45f, 0.9f);
 
         /// <summary>Missing override sprite label tint.</summary>
         public static Color MissingOverrideSpriteColor => new Color(1f, 0f, 1f, 0.95f);

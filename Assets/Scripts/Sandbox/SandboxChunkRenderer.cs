@@ -40,7 +40,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides = null,
-        SandboxVisualOverrideLookup visualOverrideLookup = null,
         int autotileExposureFloorY = AutotileExposure.NoFloor)
     {
         EnsureComponents();
@@ -54,7 +53,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 visualCatalog,
                 tileLookup,
                 visualOverrides,
-                visualOverrideLookup,
                 autotileExposureFloorY);
         }
         else
@@ -74,7 +72,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup)
     {
-        Rebuild(chunk, tileSize, material, visualCatalog, tileLookup, null, null, AutotileExposure.NoFloor);
+        Rebuild(chunk, tileSize, material, visualCatalog, tileLookup, null, AutotileExposure.NoFloor);
     }
 
     public void Rebuild(SandboxChunk chunk, float tileSize, Material material)
@@ -122,7 +120,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides,
-        SandboxVisualOverrideLookup visualOverrideLookup,
         int autotileExposureFloorY)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
@@ -145,7 +142,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                     visualCatalog,
                     tileLookup,
                     visualOverrides,
-                    visualOverrideLookup,
                     tile,
                     localX,
                     localY,
@@ -173,7 +169,6 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides,
-        SandboxVisualOverrideLookup visualOverrideLookup,
         SandboxTile tile,
         int localX,
         int localY,
@@ -194,35 +189,42 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             worldCoord.y,
             autotileExposureFloorY);
 
-        string spriteId;
-        bool flipX;
-        if (visualOverrideLookup != null
-            && visualOverrideLookup(worldCoord.x, worldCoord.y, out SandboxVisualOverride visualOverride))
+        string autoSpriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool autoFlipX);
+        AutotileVisualOverride savedOverride = null;
+        if (visualOverrides != null)
         {
-            spriteId = visualOverride.SpriteId;
-            flipX = visualOverride.FlipX;
-        }
-        else
-        {
-            spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out flipX);
+            visualOverrides.TryGetOverride(worldCoord, AutotileVisualOverrideMap.GroundLayer, tileset.Name, out savedOverride);
         }
 
-        if (!TryResolveAutotileSprite(tileset, spriteId, "ground", worldCoord, out Sprite sprite))
+        VisualOverrideResult decision = VisualOverrideDecision.Apply(autoSpriteId, autoFlipX, savedOverride, tileset);
+        if (decision.OverrideApplied && decision.SpriteId != autoSpriteId)
         {
-            return true;
+            // logged inside TryResolveAutotileSprite when missing
+        }
+
+        if (!TryResolveAutotileSprite(tileset, decision.SpriteId, "ground", worldCoord, out Sprite sprite))
+        {
+            if (decision.OverrideApplied)
+            {
+                decision = VisualOverrideDecision.Apply(autoSpriteId, autoFlipX, null, tileset);
+                if (!TryResolveAutotileSprite(tileset, decision.SpriteId, "ground", worldCoord, out sprite))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
 
         AddResolvedSpriteQuad(
             layers,
-            visualOverrides,
-            worldCoord,
-            AutotileVisualOverrideMap.GroundLayer,
-            tileset,
             localX,
             localY,
             tileSize,
             sprite,
-            flipX,
+            decision,
             GetTileLightColor(tile),
             zOffset: 0f);
         return false;
@@ -256,23 +258,37 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             worldCoord.x,
             worldCoord.y);
 
-        string spriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool flipX);
-        if (!TryResolveAutotileSprite(tileset, spriteId, "cover", worldCoord, out Sprite sprite))
+        string autoSpriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool autoFlipX);
+        AutotileVisualOverride savedOverride = null;
+        if (visualOverrides != null)
         {
-            return true;
+            visualOverrides.TryGetOverride(worldCoord, AutotileVisualOverrideMap.CoverLayer, tileset.Name, out savedOverride);
         }
 
-        AddResolvedSpriteQuad(
+        VisualOverrideResult decision = VisualOverrideDecision.Apply(autoSpriteId, autoFlipX, savedOverride, tileset);
+        if (!TryResolveAutotileSprite(tileset, decision.SpriteId, "cover", worldCoord, out Sprite sprite))
+        {
+            if (decision.OverrideApplied)
+            {
+                decision = VisualOverrideDecision.Apply(autoSpriteId, autoFlipX, null, tileset);
+                if (!TryResolveAutotileSprite(tileset, decision.SpriteId, "cover", worldCoord, out sprite))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        AddResolvedCoverSpriteQuad(
             layers,
-            visualOverrides,
-            worldCoord,
-            AutotileVisualOverrideMap.CoverLayer,
-            tileset,
             localX,
             localY,
             tileSize,
             sprite,
-            flipX,
+            decision,
             GetTileLightColor(tile),
             zOffset: -0.01f);
         return false;
@@ -439,33 +455,16 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
     private static void AddResolvedSpriteQuad(
         Dictionary<Texture2D, MeshLayer> layers,
-        AutotileVisualOverrideMap visualOverrides,
-        Vector2Int worldCoord,
-        string layerName,
-        AutotileTileset tileset,
         int x,
         int y,
         float tileSize,
-        Sprite normalSprite,
-        bool normalFlipX,
+        Sprite sprite,
+        VisualOverrideResult decision,
         Color color,
         float zOffset)
     {
-        Sprite sprite = normalSprite;
-        bool flipX = normalFlipX;
-        bool useFixedCellQuad = false;
-
-        if (visualOverrides != null
-            && visualOverrides.TryGetOverride(worldCoord, layerName, tileset.Name, out string overrideSpriteId)
-            && tileset.TryGetSprite(overrideSpriteId, out Sprite overrideSprite))
-        {
-            sprite = overrideSprite;
-            flipX = false;
-            useFixedCellQuad = true;
-        }
-
         MeshLayer meshLayer = GetOrCreateLayer(layers, sprite.texture);
-        if (useFixedCellQuad)
+        if (decision.OverrideApplied)
         {
             AutotileSpriteMeshBuilder.AppendFixedCellQuad(
                 meshLayer.Vertices,
@@ -476,68 +475,68 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 y,
                 tileSize,
                 sprite,
-                flipX,
+                decision.FlipX,
                 color,
                 zOffset,
-                flipY: false,
-                rotationDegrees: 0);
+                decision.FlipY,
+                decision.RotationDegrees);
             return;
         }
 
-        if (layerName == AutotileVisualOverrideMap.GroundLayer)
-        {
-            AddGroundSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
-        }
-        else
-        {
-            AddCoverSpriteQuad(meshLayer, x, y, tileSize, sprite, flipX, color, zOffset);
-        }
-    }
-
-    private static void AddGroundSpriteQuad(
-        MeshLayer layer,
-        int x,
-        int y,
-        float tileSize,
-        Sprite sprite,
-        bool flipX,
-        Color color,
-        float zOffset)
-    {
         AutotileSpriteMeshBuilder.AppendGroundAutotileSprite(
-            layer.Vertices,
-            layer.Triangles,
-            layer.Uvs,
-            layer.Colors,
+            meshLayer.Vertices,
+            meshLayer.Triangles,
+            meshLayer.Uvs,
+            meshLayer.Colors,
             x,
             y,
             tileSize,
             sprite,
-            flipX,
+            decision.FlipX,
             color,
             zOffset);
     }
 
-    private static void AddCoverSpriteQuad(
-        MeshLayer layer,
+    private static void AddResolvedCoverSpriteQuad(
+        Dictionary<Texture2D, MeshLayer> layers,
         int x,
         int y,
         float tileSize,
         Sprite sprite,
-        bool flipX,
+        VisualOverrideResult decision,
         Color color,
         float zOffset)
     {
+        MeshLayer meshLayer = GetOrCreateLayer(layers, sprite.texture);
+        if (decision.OverrideApplied)
+        {
+            AutotileSpriteMeshBuilder.AppendFixedCellQuad(
+                meshLayer.Vertices,
+                meshLayer.Triangles,
+                meshLayer.Uvs,
+                meshLayer.Colors,
+                x,
+                y,
+                tileSize,
+                sprite,
+                decision.FlipX,
+                color,
+                zOffset,
+                decision.FlipY,
+                decision.RotationDegrees);
+            return;
+        }
+
         AutotileSpriteMeshBuilder.AppendSprite(
-            layer.Vertices,
-            layer.Triangles,
-            layer.Uvs,
-            layer.Colors,
+            meshLayer.Vertices,
+            meshLayer.Triangles,
+            meshLayer.Uvs,
+            meshLayer.Colors,
             x,
             y,
             tileSize,
             sprite,
-            flipX,
+            decision.FlipX,
             color,
             zOffset);
     }

@@ -36,8 +36,12 @@ follows. Controls:
 | `Space` | Jump (when grounded) |
 | Left mouse button | Break the tile under the cursor (within edit range) |
 | Right mouse button | Place a tile under the cursor (within edit range) |
-| `F5` / `F9` | Save / load the world to `Application.persistentDataPath` |
-| Visual Override Mode + `F5` | Save the world and `sandbox-world.visual-overrides.json` sidecar; normal `F9` load is unchanged |
+| `F5` / `F9` | Save / load the world (and sidecar overrides) to `Application.persistentDataPath` |
+| `F8` | Toggle Visual Override Mode (requires `debugOverrideModeEnabled` on `SandboxWorld`) |
+| Visual Override Mode + `F5` | Same save path; sidecar `sandbox-world.visual-overrides.json` is written whenever overrides exist |
+| `F3` | Cycle autotile debug overlays (`VisualOverrideLabel` shows saved overrides) |
+
+Visual Override Mode editing (after `F8`): `Tab` layer, `[` / `]` sprite, `X`/`Y` flip, `R` rotate, `C` clear, `N` note.
 
 ## Project Structure
 

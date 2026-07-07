@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
 namespace ProjectTwelve.RuntimeMcp
@@ -14,72 +15,89 @@ namespace ProjectTwelve.RuntimeMcp
         {
             dispatcher.RegisterTool(new McpTool(
                 "visual_override_get",
-                "Read the resolved autotile payload and any active ground visual override for a world tile.",
-                TileCoordSchema(),
+                "Read the resolved autotile payload and any active visual override for a world tile.",
+                LayerCoordSchema(),
                 args =>
                 {
                     SandboxWorld world = RequireWorld();
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
-                    return BuildEntry(world, x, y);
+                    AutotileVisualLayer layer = ParseLayer(args["layer"]?.ToString());
+                    return BuildEntry(world, x, y, layer);
                 }));
 
             dispatcher.RegisterTool(new McpTool(
                 "visual_override_set",
-                "Debug-only: override the ground sprite id and flipX for a world tile until cleared.",
-                new JObject
-                {
-                    ["type"] = "object",
-                    ["properties"] = new JObject
-                    {
-                        ["x"] = new JObject { ["type"] = "integer" },
-                        ["y"] = new JObject { ["type"] = "integer" },
-                        ["spriteId"] = new JObject { ["type"] = "string" },
-                        ["flipX"] = new JObject { ["type"] = "boolean" }
-                    },
-                    ["required"] = new JArray("x", "y", "spriteId")
-                },
+                "Debug-only: override sprite id and transforms for a world tile until cleared.",
+                SetSchema(),
                 args =>
                 {
-                    SandboxWorld world = RequireWorld();
+                    SandboxWorld world = RequireDebugOverrideMode();
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
-                    string spriteId = args["spriteId"]?.ToString();
+                    AutotileVisualLayer layer = ParseLayer(args["layer"]?.ToString());
+                    string spriteId = args["spriteId"]?.ToString() ?? args["overrideSpriteId"]?.ToString();
                     if (string.IsNullOrWhiteSpace(spriteId))
                     {
                         throw new InvalidOperationException("visual_override_set requires a non-empty spriteId.");
                     }
 
-                    world.SetVisualOverride(x, y, spriteId, args["flipX"]?.Value<bool>() ?? false);
-                    return BuildEntry(world, x, y);
+                    if (!TryResolveTileset(world, x, y, layer, out string tilesetName))
+                    {
+                        throw new InvalidOperationException($"No {AutotileVisualLayerNames.ToName(layer)} tileset at ({x}, {y}).");
+                    }
+
+                    world.SetVisualOverride(
+                        x,
+                        y,
+                        layer,
+                        tilesetName,
+                        spriteId,
+                        args["flipX"]?.Value<bool>() ?? args["overrideFlipX"]?.Value<bool>() ?? false,
+                        args["flipY"]?.Value<bool>() ?? args["overrideFlipY"]?.Value<bool>() ?? false,
+                        args["rotation"]?.Value<int>() ?? args["rotationDegrees"]?.Value<int>() ?? 0,
+                        args["note"]?.ToString());
+                    return BuildEntry(world, x, y, layer);
                 }));
 
             dispatcher.RegisterTool(new McpTool(
                 "visual_override_clear",
-                "Debug-only: clear a ground visual override from a world tile.",
-                TileCoordSchema(),
+                "Debug-only: clear a visual override from a world tile.",
+                LayerCoordSchema(),
                 args =>
                 {
-                    SandboxWorld world = RequireWorld();
+                    SandboxWorld world = RequireDebugOverrideMode();
                     int x = args["x"]?.Value<int>() ?? 0;
                     int y = args["y"]?.Value<int>() ?? 0;
-                    bool removed = world.ClearVisualOverride(x, y);
-                    JObject result = BuildEntry(world, x, y);
+                    AutotileVisualLayer layer = ParseLayer(args["layer"]?.ToString());
+                    bool removed = TryResolveTileset(world, x, y, layer, out string tilesetName)
+                        && world.ClearVisualOverride(x, y, layer, tilesetName);
+                    JObject result = BuildEntry(world, x, y, layer);
                     result["removed"] = removed;
                     return result;
                 }));
 
             dispatcher.RegisterTool(new McpTool(
                 "visual_override_list",
-                "List active runtime ground visual overrides.",
-                new JObject { ["type"] = "object", ["properties"] = new JObject() },
-                _ =>
+                "List active visual overrides in a world-tile bounding box.",
+                ListSchema(),
+                args =>
                 {
                     SandboxWorld world = RequireWorld();
+                    int xMin = args["xMin"]?.Value<int>() ?? int.MinValue;
+                    int yMin = args["yMin"]?.Value<int>() ?? int.MinValue;
+                    int xMax = args["xMax"]?.Value<int>() ?? int.MaxValue;
+                    int yMax = args["yMax"]?.Value<int>() ?? int.MaxValue;
+
                     JArray overrides = new JArray();
-                    foreach (System.Collections.Generic.KeyValuePair<Vector2Int, SandboxVisualOverride> pair in world.VisualOverrides)
+                    foreach (AutotileVisualOverride entry in world.AutotileVisualOverrides.GetAll())
                     {
-                        overrides.Add(BuildOverride(pair.Key.x, pair.Key.y, pair.Value));
+                        if (entry.x < xMin || entry.x > xMax || entry.y < yMin || entry.y > yMax)
+                        {
+                            continue;
+                        }
+
+                        overrides.Add(BuildOverrideEntry(world, entry));
                     }
 
                     return new JObject { ["count"] = overrides.Count, ["overrides"] = overrides };
@@ -87,7 +105,7 @@ namespace ProjectTwelve.RuntimeMcp
 
             dispatcher.RegisterTool(new McpTool(
                 "visual_override_save",
-                "Debug-only: save active runtime ground visual overrides to JSON.",
+                "Debug-only: save active visual overrides to JSON.",
                 new JObject
                 {
                     ["type"] = "object",
@@ -98,7 +116,7 @@ namespace ProjectTwelve.RuntimeMcp
                 },
                 args =>
                 {
-                    SandboxWorld world = RequireWorld();
+                    SandboxWorld world = RequireDebugOverrideMode();
                     string path = args["path"]?.ToString();
                     if (string.IsNullOrWhiteSpace(path))
                     {
@@ -111,7 +129,7 @@ namespace ProjectTwelve.RuntimeMcp
                     }
 
                     string written = world.SaveVisualOverridesToPath(path);
-                    return new JObject { ["path"] = written, ["count"] = world.VisualOverrides.Count };
+                    return new JObject { ["path"] = written, ["count"] = world.AutotileVisualOverrides.Count };
                 }));
         }
 
@@ -123,36 +141,105 @@ namespace ProjectTwelve.RuntimeMcp
                 throw new InvalidOperationException("SandboxWorld not found in scene; visual override MCP tools require an active sandbox world.");
             }
 
-            if (world.VisualOverrides == null)
+            return world;
+        }
+
+        private static SandboxWorld RequireDebugOverrideMode()
+        {
+            SandboxWorld world = RequireWorld();
+            if (!world.IsDebugOverrideModeEnabled)
             {
-                throw new InvalidOperationException("SandboxWorld visual override map is not active.");
+                throw new InvalidOperationException(
+                    "MCP write tools are disabled until SandboxWorld debug override mode is explicitly enabled in an Editor or development build.");
             }
 
             return world;
         }
 
-        private static JObject BuildEntry(SandboxWorld world, int x, int y)
+        private static JObject BuildEntry(SandboxWorld world, int x, int y, AutotileVisualLayer layer)
         {
             JObject result = McpTileDebug.BuildAutotileAt(world, world.TileVisualCatalog, x, y);
-            result["override"] = world.TryGetVisualOverride(x, y, out SandboxVisualOverride visualOverride)
-                ? BuildOverride(x, y, visualOverride)
-                : null;
+            if (TryResolveTileset(world, x, y, layer, out string tilesetName)
+                && world.TryGetVisualOverride(x, y, layer, tilesetName, out AutotileVisualOverride visualOverride))
+            {
+                result["override"] = BuildOverridePayload(world, visualOverride);
+            }
+            else
+            {
+                result["override"] = null;
+            }
+
             return result;
         }
 
-        private static JObject BuildOverride(int x, int y, SandboxVisualOverride visualOverride)
+        private static JObject BuildOverrideEntry(SandboxWorld world, AutotileVisualOverride entry)
         {
+            return BuildOverridePayload(world, entry);
+        }
+
+        private static JObject BuildOverridePayload(SandboxWorld world, AutotileVisualOverride entry)
+        {
+            AutotileVisualLayer layer = AutotileVisualLayerNames.Parse(entry.layer);
+            world.TryResolveAutoVisual(entry.x, entry.y, layer, out string autoSpriteId, out bool autoFlipX, out _);
             return new JObject
             {
-                ["x"] = x,
-                ["y"] = y,
-                ["layer"] = "ground",
-                ["spriteId"] = visualOverride.SpriteId,
-                ["flipX"] = visualOverride.FlipX
+                ["x"] = entry.x,
+                ["y"] = entry.y,
+                ["layer"] = entry.layer,
+                ["tileset"] = entry.tileset,
+                ["auto"] = new JObject
+                {
+                    ["spriteId"] = string.IsNullOrEmpty(entry.autoSpriteId) ? autoSpriteId : entry.autoSpriteId,
+                    ["flipX"] = entry.autoSpriteId != null ? entry.autoFlipX : autoFlipX,
+                },
+                ["override"] = new JObject
+                {
+                    ["spriteId"] = entry.overrideSpriteId,
+                    ["flipX"] = entry.overrideFlipX,
+                    ["flipY"] = entry.overrideFlipY,
+                    ["rotation"] = entry.rotation,
+                    ["note"] = entry.note,
+                },
             };
         }
 
-        private static JObject TileCoordSchema()
+        private static bool TryResolveTileset(SandboxWorld world, int x, int y, AutotileVisualLayer layer, out string tilesetName)
+        {
+            tilesetName = null;
+            SandboxTile tile = world.GetTile(x, y);
+            if (!tile.IsSolid || world.TileVisualCatalog == null)
+            {
+                return false;
+            }
+
+            if (layer == AutotileVisualLayer.Cover)
+            {
+                if (world.TileVisualCatalog.CanEditCoverAt(world.GetTile, x, y, out AutotileTileset coverTileset))
+                {
+                    tilesetName = coverTileset.Name;
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (world.TileVisualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset groundTileset))
+            {
+                tilesetName = groundTileset.Name;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static AutotileVisualLayer ParseLayer(string layer)
+        {
+            return string.IsNullOrWhiteSpace(layer)
+                ? AutotileVisualLayer.Ground
+                : AutotileVisualLayerNames.Parse(layer);
+        }
+
+        private static JObject LayerCoordSchema()
         {
             return new JObject
             {
@@ -160,9 +247,45 @@ namespace ProjectTwelve.RuntimeMcp
                 ["properties"] = new JObject
                 {
                     ["x"] = new JObject { ["type"] = "integer" },
-                    ["y"] = new JObject { ["type"] = "integer" }
+                    ["y"] = new JObject { ["type"] = "integer" },
+                    ["layer"] = new JObject { ["type"] = "string", ["description"] = "ground or cover (default ground)" },
                 },
-                ["required"] = new JArray("x", "y")
+                ["required"] = new JArray("x", "y"),
+            };
+        }
+
+        private static JObject SetSchema()
+        {
+            return new JObject
+            {
+                ["type"] = "object",
+                ["properties"] = new JObject
+                {
+                    ["x"] = new JObject { ["type"] = "integer" },
+                    ["y"] = new JObject { ["type"] = "integer" },
+                    ["layer"] = new JObject { ["type"] = "string" },
+                    ["spriteId"] = new JObject { ["type"] = "string" },
+                    ["flipX"] = new JObject { ["type"] = "boolean" },
+                    ["flipY"] = new JObject { ["type"] = "boolean" },
+                    ["rotation"] = new JObject { ["type"] = "integer" },
+                    ["note"] = new JObject { ["type"] = "string" },
+                },
+                ["required"] = new JArray("x", "y", "spriteId"),
+            };
+        }
+
+        private static JObject ListSchema()
+        {
+            return new JObject
+            {
+                ["type"] = "object",
+                ["properties"] = new JObject
+                {
+                    ["xMin"] = new JObject { ["type"] = "integer" },
+                    ["yMin"] = new JObject { ["type"] = "integer" },
+                    ["xMax"] = new JObject { ["type"] = "integer" },
+                    ["yMax"] = new JObject { ["type"] = "integer" },
+                },
             };
         }
     }

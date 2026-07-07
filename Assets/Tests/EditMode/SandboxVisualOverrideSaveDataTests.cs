@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
 public sealed class SandboxVisualOverrideSaveDataTests
@@ -6,10 +7,20 @@ public sealed class SandboxVisualOverrideSaveDataTests
     [Test]
     public void JsonRoundTrip_UsesTopLevelIntegerCoordinates()
     {
-        SandboxVisualOverrideEntrySaveData entry = SandboxVisualOverrideEntrySaveData.FromRuntime(
-            new Vector2Int(-113, 25),
-            spriteId: 17,
-            flipX: true);
+        SandboxVisualOverrideEntrySaveData entry = new SandboxVisualOverrideEntrySaveData
+        {
+            x = -113,
+            y = 25,
+            layer = AutotileVisualLayerNames.Ground,
+            tileset = "Humus",
+            autoSpriteId = "31",
+            autoFlipX = true,
+            overrideSpriteId = "17",
+            overrideFlipX = false,
+            overrideFlipY = false,
+            rotation = 0,
+            note = "underside",
+        };
 
         string json = JsonUtility.ToJson(entry);
 
@@ -22,42 +33,67 @@ public sealed class SandboxVisualOverrideSaveDataTests
         Assert.AreEqual(-113, reloaded.x);
         Assert.AreEqual(25, reloaded.y);
         Assert.AreEqual(new Vector2Int(-113, 25), reloaded.ToCoord());
-        Assert.AreEqual(17, reloaded.spriteId);
-        Assert.IsTrue(reloaded.flipX);
+        Assert.AreEqual("17", reloaded.overrideSpriteId);
+        Assert.IsTrue(reloaded.autoFlipX);
     }
 
     [Test]
     public void RuntimeOverride_RoundTripsThroughSaveDataWithNegativeCoordinates()
     {
-        AutotileVisualOverride runtime = new AutotileVisualOverride(new Vector2Int(-113, 25), 42, flipX: true);
+        AutotileVisualOverride runtime = new AutotileVisualOverride(
+            new Vector2Int(-113, 25),
+            AutotileVisualLayer.Ground,
+            "Humus",
+            autoSpriteId: "31",
+            autoFlipX: true,
+            overrideSpriteId: "17");
 
         SandboxVisualOverrideEntrySaveData saveData = runtime.ToSaveData();
         AutotileVisualOverride reloaded = AutotileVisualOverride.FromSaveData(saveData);
 
         Assert.AreEqual(-113, saveData.x);
         Assert.AreEqual(25, saveData.y);
-        Assert.AreEqual(runtime.coord, reloaded.coord);
-        Assert.AreEqual(runtime.spriteId, reloaded.spriteId);
-        Assert.AreEqual(runtime.flipX, reloaded.flipX);
+        Assert.AreEqual(runtime.Cell, reloaded.Cell);
+        Assert.AreEqual(runtime.overrideSpriteId, reloaded.overrideSpriteId);
+        Assert.AreEqual(runtime.autoFlipX, reloaded.autoFlipX);
     }
 
     [Test]
-    public void ContainerSidecar_SerializesOverrideList()
+    public void Persistence_RoundTripsFullSchema()
     {
-        SandboxVisualOverrideSaveData sidecar = new SandboxVisualOverrideSaveData
-        {
-            overrides =
-            {
-                SandboxVisualOverrideEntrySaveData.FromRuntime(new Vector2Int(-113, 25), 42, flipX: true)
-            }
-        };
+        AutotileVisualOverrideMap map = new AutotileVisualOverrideMap();
+        map.SetOverride(new AutotileVisualOverride(
+            new Vector2Int(-113, 25),
+            AutotileVisualLayer.Ground,
+            "Humus",
+            "31",
+            autoFlipX: true,
+            "17",
+            overrideFlipX: false,
+            overrideFlipY: true,
+            rotationDegrees: 90,
+            note: "slope"));
 
-        string json = JsonUtility.ToJson(sidecar, true);
-        SandboxVisualOverrideSaveData reloaded = JsonUtility.FromJson<SandboxVisualOverrideSaveData>(json);
+        string json = VisualOverridePersistence.Serialize(map);
+        AutotileVisualOverrideMap reloaded = new AutotileVisualOverrideMap();
+        VisualOverridePersistence.DeserializeInto(json, reloaded);
 
-        Assert.IsTrue(reloaded.HasOverrides);
-        Assert.AreEqual(1, reloaded.overrides.Count);
-        Assert.AreEqual(-113, reloaded.overrides[0].x);
-        Assert.AreEqual(25, reloaded.overrides[0].y);
+        Assert.AreEqual(1, reloaded.Count);
+        Assert.IsTrue(reloaded.TryGetOverride(new Vector2Int(-113, 25), AutotileVisualLayer.Ground, "Humus", out AutotileVisualOverride entry));
+        Assert.AreEqual("17", entry.overrideSpriteId);
+        Assert.IsTrue(entry.overrideFlipY);
+        Assert.AreEqual(90, entry.rotation);
+    }
+
+    [Test]
+    public void Persistence_MigratesLegacyIntSpriteIdSidecar()
+    {
+        const string legacy = "{\"overrides\":[{\"x\":1,\"y\":2,\"spriteId\":17,\"flipX\":true}]}";
+        AutotileVisualOverrideMap map = new AutotileVisualOverrideMap();
+        VisualOverridePersistence.DeserializeInto(legacy, map);
+
+        Assert.IsTrue(map.TryGetOverride(new Vector2Int(1, 2), AutotileVisualLayer.Ground, "Humus", out AutotileVisualOverride entry));
+        Assert.AreEqual("17", entry.overrideSpriteId);
+        Assert.IsTrue(entry.overrideFlipX);
     }
 }

@@ -627,80 +627,80 @@
       "x": 1,
       "y": 11,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 2,
       "y": 10,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 3,
       "y": 9,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 4,
       "y": 8,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 5,
       "y": 7,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 6,
       "y": 6,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 7,
       "y": 5,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 8,
       "y": 4,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 9,
       "y": 3,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
       "x": 10,
       "y": 2,
       "ground": {
-        "spriteId": "9",
-        "flipX": false
+        "spriteId": "11",
+        "flipX": true
       }
     },
     {
@@ -711,7 +711,6 @@
         "flipX": true
       },
       "cover": {
-        "rendered": true,
         "spriteId": "1",
         "flipX": true
       }
@@ -720,13 +719,10 @@
       "x": 0,
       "y": 13,
       "ground": {
-        "spriteId": "28",
-        "flipX": false
+        "spriteId": "28"
       },
       "cover": {
-        "rendered": true,
-        "spriteId": "0",
-        "flipX": false
+        "spriteId": "0"
       }
     }
   ]

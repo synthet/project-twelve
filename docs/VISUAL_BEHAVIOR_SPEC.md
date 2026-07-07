@@ -4,13 +4,22 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-06T00:00:00Z
+timestamp: 2026-07-06T05:45:00Z
 ---
 
 # Visual Behavior Specification
 
 > **Authority:** ProjectTwelve-owned behavioral contract for autotiling, character composition, creature animation, and effects.
 > **License boundary:** Licensed art stays local-only (`config/paid-assets.local-only.txt`). This document and `Assets/Scripts/Visual/` define **behavior** only.
+
+**Document map (autotile)**
+
+| Doc | Role |
+|-----|------|
+| This page | Behavioral contract — what implementers must guarantee |
+| [`wiki/autotile-algorithm.md`](wiki/autotile-algorithm.md) | Algorithm detail, normalization predicates (§8) |
+| [`wiki/ground-autotile-32-rules.md`](wiki/ground-autotile-32-rules.md) | 32 ground masks, mirroring, acceptance checks |
+| [`wiki/autotile-next-actions-plan.md`](wiki/autotile-next-actions-plan.md) | Roadmap and fixture workflow |
 
 ---
 
@@ -32,31 +41,33 @@ Build at least two conceptual masks before rule matching:
 |------|-----------|---------|
 | `visualMask` | Same ground autotile group only | Visual connectivity — foreign stone/dirt never connects on sides or north |
 | `solidMask` | Any solid tile (`isSolid`) | Physical support and exposure context |
-| `connectivityMask` | `visualMask` + south-row foreign-solid blend | Pre-normalization resolver input |
-| `finalMask` | `NormalizeGroundMask(connectivityMask, …)` | Mask passed to `AutotileResolver` |
+| `connectivityMask` | Same as `visualMask` (vendor `GetMask`) | Resolver input before normalization pass-through |
+| `finalMask` | `NormalizeGroundMask(connectivityMask, …)` | Mask passed to `AutotileResolver` (currently **equals** `connectivityMask`; normalization disabled) |
 
-For each offset `(dx, dy)` from the tile when building `visualMask`:
+For each offset `(dx, dy)` from the tile when building `visualMask` / `connectivityMask`:
 
 - Cardinal neighbors (N, S, E, W): `1` if the neighbor **shares the ground autotile group**, else `0`.
 - Corner neighbors: `1` only if **both** adjacent cardinals are connected **and** the corner tile shares the group.
 
-**South blend-below** — when composing `connectivityMask` from `visualMask` and `solidMask`, only the south row (S, SW, SE at `y == 2`) may inherit foreign-solid support: a neighbor below counts as connected when `isSolid` is true even if the group differs. This lets buried tiles resting on another material (e.g. dirt over stone) resolve as interior/top families instead of underside roots. Side and north neighbors **never** blend across materials.
+**Vendor strict** — foreign stone/dirt never connects on any row or column. `solidMask` (any `isSolid`) is debug/exposure context only; it does **not** alter `connectivityMask`.
 
-After connectivity is built, `NormalizeGroundMask` may remap the mask:
+**Vendor-aligned resolution** — `NormalizeGroundMask` is currently a **pass-through**: `finalMask` equals `connectivityMask`, all normalization flags are false, and `AutotileResolver` matches the raw blob mask (exact → mirror → fallback). Window/hole cells therefore read vendor sprites directly:
 
-1. **Stair-step interior support** — when a one-sided upper diagonal gap is caused by a neighboring grass surface step and the lower support row is filled, remap the support tile to the all-connected interior mask so descending/ascending slopes do not repeat diagonal corner sprites down the dirt body.
-2. **Inner-cavity edges** — window/hole lintels and inner vertical strips inside carved cavities may remap outside-body rules (`18`, `0`) to the underside family (`17`) or inner-face family (`8` + `flipX`) when same-group arms exist east/west, mass exists north, and a south-row diagonal opens into adjacent air. Corner lintels may have solid dirt directly below while the cavity opens diagonally (east/west below).
-3. **Cavity-bridge lintels** — one-tile-wide bridge masks (`25`) over holes remap to continuous underside (`17`) when corner cells continue on both sides.
-4. **Material-boundary corners** — when a foreign solid sits west or east (`isSolid` true but not same ground group) and the connectivity mask has that side column open with same-group tiles filling the south row, clear the south mask row so lip tiles resolve to corner caps (`16`, `24`) instead of horizontal run ends (`0`) or west-open strips (`8`).
+- Open-sky bridge lintel `000/111/000` → **25**
+- Flat ceiling span `111/111/000` → **17**
+- Window top inner corners `111/111/110` / `111/111/011` → **18** (+`flipX`)
+- Inner vertical frames → **8** (+`flipX`) when topology matches
 
-There is deliberately **no generic** underside or external-cliff face remapping:
+Former project normalizers (`stairInterior`, `innerCavity`, `cavityUnderside`, `materialBoundary`) are retained in code for reference/tests but **not** applied at runtime. See [`wiki/autotile-algorithm.md`](wiki/autotile-algorithm.md) §8. Fixtures: `open-sky-bridge-lintel`, `mountain-window-corner`, `dirt-window-inner-edges`.
 
-- **External undersides / cave ceilings** resolve through the authored underside family (`14`–`17`, `31`, bottom caps `29`/`16`) from their raw masks. Flipping mask rows to reuse top-edge sprites renders top decoration at the bottom of a mass — upside down. Inner-cavity and bridge lintel remaps (items 2–3) are explicit, fixture-backed exceptions for carved voids.
-- **External vertical cliff faces** with mass on one side resolve to the authored face sprites (`8` + `flipX`, cap `22` + `flipX` under a surface tile, outside corners `0`/`16`). Remapping them to the pillar strip (`21`) draws a double-outlined band that does not blend into the adjacent body. True 1-wide pillars already resolve `28`/`21`/`29` from their raw masks. Inner-cavity vertical strips (item 2) may remap outside-corner `0` to inner-face `8` when a hole sits directly below.
+There is deliberately **no generic** underside or external-cliff face remapping beyond the raw vendor rules:
 
-Callers must pass an explicit `isSolid(x,y)` predicate when building ground masks so south blend-below can distinguish foreign solids from air while side boundaries stay disconnected in the connectivity pass.
+- **External undersides / cave ceilings** resolve through the authored underside family (`14`–`17`, `31`, bottom caps `29`/`16`) from their raw masks.
+- **External vertical cliff faces** resolve through face sprites (`8` + `flipX`, cap `22`, outside corners `0`/`16`) when topology matches; pillars use `28`/`21`/`29`.
 
-**Exposure floor** — Play Mode procedural fill below the saved world bottom (`y < autotileExposureFloorY`, default `0` on `SandboxWorld`) must not count as solid for autotile masks. Tile-viz treats off-space coordinates as air; without the floor clip, generated stone under `y=0` forces interior fill sprites on exposed underside cells. Implemented in `AutotileExposure.CreateIsSolid`.
+Callers may pass `isSolid(x,y)` for `solidMask` debug output and retained normalizer unit tests; it does not change vendor mask connectivity.
+
+**Exposure floor** — Play Mode procedural fill below the saved world bottom (`y < autotileExposureFloorY`, default `0` on `SandboxWorld`) must not count as solid for `solidMask` / `isSolid`. Tile-viz treats off-space coordinates as air. Implemented in `AutotileExposure.CreateIsSolid`.
 
 Debug reports (tile-viz autotile JSON, runtime MCP `tile_autotile`) expose `visualMask`, `solidMask`, `connectivityMask`, `finalMask`/`mask`, and normalization flags (`stairInterior`, `innerCavity`, `cavityUnderside`, `materialBoundary`).
 
@@ -67,7 +78,7 @@ Fixture-backed guarantees at dirt/stone boundaries:
 - `24 + flipX` must not collapse to bridge sprite `25` (one-sided lips only).
 - Pillar strip `21` must not be replaced by side-cap `22` without matching topology.
 - Stone neighbors must not count as same-material dirt connectivity on W/E/N.
-- Stone neighbors may count as solid support on the south row only.
+- Foreign materials never connect in the ground blob mask (vendor `GetMask` parity).
 - Foreign solid below must not automatically trigger air-underside behavior.
 - Foreign solid beside dirt must not force interior fill `9`/`10` at re-entrant corners.
 
@@ -277,16 +288,17 @@ Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (su
 | Mode | Purpose |
 |------|---------|
 | `Off` | No overlay |
-| `ColorBySpriteId` | Tint each solid cell by resolved ground sprite id |
-| `SpriteIdLabel` | Ground sprite id digits + flip notch |
-| `ColorByTileId` | Tint by registry tile id |
-| `CoverSpriteIdLabel` | Cover sprite id on grass surface cells |
-| `GroundCoverSplit` | Ground marker (full cell) + cover marker (top half) |
-| `MismatchBaseline` | Red highlight where live ground resolve ≠ committed baseline |
-| `VisualOverrideLabel` | Ground and cover saved override/snapshot sprite labels; no label without saved state, cyan when valid, magenta when the saved sprite is missing from the current tileset, yellow when the saved auto snapshot differs from the current auto result |
+| `SpriteIdLabel` | Ground sprite id digits + flip notch on every solid tile |
 | `ResolveDetail` | Ground sprite id + flip notch + compact 3×3 mask; green/red tint vs baseline |
+| `GroundCoverSplit` | Ground marker + cover marker (top half) with sprite id labels |
+| `VisualOverrideLabel` | Saved visual override ground/cover labels from `sandbox-world.visual-overrides.json`; cyan = valid, yellow = auto snapshot drift, magenta = missing sprite |
+| `CoordinateLabel` | World tile X (top) and Y (bottom) on solid cells |
 
-When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `MismatchBaseline`, `VisualOverrideLabel`, and `ResolveDetail` read `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`).
+F3 logs the active mode name, index, and a one-line summary to the Unity Console.
+
+While any non-`Off` F3 mode is active, moving the mouse over the game view shows a top-left HUD with world tile `(x, y)` plus owning chunk `(cx, cy)` and in-chunk local `(lx, ly)` for the tile under the cursor (same coordinate layout as MCP `tile_at`). This complements `CoordinateLabel`, which paints coordinates on every solid cell in the world.
+
+When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `ResolveDetail` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`). `VisualOverrideLabel` reads the active `AutotileVisualOverrideMap` loaded from the world sidecar or set at runtime.
 
 ### Drift RCA tooling
 

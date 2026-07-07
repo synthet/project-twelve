@@ -8,6 +8,64 @@ using UnityEngine;
 public sealed class AutotileDebugTests
 {
     [Test]
+    public void GroundAutotileDebugModes_Cycle_WalksAllModesWithoutGaps()
+    {
+        var mode = GroundAutotileDebugMode.Off;
+        var seen = new HashSet<GroundAutotileDebugMode>();
+        do
+        {
+            Assert.IsFalse(seen.Contains(mode), $"Cycle repeated before completing: {mode}");
+            seen.Add(mode);
+            mode = GroundAutotileDebugModes.Cycle(mode);
+        }
+        while (mode != GroundAutotileDebugMode.Off);
+
+        Assert.AreEqual(5, seen.Count);
+    }
+
+    [Test]
+    public void GroundAutotileDebugModes_Normalize_MapsLegacyEnumValues()
+    {
+        Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)1));
+        Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)2));
+        Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)3));
+        Assert.AreEqual(GroundAutotileDebugMode.GroundCoverSplit, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)4));
+        Assert.AreEqual(GroundAutotileDebugMode.VisualOverrideLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)6));
+        Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)8));
+    }
+
+    [Test]
+    public void GroundAutotileDebugModes_FormatLogLine_IncludesModeNameAndIndex()
+    {
+        string line = GroundAutotileDebugModes.FormatLogLine(GroundAutotileDebugMode.VisualOverrideEdit);
+        StringAssert.Contains("VisualOverrideEdit", line);
+        StringAssert.Contains("2/5", line);
+    }
+
+    [Test]
+    public void GroundAutotileDebugModes_IsOverlayActive()
+    {
+        Assert.IsFalse(GroundAutotileDebugModes.IsOverlayActive(GroundAutotileDebugMode.Off));
+        Assert.IsFalse(GroundAutotileDebugModes.IsOverlayActive(GroundAutotileDebugMode.VisualOverrideEdit));
+        Assert.IsTrue(GroundAutotileDebugModes.IsOverlayActive(GroundAutotileDebugMode.SpriteIdLabel));
+    }
+
+    [Test]
+    public void GroundAutotileDebugModes_IsVisualOverrideEdit()
+    {
+        Assert.IsTrue(GroundAutotileDebugModes.IsVisualOverrideEdit(GroundAutotileDebugMode.VisualOverrideEdit));
+        Assert.IsFalse(GroundAutotileDebugModes.IsVisualOverrideEdit(GroundAutotileDebugMode.SpriteIdLabel));
+    }
+
+    [Test]
+    public void FormatHoverCoordinates_NegativeWorld_MapsChunkAndLocal()
+    {
+        string text = GroundAutotileDebugCoordinates.FormatHoverCoordinates(-1, -1);
+        StringAssert.Contains("World (-1, -1)", text);
+        StringAssert.Contains("Chunk (-1, -1) local (31, 31)", text);
+    }
+
+    [Test]
     public void AutotileDebugPalette_SpriteIdColors_AreDeterministic()
     {
         Color first = AutotileDebugPalette.ColorForSpriteId("16");
@@ -87,6 +145,54 @@ public sealed class AutotileDebugTests
 
         Assert.Greater(vertices.Count, markerVertices);
         Assert.IsNotNull(AutotileDebugMeshBuilder.GetDigitAtlas());
+    }
+
+    [Test]
+    public void AutotileDebugMeshBuilder_SignedIntegerLabel_RendersMinus()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Color> colors = new List<Color>();
+
+        AutotileDebugMeshBuilder.AppendSignedIntegerLabel(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            0,
+            0,
+            1f,
+            -7,
+            AutotileDebugPalette.LabelColor,
+            verticalOffsetTiles: 0f);
+
+        Assert.AreEqual(8, vertices.Count, "Expected two quads for '-7'");
+    }
+
+    [Test]
+    public void AutotileDebugMeshBuilder_CoordinateLabel_AddsVerticesForNegativeX()
+    {
+        List<Vector3> vertices = new List<Vector3>();
+        List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<Color> colors = new List<Color>();
+
+        AutotileDebugMeshBuilder.AppendTileMarker(vertices, triangles, uvs, colors, 0, 0, 1f, Color.red);
+        int markerVertices = vertices.Count;
+
+        AutotileDebugMeshBuilder.AppendCoordinateLabel(
+            vertices,
+            triangles,
+            uvs,
+            colors,
+            0,
+            0,
+            1f,
+            -114,
+            29);
+
+        Assert.Greater(vertices.Count, markerVertices);
     }
 
     [Test]

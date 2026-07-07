@@ -4,7 +4,7 @@ title: Autotile Next Actions Plan
 description: Fixture-driven plan to finish ground autotile visual polish via mask normalization, negative-tested and gated, incorporating review feedback.
 resource: wiki/autotile-next-actions-plan.md
 tags: [docs, wiki, autotile, visual, plan]
-timestamp: 2026-07-05T22:00:00Z
+timestamp: 2026-07-06T05:45:00Z
 okf_version: 0.1
 ---
 
@@ -20,6 +20,15 @@ partner substitution is disabled (`partnerSubstitution: false` on both surfaces)
 [`history-regression-guard`](../../.claude/rules/history-regression-guard.md)). The remaining
 ugliness is mask normalization, so the work below stays inside the existing 32-rule
 PixelFantasy topology.
+
+**Document map** — behavior authority lives elsewhere; this plan tracks *what to do next*:
+
+| Doc | Role |
+|-----|------|
+| [`VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md) | Behavioral contract |
+| [`autotile-algorithm.md`](autotile-algorithm.md) | Algorithm + normalization (§8) |
+| [`ground-autotile-32-rules.md`](ground-autotile-32-rules.md) | 32 masks + acceptance checks |
+| This page | Roadmap, phases, fixture workflow |
 
 This document folds in the plan review captured in
 `autotile_next_actions_comments.md`. The seven review additions are treated as
@@ -40,9 +49,9 @@ Grounding for every phase below. These are the real APIs the work extends.
 | Concern | Canonical location |
 |---------|--------------------|
 | Mask build + normalization | `Assets/Scripts/Visual/Tiles/AutotileMaskBuilder.cs` |
-| Normalization entry point | `AutotileMaskBuilder.NormalizeGroundMask(...)` |
-| Existing normalizers | `TryRemapStairInteriorDiagonalMask`, `TryRemapCavityBridgeToUnderside`, `TryRemapMaterialBoundaryCornerMask` |
-| Detailed build result | `GroundMaskBuildResult` (visual/solid/connectivity/final masks + 3 flags) |
+| Normalization entry point | `AutotileMaskBuilder.NormalizeGroundMask(...)` — **pass-through** (vendor-aligned) |
+| Retained helpers (not invoked) | `TryRemapStairInteriorDiagonalMask`, `TryRemapCavityInnerEdgeMask`, `TryRemapCavityBridgeToUnderside`, `TryRemapMaterialBoundaryCornerMask` |
+| Detailed build result | `GroundMaskBuildResult` (visual/solid/connectivity/final masks + four normalization flags, all false) |
 | Play Mode debug payload | `Assets/Scripts/RuntimeMcp/McpTileDebug.cs` → `AppendGroundAutotile` |
 | Offline resolver report | `tools/tile-viz/src/report/autotileJson.js` → `buildTileAutotile` |
 | Offline mask builder | `tools/tile-viz/src/visual/maskBuilder.js` |
@@ -53,9 +62,18 @@ Grounding for every phase below. These are the real APIs the work extends.
 | Algorithm reference | [`docs/wiki/autotile-algorithm.md`](autotile-algorithm.md) |
 | Visual contract | [`docs/VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md) |
 
-Current normalization flags surfaced on both debug surfaces: `stairInterior`,
-`cavityUnderside`, `materialBoundary`. There is **no** `TryRemapCavityInnerEdgeMask` yet —
-that is the new Phase 1 predicate.
+Current normalization flags on debug surfaces: `stairInterior`, `innerCavity`,
+`cavityUnderside`, `materialBoundary` (same order in `normalizationTrace`). Under **vendor
+alignment** each entry reads `skipped` — `finalMask` equals `connectivityMask`.
+
+> **Shipped (2026-07-06) — vendor-aligned ground resolution.** The normalization layer is
+> disabled at runtime. Window-top corners resolve vendor **18** (+`flipX`), flat lintel spans
+> **17**, open-sky bridge lintels **25**, all from raw blob masks. Fixtures: `mountain-window-corner`,
+> `open-sky-bridge-lintel`, `dirt-window-inner-edges`. Canonical behavior:
+> [`autotile-algorithm.md`](autotile-algorithm.md) §8.
+
+> **Next phases** target **selective re-enable** only where vendor-raw regressions appear (grass
+> stair runs, dirt/stone lips) — each with `baselineExpect`/`targetExpect` and negative guards.
 
 > **Phase 0 status.** 0A (baseline/target vocabulary) and 0C (`normalizationTrace` + C#/JS
 > field parity) are **implemented**. 0B (Unity expected-JSON export) is **blocked** in the
@@ -159,28 +177,17 @@ EditMode export tests green (or Unity unavailability recorded as the explicit bl
 
 ## Phase 1 — Inner-cavity normalization (one shape at a time)
 
-> **Phase 1 status — evidence-driven finding.** A baseline capture of every cavity fixture
-> (`inner-cavity.test.js`, backed by the Phase 0C `normalizationTrace`) shows the isolated
-> 1×1 / 2×1 / 1×2 / door cavities **already resolve correctly**: lintels normalize to underside
-> `17` via the existing `cavityUnderside` normalizer, embedded window inner walls read as edge
-> `8`/`8f` straight from the raw rule, thin (1-wide) walls read as vertical shaft `21`, and
-> corners as `7`/`15`. Every cavity fixture already matches its `expect`. **No
-> `TryRemapCavityInnerEdgeMask` predicate is warranted for these shapes** — adding one would be
-> a remap with no defect to fix (the over-broad-detection risk below). Phase 1 therefore
-> *locks* the correct behavior with positive tests (lintel → `17`, embedded wall → `8`) and
-> negative guards (cavityUnderside stays clear of slopes, walls, overhangs, undersides,
-> corners). A genuinely-broken inner-cavity configuration must be captured as a new fixture
-> before any new predicate is added.
+> **Phase 1 status (2026-07-06) — closed via vendor alignment.** Window-top corners, flat lintel
+> spans, and open-sky bridge lintels now resolve from **raw vendor masks** with normalization
+> disabled (`NormalizeGroundMask` pass-through). Fixtures: `mountain-window-corner`,
+> `open-sky-bridge-lintel`, `dirt-window-inner-edges`. Future inner-cavity work is **selective
+> re-enable** only when vendor-raw output regresses elsewhere — capture `baselineExpect` /
+> `targetExpect` before turning a `TryRemap*` helper back on. See
+> [`autotile-algorithm.md`](autotile-algorithm.md) §8.
 
-**Primary risk: over-broad inner-cavity detection.** `TryRemapCavityInnerEdgeMask` (hypothetical)
-is easy to make too broad — fixing windows while breaking caves, cliffs, and roof edges. It is
-**not implemented** because no current fixture demonstrates a defect it would fix. If one is
-found, mitigate with fixture-by-fixture implementation, a negative test for every predicate, and
-the decision trace from Phase 0C.
-
-Intended remaps (existing rules only, no new sprite IDs): inner vertical strips move toward
-rule `8` / `8f`; lintels avoid noisy `18` and move toward `17`. This complements the existing
-`TryRemapCavityBridgeToUnderside` (bridge → underside `17`) rather than replacing it.
+**Primary risk if re-enabling:** over-broad predicates (the original inner-cavity and
+`cavityUnderside` remaps flattened corners and bridge cells). Any re-enable needs negative guards
+on stairs, cliffs, material boundaries, and unrelated cavities.
 
 ### Implementation order (one shape per change)
 
@@ -291,10 +298,11 @@ snippets) locked as anti-regressions; do not change partner substitution.
 > `sandbox-scene-mountain` capture reports **0 mismatches** for all 2642 solid cells on both
 > ground and cover fields (`compare-autotile-baseline.mjs --only ground|cover`). Spot cells:
 > hill peaks `(-102,30)` / `(-87,29)` render cover sprite **3** with correct `flipX`; window
-> lintel `(-114,29)` resolves ground **17** with cover off (`innerCavity: true`). tile-viz PNG:
+> lintel middle `(-113,29)` resolves ground **17**; window top corners (e.g. `(-114,29)`) resolve
+> **18 flipX** after the inner-corner guard (see `mountain-window-corner` fixture). tile-viz PNG:
 > golden matches `--with-cover` render (0 px diff); cover vs `--no-cover` differs on ~1.4% of
 > pixels (GrassA layer is visually active). **Conclusion:** cover resolver ids are correct on the
-> frozen capture; any Play Mode `MismatchBaseline` red while offline compare is 0 means **live
+> frozen capture; any Play Mode `ResolveDetail` red while offline compare is 0 means **live
 > world data drift** (refresh capture/save) or **baseline failed to load** (device builds need
 > `StreamingAssets/AutotileBaselines/` — Editor falls back to `tools/tile-viz/test/fixtures/baselines/`).
 > EditMode `MountainCapture_FullBaselineGroundAndCoverParity` locks C# ground+cover vs baseline on

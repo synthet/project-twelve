@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ProjectTwelve.Sandbox.Debug;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
@@ -8,8 +9,6 @@ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
-
-public delegate bool SandboxVisualOverrideLookup(int x, int y, out SandboxVisualOverride visualOverride);
 
 [DefaultExecutionOrder(-100)]
 public sealed class SandboxWorld : MonoBehaviour
@@ -44,8 +43,6 @@ public sealed class SandboxWorld : MonoBehaviour
         new Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay>();
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
     private readonly AutotileVisualOverrideMap autotileVisualOverrides = new AutotileVisualOverrideMap();
-    private readonly Dictionary<Vector2Int, SandboxVisualOverride> visualOverrides = new Dictionary<Vector2Int, SandboxVisualOverride>();
-    private SandboxVisualOverrideSaveData visualOverrideSaveData = new SandboxVisualOverrideSaveData();
     private float nextChunkRefreshTime;
 
     public float TileSize => tileSize;
@@ -57,14 +54,17 @@ public sealed class SandboxWorld : MonoBehaviour
     /// <summary>Rendering-only autotile sprite overrides, keyed outside tile identity and generation.</summary>
     public AutotileVisualOverrideMap AutotileVisualOverrides => autotileVisualOverrides;
 
-    /// <summary>Presentation metadata loaded from the sidecar next to the simulation save.</summary>
-    public SandboxVisualOverrideSaveData VisualOverrideSaveData => visualOverrideSaveData;
+    /// <summary>Whether any visual override entries are loaded or active.</summary>
+    public bool HasVisualOverrides => autotileVisualOverrides.HasOverrides;
 
-    /// <summary>Play Mode ground autotile debug overlay mode (F3 cycles).</summary>
+    /// <summary>Play Mode ground autotile debug mode (F3 cycles; F8 toggles <see cref="GroundAutotileDebugMode.VisualOverrideEdit"/>).</summary>
     public GroundAutotileDebugMode GroundAutotileDebugMode => groundAutotileDebugMode;
 
-    /// <summary>Runtime-only visual sprite overrides keyed by world tile coordinate.</summary>
-    public IReadOnlyDictionary<Vector2Int, SandboxVisualOverride> VisualOverrides => visualOverrides;
+    /// <summary>True when interactive visual override editing is active.</summary>
+    public bool IsVisualOverrideEditActive => GroundAutotileDebugModes.IsVisualOverrideEdit(groundAutotileDebugMode);
+
+    /// <summary>Inspector flag for debug override features (tile edit, visual override mode, MCP writes).</summary>
+    public bool DebugOverrideModeEnabled => debugOverrideModeEnabled;
 
     /// <summary>True only when debug override mode is explicitly enabled in an Editor or development build.</summary>
     public bool IsDebugOverrideModeEnabled => CanUseDebugOverrides(debugOverrideModeEnabled);
@@ -92,8 +92,8 @@ public sealed class SandboxWorld : MonoBehaviour
 #endif
     }
 
-    /// <summary>Whether sidecar/override visual data should affect rendering in this world.</summary>
-    public bool ShouldApplyDebugVisualOverrides => IsDebugOverrideModeEnabled;
+    /// <summary>Whether loaded override metadata is affecting rendering.</summary>
+    public bool ShouldApplyDebugVisualOverrides => autotileVisualOverrides.HasOverrides;
 
     /// <summary>Returns the current player world position when a player target is assigned.</summary>
     public bool TryGetPlayerWorldPosition(out Vector2 position)
@@ -118,13 +118,39 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void Start()
     {
+        groundAutotileDebugMode = GroundAutotileDebugModes.Normalize(groundAutotileDebugMode);
+        if (!TryGetComponent(out SandboxGroundAutotileDebugHud _))
+        {
+            gameObject.AddComponent<SandboxGroundAutotileDebugHud>();
+        }
+
+#if UNITY_EDITOR
+        if (!debugOverrideModeEnabled)
+        {
+            Debug.LogWarning(
+                "SandboxWorld: debugOverrideModeEnabled is off — mouse tile editing, F8 visual overrides, and MCP writes are disabled. Enable it on SandboxWorld in the Inspector.");
+        }
+#endif
+
         RefreshLoadedChunks();
         RebuildDirtyChunks();
     }
 
     private void Update()
     {
-        HandleDebugHotkey();
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            CycleGroundAutotileDebugMode();
+        }
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            CycleGroundAutotileDebugMode();
+        }
+#endif
 
         if (Time.time >= nextChunkRefreshTime)
         {
@@ -135,33 +161,60 @@ public sealed class SandboxWorld : MonoBehaviour
         RebuildDirtyChunks();
     }
 
-    private void HandleDebugHotkey()
+    /// <summary>
+    /// F8 shortcut: toggle interactive visual override editing (first F3 mode after Off).
+    /// </summary>
+    public void ToggleVisualOverrideEditMode()
     {
-#if ENABLE_INPUT_SYSTEM
-        if (Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame)
+        if (GroundAutotileDebugModes.IsVisualOverrideEdit(groundAutotileDebugMode))
         {
-            groundAutotileDebugMode = CycleGroundAutotileDebugMode(groundAutotileDebugMode);
-            MarkAllLoadedRenderersDirty();
+            SetGroundAutotileDebugMode(GroundAutotileDebugMode.Off);
+            return;
         }
-#endif
+
+        if (!IsDebugOverrideModeEnabled)
+        {
+            Debug.Log(VisualOverrideModeLog.UnavailableMessage);
+            return;
+        }
+
+        SetGroundAutotileDebugMode(GroundAutotileDebugMode.VisualOverrideEdit);
+    }
+
+    private void CycleGroundAutotileDebugMode()
+    {
+        GroundAutotileDebugMode next = GroundAutotileDebugModes.Cycle(groundAutotileDebugMode);
+        if (next == GroundAutotileDebugMode.VisualOverrideEdit && !IsDebugOverrideModeEnabled)
+        {
+            next = GroundAutotileDebugModes.Cycle(next);
+        }
+
+        SetGroundAutotileDebugMode(next);
+    }
+
+    private void SetGroundAutotileDebugMode(GroundAutotileDebugMode mode)
+    {
+        mode = GroundAutotileDebugModes.Normalize(mode);
+        if (groundAutotileDebugMode == mode)
+        {
+            return;
+        }
+
+        groundAutotileDebugMode = mode;
+        Debug.Log(GroundAutotileDebugModes.FormatLogLine(groundAutotileDebugMode));
+        MarkAllLoadedRenderersDirty();
     }
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        groundAutotileDebugMode = GroundAutotileDebugModes.Normalize(groundAutotileDebugMode);
         if (Application.isPlaying)
         {
             MarkAllLoadedRenderersDirty();
         }
     }
 #endif
-
-    private static GroundAutotileDebugMode CycleGroundAutotileDebugMode(GroundAutotileDebugMode mode)
-    {
-        int count = Enum.GetValues(typeof(GroundAutotileDebugMode)).Length;
-        int next = ((int)mode + 1) % count;
-        return (GroundAutotileDebugMode)next;
-    }
 
     public SandboxTile GetTile(int x, int y)
     {
@@ -184,20 +237,99 @@ public sealed class SandboxWorld : MonoBehaviour
     /// </summary>
     public event System.Action<int, int> TileFluidWakeRequested;
 
-    public bool TryGetVisualOverride(int x, int y, out SandboxVisualOverride visualOverride)
+    public bool TryGetVisualOverride(
+        int x,
+        int y,
+        AutotileVisualLayer layer,
+        string tilesetName,
+        out AutotileVisualOverride visualOverride)
     {
-        return visualOverrides.TryGetValue(new Vector2Int(x, y), out visualOverride);
+        return autotileVisualOverrides.TryGetOverride(new Vector2Int(x, y), layer, tilesetName, out visualOverride);
+    }
+
+    public bool TryGetVisualOverride(int x, int y, out AutotileVisualOverride visualOverride)
+    {
+        SandboxTile tile = GetTile(x, y);
+        if (AutotileGroundResolve.TryResolve(
+                tileVisualCatalog,
+                GetTile,
+                tile,
+                x,
+                y,
+                out AutotileGroundResolveResult ground,
+                autotileExposureFloorY)
+            && ground.HasGroundTileset
+            && autotileVisualOverrides.TryGetOverride(
+                new Vector2Int(x, y),
+                AutotileVisualLayer.Ground,
+                ground.TilesetName,
+                out visualOverride))
+        {
+            return true;
+        }
+
+        visualOverride = null;
+        return false;
+    }
+
+    public void SetVisualOverride(AutotileVisualOverride entry)
+    {
+        if (entry == null)
+        {
+            throw new ArgumentNullException(nameof(entry));
+        }
+
+        autotileVisualOverrides.SetOverride(entry);
+        MarkTileVisualDirty(entry.x, entry.y);
+    }
+
+    public void SetVisualOverride(
+        int x,
+        int y,
+        AutotileVisualLayer layer,
+        string tilesetName,
+        string overrideSpriteId,
+        bool overrideFlipX = false,
+        bool overrideFlipY = false,
+        int rotationDegrees = 0,
+        string note = null,
+        bool captureAutoSnapshot = true)
+    {
+        string autoSpriteId = string.Empty;
+        bool autoFlipX = false;
+        if (captureAutoSnapshot && TryResolveAutoVisual(x, y, layer, out string resolvedSpriteId, out bool resolvedFlipX, out _))
+        {
+            autoSpriteId = resolvedSpriteId ?? string.Empty;
+            autoFlipX = resolvedFlipX;
+        }
+
+        SetVisualOverride(new AutotileVisualOverride(
+            new Vector2Int(x, y),
+            layer,
+            tilesetName,
+            autoSpriteId,
+            autoFlipX,
+            overrideSpriteId,
+            overrideFlipX,
+            overrideFlipY,
+            rotationDegrees,
+            note));
     }
 
     public void SetVisualOverride(int x, int y, string spriteId, bool flipX)
     {
-        visualOverrides[new Vector2Int(x, y)] = new SandboxVisualOverride(spriteId, flipX);
-        MarkTileVisualDirty(x, y);
+        SandboxTile tile = GetTile(x, y);
+        if (!tileVisualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset tileset))
+        {
+            return;
+        }
+
+        SetVisualOverride(x, y, AutotileVisualLayer.Ground, tileset.Name, spriteId, flipX);
     }
 
-    public bool ClearVisualOverride(int x, int y)
+    public bool ClearVisualOverride(int x, int y, AutotileVisualLayer layer, string tilesetName)
     {
-        bool removed = visualOverrides.Remove(new Vector2Int(x, y));
+        bool removed = autotileVisualOverrides.ClearOverride(x, y, AutotileVisualLayerNames.ToName(layer), tilesetName);
         if (removed)
         {
             MarkTileVisualDirty(x, y);
@@ -206,35 +338,86 @@ public sealed class SandboxWorld : MonoBehaviour
         return removed;
     }
 
+    public bool ClearVisualOverride(int x, int y)
+    {
+        bool hadAny = false;
+        SandboxTile tile = GetTile(x, y);
+        if (tileVisualCatalog.TryGetGroundTileset(tile.id, out AutotileTileset groundTileset))
+        {
+            hadAny |= ClearVisualOverride(x, y, AutotileVisualLayer.Ground, groundTileset.Name);
+        }
+
+        if (tileVisualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset coverTileset))
+        {
+            hadAny |= ClearVisualOverride(x, y, AutotileVisualLayer.Cover, coverTileset.Name);
+        }
+
+        return hadAny;
+    }
+
     public string SaveVisualOverridesToPath(string path)
     {
-        Newtonsoft.Json.Linq.JArray overrides = new Newtonsoft.Json.Linq.JArray();
-        foreach (KeyValuePair<Vector2Int, SandboxVisualOverride> pair in visualOverrides)
-        {
-            overrides.Add(new Newtonsoft.Json.Linq.JObject
-            {
-                ["x"] = pair.Key.x,
-                ["y"] = pair.Key.y,
-                ["layer"] = "ground",
-                ["spriteId"] = pair.Value.SpriteId,
-                ["flipX"] = pair.Value.FlipX
-            });
-        }
-
-        Newtonsoft.Json.Linq.JObject document = new Newtonsoft.Json.Linq.JObject
-        {
-            ["schema"] = "project-twelve/visual-overrides/v1",
-            ["overrides"] = overrides
-        };
-
-        string directory = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        File.WriteAllText(path, document.ToString(Newtonsoft.Json.Formatting.Indented));
+        VisualOverridePersistence.WriteToPath(path, autotileVisualOverrides);
         return path;
+    }
+
+    public bool TryResolveAutoVisual(
+        int x,
+        int y,
+        AutotileVisualLayer layer,
+        out string spriteId,
+        out bool flipX,
+        out string tilesetName)
+    {
+        spriteId = null;
+        flipX = false;
+        tilesetName = null;
+        SandboxTile tile = GetTile(x, y);
+        if (!tile.IsSolid || tileVisualCatalog == null)
+        {
+            return false;
+        }
+
+        if (layer == AutotileVisualLayer.Ground)
+        {
+            if (!AutotileGroundResolve.TryResolve(
+                    tileVisualCatalog,
+                    GetTile,
+                    tile,
+                    x,
+                    y,
+                    out AutotileGroundResolveResult ground,
+                    autotileExposureFloorY)
+                || !ground.Resolved)
+            {
+                return false;
+            }
+
+            spriteId = ground.SpriteId;
+            flipX = ground.FlipX;
+            tilesetName = ground.TilesetName;
+            return true;
+        }
+
+        SandboxTile tileAbove = GetTile(x, y + 1);
+        if (!tileVisualCatalog.ShouldRenderGrassCover(tile.id, tileAbove)
+            || !tileVisualCatalog.TryGetCoverTileset(tile.id, out AutotileTileset coverTileset))
+        {
+            return false;
+        }
+
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(
+            (nx, ny) =>
+            {
+                SandboxTile neighbor = GetTile(nx, ny);
+                return tileVisualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
+            },
+            (nx, ny) => GetTile(nx, ny).IsSolid,
+            x,
+            y);
+        spriteId = AutotileResolver.ResolveSpriteId(coverTileset, mask, out flipX);
+        tilesetName = coverTileset.Name;
+        return !string.IsNullOrEmpty(spriteId);
     }
 
     public bool TrySetDebugOverrideTile(int x, int y, int tileId)
@@ -470,6 +653,7 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         MarkAllLoadedRenderersDirty();
+        autotileVisualOverrides.Clear();
         LoadVisualOverrideSidecar(path);
     }
 
@@ -484,26 +668,13 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void SaveVisualOverrideSidecar(string savePath)
     {
-        string sidecarPath = GetVisualOverrideSidecarPath(savePath);
-        string directory = Path.GetDirectoryName(sidecarPath);
-        if (!string.IsNullOrEmpty(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
-        File.WriteAllText(sidecarPath, JsonUtility.ToJson(visualOverrideSaveData, true));
+        VisualOverridePersistence.WriteToPath(GetVisualOverrideSidecarPath(savePath), autotileVisualOverrides);
     }
 
     private void LoadVisualOverrideSidecar(string savePath)
     {
         string sidecarPath = GetVisualOverrideSidecarPath(savePath);
-        visualOverrideSaveData = File.Exists(sidecarPath)
-            ? JsonUtility.FromJson<SandboxVisualOverrideSaveData>(File.ReadAllText(sidecarPath))
-            : new SandboxVisualOverrideSaveData();
-
-        visualOverrideSaveData ??= new SandboxVisualOverrideSaveData();
-        visualOverrideSaveData.overrides ??= new List<SandboxVisualOverrideEntrySaveData>();
+        VisualOverridePersistence.ReadFromPath(sidecarPath, autotileVisualOverrides);
     }
 
     /// <summary>
@@ -710,7 +881,6 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileVisualCatalog,
                 GetTile,
                 autotileVisualOverrides,
-                ShouldApplyDebugVisualOverrides ? TryGetVisualOverride : null,
                 autotileExposureFloorY);
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
@@ -721,6 +891,7 @@ public sealed class SandboxWorld : MonoBehaviour
                     groundAutotileDebugMode,
                     tileVisualCatalog,
                     GetTile,
+                    autotileVisualOverrides,
                     autotileExposureFloorY);
             }
         }
@@ -837,18 +1008,4 @@ public sealed class SandboxWorld : MonoBehaviour
         int result = value % divisor;
         return result < 0 ? result + divisor : result;
     }
-}
-
-
-/// <summary>Runtime-only ground sprite override for a world tile.</summary>
-public readonly struct SandboxVisualOverride
-{
-    public SandboxVisualOverride(string spriteId, bool flipX)
-    {
-        SpriteId = spriteId;
-        FlipX = flipX;
-    }
-
-    public string SpriteId { get; }
-    public bool FlipX { get; }
 }

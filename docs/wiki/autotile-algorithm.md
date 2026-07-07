@@ -4,16 +4,22 @@ title: Autotile Algorithm Reference
 description: How ProjectTwelve resolves occupancy into ground and cover sprites — blob mask, direct/mirror resolution, weighted variants, cover rules, and the project normalization layer.
 resource: wiki/autotile-algorithm.md
 tags: [docs, wiki, autotile, visual, reference]
-timestamp: 2026-07-05T00:00:00Z
+timestamp: 2026-07-06T05:45:00Z
 okf_version: 0.1
 ---
 
 # Autotile Algorithm Reference
 
-How the autotiler turns plain tile occupancy into seamless terrain art. This page documents the
-**algorithm**; the canonical 32 ground masks live in
-[`ground-autotile-32-rules.md`](ground-autotile-32-rules.md), and the visual acceptance contract
-in [`VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md).
+How the autotiler turns plain tile occupancy into seamless terrain art.
+
+**Document map**
+
+| Doc | Role |
+|-----|------|
+| [`ground-autotile-32-rules.md`](ground-autotile-32-rules.md) | Canonical 32 ground masks and acceptance checks |
+| This page | Algorithm: blob mask, resolution, cover rules, normalization (§8) |
+| [`VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md) | Behavioral contract for implementers |
+| [`autotile-next-actions-plan.md`](autotile-next-actions-plan.md) | Roadmap and fixture workflow (not behavior authority) |
 
 Implemented in ProjectTwelve by:
 
@@ -73,13 +79,8 @@ NW connects  ⟺  N connects  AND  W connects  AND  the NW diagonal is present
 
 The four orthogonal cells (N/S/E/W) each come from a single neighbor; the center is hard-wired to
 `1`. This blob rule is what collapses the 256 raw 8-neighbor combinations down to the ~47 visually
-distinct cases the 32-sprite sheet covers. See `AutotileMaskBuilder.BuildGroundMask`.
-
-### 3.2 South-row support blend
-
-For the **south row only**, a foreign solid below counts as connected, so a buried tile resting on
-a different material resolves as interior/top families rather than as an underside root. Side and
-north neighbors never blend across materials. See `BuildConnectivityGroundMask`.
+distinct cases the 32-sprite sheet covers. See `AutotileMaskBuilder.BuildVisualGroundMask` /
+`BuildConnectivityGroundMask` (vendor-aligned: connectivity equals same-material visual mask only).
 
 ## 4. Resolving a mask to a sprite
 
@@ -150,26 +151,42 @@ are always `0`):
 `flipX` on the asymmetric rules (`1`, `3`, `5`) lets each also serve its mirror through the mirror
 pass, covering all left/right variants with 6 sprites.
 
-## 8. Project normalization layer
+## 8. Project normalization layer (disabled at runtime)
 
-The base algorithm has no normalization: it builds the blob mask, matches directly, and discards
-anything unresolvable. ProjectTwelve adds a thin **normalization** step between mask build and
-resolution that re-selects **among the same 32 authored sprites** for side-view readability — it
-introduces no new sprite ids and changes no rule masks (see the plan's non-goals in
-[`autotile-next-actions-plan.md`](autotile-next-actions-plan.md)).
+The base PixelTileEngine autotiler has **no** normalization: it builds the blob mask, matches
+directly (exact → row mirror → column mirror), and discards anything unresolvable.
 
-Current normalizers, evaluated first-match-wins (`AutotileMaskBuilder.NormalizeGroundMask`):
+ProjectTwelve **previously** added a thin normalization step between mask build and resolution
+that re-selected among the same 32 authored sprites for side-view readability. That layer is
+**intentionally disabled** in the current vendor-aligned build: `NormalizeGroundMask` returns
+the connectivity mask unchanged and leaves all four flags false. Ground cells therefore resolve
+from the **raw** same-material blob mask only (PixelTileEngine `GetMask` parity).
 
-| Normalizer | Purpose |
-|------------|---------|
-| `stairInterior` | Stair-step support cells with one upper diagonal open read as interior fill, not a repeated diagonal corner down every step. |
-| `cavityUnderside` | One-tile-wide cavity lintels/floors that match the bridge mask (`25`) read as continuous underside (`17`) when arms continue both sides. |
-| `materialBoundary` | Foreign-material lips reuse corner caps (`16`/`24`) instead of run-ends or west-open strips. |
+The `TryRemap*` helpers below are **retained** in C# and tile-viz JS for reference and direct
+unit tests; they are **not** invoked from `NormalizeGroundMask` / `normalizeGroundMaskDetailed`.
 
-Each cell's applied/skipped decision is exposed as `normalizationTrace` on both debug surfaces
-(Play Mode MCP payload and the tile-viz report). Undersides/ceilings and vertical faces are **not**
-remapped — they resolve through the authored underside family (`14`–`17`, `31`) and face sprites
-(`8`/`22` + `flipX`) from their raw masks.
+| Helper (not active at runtime) | Former purpose |
+|--------------------------------|----------------|
+| `stairInterior` | Stair-step support cells with one upper diagonal open → interior fill instead of repeated diagonal corners down slopes. |
+| `innerCavity` | Multi-wide window/hole lintels and inner vertical strips → underside `17` or inner-face `8`. |
+| `cavityUnderside` | Bridge mask `000/111/000` over void → continuous underside `17` when arms continue both sides. |
+| `materialBoundary` | Foreign-material lips → corner caps `16`/`24` instead of run-ends or west-open strips. |
+
+**Vendor-aligned window/hole outcomes** (no normalizer; straight from blob rules):
+
+| Topology | Mask (row-major) | Sprite |
+|----------|------------------|--------|
+| Open-sky horizontal bridge lintel | `000/111/000` | **25** |
+| Flat ceiling span over void | `111/111/000` | **17** |
+| Window top inner corner (one bottom diagonal open) | `111/111/110` / `111/111/011` | **18** (+`flipX`) |
+| Inner vertical frame | east/west open + mass | **8** (+`flipX`) |
+
+Fixtures: `open-sky-bridge-lintel`, `mountain-window-corner`, `dirt-window-inner-edges`.
+
+Debug surfaces still expose `normalizationTrace` with all four entries in evaluation order
+(`stairInterior`, `innerCavity`, `cavityUnderside`, `materialBoundary`); under vendor alignment
+each reads `skipped`. Re-enable a helper only with a new fixture proving a regression and a
+negative guard on unrelated topologies (see [`autotile-next-actions-plan.md`](autotile-next-actions-plan.md)).
 
 ## 9. Sprite role quick index
 
@@ -197,8 +214,8 @@ Roles for the 32 ground sprites (exact masks in
 - **Re-resolve neighbors on edit:** one placement changes up to eight neighboring masks.
 - **The 32-sprite layout is fixed** across all ground materials (id → role is identical); the
   sprite count (`== 32`) selects ground rules over cover rules.
-- **Normalization never invents ids** and never edits the rule masks — it only re-selects among the
-  authored 32 (and 6 cover) sprites.
+- **Runtime normalization is off** — `finalMask` equals `connectivityMask` unless a future
+  fixture-backed normalizer is re-enabled. Helpers in §8 are reference-only.
 
 ## Parity
 

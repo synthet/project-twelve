@@ -411,9 +411,9 @@
       "y": 30,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -639,9 +639,9 @@
       "y": 30,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -753,9 +753,9 @@
       "y": 30,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -848,9 +848,9 @@
       "y": 30,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -905,9 +905,9 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1000,11 +1000,11 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
-        "flipX": false,
-        "finalSpriteId": "17",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1057,11 +1057,11 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "17",
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1114,11 +1114,11 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
-        "flipX": false,
-        "finalSpriteId": "17",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1152,11 +1152,11 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "17",
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1228,9 +1228,9 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1304,9 +1304,9 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1456,9 +1456,9 @@
       "y": 29,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1551,9 +1551,9 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1589,11 +1589,11 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
-        "flipX": false,
-        "finalSpriteId": "17",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1627,11 +1627,11 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "17",
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -1855,9 +1855,9 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -1950,9 +1950,9 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -2178,9 +2178,9 @@
       "y": 28,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -2235,9 +2235,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -2368,9 +2368,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
-        "flipX": true,
-        "finalSpriteId": "11",
+        "spriteId": "19",
+        "flipX": false,
+        "finalSpriteId": "19",
         "normalization": {
           "innerCavity": false
         },
@@ -2387,9 +2387,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "25",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "25",
         "normalization": {
           "innerCavity": false
         },
@@ -2406,9 +2406,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "25",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "25",
         "normalization": {
           "innerCavity": false
         },
@@ -2425,9 +2425,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
-        "flipX": false,
-        "finalSpriteId": "11",
+        "spriteId": "31",
+        "flipX": true,
+        "finalSpriteId": "31",
         "normalization": {
           "innerCavity": false
         },
@@ -2444,9 +2444,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -2634,9 +2634,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -2729,9 +2729,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -3014,9 +3014,9 @@
       "y": 27,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -3318,9 +3318,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -3451,9 +3451,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
-        "flipX": false,
-        "finalSpriteId": "11",
+        "spriteId": "3",
+        "flipX": true,
+        "finalSpriteId": "3",
         "normalization": {
           "innerCavity": false
         },
@@ -3470,9 +3470,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -3489,9 +3489,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -3508,9 +3508,9 @@
       "y": 26,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -3546,9 +3546,9 @@
       "y": 26,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -3565,9 +3565,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -3584,9 +3584,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -3603,9 +3603,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
-        "flipX": true,
-        "finalSpriteId": "11",
+        "spriteId": "3",
+        "flipX": false,
+        "finalSpriteId": "3",
         "normalization": {
           "innerCavity": false
         },
@@ -3679,11 +3679,11 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
-        "flipX": false,
-        "finalSpriteId": "17",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -3717,11 +3717,11 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "17",
+        "finalSpriteId": "18",
         "normalization": {
-          "innerCavity": true
+          "innerCavity": false
         },
         "resolved": true
       },
@@ -3869,9 +3869,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -4230,9 +4230,9 @@
       "y": 26,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -4477,9 +4477,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -4648,9 +4648,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -4933,9 +4933,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
-        "flipX": false,
-        "finalSpriteId": "17",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -4952,9 +4952,9 @@
       "y": 25,
       "tileId": 3,
       "ground": {
-        "spriteId": "25",
+        "spriteId": "24",
         "flipX": false,
-        "finalSpriteId": "25",
+        "finalSpriteId": "24",
         "normalization": {
           "innerCavity": false
         },
@@ -5066,9 +5066,9 @@
       "y": 25,
       "tileId": 3,
       "ground": {
-        "spriteId": "25",
-        "flipX": false,
-        "finalSpriteId": "25",
+        "spriteId": "24",
+        "flipX": true,
+        "finalSpriteId": "24",
         "normalization": {
           "innerCavity": false
         },
@@ -5085,9 +5085,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "17",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "17",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -5750,9 +5750,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -5826,9 +5826,9 @@
       "y": 25,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -5921,9 +5921,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -5978,9 +5978,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -6130,9 +6130,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "11",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "11",
         "normalization": {
           "innerCavity": false
         },
@@ -6681,9 +6681,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -6700,9 +6700,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6719,9 +6719,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6738,9 +6738,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6757,9 +6757,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6776,9 +6776,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6795,9 +6795,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -6814,9 +6814,9 @@
       "y": 24,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -7840,9 +7840,9 @@
       "y": 23,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -7859,9 +7859,9 @@
       "y": 23,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -7878,9 +7878,9 @@
       "y": 23,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -7897,9 +7897,9 @@
       "y": 23,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -7992,9 +7992,9 @@
       "y": 23,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -8011,9 +8011,9 @@
       "y": 23,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -8030,9 +8030,9 @@
       "y": 23,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -8999,9 +8999,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "23",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "23",
         "normalization": {
           "innerCavity": false
         },
@@ -9018,9 +9018,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "24",
+        "flipX": true,
+        "finalSpriteId": "24",
         "normalization": {
           "innerCavity": false
         },
@@ -9037,9 +9037,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9075,9 +9075,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9094,9 +9094,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9113,9 +9113,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9132,9 +9132,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9360,9 +9360,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9379,9 +9379,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "24",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "24",
         "normalization": {
           "innerCavity": false
         },
@@ -9398,9 +9398,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "23",
+        "flipX": true,
+        "finalSpriteId": "23",
         "normalization": {
           "innerCavity": false
         },
@@ -9626,9 +9626,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -9645,9 +9645,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -9664,9 +9664,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -9683,9 +9683,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9835,9 +9835,9 @@
       "y": 22,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -9854,9 +9854,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -9873,9 +9873,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -9892,9 +9892,9 @@
       "y": 22,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -10785,9 +10785,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -10804,9 +10804,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -10823,9 +10823,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -10842,9 +10842,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -10899,9 +10899,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "11",
+        "spriteId": "8",
         "flipX": true,
-        "finalSpriteId": "11",
+        "finalSpriteId": "8",
         "normalization": {
           "innerCavity": false
         },
@@ -10918,9 +10918,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "11",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -10937,9 +10937,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "11",
+        "spriteId": "16",
         "flipX": true,
-        "finalSpriteId": "11",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -10956,9 +10956,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "11",
+        "spriteId": "8",
         "flipX": false,
-        "finalSpriteId": "11",
+        "finalSpriteId": "8",
         "normalization": {
           "innerCavity": false
         },
@@ -11203,9 +11203,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -11222,9 +11222,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -11241,9 +11241,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -11260,9 +11260,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -11412,9 +11412,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -11431,9 +11431,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -11450,9 +11450,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -11469,9 +11469,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -11697,9 +11697,9 @@
       "y": 21,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -11716,9 +11716,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -11735,9 +11735,9 @@
       "y": 21,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -12590,9 +12590,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -12609,9 +12609,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -12628,9 +12628,9 @@
       "y": 20,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -13065,9 +13065,9 @@
       "y": 20,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -13084,9 +13084,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -13103,9 +13103,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -13122,9 +13122,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -13198,9 +13198,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -13217,9 +13217,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -13236,9 +13236,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -13255,9 +13255,9 @@
       "y": 20,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -13540,9 +13540,9 @@
       "y": 20,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -13559,9 +13559,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -13578,9 +13578,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -13597,9 +13597,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -13692,9 +13692,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -13711,9 +13711,9 @@
       "y": 20,
       "tileId": 1,
       "ground": {
-        "spriteId": "8",
+        "spriteId": "16",
         "flipX": true,
-        "finalSpriteId": "8",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -14053,9 +14053,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -14072,9 +14072,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14091,9 +14091,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14110,9 +14110,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14129,9 +14129,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14148,9 +14148,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14167,9 +14167,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14186,9 +14186,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14205,9 +14205,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14224,9 +14224,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14243,9 +14243,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14262,9 +14262,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -14376,9 +14376,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -14395,9 +14395,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -14414,9 +14414,9 @@
       "y": 19,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -14433,9 +14433,9 @@
       "y": 19,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -14924,614 +14924,6 @@
     },
     {
       "x": -97,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -96,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -95,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -94,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -93,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -92,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -91,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -90,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -89,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "11",
-        "flipX": false,
-        "finalSpriteId": "11",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -88,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -87,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -86,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -85,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -84,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -83,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -82,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -81,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -80,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -79,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -78,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -77,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -76,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -75,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -74,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "11",
-        "flipX": true,
-        "finalSpriteId": "11",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -73,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -72,
-      "y": 19,
-      "tileId": 3,
-      "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -71,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -70,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -69,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -68,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -67,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -66,
-      "y": 19,
-      "tileId": 1,
-      "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
-        "normalization": {
-          "innerCavity": false
-        },
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "spriteId": null,
-        "flipX": false
-      }
-    },
-    {
-      "x": -65,
       "y": 19,
       "tileId": 3,
       "ground": {
@@ -15550,6 +14942,614 @@
       }
     },
     {
+      "x": -96,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "16",
+        "flipX": false,
+        "finalSpriteId": "16",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -95,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false,
+        "finalSpriteId": "17",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -94,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false,
+        "finalSpriteId": "17",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -93,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false,
+        "finalSpriteId": "17",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -92,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -91,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "0",
+        "flipX": false,
+        "finalSpriteId": "0",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -90,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "2",
+        "flipX": false,
+        "finalSpriteId": "2",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -89,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "11",
+        "flipX": false,
+        "finalSpriteId": "11",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -88,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -87,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -86,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -85,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -84,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -83,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -82,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -81,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -80,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -79,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -78,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -77,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -76,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -75,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -74,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "11",
+        "flipX": true,
+        "finalSpriteId": "11",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -73,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "2",
+        "flipX": false,
+        "finalSpriteId": "2",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -72,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -71,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "16",
+        "flipX": false,
+        "finalSpriteId": "16",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -70,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false,
+        "finalSpriteId": "17",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -69,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "18",
+        "flipX": false,
+        "finalSpriteId": "18",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -68,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -67,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -66,
+      "y": 19,
+      "tileId": 1,
+      "ground": {
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
+      "x": -65,
+      "y": 19,
+      "tileId": 3,
+      "ground": {
+        "spriteId": "28",
+        "flipX": false,
+        "finalSpriteId": "28",
+        "normalization": {
+          "innerCavity": false
+        },
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "spriteId": null,
+        "flipX": false
+      }
+    },
+    {
       "x": -160,
       "y": 18,
       "tileId": 1,
@@ -15592,9 +15592,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -15611,9 +15611,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15630,9 +15630,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15649,9 +15649,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15668,9 +15668,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15687,9 +15687,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "18",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -15801,9 +15801,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "18",
+        "flipX": true,
+        "finalSpriteId": "18",
         "normalization": {
           "innerCavity": false
         },
@@ -15820,9 +15820,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15839,9 +15839,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15858,9 +15858,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -15877,9 +15877,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -15896,9 +15896,9 @@
       "y": 18,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -16067,9 +16067,9 @@
       "y": 18,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -16086,9 +16086,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -16105,9 +16105,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -16124,9 +16124,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -16143,9 +16143,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -16162,9 +16162,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -16181,9 +16181,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -16200,9 +16200,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -16219,9 +16219,9 @@
       "y": 18,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -17264,9 +17264,9 @@
       "y": 18,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -17283,9 +17283,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17302,9 +17302,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17321,9 +17321,9 @@
       "y": 18,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17340,9 +17340,9 @@
       "y": 18,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -17378,9 +17378,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "8",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "8",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17397,9 +17397,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17416,9 +17416,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17435,9 +17435,9 @@
       "y": 17,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -17492,9 +17492,9 @@
       "y": 17,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
-        "flipX": false,
-        "finalSpriteId": "2",
+        "spriteId": "0",
+        "flipX": true,
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },
@@ -17511,9 +17511,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "16",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17530,9 +17530,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17549,9 +17549,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17568,9 +17568,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17587,9 +17587,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17606,9 +17606,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
+        "spriteId": "17",
         "flipX": false,
-        "finalSpriteId": "9",
+        "finalSpriteId": "17",
         "normalization": {
           "innerCavity": false
         },
@@ -17625,9 +17625,9 @@
       "y": 17,
       "tileId": 1,
       "ground": {
-        "spriteId": "9",
-        "flipX": false,
-        "finalSpriteId": "9",
+        "spriteId": "16",
+        "flipX": true,
+        "finalSpriteId": "16",
         "normalization": {
           "innerCavity": false
         },
@@ -17644,9 +17644,9 @@
       "y": 17,
       "tileId": 3,
       "ground": {
-        "spriteId": "2",
+        "spriteId": "0",
         "flipX": false,
-        "finalSpriteId": "2",
+        "finalSpriteId": "0",
         "normalization": {
           "innerCavity": false
         },

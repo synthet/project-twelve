@@ -19,7 +19,7 @@ function groundPayloads(snippetFile) {
   return report.tiles.map((t) => t.autotile?.ground).filter(Boolean);
 }
 
-const TRACE_ENTRY = /^(stairInterior|cavityUnderside|materialBoundary): (applied|skipped)/;
+const TRACE_ENTRY = /^(stairInterior|innerCavity|cavityUnderside|materialBoundary): (applied|skipped)/;
 
 test('every ground payload emits normalizationTrace, visualMask, solidMask, partnerSubstitution=false', () => {
   const grounds = groundPayloads('dirt-window-1x1.json');
@@ -50,12 +50,18 @@ test('normalizationTrace is consistent with the normalization flags', () => {
 test('buildNormalizationTrace derives an ordered applied/skipped trace', () => {
   assert.deepEqual(buildNormalizationTrace({}), [
     'stairInterior: skipped',
+    'innerCavity: skipped',
     'cavityUnderside: skipped',
     'materialBoundary: skipped',
   ]);
   assert.deepEqual(buildNormalizationTrace({ cavityUnderside: true }), [
     'stairInterior: skipped',
+    'innerCavity: skipped',
     'cavityUnderside: applied: bridge -> underside',
+  ]);
+  assert.deepEqual(buildNormalizationTrace({ innerCavity: true }), [
+    'stairInterior: skipped',
+    'innerCavity: applied: flat lintel span -> underside',
   ]);
   assert.deepEqual(buildNormalizationTrace({ stairInterior: true }), [
     'stairInterior: applied: diagonal step -> interior fill',

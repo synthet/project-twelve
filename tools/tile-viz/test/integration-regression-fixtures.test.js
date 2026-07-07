@@ -91,8 +91,22 @@ test('dirt-window-inner-edges baseline matches halo-correct capture at inner ver
   assert.equal(right.flipX, false);
 });
 
-test('dirt-window-inner-edges meets targetExpect after inner-cavity normalization', () => {
+test('dirt-window-inner-edges meets targetExpect under vendor-aligned resolution', () => {
   const space = loadTileSpaceFromFile(path.join(SNIPPETS, 'dirt-window-inner-edges.json'));
+  const report = buildAutotileReport(space);
+  const errors = assertExpectations(space, report, space.targetExpect ?? []);
+  assert.equal(errors.length, 0, errors.join('\n'));
+});
+
+test('mountain-window-corner meets targetExpect for window-top inner corners', () => {
+  const space = loadTileSpaceFromFile(path.join(SNIPPETS, 'mountain-window-corner.json'));
+  const report = buildAutotileReport(space);
+  const errors = assertExpectations(space, report, space.targetExpect ?? []);
+  assert.equal(errors.length, 0, errors.join('\n'));
+});
+
+test('open-sky-bridge-lintel keeps vendor bridge sprite 25 without normalization', () => {
+  const space = loadTileSpaceFromFile(path.join(SNIPPETS, 'open-sky-bridge-lintel.json'));
   const report = buildAutotileReport(space);
   const errors = assertExpectations(space, report, space.targetExpect ?? []);
   assert.equal(errors.length, 0, errors.join('\n'));

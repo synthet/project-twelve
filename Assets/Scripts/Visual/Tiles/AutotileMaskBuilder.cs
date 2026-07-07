@@ -43,6 +43,7 @@ namespace ProjectTwelve.Visual.Tiles
             InnerCavityRemap = innerCavityRemap;
             NormalizationTrace = AutotileMaskBuilder.BuildNormalizationTrace(
                 stairInteriorRemap,
+                innerCavityRemap,
                 cavityUndersideRemap,
                 materialBoundaryRemap);
         }
@@ -130,6 +131,7 @@ namespace ProjectTwelve.Visual.Tiles
         private static readonly (string Key, string AppliedReason)[] NormalizationOrder =
         {
             ("stairInterior", "diagonal step -> interior fill"),
+            ("innerCavity", "flat lintel span -> underside"),
             ("cavityUnderside", "bridge -> underside"),
             ("materialBoundary", "south row cleared"),
         };
@@ -143,10 +145,11 @@ namespace ProjectTwelve.Visual.Tiles
         /// </summary>
         public static string[] BuildNormalizationTrace(
             bool stairInterior,
+            bool innerCavity,
             bool cavityUnderside,
             bool materialBoundary)
         {
-            bool[] flags = { stairInterior, cavityUnderside, materialBoundary };
+            bool[] flags = { stairInterior, innerCavity, cavityUnderside, materialBoundary };
             List<string> trace = new List<string>(NormalizationOrder.Length);
             for (int i = 0; i < NormalizationOrder.Length; i++)
             {
@@ -210,8 +213,9 @@ namespace ProjectTwelve.Visual.Tiles
         }
 
         /// <summary>
-        /// Connectivity mask: visualMask with south-row foreign-solid support blended in.
-        /// Side and north neighbors never blend across materials.
+        /// Vendor-aligned connectivity mask: same-material blob only (PixelTileEngine <c>GetMask</c>).
+        /// <paramref name="isSolid"/> is ignored here; use <see cref="BuildSolidGroundMask"/> for
+        /// physical-support debug context.
         /// </summary>
         internal static int[,] BuildConnectivityGroundMask(
             Func<int, int, bool> sharesGroundGroup,
@@ -219,32 +223,8 @@ namespace ProjectTwelve.Visual.Tiles
             int worldY,
             Func<int, int, bool> isSolid)
         {
-            if (isSolid == null)
-            {
-                return BuildVisualGroundMask(sharesGroundGroup, worldX, worldY);
-            }
-
-            bool Has(int dx, int dy) => sharesGroundGroup(worldX + dx, worldY + dy);
-            bool CheckSupport(int dx, int dy) => Has(dx, dy) || (dy <= 0 && isSolid(worldX + dx, worldY + dy));
-
-            return new[,]
-            {
-                {
-                    CheckSupport(-1, 1) && CheckSupport(-1, 0) && CheckSupport(0, 1) ? 1 : 0,
-                    CheckSupport(-1, 0) ? 1 : 0,
-                    CheckSupport(-1, -1) && CheckSupport(-1, 0) && CheckSupport(0, -1) ? 1 : 0
-                },
-                {
-                    CheckSupport(0, 1) ? 1 : 0,
-                    1,
-                    CheckSupport(0, -1) ? 1 : 0
-                },
-                {
-                    CheckSupport(1, 1) && CheckSupport(1, 0) && CheckSupport(0, 1) ? 1 : 0,
-                    CheckSupport(1, 0) ? 1 : 0,
-                    CheckSupport(1, -1) && CheckSupport(1, 0) && CheckSupport(0, -1) ? 1 : 0
-                }
-            };
+            _ = isSolid;
+            return BuildVisualGroundMask(sharesGroundGroup, worldX, worldY);
         }
 
         /// <summary>
@@ -290,48 +270,14 @@ namespace ProjectTwelve.Visual.Tiles
             materialBoundaryRemap = false;
             innerCavityRemap = false;
 
-            if (TryRemapStairInteriorDiagonalMask(mask, isSurfaceTile, worldX, worldY, out int[,] stairInterior))
-            {
-                stairInteriorRemap = true;
-                return stairInterior;
-            }
-
-            if (TryRemapCavityInnerEdgeMask(
-                    mask,
-                    sharesGroundGroup,
-                    isSolid,
-                    worldX,
-                    worldY,
-                    out int[,] innerCavity))
-            {
-                innerCavityRemap = true;
-                return innerCavity;
-            }
-
-            if (TryRemapCavityBridgeToUnderside(
-                    mask,
-                    sharesGroundGroup,
-                    isSolid,
-                    worldX,
-                    worldY,
-                    out int[,] cavityUnderside))
-            {
-                cavityUndersideRemap = true;
-                return cavityUnderside;
-            }
-
-            if (TryRemapMaterialBoundaryCornerMask(
-                    mask,
-                    sharesGroundGroup,
-                    isSolid,
-                    worldX,
-                    worldY,
-                    out int[,] boundary))
-            {
-                materialBoundaryRemap = true;
-                return boundary;
-            }
-
+            // Vendor alignment: the base PixelTileEngine autotiler has no normalization layer — it
+            // resolves the raw blob mask directly (exact match -> mirror -> fallback). The project
+            // normalization remaps (stairInterior / innerCavity / cavityUnderside / materialBoundary)
+            // are intentionally disabled so ground resolution matches vendor behavior exactly. The
+            // TryRemap* helpers below are retained for reference/tests but are no longer invoked.
+            _ = sharesGroundGroup;
+            _ = isSolid;
+            _ = isSurfaceTile;
             return mask;
         }
 
@@ -435,6 +381,11 @@ namespace ProjectTwelve.Visual.Tiles
         {
             remapped = null;
             if (!HasFilledSouthRow(mask))
+            {
+                return false;
+            }
+
+            if (IsCavityInnerCornerMask(mask))
             {
                 return false;
             }
@@ -635,6 +586,25 @@ namespace ProjectTwelve.Visual.Tiles
         internal static bool HasFilledSouthRow(int[,] mask)
         {
             return mask[0, 2] == 1 || mask[1, 2] == 1 || mask[2, 2] == 1;
+        }
+
+        /// <summary>
+        /// Concave inner-corner topologies that should resolve to vendor sprite 18 (+flipX), not flat underside 17.
+        /// </summary>
+        internal static bool IsCavityInnerCornerMask(int[,] mask)
+        {
+            bool southWestNotch = mask[0, 2] == 1 && mask[1, 2] == 1 && mask[2, 2] == 0;
+            bool southEastNotch = mask[0, 2] == 0 && mask[1, 2] == 1 && mask[2, 2] == 1;
+            if (southWestNotch || southEastNotch)
+            {
+                return true;
+            }
+
+            bool eastReentrant = mask[2, 0] == 0 && mask[1, 0] == 1 && mask[0, 0] == 1
+                && mask[0, 2] == 1 && mask[1, 2] == 1 && mask[2, 2] == 1;
+            bool westReentrant = mask[0, 0] == 0 && mask[1, 0] == 1 && mask[2, 0] == 1
+                && mask[0, 2] == 1 && mask[1, 2] == 1 && mask[2, 2] == 1;
+            return eastReentrant || westReentrant;
         }
 
         internal static int[,] ClearSouthRow(int[,] mask)

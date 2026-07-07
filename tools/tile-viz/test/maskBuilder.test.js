@@ -45,16 +45,20 @@ test('solid mask includes foreign stone on all sides', () => {
   assert.equal(solid[0][1], 0);
 });
 
-test('connectivity blends foreign solid below on south row only', () => {
+test('connectivity mask matches visual mask (vendor GetMask — no foreign-solid blend)', () => {
   const worldX = 10;
   const worldY = 4;
   const sharesGround = (x, y) => x === worldX && (y === worldY || y === worldY - 1 || y === worldY - 2);
-  const isSolid = (x, y) => x === worldX && (y === worldY || y === worldY - 1 || y === worldY - 2);
-  const stoneMask = buildConnectivityGroundMask(sharesGround, worldX, worldY, isSolid);
-  assert.equal(stoneMask[1][0], 0, 'stone must not connect to foreign dirt above');
+  const isSolid = (x, y) =>
+    (x === worldX && (y === worldY || y === worldY - 1 || y === worldY - 2))
+    || (x === worldX + 1 && y === worldY - 2);
+  const visual = buildVisualGroundMask(sharesGround, worldX, worldY);
+  const connectivity = buildConnectivityGroundMask(sharesGround, worldX, worldY, isSolid);
+  assert.deepEqual(connectivity, visual, 'foreign solid beside/below must not change connectivity');
+  assert.equal(connectivity[1][0], 0, 'stone must not connect to foreign dirt above');
 });
 
-test('material boundary does not need corner remap and resolves to top surface 2', () => {
+test('material boundary resolves vendor rules without normalization', () => {
   const sharesGround = (x, y) => {
     if (x === 2 && y === 20) {
       return x === 2 && (y === 20 || y === 19);
@@ -73,15 +77,15 @@ test('material boundary does not need corner remap and resolves to top surface 2
   const build = buildGroundMaskDetailed(sharesGround, 2, 20, isSolid);
   assert.equal(build.normalization.materialBoundary, false);
   const result = resolveSpriteId(tileset(), build.finalMask);
-  assert.equal(result.spriteId, '2');
-  assert.equal(result.flipX, false);
+  assert.equal(result.spriteId, '24');
+  assert.equal(result.flipX, true);
 });
 
-test('re-entrant dirt beside stone resolves 11 not interior fill 9/10', () => {
+test('re-entrant dirt beside stone resolves vendor corner 16 not interior fill 9/10', () => {
   const space = loadTileSpaceFromFile(path.join(__dirname, 'fixtures', 'snippets', 'dirt-stone-reentrant-west.json'));
   const report = buildAutotileReport(space);
   const tile = report.tiles.find((t) => t.x === 1 && t.y === 1);
-  assert.equal(tile.autotile.ground.spriteId, '11');
+  assert.equal(tile.autotile.ground.spriteId, '16');
   assert.notEqual(tile.autotile.ground.spriteId, '9');
   assert.notEqual(tile.autotile.ground.spriteId, '10');
 });
@@ -97,7 +101,7 @@ test('pillar mask stays 21 not 22 or 25', () => {
   assert.notEqual(result.spriteId, '25');
 });
 
-test('cavity lintel with diagonal opening remaps to underside 17', () => {
+test('cavity inner-corner south notch is not flattened to underside 17', () => {
   const mask = [
     [1, 1, 1],
     [1, 1, 1],
@@ -112,17 +116,18 @@ test('cavity lintel with diagonal opening remaps to underside 17', () => {
     return false;
   };
   const remapped = tryRemapCavityInnerEdgeMask(mask, sharesGround, isSolid, -114, 29);
-  assert.ok(remapped);
-  const result = resolveSpriteId(tileset(), remapped);
-  assert.equal(result.spriteId, '17');
+  assert.equal(remapped, null);
+  const result = resolveSpriteId(tileset(), mask);
+  assert.equal(result.spriteId, '18');
+  assert.equal(result.flipX, true);
 });
 
-test('dirt-window-inner-edges target lintel resolves 17 not 18', () => {
+test('dirt-window-inner-edges flat lintel middle still resolves 17', () => {
   const space = loadTileSpaceFromFile(path.join(__dirname, 'fixtures', 'snippets', 'dirt-window-inner-edges.json'));
   const report = buildAutotileReport(space);
-  const tile = report.tiles.find((t) => t.x === -114 && t.y === 29);
+  const tile = report.tiles.find((t) => t.x === -113 && t.y === 29);
   assert.equal(tile.autotile.ground.spriteId, '17');
-  assert.equal(tile.autotile.ground.normalization.innerCavity, true);
+  assert.equal(tile.autotile.ground.normalization.innerCavity, false);
 });
 
 test('foreign solid below does not trigger cavity underside remap', () => {

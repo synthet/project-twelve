@@ -4,7 +4,7 @@ title: Autotile Drift RCA Playbook
 description: Layered workflow to classify tile-viz vs Unity Play Mode autotile drift by world data, resolver ids, cover, and pixels.
 resource: wiki/autotile-drift-rca.md
 tags: [docs, wiki, rendering, autotile, p1, debug]
-timestamp: 2026-07-06T00:10:00Z
+timestamp: 2026-07-06T02:51:00Z
 ---
 
 # Autotile Drift RCA Playbook
@@ -81,7 +81,9 @@ Per-cell debug (offline):
 node scripts/log-autotile-debug-cells.mjs test/fixtures/snippets/dirt-window-inner-edges.json --compact -114 29 -111 28
 ```
 
-**F3 overlay:** cycle to `MismatchBaseline` — red cells are ground sprite/flip mismatches vs baseline (when world tile ids match). Use `ResolveDetail` for per-cell ground sprite id, flip notch, compact mask (`011/011/000` layout), and green/red baseline match tint.
+**F3:** `GroundCoverSplit` for ground + cover sprite ids (bottom / top half).
+
+**F3 overlay:** cycle to `ResolveDetail` for per-cell ground sprite id, flip notch, compact mask (`011/011/000` layout), and green/red baseline match tint. Use `CoordinateLabel` to read world tile coordinates when correlating MCP `tile_at` or baseline coords. F3 logs mode name and index to the Console.
 
 **Atlas layout:** when ids and masks match offline but pixels look rotated or inverted, run **ProjectTwelve → Visual → Validate Ground Autotile Sheets** in the Editor. Failures indicate TextureImporter slice order drift in `Assets/_Licensed/` — fix slices per [ground-autotile-32-rules.md](ground-autotile-32-rules.md); do not compensate in rule tables.
 
@@ -97,8 +99,6 @@ node scripts/compare-autotile-baseline.mjs \
   test/fixtures/captures/sandbox-scene-mountain.json \
   --only cover --coords -102,30 -87,29
 ```
-
-**F3:** `CoverSpriteIdLabel` or `GroundCoverSplit` (ground bottom, cover top half).
 
 ## Layer 4 — PNG compositing
 

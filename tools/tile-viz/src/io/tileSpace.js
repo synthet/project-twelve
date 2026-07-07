@@ -19,8 +19,13 @@ export function loadTileSpaceFromFile(filePath) {
   const resolvedPath = path.resolve(filePath);
   const doc = JSON.parse(text);
   const sidecarPath = resolvedPath.replace(/\.json$/i, '.visual-overrides');
-  if (fs.existsSync(sidecarPath) && doc.visualOverrides === undefined) {
-    doc.visualOverrides = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+  const sidecarJsonPath = resolvedPath.replace(/\.json$/i, '.visual-overrides.json');
+  if (doc.visualOverrides === undefined) {
+    if (fs.existsSync(sidecarJsonPath)) {
+      doc.visualOverrides = JSON.parse(fs.readFileSync(sidecarJsonPath, 'utf8'));
+    } else if (fs.existsSync(sidecarPath)) {
+      doc.visualOverrides = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+    }
   }
   return loadTileSpace(doc, path.dirname(resolvedPath));
 }
@@ -202,21 +207,35 @@ function normalizeMcpDump(doc) {
 
 
 function normalizeVisualOverrides(input) {
-  const list = Array.isArray(input) ? input : input?.overrides;
+  const list = Array.isArray(input) ? input : input?.visualOverrides ?? input?.overrides;
   if (!Array.isArray(list)) {
     return [];
   }
   return list
-    .filter((entry) => Number.isFinite(entry?.x) && Number.isFinite(entry?.y) && entry.layer)
-    .map((entry) => ({
-      x: entry.x,
-      y: entry.y,
-      layer: entry.layer,
-      spriteId: entry.spriteId != null ? String(entry.spriteId) : null,
-      flipX: entry.flipX ?? false,
-      flipY: entry.flipY ?? false,
-      rotationDegrees: entry.rotationDegrees ?? 0,
-    }));
+    .map((entry) => {
+      if (!Number.isFinite(entry?.x) || !Number.isFinite(entry?.y)) {
+        return null;
+      }
+      const layer = entry.layer ?? 'ground';
+      const spriteId = entry.overrideSpriteId ?? entry.spriteId;
+      if (spriteId == null) {
+        return null;
+      }
+      return {
+        x: entry.x,
+        y: entry.y,
+        layer,
+        tileset: entry.tileset ?? null,
+        autoSpriteId: entry.autoSpriteId ?? null,
+        autoFlipX: entry.autoFlipX ?? false,
+        spriteId: String(spriteId),
+        flipX: entry.overrideFlipX ?? entry.flipX ?? false,
+        flipY: entry.overrideFlipY ?? entry.flipY ?? false,
+        rotationDegrees: entry.rotation ?? entry.rotationDegrees ?? 0,
+        note: entry.note ?? null,
+      };
+    })
+    .filter(Boolean);
 }
 
 function normalizeTile(t) {

@@ -1,11 +1,8 @@
-// Phase 1 (inner cavities): lock the already-correct resolution and guard the cavity
-// normalizer against over-broad firing.
-//
-// Finding: the isolated 1x1 / 2x1 / 1x2 / door cavities already resolve correctly — cavity
-// lintels normalize to the underside sprite 17 via cavityUnderside, embedded window inner
-// walls read as the edge sprite 8, thin (1-wide) walls read as the vertical shaft 21. No new
-// TryRemapCavityInnerEdgeMask predicate is warranted for these shapes; these tests pin that
-// behavior and prove the existing cavityUnderside normalizer stays narrow.
+// Vendor alignment: the project normalization layer is disabled, so ground cells resolve
+// straight from the raw blob mask (exact match -> mirror -> fallback), exactly like the base
+// PixelTileEngine autotiler. No normalizer ever fires; 1-wide cavity lintels/floors read as the
+// vendor horizontal-shaft sprite 25 (not underside 17), and window-top corners read inner-corner
+// 18 (+flipX) — all straight from the raw rules.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,7 +26,8 @@ function cavityCells(rep) {
   return rep.tiles.filter((t) => t.autotile?.ground?.normalization?.cavityUnderside);
 }
 
-// Positive: cavity lintels normalize to the underside sprite 17 via cavityUnderside.
+// Vendor alignment: no normalizer fires on any cavity fixture, and the final mask equals the
+// raw connectivity mask (nothing remapped). The 1-wide lintels/floors read as vendor sprite 25.
 const cavityFixtures = [
   ['dirt-hole-1x1.json', [[1, 2], [1, 0]]],
   ['dirt-window-1x1.json', [[1, 2], [1, 0]]],
@@ -41,24 +39,19 @@ const cavityFixtures = [
   ['dirt-hole-door.json', [[1, 3], [2, 3], [1, 0], [2, 0]]],
 ];
 
-for (const [file, lintels] of cavityFixtures) {
-  test(`${file}: cavity lintels normalize to underside 17`, () => {
-    const { rep, byKey } = report(file);
-    const fired = cavityCells(rep);
-    assert.ok(fired.length > 0, 'cavityUnderside should fire on at least one lintel');
-    for (const t of fired) {
-      assert.equal(t.autotile.ground.spriteId, '17', `cavity cell (${t.x},${t.y}) resolves to 17`);
-      assert.match(
-        t.autotile.ground.normalizationTrace.at(-1),
-        /^cavityUnderside: applied/,
-        `trace records the applied normalizer at (${t.x},${t.y})`,
-      );
-    }
-    for (const [x, y] of lintels) {
-      const g = byKey.get(`${x},${y}`);
-      assert.ok(g, `lintel (${x},${y}) present`);
-      assert.equal(g.spriteId, '17', `lintel (${x},${y}) is 17`);
-      assert.equal(g.normalization.cavityUnderside, true, `lintel (${x},${y}) went through cavityUnderside`);
+for (const [file] of cavityFixtures) {
+  test(`${file}: resolves raw vendor rules with normalization disabled`, () => {
+    const { rep } = report(file);
+    const solids = rep.tiles.filter((t) => t.autotile?.ground);
+    assert.ok(solids.length > 0, 'fixture has solid ground cells');
+    assert.equal(cavityCells(rep).length, 0, 'no cavityUnderside remap fires under vendor alignment');
+    for (const t of solids) {
+      const g = t.autotile.ground;
+      assert.equal(g.normalization.stairInterior, false, `(${t.x},${t.y}) stairInterior off`);
+      assert.equal(g.normalization.innerCavity, false, `(${t.x},${t.y}) innerCavity off`);
+      assert.equal(g.normalization.cavityUnderside, false, `(${t.x},${t.y}) cavityUnderside off`);
+      assert.equal(g.normalization.materialBoundary, false, `(${t.x},${t.y}) materialBoundary off`);
+      assert.deepEqual(g.mask, g.connectivityMask, `(${t.x},${t.y}) mask not remapped`);
     }
   });
 }
@@ -79,7 +72,21 @@ test('embedded window inner vertical walls read as the edge sprite 8 without nor
   assert.equal(right.partnerSubstitution, false);
 });
 
-// Negative: the cavity normalizer must stay narrow — it may not fire on cliffs, slopes,
+test('mountain-window-corner inner corners resolve 18 without innerCavity flattening', () => {
+  const { byKey } = report('mountain-window-corner.json');
+  for (const [x, y, flipX] of [[-104, 26, true], [-102, 26, false], [-108, 29, true], [-106, 29, false]]) {
+    const g = byKey.get(`${x},${y}`);
+    assert.ok(g, `(${x},${y}) present`);
+    assert.equal(g.spriteId, '18', `(${x},${y}) sprite`);
+    assert.equal(g.flipX, flipX, `(${x},${y}) flipX`);
+    assert.equal(g.normalization.innerCavity, false, `(${x},${y}) innerCavity`);
+  }
+  for (const [x, y] of [[-103, 26], [-107, 29]]) {
+    const g = byKey.get(`${x},${y}`);
+    assert.equal(g.spriteId, '17', `flat middle (${x},${y})`);
+    assert.equal(g.normalization.innerCavity, false);
+  }
+});
 // vertical walls, overhangs, undersides, or plain corners.
 const negativeFixtures = [
   'slope-ascending-long.json',

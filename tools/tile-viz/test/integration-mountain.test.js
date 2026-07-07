@@ -12,20 +12,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CAPTURE = path.join(__dirname, 'fixtures', 'captures', 'sandbox-scene-mountain.json');
 
 const spotChecks = [
-  { x: -113, y: 26, ground: { spriteId: '2', flipX: false } },
+  { x: -113, y: 26, ground: { spriteId: '0', flipX: false } },
   { x: -112, y: 26, ground: { spriteId: '2', flipX: false } },
   { x: -117, y: 25, ground: { spriteId: '17', flipX: false } },
   { x: -90, y: 12, ground: { spriteId: '9', flipX: false } },
 ];
 
 const windowLintelSpots = [
-  { x: -114, y: 29, ground: { spriteId: '17', flipX: false } },
+  { x: -114, y: 29, ground: { spriteId: '18', flipX: true } },
   { x: -113, y: 29, ground: { spriteId: '17', flipX: false } },
+  { x: -104, y: 26, ground: { spriteId: '18', flipX: true } },
+  { x: -103, y: 26, ground: { spriteId: '17', flipX: false } },
+  { x: -102, y: 26, ground: { spriteId: '18', flipX: false } },
+  { x: -108, y: 29, ground: { spriteId: '18', flipX: true } },
+  { x: -107, y: 29, ground: { spriteId: '17', flipX: false } },
+  { x: -106, y: 29, ground: { spriteId: '18', flipX: false } },
   { x: -114, y: 28, ground: { spriteId: '8', flipX: true } },
   { x: -111, y: 28, ground: { spriteId: '8', flipX: false } },
-  { x: -113, y: 27, ground: { spriteId: '2', flipX: false } },
-  { x: -111, y: 27, ground: { spriteId: '11', flipX: false } },
-  { x: -114, y: 26, ground: { spriteId: '9', flipX: false } },
+  { x: -113, y: 27, ground: { spriteId: '25', flipX: false } },
+  { x: -111, y: 27, ground: { spriteId: '31', flipX: true } },
+  { x: -114, y: 26, ground: { spriteId: '16', flipX: true } },
 ];
 
 const floatingIslandUndersideSpots = [

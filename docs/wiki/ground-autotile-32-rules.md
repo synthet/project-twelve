@@ -4,13 +4,22 @@ title: Ground Autotile Rule Spec — PixelFantasy 32-Tile Ground Sheets
 description: Canonical 32 ground autotile masks, mirrored scenarios, and acceptance checks for PixelFantasy 128×64 terrain sheets.
 resource: wiki/ground-autotile-32-rules.md
 tags: [docs, wiki, autotile, visual, p1, reference]
-timestamp: 2026-07-05T06:00:00Z
+timestamp: 2026-07-06T06:10:00Z
 okf_version: 0.1
 ---
 
 # Ground Autotile Rule Spec — PixelFantasy 32-Tile Ground Sheets
 
 This spec documents the 32 ground autotile scenarios used by the PixelFantasy PixelTileEngine terrain sheets.
+
+**Document map**
+
+| Doc | Role |
+|-----|------|
+| This page | Canonical 32 masks, mirroring policy, acceptance checks |
+| [`autotile-algorithm.md`](autotile-algorithm.md) | Mask build, blob corners, normalization layer (§8), parity |
+| [`VISUAL_BEHAVIOR_SPEC.md`](../VISUAL_BEHAVIOR_SPEC.md) | Behavioral contract for implementers |
+| [`autotile-next-actions-plan.md`](autotile-next-actions-plan.md) | Roadmap and fixture workflow (not behavior authority) |
 
 ## Mask convention
 
@@ -68,7 +77,7 @@ The 32 sprites are indexed row-major on a 128×64 sheet of 16×16 tiles:
 | 22 | `010 / 011 / 011` | West-open vertical cap/body with north/east/south continuity | East-open mirror |
 | 23 | `000 / 111 / 110` | Top-exposed run with SE diagonal open | SW diagonal open |
 | 24 | `000 / 011 / 000` | One-sided horizontal lip/cap: connected only east | Connected only west |
-| 25 | `000 / 111 / 000` | One-tile-high horizontal bridge/run | No mirror needed |
+| 25 | `000 / 111 / 000` | One-tile-high horizontal bridge/run (horizontal shaft — middle; top and bottom borders, connects left and right) | No mirror needed |
 | 26 | `010 / 111 / 010` | Four-way plus junction: N/S/W/E connected, diagonals open | No mirror needed |
 | 27 | `010 / 110 / 010` | T-junction/side pillar: N/W/S connected, east open | N/E/S connected mirror |
 | 28 | `000 / 010 / 010` | Vertical top cap: connected only downward | No mirror needed |
@@ -87,17 +96,11 @@ Two sprite pairs intentionally share the same mask:
 
 For a solid ground cell:
 
-1. Build a raw 3×3 same-material/same-group connectivity mask. For the **south row only**,
-   a foreign solid below counts as connected (blend-below), so buried tiles resting on
-   another material resolve as interior/top families instead of underside roots.
-2. Apply project-specific normalizations:
-   - stair-step interior support normalization
-   - material-boundary corner normalization
-   - grass/cover cliff handling
-
-   Undersides/ceilings and vertical faces are **not** remapped: they resolve through the
-   authored underside family (`14`–`17`, `31`) and face sprites (`8`/`22` + `flipX`) from
-   their raw masks.
+1. Build a raw 3×3 same-material/same-group blob mask (`GetMask` parity). Foreign materials never
+   connect on any neighbor. See [`autotile-algorithm.md`](autotile-algorithm.md) §3.
+2. **Vendor-aligned pass-through** — `NormalizeGroundMask` currently returns the connectivity mask
+   unchanged (normalization disabled). See [`autotile-algorithm.md`](autotile-algorithm.md) §8 for
+   retained `TryRemap*` helpers (reference/tests only) and window/hole vendor outcomes.
 3. Resolve against the exact 32 ground rules.
 4. If no direct match, try the same rule pattern with row flip (`flipInput=true`); return the **same sprite ID** with `flipX = true` when matched.
 5. If still none, try column flip (`flipColumns=true`); return the **same sprite ID** with `flipX = true` when matched.
@@ -145,6 +148,6 @@ Important visual sanity checks:
 - cave ceilings / hanging undersides should use the authored underside family (`14`–`17`, `31`), not flipped top sprites
 - side-connected cliff runs may use side-cap variants such as `7`, `8`, `22`, `24`, `27`, `30`, depending on the normalized topology
 - dirt/stone re-entrant material lips should not collapse into fill `9/10`
-- window/hole inner-cavity lintels should resolve `17` (underside), not diagonal-body `18`, when a south-row diagonal opens into the carved void (`dirt-window-inner-edges` fixture)
+- window/hole cells (vendor-aligned): bridge lintel `000/111/000` → **25**; flat span `111/111/000` → **17**; top corners → **18** (+`flipX`); see [`autotile-algorithm.md`](autotile-algorithm.md) §8 and fixtures `open-sky-bridge-lintel`, `mountain-window-corner`
 - inner vertical window frames should resolve `8` (+`flipX` when chirality requires), not outside-corner `0`, when halo-correct neighbor context is present
 - top-left and top-right corners should be visually paired; avoid accidental mirrored dirt-noise artifacts if an authored opposite sprite exists

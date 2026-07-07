@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using ProjectTwelve.Sandbox.Registry;
+using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 
 /// <summary>
@@ -156,8 +157,27 @@ public sealed class SandboxSaveLoadTests
             sidecarPath);
         Assert.IsTrue(File.Exists(sidecarPath), "Saving must write the visual override sidecar next to the normal save.");
 
-        SandboxVisualOverrideSaveData sidecar = JsonUtility.FromJson<SandboxVisualOverrideSaveData>(File.ReadAllText(sidecarPath));
-        Assert.IsFalse(sidecar.HasOverrides, "The default sidecar is an empty override map.");
+        AutotileVisualOverrideMap sidecarMap = new AutotileVisualOverrideMap();
+        VisualOverridePersistence.ReadFromPath(sidecarPath, sidecarMap);
+        Assert.IsFalse(sidecarMap.HasOverrides, "The default sidecar is an empty override map.");
+    }
+
+    [Test]
+    public void SaveToPath_WritesPopulatedVisualOverrideSidecar()
+    {
+        SandboxWorld world = CreateWorld();
+        world.SetVisualOverride(2, 3, AutotileVisualLayer.Ground, "Humus", "17", overrideFlipX: true);
+        string path = TempFile("override-save.json");
+        world.SaveToPath(path);
+
+        string sidecarPath = SandboxWorld.GetVisualOverrideSidecarPath(path);
+        tempFiles.Add(sidecarPath);
+        AutotileVisualOverrideMap loaded = new AutotileVisualOverrideMap();
+        VisualOverridePersistence.ReadFromPath(sidecarPath, loaded);
+
+        Assert.IsTrue(loaded.TryGetOverride(new Vector2Int(2, 3), AutotileVisualLayer.Ground, "Humus", out AutotileVisualOverride entry));
+        Assert.AreEqual("17", entry.overrideSpriteId);
+        Assert.IsTrue(entry.overrideFlipX);
     }
 
     [Test]
@@ -176,9 +196,47 @@ public sealed class SandboxSaveLoadTests
         SandboxWorld loadedWorld = CreateWorld();
         loadedWorld.LoadFromPath(path);
 
-        Assert.IsNotNull(loadedWorld.VisualOverrideSaveData, "Missing sidecar files must load as an empty override map.");
-        Assert.IsFalse(loadedWorld.VisualOverrideSaveData.HasOverrides, "Missing sidecar files must not be required for compatibility.");
+        Assert.IsFalse(loadedWorld.HasVisualOverrides, "Missing sidecar files must not be required for compatibility.");
         Assert.AreEqual(stone, loadedWorld.GetTile(2, 3).id, "Loading sidecar metadata must not change simulation tile ids.");
+    }
+
+    [Test]
+    public void SaveToPath_WritesPopulatedCoverVisualOverrideSidecar()
+    {
+        SandboxWorld world = CreateWorld();
+        world.SetVisualOverride(2, 3, AutotileVisualLayer.Cover, "GrassA", "4", overrideFlipX: true);
+        string path = TempFile("cover-override-save.json");
+        world.SaveToPath(path);
+
+        string sidecarPath = SandboxWorld.GetVisualOverrideSidecarPath(path);
+        tempFiles.Add(sidecarPath);
+        AutotileVisualOverrideMap loaded = new AutotileVisualOverrideMap();
+        VisualOverridePersistence.ReadFromPath(sidecarPath, loaded);
+
+        Assert.IsTrue(loaded.TryGetOverride(new Vector2Int(2, 3), AutotileVisualLayer.Cover, "GrassA", out AutotileVisualOverride entry));
+        Assert.AreEqual("4", entry.overrideSpriteId);
+        Assert.IsTrue(entry.overrideFlipX);
+        Assert.AreEqual(AutotileVisualLayerNames.Cover, entry.layer);
+    }
+
+    [Test]
+    public void LoadFromPath_HydratesVisualOverrideSidecarIntoMap()
+    {
+        SandboxWorld savedWorld = CreateWorld();
+        savedWorld.SetVisualOverride(4, 5, AutotileVisualLayer.Ground, "Humus", "12");
+        string path = TempFile("hydrate-overrides.json");
+        savedWorld.SaveToPath(path);
+
+        SandboxWorld loadedWorld = CreateWorld();
+        loadedWorld.LoadFromPath(path);
+
+        Assert.IsTrue(loadedWorld.HasVisualOverrides);
+        Assert.IsTrue(loadedWorld.AutotileVisualOverrides.TryGetOverride(
+            new Vector2Int(4, 5),
+            AutotileVisualLayer.Ground,
+            "Humus",
+            out AutotileVisualOverride entry));
+        Assert.AreEqual("12", entry.overrideSpriteId);
     }
 
     [Test]
