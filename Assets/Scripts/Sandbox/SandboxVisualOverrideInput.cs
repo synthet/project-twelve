@@ -20,6 +20,8 @@ public sealed class SandboxVisualOverrideInput : MonoBehaviour
     [SerializeField] private Camera targetCamera;
     [SerializeField] private float editRange = 6f;
 
+    internal Camera TargetCamera => targetCamera;
+
     private Vector2Int selectedCell;
     private AutotileVisualLayer selectedLayer = AutotileVisualLayer.Ground;
     private string selectedTileset;

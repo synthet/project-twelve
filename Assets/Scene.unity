@@ -472,6 +472,7 @@ MonoBehaviour:
   placeTileId: core:dirt
   editRange: 6
   saveFileName: sandbox-world.json
+  editCamera: {fileID: 100002}
 --- !u!114 &300009
 MonoBehaviour:
   m_ObjectHideFlags: 0

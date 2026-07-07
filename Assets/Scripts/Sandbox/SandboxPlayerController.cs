@@ -1,6 +1,3 @@
-using System.IO;
-using Newtonsoft.Json.Linq;
-using ProjectTwelve.Sandbox.Debug;
 using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
@@ -11,6 +8,7 @@ using UnityEngine.InputSystem;
 public sealed class SandboxPlayerController : MonoBehaviour
 {
     [SerializeField] private SandboxWorld world;
+    [SerializeField] private Camera editCamera;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float jumpVelocity = 11f;
     [SerializeField] private string placeTileId = "core:dirt";
@@ -91,7 +89,6 @@ public sealed class SandboxPlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
-        mainCamera = Camera.main;
         placeTileRuntimeIndex = SandboxRegistries.Tiles.GetIndex(placeTileId);
 
         PhysicsMaterial2D frictionless = SandboxPhysicsMaterials.ZeroFriction;
@@ -200,49 +197,13 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private void HandleTileEditing()
     {
         EnsureMainCamera();
-
-        bool remove = SandboxScreenPointer.WasLeftButtonPressedThisFrame();
-        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame();
-        if (remove || place)
-        {
-            // #region agent log
-            AgentDebugLog.Write(
-                "A",
-                "SandboxPlayerController.HandleTileEditing",
-                "mouse button edge detected",
-                new JObject
-                {
-                    ["remove"] = remove,
-                    ["place"] = place,
-                    ["worldNull"] = world == null,
-                    ["cameraNull"] = mainCamera == null,
-                    ["debugEnabled"] = world != null && world.IsDebugOverrideModeEnabled,
-                    ["appFocused"] = Application.isFocused,
-                });
-            // #endregion
-        }
-
         if (world == null || mainCamera == null || !world.IsDebugOverrideModeEnabled)
         {
-            if (remove || place)
-            {
-                // #region agent log
-                AgentDebugLog.Write(
-                    "B",
-                    "SandboxPlayerController.HandleTileEditing",
-                    "early exit before edit",
-                    new JObject
-                    {
-                        ["worldNull"] = world == null,
-                        ["cameraNull"] = mainCamera == null,
-                        ["debugEnabled"] = world != null && world.IsDebugOverrideModeEnabled,
-                    });
-                // #endregion
-            }
-
             return;
         }
 
+        bool remove = SandboxScreenPointer.WasLeftButtonPressedThisFrame();
+        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame();
         if (!remove && !place)
         {
             return;
@@ -250,53 +211,30 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
         if (!SandboxScreenPointer.TryReadWorldTile(mainCamera, world, out Vector2Int tile))
         {
-            // #region agent log
-            AgentDebugLog.Write(
-                "C",
-                "SandboxPlayerController.HandleTileEditing",
-                "TryReadWorldTile failed",
-                new JObject { ["remove"] = remove, ["place"] = place });
-            // #endregion
             return;
         }
 
-        SandboxScreenPointer.TryReadScreenPosition(out Vector2 screen);
-        Vector3 worldPoint = SandboxScreenPointer.ScreenToWorld2D(mainCamera, screen);
-        int tileIdBefore = world.GetTile(tile.x, tile.y).id;
-        int targetTileId = remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex;
-        bool edited = world.TrySetDebugOverrideTile(tile.x, tile.y, targetTileId);
-        int tileIdAfter = world.GetTile(tile.x, tile.y).id;
-
-        // #region agent log
-        AgentDebugLog.Write(
-            "F",
-            "SandboxPlayerController.HandleTileEditing",
-            "edit attempt completed",
-            new JObject
-            {
-                ["runId"] = "post-fix",
-                ["screenX"] = screen.x,
-                ["screenY"] = screen.y,
-                ["worldX"] = worldPoint.x,
-                ["worldY"] = worldPoint.y,
-                ["cameraX"] = mainCamera.transform.position.x,
-                ["cameraY"] = mainCamera.transform.position.y,
-                ["tileX"] = tile.x,
-                ["tileY"] = tile.y,
-                ["remove"] = remove,
-                ["place"] = place,
-                ["targetTileId"] = targetTileId,
-                ["tileIdBefore"] = tileIdBefore,
-                ["tileIdAfter"] = tileIdAfter,
-                ["edited"] = edited,
-                ["placeTileRuntimeIndex"] = placeTileRuntimeIndex,
-            },
-            "post-fix");
-        // #endregion
+        world.TrySetDebugOverrideTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
     }
 
     private void EnsureMainCamera()
     {
+        if (editCamera != null)
+        {
+            mainCamera = editCamera;
+            return;
+        }
+
+        if (visualOverrideInput != null)
+        {
+            Camera sharedCamera = visualOverrideInput.TargetCamera;
+            if (sharedCamera != null)
+            {
+                mainCamera = sharedCamera;
+                return;
+            }
+        }
+
         if (mainCamera == null)
         {
             mainCamera = Camera.main;

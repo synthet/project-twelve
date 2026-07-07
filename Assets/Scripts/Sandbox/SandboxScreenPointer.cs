@@ -1,5 +1,3 @@
-using Newtonsoft.Json.Linq;
-using ProjectTwelve.Sandbox.Debug;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -20,15 +18,6 @@ public static class SandboxScreenPointer
     public static bool TryReadScreenPosition(out Vector2 screenPosition)
     {
         EnsureActions();
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        // Legacy mouse position maps to the Game view in Play Mode (Editor and player builds).
-        if (Application.isPlaying)
-        {
-            screenPosition = Input.mousePosition;
-            return true;
-        }
-#endif
 
 #if ENABLE_INPUT_SYSTEM
         if (Mouse.current != null)
@@ -57,48 +46,23 @@ public static class SandboxScreenPointer
     {
         EnsureActions();
 
-        bool fromAction = false;
-        bool fromMouse = false;
-        bool fromLegacy = false;
-
 #if ENABLE_INPUT_SYSTEM
         if (leftClickAction != null && leftClickAction.WasPressedThisFrame())
         {
-            fromAction = true;
+            return true;
         }
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            fromMouse = true;
+            return true;
         }
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-        if (Input.GetMouseButtonDown(0))
-        {
-            fromLegacy = true;
-        }
+        return Input.GetMouseButtonDown(0);
+#else
+        return false;
 #endif
-
-        bool pressed = fromAction || fromMouse || fromLegacy;
-        if (pressed)
-        {
-            // #region agent log
-            AgentDebugLog.Write(
-                "A",
-                "SandboxScreenPointer.WasLeftButtonPressedThisFrame",
-                "left press source",
-                new JObject
-                {
-                    ["fromAction"] = fromAction,
-                    ["fromMouse"] = fromMouse,
-                    ["fromLegacy"] = fromLegacy,
-                    ["mouseCurrentNull"] = Mouse.current == null,
-                });
-            // #endregion
-        }
-
-        return pressed;
     }
 
     public static bool WasRightButtonPressedThisFrame()
