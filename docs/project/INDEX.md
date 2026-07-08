@@ -11,3 +11,4 @@ okf_version: 0.1
 # Project governance
 
 - [00-backlog-workflow.md](00-backlog-workflow.md) — wiki-ticket + GitHub issue backlog contract
+- [game-mechanics-research.md](game-mechanics-research.md) — transferability report on mechanics from Terraria, Starbound, and Oxygen Not Included.
