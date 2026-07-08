@@ -57,7 +57,13 @@ Or batch mode:
 Unity -batchmode -quit -projectPath . -executeMethod ProjectTwelve.Editor.Visual.VisualCatalogBatchImporter.ImportAllFromCommandLine -logFile Logs/unity-visual-import.log
 ```
 
-Commit updated catalogs in **project-twelve-assets**, then bump the submodule pointer in the main repo.
+Commit updated catalogs in **project-twelve-assets**, then bump the submodule pointer in the main repo:
+
+```bash
+python scripts/publish_assets_submodule.py -m "chore: regenerate visual catalogs" --submodule-checkout main --pull-submodule
+```
+
+Windows: `scripts\publish_assets_submodule.bat`. Skill: `.claude/skills/assets-submodule-publish/SKILL.md` (slash command: `/publish-assets-submodule`).
 
 Offline regeneration (no Unity Editor):
 
