@@ -34,7 +34,7 @@ Optional PNG goldens for `test/render.test.js`. Requires licensed tile PNGs unde
 
 Per-fixture MCP tile/autotile dumps under `captures/*-{tiles,autotile}.json` are on-demand RCA artifacts.
 
-Play Mode baseline drift still uses `Assets/StreamingAssets/AutotileBaselines/` (see [`docs/wiki/autotile-drift-rca.md`](../../../docs/wiki/autotile-drift-rca.md)).
+Play Mode baseline drift still uses `Assets/StreamingAssets/AutotileBaselines/` (see [`docs/wiki/autotile-drift-rca.md`](../../../../docs/wiki/autotile-drift-rca.md)).
 
 ## Regenerate from Unity
 

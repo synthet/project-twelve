@@ -10,14 +10,24 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#")
+SKIP_DIR_PARTS = {".git", "Library", "node_modules"}
+LICENSED_SUBMODULE = ROOT / "Assets" / "_Licensed"
 
 
 def markdown_files() -> list[Path]:
     return sorted(
         path
         for path in ROOT.rglob("*.md")
-        if ".git" not in path.parts and "Library" not in path.parts
+        if not SKIP_DIR_PARTS.intersection(path.parts)
     )
+
+
+def is_licensed_submodule_target(resolved: Path) -> bool:
+    try:
+        resolved.relative_to(LICENSED_SUBMODULE)
+    except ValueError:
+        return False
+    return True
 
 
 def normalize_target(raw: str) -> str:
@@ -42,6 +52,8 @@ def main() -> int:
                 resolved.relative_to(ROOT)
             except ValueError:
                 failures.append(f"{md_file.relative_to(ROOT)}: link escapes repo: {raw}")
+                continue
+            if is_licensed_submodule_target(resolved):
                 continue
             if not resolved.exists():
                 failures.append(f"{md_file.relative_to(ROOT)}: missing link target: {raw}")
