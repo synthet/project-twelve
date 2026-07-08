@@ -21,6 +21,14 @@ determinism, editing, collision, visuals), follow the
 [P1 Vertical-Slice Demo Runbook](p1-vertical-slice-demo.md). Merge-blocking manual checks and
 profiler targets live in [Quality Gates](quality-gates.md).
 
+## WebGL prototype viewer
+
+A proposed [WebGL Prototype Viewer Tool](webgl-prototype-viewer-tool.md) would turn the existing
+`tools/world-viz` and `tools/tile-viz` JavaScript visualizers into a browser-hosted proof-of-concept
+review surface. The intent is a lightweight world microscope for loading seeds, saves, tile-space
+captures, and autotile reports with pan/zoom, tile inspection, overlay toggles, and shareable evidence
+exports while keeping Unity as the authoritative runtime.
+
 ## Debug visualizations (build these early)
 
 Most sandbox bugs are invisible without overlays. Add toggleable gizmos/overlays for:
