@@ -257,19 +257,14 @@ public sealed class AutotileFixtureExportTests
         sb.Append("\"cover\":{");
         Vector2Int aboveKey = new Vector2Int(x, y + 1);
         space.TryGetValue(aboveKey, out SandboxTile above);
-        if (tile.id != SandboxTileIds.Grass || above.IsSolid)
+        // Vendor cover: any exposed-top ground cell (solid here, air above) carries a cover overlay.
+        if (!tile.IsSolid || above.IsSolid)
         {
             sb.Append("\"rendered\":false}");
             return;
         }
 
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (nx, ny) =>
-            {
-                Vector2Int key = new Vector2Int(nx, ny);
-                return space.TryGetValue(key, out SandboxTile neighbor)
-                    && neighbor.id == SandboxTileIds.Grass;
-            },
             (nx, ny) =>
             {
                 Vector2Int key = new Vector2Int(nx, ny);

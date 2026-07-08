@@ -47,8 +47,10 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     public bool TryGetCoverTileset(int tileId, out AutotileTileset tileset)
     {
         tileset = null;
+        // Vendor cover model: the surface overlay applies to any ground material, not just grass, so
+        // every solid ground tile maps to the single configured cover tileset. Air has no cover.
         if (autotileCatalog == null
-            || tileId != SandboxRegistries.GrassIndex
+            || tileId == SandboxRegistries.AirIndex
             || string.IsNullOrEmpty(grassCoverTileset))
         {
             return false;
@@ -77,11 +79,13 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     }
 
     /// <summary>
-    /// Returns whether a grass cover overlay should render on the given tile.
+    /// Returns whether a surface cover overlay should render on the given tile. Vendor model
+    /// (PixelTileEngine <c>SetCover</c>): cover renders on any exposed-top ground cell — solid
+    /// ground here with no solid ground directly above — regardless of ground material.
     /// </summary>
     public bool ShouldRenderGrassCover(int tileId, SandboxTile tileAbove)
     {
-        return tileId == SandboxRegistries.GrassIndex && !tileAbove.IsSolid;
+        return tileId != SandboxRegistries.AirIndex && !tileAbove.IsSolid;
     }
 
     /// <summary>

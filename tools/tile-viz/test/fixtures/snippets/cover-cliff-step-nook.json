@@ -1,0 +1,143 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "cover-cliff-step-nook",
+  "note": "Cover mask neighbor value 2 on both sides resolves cover sprite 2 (cliff-step nook).",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 5,
+  "height": 4,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 3,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    }
+  ],
+  "baselineExpect": [
+    {
+      "x": 2,
+      "y": 2,
+      "ground": {
+        "spriteId": "2",
+        "flipX": false
+      },
+      "cover": {
+        "spriteId": "2",
+        "flipX": false,
+        "rendered": true
+      }
+    }
+  ]
+}

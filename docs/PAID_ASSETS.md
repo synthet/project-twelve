@@ -88,4 +88,4 @@ If you import a paid pack into the public repo by accident:
 2. Re-import under the assets submodule (or push to project-twelve-assets).
 3. Run `python3 scripts/check_paid_assets.py --staged`.
 
-See also [Visual setup](VISUAL_SETUP.md) and [Asset integration](wiki/15-assets-integration.md).
+See also [Visual setup](VISUAL_SETUP.md), [Licensed assets reference](wiki/licensed-assets-reference.md), and [Asset integration](wiki/15-assets-integration.md).

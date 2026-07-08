@@ -1,1 +1,5150 @@
-{"name":"dirt-gap-left-vertical-wall","tiles":[{"x":-109,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,0],[1,1,0]],"solidMask":[[0,0,0],[1,1,0],[1,1,0]],"connectivityMask":[[0,0,0],[1,1,0],[1,1,0]],"rawMask":[[0,0,0],[1,1,0],[1,1,0]],"normalizedMask":[[0,0,0],[1,1,0],[1,1,0]],"mask":[[0,0,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"16","spriteId":"16","flipX":false,"finalSpriteId":"16","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[1,1,0]],"solidMask":[[1,1,0],[1,1,0],[1,1,0]],"connectivityMask":[[1,1,0],[1,1,0],[1,1,0]],"rawMask":[[1,1,0],[1,1,0],[1,1,0]],"normalizedMask":[[1,1,0],[1,1,0],[1,1,0]],"mask":[[1,1,0],[1,1,0],[1,1,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"17","spriteId":"17","flipX":false,"finalSpriteId":"17","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[7,7,0]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":15,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,0],[1,1,0],[0,0,0]],"solidMask":[[1,1,0],[1,1,0],[0,0,0]],"connectivityMask":[[1,1,0],[1,1,0],[0,0,0]],"rawMask":[[1,1,0],[1,1,0],[0,0,0]],"normalizedMask":[[1,1,0],[1,1,0],[0,0,0]],"mask":[[1,1,0],[1,1,0],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"16","spriteId":"16","flipX":true,"finalSpriteId":"16","partnerSubstitution":false,"neighborTileIds":[[7,7,0],[7,7,0],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,1],[1,1,1]],"solidMask":[[0,0,0],[1,1,1],[1,1,1]],"connectivityMask":[[0,0,0],[1,1,1],[1,1,1]],"rawMask":[[0,0,0],[1,1,1],[1,1,1]],"normalizedMask":[[0,0,0],[1,1,1],[1,1,1]],"mask":[[0,0,0],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":false,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":16,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[0,0,0]],"solidMask":[[1,1,1],[1,1,1],[0,0,0]],"connectivityMask":[[1,1,1],[1,1,1],[0,0,0]],"rawMask":[[1,1,1],[1,1,1],[0,0,0]],"normalizedMask":[[1,1,1],[1,1,1],[0,0,0]],"mask":[[1,1,1],[1,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":true,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,1],[1,1,1]],"solidMask":[[0,0,0],[1,1,1],[1,1,1]],"connectivityMask":[[0,0,0],[1,1,1],[1,1,1]],"rawMask":[[0,0,0],[1,1,1],[1,1,1]],"normalizedMask":[[0,0,0],[1,1,1],[1,1,1]],"mask":[[0,0,0],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":false,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":17,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[0,0,0]],"solidMask":[[1,1,1],[1,1,1],[0,0,0]],"connectivityMask":[[1,1,1],[1,1,1],[0,0,0]],"rawMask":[[1,1,1],[1,1,1],[0,0,0]],"normalizedMask":[[1,1,1],[1,1,1],[0,0,0]],"mask":[[1,1,1],[1,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":true,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,1],[1,1,1]],"solidMask":[[0,0,0],[1,1,1],[1,1,1]],"connectivityMask":[[0,0,0],[1,1,1],[1,1,1]],"rawMask":[[0,0,0],[1,1,1],[1,1,1]],"normalizedMask":[[0,0,0],[1,1,1],[1,1,1]],"mask":[[0,0,0],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":false,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":18,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[0,0,0]],"solidMask":[[1,1,1],[1,1,1],[0,0,0]],"connectivityMask":[[1,1,1],[1,1,1],[0,0,0]],"rawMask":[[1,1,1],[1,1,1],[0,0,0]],"normalizedMask":[[1,1,1],[1,1,1],[0,0,0]],"mask":[[1,1,1],[1,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":true,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,1],[1,1,1]],"solidMask":[[0,0,0],[1,1,1],[1,1,1]],"connectivityMask":[[0,0,0],[1,1,1],[1,1,1]],"rawMask":[[0,0,0],[1,1,1],[1,1,1]],"normalizedMask":[[0,0,0],[1,1,1],[1,1,1]],"mask":[[0,0,0],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":false,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":19,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[0,0,0]],"solidMask":[[1,1,1],[1,1,1],[0,0,0]],"connectivityMask":[[1,1,1],[1,1,1],[0,0,0]],"rawMask":[[1,1,1],[1,1,1],[0,0,0]],"normalizedMask":[[1,1,1],[1,1,1],[0,0,0]],"mask":[[1,1,1],[1,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":true,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[1,1,1],[1,1,1]],"solidMask":[[0,0,0],[1,1,1],[1,1,1]],"connectivityMask":[[0,0,0],[1,1,1],[1,1,1]],"rawMask":[[0,0,0],[1,1,1],[1,1,1]],"normalizedMask":[[0,0,0],[1,1,1],[1,1,1]],"mask":[[0,0,0],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":false,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[1,1,1]],"solidMask":[[1,1,1],[1,1,1],[1,1,1]],"connectivityMask":[[1,1,1],[1,1,1],[1,1,1]],"rawMask":[[1,1,1],[1,1,1],[1,1,1]],"normalizedMask":[[1,1,1],[1,1,1],[1,1,1]],"mask":[[1,1,1],[1,1,1],[1,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"9","spriteId":"9","flipX":false,"finalSpriteId":"9","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[7,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":20,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[1,1,1],[1,1,1],[0,0,0]],"solidMask":[[1,1,1],[1,1,1],[0,0,0]],"connectivityMask":[[1,1,1],[1,1,1],[0,0,0]],"rawMask":[[1,1,1],[1,1,1],[0,0,0]],"normalizedMask":[[1,1,1],[1,1,1],[0,0,0]],"mask":[[1,1,1],[1,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"8","spriteId":"8","flipX":true,"finalSpriteId":"8","partnerSubstitution":false,"neighborTileIds":[[7,7,7],[7,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}},{"x":-109,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,0,0],[0,1,1],[0,1,1]],"solidMask":[[0,0,0],[0,1,1],[0,1,1]],"connectivityMask":[[0,0,0],[0,1,1],[0,1,1]],"rawMask":[[0,0,0],[0,1,1],[0,1,1]],"normalizedMask":[[0,0,0],[0,1,1],[0,1,1]],"mask":[[0,0,0],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"0","spriteId":"0","flipX":false,"finalSpriteId":"0","partnerSubstitution":false,"neighborTileIds":[[0,0,0],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-108,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-107,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-106,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-105,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-104,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-103,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-102,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,1,1]],"solidMask":[[0,1,1],[0,1,1],[0,1,1]],"connectivityMask":[[0,1,1],[0,1,1],[0,1,1]],"rawMask":[[0,1,1],[0,1,1],[0,1,1]],"normalizedMask":[[0,1,1],[0,1,1],[0,1,1]],"mask":[[0,1,1],[0,1,1],[0,1,1]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"2","spriteId":"2","flipX":false,"finalSpriteId":"2","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,7,7]],"resolved":true},"cover":{"rendered":false}},{"x":-101,"y":21,"ground":{"tileset":"Rocks","materialGroup":"Rocks","visualMask":[[0,1,1],[0,1,1],[0,0,0]],"solidMask":[[0,1,1],[0,1,1],[0,0,0]],"connectivityMask":[[0,1,1],[0,1,1],[0,0,0]],"rawMask":[[0,1,1],[0,1,1],[0,0,0]],"normalizedMask":[[0,1,1],[0,1,1],[0,0,0]],"mask":[[0,1,1],[0,1,1],[0,0,0]],"normalization":{"stairInterior":false,"cavityUnderside":false,"materialBoundary":false,"innerCavity":false},"matchedRuleId":"0","spriteId":"0","flipX":true,"finalSpriteId":"0","partnerSubstitution":false,"neighborTileIds":[[0,7,7],[0,7,7],[0,0,0]],"resolved":true},"cover":{"rendered":false}}]}
+{
+  "name": "dirt-gap-left-vertical-wall",
+  "tiles": [
+    {
+      "x": -108,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -107,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -106,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -105,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -104,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -103,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -102,
+      "y": 20,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -108,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -107,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -106,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -105,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -104,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -103,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -102,
+      "y": 19,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -108,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -107,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -106,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -105,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -104,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -103,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -102,
+      "y": 18,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -108,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -107,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -106,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -105,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -104,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -103,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -102,
+      "y": 17,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -108,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -107,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -106,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -105,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -104,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -103,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": -102,
+      "y": 16,
+      "ground": {
+        "tileset": "Rocks",
+        "materialGroup": "Rocks",
+        "visualMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "rawMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalizedMask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "mask": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "9",
+          "10"
+        ],
+        "matchedRuleId": "9",
+        "spriteId": "9",
+        "flipX": false,
+        "finalSpriteId": "9",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    }
+  ]
+}

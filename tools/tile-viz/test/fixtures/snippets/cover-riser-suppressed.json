@@ -1,0 +1,78 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "cover-riser-suppressed",
+  "note": "Interior dirt riser under tread has cover.rendered false (solid above).",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 3,
+  "height": 3,
+  "tiles": [
+    {
+      "x": 1,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    }
+  ],
+  "baselineExpect": [
+    {
+      "x": 1,
+      "y": 1,
+      "cover": {
+        "rendered": false
+      }
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "ground": {
+        "spriteId": "28",
+        "flipX": false
+      },
+      "cover": {
+        "spriteId": "0",
+        "flipX": false,
+        "rendered": true
+      }
+    }
+  ]
+}

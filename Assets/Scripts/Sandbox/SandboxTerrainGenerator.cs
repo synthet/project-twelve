@@ -81,7 +81,15 @@ public readonly struct SandboxTerrainGenerator
     public SandboxTile GenerateTile(int worldY, int height)
     {
         int tileId = GetGeneratedTileId(worldY, height);
-        return new SandboxTile(tileId, worldY >= height ? (byte)15 : (byte)4);
+        return new SandboxTile(tileId, GetPrototypeLight(worldY, height));
+    }
+
+    /// <summary>
+    /// Prototype sky-exposure light from a world row and that column's surface height.
+    /// </summary>
+    public static byte GetPrototypeLight(int worldY, int surfaceHeightForColumn)
+    {
+        return worldY >= surfaceHeightForColumn ? (byte)15 : (byte)4;
     }
 
     /// <summary>

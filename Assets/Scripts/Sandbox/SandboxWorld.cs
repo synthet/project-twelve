@@ -407,11 +407,6 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (nx, ny) =>
-            {
-                SandboxTile neighbor = GetTile(nx, ny);
-                return tileVisualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
-            },
             (nx, ny) => GetTile(nx, ny).IsSolid,
             x,
             y);
@@ -436,10 +431,40 @@ public sealed class SandboxWorld : MonoBehaviour
         Vector2Int chunkCoord = WorldToChunkCoord(x, y);
         SandboxChunk chunk = GetOrCreateChunk(chunkCoord);
         Vector2Int local = WorldToLocalCoord(x, y);
-        chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId));
+        byte light = ResolvePlacedTileLight(x, y, tileId);
+        chunk.SetLocalTile(local.x, local.y, new SandboxTile(tileId, light));
         EnsureRenderer(chunkCoord);
         MarkBorderNeighborsDirty(chunks, chunkCoord, local.x, local.y);
         TileFluidWakeRequested?.Invoke(x, y);
+    }
+
+    private byte ResolvePlacedTileLight(int worldX, int worldY, int tileId)
+    {
+        if (tileId == SandboxRegistries.AirIndex)
+        {
+            return 0;
+        }
+
+        SandboxTerrainGenerator generator = CreateTerrainGenerator();
+        return SandboxTerrainGenerator.GetPrototypeLight(worldY, generator.GetSurfaceHeight(worldX));
+    }
+
+    /// <summary>
+    /// Upgrades legacy edited tiles that stored default light 0 so they match procedural brightness.
+    /// </summary>
+    internal static SandboxTile NormalizeEditedTileLight(
+        SandboxTile tile,
+        int worldX,
+        int worldY,
+        SandboxTerrainGenerator generator)
+    {
+        if (!tile.IsSolid || tile.light != 0)
+        {
+            return tile;
+        }
+
+        byte light = SandboxTerrainGenerator.GetPrototypeLight(worldY, generator.GetSurfaceHeight(worldX));
+        return new SandboxTile(tile.id, light, tile.fluid, tile.metadata);
     }
 
     /// <summary>Current fluid amount (0.0–1.0+ under pressure) at a world tile coordinate.</summary>
@@ -631,6 +656,7 @@ public sealed class SandboxWorld : MonoBehaviour
             ? saveData.tilePalette.BuildRemap(SandboxRegistries.Tiles)
             : null;
 
+        SandboxTerrainGenerator generator = CreateTerrainGenerator();
         foreach (SandboxChunkSaveData chunkData in saveData.chunks)
         {
             SandboxChunk chunk = GenerateChunk(chunkData.Coord);
@@ -638,6 +664,8 @@ public sealed class SandboxWorld : MonoBehaviour
             {
                 SandboxTile tile = edit.tile;
                 tile.id = ResolveSavedTileId(tile.id, paletteRemap, chunkData, edit);
+                Vector2Int worldCoord = ChunkLocalToWorld(chunkData.Coord, edit.localX, edit.localY);
+                tile = NormalizeEditedTileLight(tile, worldCoord.x, worldCoord.y, generator);
                 chunk.SetLocalTile(edit.localX, edit.localY, tile, false);
             }
 

@@ -16,8 +16,12 @@ for (const file of fs.readdirSync(SNIPPETS_DIR).filter((f) => f.endsWith('.json'
   test(`snippet fixture ${file}`, () => {
     const space = loadTileSpaceFromFile(path.join(SNIPPETS_DIR, file));
     const report = buildAutotileReport(space);
-    const errors = assertExpectations(space, report);
-    assert.equal(errors.length, 0, errors.join('\n'));
+    const baselineErrors = assertExpectations(space, report, { which: 'baseline' });
+    assert.equal(baselineErrors.length, 0, baselineErrors.join('\n'));
+    if (space.targetExpect?.length) {
+      const targetErrors = assertExpectations(space, report, { which: 'target' });
+      assert.equal(targetErrors.length, 0, targetErrors.join('\n'));
+    }
   });
 }
 

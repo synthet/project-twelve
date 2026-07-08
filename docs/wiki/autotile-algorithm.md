@@ -4,7 +4,7 @@ title: Autotile Algorithm Reference
 description: How ProjectTwelve resolves occupancy into ground and cover sprites — blob mask, direct/mirror resolution, weighted variants, cover rules, and the project normalization layer.
 resource: wiki/autotile-algorithm.md
 tags: [docs, wiki, autotile, visual, reference]
-timestamp: 2026-07-06T05:45:00Z
+timestamp: 2026-07-07T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -129,10 +129,19 @@ Cover tilesets have **6 sprites** and use the cover rules. A cover cell survives
 is ground **at** the cell and **no** ground directly above it — i.e. an exposed top edge; otherwise
 it is not drawn.
 
+Cover is **material-agnostic** (vendor `PixelTileEngine LevelBuilder.SetCover`): the overlay applies
+to *any* exposed-top ground cell regardless of its ground material — dirt, stone, or grass all take
+the same surface cover. It is **not** bound to a "grass" tile. `ShouldRenderGrassCover` therefore
+gates on `tileId != Air && !tileAbove.IsSolid`, and `TryGetCoverTileset` maps every solid ground
+tile to the single configured cover tileset. Only vertical faces (a tile with solid ground directly
+above it) go uncovered — so a stair-stepped slope covers the treads, never the risers.
+
 The cover mask is horizontal: only the middle row (west / center / east) is meaningful. Its
-neighbor values are built by `AutotileMaskBuilder.BuildCoverMask`, which encodes the special value
-`2` = "ground turns the corner here" (a rising ground step beside the cover strip) as distinct from
-a flat cover continuation (`1`) or open air (`0`).
+neighbor values are built by `AutotileMaskBuilder.BuildCoverMask`, which reads each side neighbor by
+**solidity alone**: open air is an end cap (`0`), an exposed-top ground cell continues the run (`1`),
+and a ground cell with more ground stacked directly above it is a rising cliff step (`2`). This
+mirrors vendor `SetCover`, whose bitmap connectivity gives `1` and whose `mask[1,0]`/`mask[1,2]`
+overrides give `2` when ground is present both beside and above the neighbor.
 
 ### 7.1 Cover rule table
 

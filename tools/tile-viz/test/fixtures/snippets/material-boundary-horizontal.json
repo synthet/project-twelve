@@ -58,7 +58,7 @@
       "light": 4
     }
   ],
-  "expect": [
+  "baselineExpect": [
     {
       "x": 0,
       "y": 20,
