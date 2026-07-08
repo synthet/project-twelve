@@ -1,0 +1,27 @@
+{
+  "format": "project-twelve/tile-viz-coverage/v1",
+  "branches": {
+    "ground.blobCorner": ["grass-cover-middle", "platform-grass-corners"],
+    "ground.interiorWeighted": ["grass-cover-middle", "symmetric-pyramid"],
+    "ground.fallback": ["floating-clusters"],
+    "ground.directPass": ["vertical-wall-run", "grass-cover-middle"],
+    "ground.rowMirrorPass": ["grass-cover-middle", "roof-slope-left-vs-right"],
+    "ground.columnMirrorPass": ["column-mirror-ground", "one-sided-house-lip"],
+    "ground.materialBoundary": ["material-boundary-horizontal", "material-boundary-vertical", "dirt-stone-reentrant-west"],
+    "ground.materialBoundaryAntiRegression": ["one-sided-house-lip", "dirt-stone-reentrant-west"],
+    "ground.slopeCaps": ["slope-ascending-long", "slope-descending-long"],
+    "ground.stairDiagonals": ["slope-ascending-stair-run", "slope-descending-stair-run"],
+    "ground.ceilingUnderside": ["ceiling-underside", "ceiling-cover-suppressed", "floating-platform-underside"],
+    "ground.cavityWindow": ["dirt-window-inner-edges", "mountain-window-corner", "open-sky-bridge-lintel", "dirt-hole-1x1"],
+    "cover.neighborValue0": ["grass-cover-middle", "platform-grass-corners"],
+    "cover.neighborValue1": ["grass-cover-middle", "roof-slope-left-vs-right"],
+    "cover.neighborValue2": ["cover-cliff-step-nook"],
+    "cover.suppressedRiser": ["cover-riser-suppressed", "slope-ascending-stair-run"],
+    "cover.suppressedCeiling": ["ceiling-underside", "ceiling-cover-suppressed"],
+    "cover.chirality": ["roof-slope-left-vs-right", "symmetric-pyramid"],
+    "catalog.humusGrouping": ["grass-cover-middle", "platform-grass-corners"],
+    "catalog.rocksGrouping": ["material-boundary-horizontal", "dirt-stone-reentrant-west"],
+    "catalog.oreIsolation": ["ore-dirt-boundary", "ore-mixed-boundary"],
+    "integration.windowScene": ["mountain-window-corner"]
+  }
+}

@@ -4,7 +4,7 @@ title: Visual Integration
 description: Sandbox tile mapping, player avatar composition, creature visuals, and vendor parity for project-owned presentation code.
 resource: wiki/visual-integration.md
 tags: [docs, wiki, visual, rendering, characters]
-timestamp: 2026-07-02T12:00:00Z
+timestamp: 2026-07-08T00:00:00Z
 ---
 
 # Visual integration
@@ -23,6 +23,17 @@ timestamp: 2026-07-02T12:00:00Z
 | Sprite effects | `EffectCatalog`, `SpriteEffectInstance` |
 
 Licensed source art lives in the private **project-twelve-assets** git submodule at `Assets/_Licensed/`. Import paths: `Assets/_Licensed/config/visual-import.txt` (optional override: gitignored `config/visual-import.local-only.txt`).
+
+## Licensed asset inventory
+
+| Audience | Document |
+|----------|----------|
+| Public (contracts + pointers) | [Licensed assets reference](licensed-assets-reference.md) |
+| Submodule maintainers | [`Assets/_Licensed/docs/README.md`](../../Assets/_Licensed/docs/README.md) |
+| Vendor script API + catalogs | [`Assets/_Licensed/docs/vendor/README.md`](../../Assets/_Licensed/docs/vendor/README.md) |
+| Catalog regen + runtime wiring | [`Assets/_Licensed/docs/integration/README.md`](../../Assets/_Licensed/docs/integration/README.md) |
+
+Do not copy full equipment/prop name tables from the submodule into the public repo.
 
 ## Vendor parity (Pixel Heroes Hub)
 
@@ -165,6 +176,7 @@ See [Visual setup](../VISUAL_SETUP.md) for machine configuration and import menu
 
 ## See also
 
+- [Licensed assets reference](licensed-assets-reference.md)
 - [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md)
 - [Rendering and Collision](rendering-and-collision.md)
 - [Asset integration requirements](15-assets-integration.md)

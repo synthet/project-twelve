@@ -1,0 +1,66 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "ore-mixed-boundary",
+  "note": "Copper (BricksA) and iron (BricksB) ore columns do not connect.",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 2,
+  "height": 2,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 1,
+      "id": 4,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 5,
+      "light": 15
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "id": 4,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 5,
+      "light": 4
+    }
+  ],
+  "baselineExpect": [
+    {
+      "x": 0,
+      "y": 1,
+      "ground": {
+        "spriteId": "28",
+        "flipX": false
+      },
+      "cover": {
+        "spriteId": "3",
+        "flipX": false,
+        "rendered": true
+      }
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "ground": {
+        "spriteId": "28",
+        "flipX": false
+      },
+      "cover": {
+        "spriteId": "3",
+        "flipX": true,
+        "rendered": true
+      }
+    }
+  ]
+}

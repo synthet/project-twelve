@@ -13,6 +13,7 @@ import { patternToMask, ruleMatches } from '../src/visual/rule.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '..', 'data');
+const SNIPPETS_DIR = path.join(__dirname, 'fixtures', 'snippets');
 
 test('ground rules JSON has 32 entries and cover has 6', () => {
   const tables = loadRuleTables(DATA_DIR);
@@ -59,8 +60,7 @@ test('vertical run mask resolves to sprite 21', () => {
 test('horizontal grass cover middle resolves to sprite 4', () => {
   const tables = loadRuleTables(DATA_DIR);
   const mask = buildCoverMask(
-    (x, y) => y === 5 && (x === 4 || x === 6),
-    () => false,
+    (x, y) => y === 5 && (x === 4 || x === 5 || x === 6),
     5,
     5,
   );
@@ -73,7 +73,6 @@ test('grass cover east end resolves to sprite 3 with flipX', () => {
   const tables = loadRuleTables(DATA_DIR);
   const mask = buildCoverMask(
     (x, y) => y === 5 && x === 4,
-    () => false,
     5,
     5,
   );
@@ -176,6 +175,10 @@ test('JS resolver matches Unity-exported expected fixtures', {
 }, () => {
   for (const file of fs.readdirSync(EXPECTED_DIR)) {
     if (!file.endsWith('.json')) continue;
+    const snippetBase = file.replace(/\.json$/, '');
+    if (fs.existsSync(path.join(SNIPPETS_DIR, `${snippetBase}.visual-overrides`))) {
+      continue;
+    }
     const expected = JSON.parse(fs.readFileSync(path.join(EXPECTED_DIR, file), 'utf8'));
     if (!Array.isArray(expected.tiles)) continue;
     for (const tile of expected.tiles) {
@@ -191,6 +194,20 @@ test('JS resolver matches Unity-exported expected fixtures', {
         );
         if (ground.flipX !== undefined) {
           assert.equal(result.flipX, ground.flipX);
+        }
+      }
+      const cover = tile.autotile?.cover ?? tile.cover;
+      if (cover?.mask && cover.rendered !== false) {
+        const tileset = { spriteCount: 6, rules: loadRuleTables(DATA_DIR).cover.rules };
+        const mask = cover.mask.map((col) => col.slice());
+        const result = resolveSpriteId(tileset, mask);
+        assert.equal(
+          result.spriteId,
+          cover.spriteId,
+          `${file} (${tile.x},${tile.y}) cover sprite`,
+        );
+        if (cover.flipX !== undefined) {
+          assert.equal(result.flipX, cover.flipX);
         }
       }
     }

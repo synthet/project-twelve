@@ -389,5 +389,55 @@
         "flipX": false
       }
     }
+  ],
+  "baselineExpect": [
+    {
+      "x": -104,
+      "y": 26,
+      "ground": {
+        "spriteId": "18",
+        "flipX": true
+      }
+    },
+    {
+      "x": -103,
+      "y": 26,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false
+      }
+    },
+    {
+      "x": -102,
+      "y": 26,
+      "ground": {
+        "spriteId": "18",
+        "flipX": false
+      }
+    },
+    {
+      "x": -108,
+      "y": 29,
+      "ground": {
+        "spriteId": "18",
+        "flipX": true
+      }
+    },
+    {
+      "x": -107,
+      "y": 29,
+      "ground": {
+        "spriteId": "17",
+        "flipX": false
+      }
+    },
+    {
+      "x": -106,
+      "y": 29,
+      "ground": {
+        "spriteId": "18",
+        "flipX": false
+      }
+    }
   ]
 }

@@ -4,14 +4,14 @@ title: Autotile Drift RCA Playbook
 description: Layered workflow to classify tile-viz vs Unity Play Mode autotile drift by world data, resolver ids, cover, and pixels.
 resource: wiki/autotile-drift-rca.md
 tags: [docs, wiki, rendering, autotile, p1, debug]
-timestamp: 2026-07-06T02:51:00Z
+timestamp: 2026-07-08T03:45:00Z
 ---
 
 # Autotile Drift RCA Playbook
 
-Use this playbook when Play Mode terrain looks wrong compared to the offline reference
-[`tools/tile-viz/out-slope/sandbox-scene-mountain.png`](../../tools/tile-viz/out-slope/sandbox-scene-mountain.png)
-or any tile-viz render. **Do not change resolver rules until you know which layer failed.**
+Use this playbook when Play Mode terrain looks wrong compared to an offline tile-viz render or resolver report. **Do not change resolver rules until you know which layer failed.**
+
+Snippet render goldens live under `tools/tile-viz/test/fixtures/render/` (see `render.test.js`). For ad-hoc renders use `scripts/render-all.sh` or `node src/cli.js render`.
 
 ## Decision tree
 
@@ -30,14 +30,13 @@ flowchart TD
 
 ## Layer 1 — World tile ids
 
-Frozen mountain capture: `tools/tile-viz/test/fixtures/captures/sandbox-scene-mountain.json`  
-Live save export: `tools/tile-viz/test/fixtures/captures/sandbox-world-live.json`
+Live save export (committed regression snapshot): `tools/tile-viz/test/fixtures/captures/sandbox-world-live.json`
 
 ```bash
 cd tools/tile-viz
 node scripts/diff-tile-space.mjs \
-  test/fixtures/captures/sandbox-scene-mountain.json \
-  test/fixtures/captures/sandbox-world-live.json
+  test/fixtures/captures/sandbox-world-live.json \
+  path/to/play-mode-export.json
 ```
 
 **Play Mode export (MCP, while game running):**
@@ -46,26 +45,26 @@ node scripts/diff-tile-space.mjs \
 world_export_tile_space xMin=-160 yMin=0 xMax=-65 yMax=31 writeFile=true
 ```
 
-Then diff the exported file against the frozen capture. Non-zero diff count means **world data drift** — refresh the capture or stop comparing live Play Mode to the frozen PNG.
+Then diff the exported file against `sandbox-world-live.json`. Non-zero diff count means **world data drift** — refresh the live snapshot or compare against the export you just took.
 
 ## Layer 2 — Ground resolver ids
 
-Precomputed baseline (2642 solid cells):
+Play Mode precomputed baseline (2642 solid cells in the default mountain region):
 
-`tools/tile-viz/test/fixtures/baselines/sandbox-scene-mountain-autotile.json`
+`Assets/StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json`
 
-Regenerate after capture or resolver contract changes:
+Regenerate from a Play Mode export after resolver contract changes:
 
 ```bash
-node scripts/export-autotile-baseline.mjs test/fixtures/captures/sandbox-scene-mountain.json
+node scripts/export-autotile-baseline.mjs path/to/play-mode-export.json
 ```
 
-Offline compare (tile-viz report vs baseline):
+Offline compare (tile-viz report vs exported baseline JSON):
 
 ```bash
 node scripts/compare-autotile-baseline.mjs \
-  test/fixtures/baselines/sandbox-scene-mountain-autotile.json \
-  test/fixtures/captures/sandbox-scene-mountain.json \
+  ../../Assets/StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json \
+  path/to/play-mode-export.json \
   --only ground --max-diffs 20
 ```
 
@@ -95,27 +94,27 @@ Compare cover fields:
 
 ```bash
 node scripts/compare-autotile-baseline.mjs \
-  test/fixtures/baselines/sandbox-scene-mountain-autotile.json \
-  test/fixtures/captures/sandbox-scene-mountain.json \
+  ../../Assets/StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json \
+  path/to/play-mode-export.json \
   --only cover --coords -102,30 -87,29
 ```
 
 ## Layer 4 — PNG compositing
 
-Render reference (requires licensed assets):
+Render a snippet or exported space (requires licensed assets):
 
 ```bash
 node scripts/render-capture.mjs \
-  test/fixtures/captures/sandbox-scene-mountain.json \
-  --png out-slope/sandbox-scene-mountain.png --scale 32 --flat-light
+  test/fixtures/snippets/mountain-window-corner.json \
+  --png out/mountain-window-corner.png --scale 16 --flat-light
 ```
 
-Golden test: `test/fixtures/render/sandbox-scene-mountain.png` (npm test, skipped without assets).
+Golden tests: `test/fixtures/render/*.png` (`npm test`, skipped without assets).
 
-Pixel diff vs Unity screenshot (same scale/crop: 32 px/tile, flat lighting, no UI):
+Pixel diff vs Unity screenshot (match scale/crop and flat lighting):
 
 ```bash
-node scripts/diff-png.mjs test/fixtures/render/sandbox-scene-mountain.png path/to/unity-capture.png --out out-slope/diff.png
+node scripts/diff-png.mjs test/fixtures/render/grass-cover-middle.png path/to/unity-capture.png --out out/diff.png
 ```
 
 Isolation matrix:
@@ -143,12 +142,12 @@ Example capture flow:
 
 ```bash
 cd tools/tile-viz
-node scripts/log-autotile-debug-cells.mjs test/fixtures/captures/sandbox-scene-mountain.json --compact -114 29 -111 28
-node src/cli.js visual-overrides list --file out/sandbox-scene-mountain.visual-overrides.json
-node src/cli.js visual-overrides inspect --file out/sandbox-scene-mountain.visual-overrides.json --coords -114,29
-node scripts/render-capture.mjs test/fixtures/captures/sandbox-scene-mountain.json \
-  --visual-overrides out/sandbox-scene-mountain.visual-overrides.json \
-  --png out/sandbox-scene-mountain.override.png --scale 32 --flat-light
+node scripts/log-autotile-debug-cells.mjs test/fixtures/snippets/dirt-window-inner-edges.json --compact -114 29 -111 28
+node src/cli.js visual-overrides list --file out/mountain-window-corner.visual-overrides.json
+node src/cli.js visual-overrides inspect --file out/mountain-window-corner.visual-overrides.json --coords -104,26
+node scripts/render-capture.mjs test/fixtures/snippets/mountain-window-corner.json \
+  --visual-overrides out/mountain-window-corner.visual-overrides.json \
+  --png out/mountain-window-corner.override.png --scale 16 --flat-light
 ```
 
 The override file should describe only the cells under diagnosis and should not be copied into save files, generated captures, or resolver fixtures unless a test explicitly covers debug-mode behavior. If the override demonstrates the intended look, convert that finding into a normal resolver, catalog, or mesh-compositing fix and re-run the appropriate parity checks.
@@ -157,10 +156,9 @@ The override file should describe only the cells under diagnosis and should not 
 
 | File | When to update |
 |------|----------------|
-| `sandbox-scene-mountain.json` | Intentional change to the mountain test scene layout |
 | `sandbox-world-live.json` | After exporting current save for regression snippets |
-| `sandbox-scene-mountain-autotile.json` | After capture or resolver/mask changes |
-| `test/fixtures/render/sandbox-scene-mountain.png` | After intentional visual contract change (with assets present) |
+| `Assets/StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` | After Play Mode export or resolver/mask changes |
+| `test/fixtures/render/*.png` | After intentional visual contract change (with assets present) |
 
 ## See also
 

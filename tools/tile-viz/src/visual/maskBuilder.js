@@ -445,34 +445,34 @@ export function tryRemapMaterialBoundaryCornerMask(mask, sharesGroundGroup, isSo
 }
 
 /**
- * @param {(x: number, y: number) => boolean} sharesCoverGroup
- * @param {(x: number, y: number) => boolean} hasGroundBody
+ * Vendor cover model (PixelTileEngine LevelBuilder.SetCover/GetMask): the surface overlay applies
+ * to any exposed-top ground cell, independent of material, so a side neighbor reads by solidity
+ * alone — air is an end cap (0), an exposed-top ground continues the run (1), and ground with more
+ * ground stacked above it is a rising cliff step (2). Keep in lockstep with C# BuildCoverMask.
+ * @param {(x: number, y: number) => boolean} isSolid
  * @param {number} worldX
  * @param {number} worldY
  * @returns {number[][]}
  */
-export function buildCoverMask(sharesCoverGroup, hasGroundBody, worldX, worldY) {
+export function buildCoverMask(isSolid, worldX, worldY) {
   const mask = [
     [0, 0, 0],
     [0, 1, 0],
     [0, 0, 0],
   ];
-  mask[0][1] = resolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX - 1, worldY);
-  mask[2][1] = resolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX + 1, worldY);
+  mask[0][1] = resolveCoverNeighbor(isSolid, worldX - 1, worldY);
+  mask[2][1] = resolveCoverNeighbor(isSolid, worldX + 1, worldY);
   return mask;
 }
 
-function resolveCoverNeighbor(sharesCoverGroup, hasGroundBody, neighborX, neighborY) {
-  if (sharesCoverGroup(neighborX, neighborY)) {
-    return 1;
+function resolveCoverNeighbor(isSolid, neighborX, neighborY) {
+  if (!isSolid(neighborX, neighborY)) {
+    return 0;
   }
-  if (hasGroundBody(neighborX, neighborY)) {
+  if (isSolid(neighborX, neighborY + 1)) {
     return 2;
   }
-  if (hasGroundBody(neighborX, neighborY + 1)) {
-    return 2;
-  }
-  return 0;
+  return 1;
 }
 
 /** Deep copy mask for JSON output. */

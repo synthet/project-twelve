@@ -6,6 +6,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { PNG } from 'pngjs';
 
 function parseArgs(argv) {
@@ -28,24 +29,14 @@ function readPng(filePath) {
   return PNG.sync.read(fs.readFileSync(path.resolve(filePath)));
 }
 
-function main() {
-  const { positional, opts } = parseArgs(process.argv.slice(2));
-  if (positional.length < 2) {
-    console.error('usage: diff-png.mjs <golden.png> <actual.png> [--out diff.png] [--threshold 0]');
-    process.exit(2);
-  }
-
-  const golden = readPng(positional[0]);
-  const actual = readPng(positional[1]);
+function diffPngImages(golden, actual, opts = {}) {
+  const threshold = opts.threshold ?? 0;
   if (golden.width !== actual.width || golden.height !== actual.height) {
-    console.error(
-      JSON.stringify({
-        error: 'dimension mismatch',
-        golden: { width: golden.width, height: golden.height },
-        actual: { width: actual.width, height: actual.height },
-      }),
-    );
-    process.exit(2);
+    return {
+      error: 'dimension mismatch',
+      golden: { width: golden.width, height: golden.height },
+      actual: { width: actual.width, height: actual.height },
+    };
   }
 
   const diff = new PNG({ width: golden.width, height: golden.height });
@@ -59,7 +50,7 @@ function main() {
       const db = Math.abs(golden.data[idx + 2] - actual.data[idx + 2]);
       const delta = Math.max(dr, dg, db);
 
-      if (delta > opts.threshold) {
+      if (delta > threshold) {
         mismatches++;
         diff.data[idx] = 255;
         diff.data[idx + 1] = 0;
@@ -75,23 +66,47 @@ function main() {
     }
   }
 
-  const summary = {
+  return {
     width: golden.width,
     height: golden.height,
     totalPixels: golden.width * golden.height,
     mismatches,
     mismatchRatio: mismatches / (golden.width * golden.height),
-    threshold: opts.threshold,
+    threshold,
+    diff,
   };
+}
+
+export { readPng, diffPngImages };
+
+function main() {
+  const { positional, opts } = parseArgs(process.argv.slice(2));
+  if (positional.length < 2) {
+    console.error('usage: diff-png.mjs <golden.png> <actual.png> [--out diff.png] [--threshold 0]');
+    process.exit(2);
+  }
+
+  const golden = readPng(positional[0]);
+  const actual = readPng(positional[1]);
+  const result = diffPngImages(golden, actual, opts);
+  if (result.error) {
+    console.error(JSON.stringify(result));
+    process.exit(2);
+  }
+
+  const summary = { ...result };
+  delete summary.diff;
 
   if (opts.out) {
     fs.mkdirSync(path.dirname(path.resolve(opts.out)), { recursive: true });
-    fs.writeFileSync(opts.out, PNG.sync.write(diff));
+    fs.writeFileSync(opts.out, PNG.sync.write(result.diff));
     summary.diffPath = path.resolve(opts.out);
   }
 
   console.log(JSON.stringify(summary, null, 2));
-  process.exit(mismatches > 0 ? 1 : 0);
+  process.exit(result.mismatches > 0 ? 1 : 0);
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  main();
+}

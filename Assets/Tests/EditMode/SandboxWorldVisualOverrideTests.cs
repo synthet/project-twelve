@@ -65,10 +65,14 @@ public sealed class SandboxWorldVisualOverrideTests
         int grass = SandboxRegistries.Tiles.GetIndex("core:grass");
         int stone = SandboxRegistries.Tiles.GetIndex("core:stone");
 
+        // Vendor cover is material-agnostic: any exposed-top ground cell (air above) is editable,
+        // grass and stone alike. A ground cell with solid ground above it is buried, so not editable.
         Assert.IsTrue(catalog.CanEditCoverAt(grass, new SandboxTile(0), out AutotileTileset tileset));
         Assert.AreEqual("GrassA", tileset.Name);
+        Assert.IsTrue(catalog.CanEditCoverAt(stone, new SandboxTile(0), out AutotileTileset stoneCover));
+        Assert.AreEqual("GrassA", stoneCover.Name);
         Assert.IsFalse(catalog.CanEditCoverAt(grass, new SandboxTile(stone), out _));
-        Assert.IsFalse(catalog.CanEditCoverAt(stone, new SandboxTile(0), out _));
+        Assert.IsFalse(catalog.CanEditCoverAt(stone, new SandboxTile(stone), out _));
     }
 
     private SandboxWorld CreateWorldWithCatalog(out int grassIndex, out int airIndex)
