@@ -25,8 +25,7 @@ public sealed class AutotileVisualTests
     {
         AutotileTileset tileset = CreateCoverTileset();
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => y == 5 && (x == 4 || x == 6),
-            (x, y) => false,
+            (x, y) => y == 5 && (x == 4 || x == 5 || x == 6),
             5,
             5);
 
@@ -42,7 +41,6 @@ public sealed class AutotileVisualTests
         AutotileTileset tileset = CreateCoverTileset();
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
             (x, y) => y == 5 && x == 4,
-            (x, y) => false,
             5,
             5);
 
@@ -191,8 +189,8 @@ public sealed class AutotileVisualTests
     [Test]
     public void AutotileCoverMask_StoneCliffBesideGrass_SetsCliffWithoutSharedGroundGroup()
     {
+        // West neighbor is a two-tall solid wall (ground here and above) -> a rising cliff step.
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => false,
             (x, y) => x == 4 && (y == 5 || y == 6),
             5,
             5);
@@ -284,12 +282,11 @@ public sealed class AutotileVisualTests
     public void AutotileCoverMask_SetsSideCliffCellsToTwo()
     {
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => false,
             (x, y) => (x == 4 && y == 6) || (x == 4 && y == 5),
             5,
             5);
 
-        // West neighbor is a solid wall with no cover -> west cell (center row, west col) is a cliff.
+        // West neighbor is a two-tall solid wall -> west cell (center row, west col) is a cliff step.
         Assert.AreEqual(2, mask[0, 1]);
         Assert.AreEqual(1, mask[1, 1]);
         Assert.AreEqual(0, mask[2, 1]);
@@ -298,10 +295,9 @@ public sealed class AutotileVisualTests
     [Test]
     public void AutotileCoverMask_ConnectsHorizontalGrassRun()
     {
-        // Grass cover to the west and east, dirt below, air above: a middle run tile.
+        // Exposed-top ground to the west and east (air above each), so the cover run continues flat.
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => y == 5 && (x == 4 || x == 6),
-            (x, y) => false,
+            (x, y) => y == 5 && (x == 4 || x == 5 || x == 6),
             5,
             5);
 
@@ -860,15 +856,18 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
-    public void AutotileMaskBuilder_CoverCliffNeighbor_MarksSameRowGroundBody()
+    public void AutotileMaskBuilder_CoverExposedGroundNeighbor_ContinuesRunRegardlessOfMaterial()
     {
+        // Vendor cover is material-agnostic: an exposed-top ground cell east of the tile (solid on
+        // its row, air above) carries its own cover, so the run continues (1) rather than reading as
+        // a cliff (2). A same-row ground body with air above is a surface, not a wall.
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) => y == 5 && x == 4,
-            (x, y) => y == 5 && x == 6,
+            (x, y) => y == 5 && (x == 4 || x == 6),
             5,
             5);
 
-        Assert.AreEqual(2, mask[2, 1], "Dirt body east of grass should mark cliff cover.");
+        Assert.AreEqual(1, mask[2, 1], "Exposed ground east of the tile continues the cover run.");
+        Assert.AreEqual(1, mask[0, 1], "Exposed ground west of the tile continues the cover run.");
     }
 
     [Test]

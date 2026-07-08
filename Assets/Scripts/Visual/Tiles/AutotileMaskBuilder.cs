@@ -185,22 +185,26 @@ namespace ProjectTwelve.Visual.Tiles
         }
 
         /// <summary>
-        /// Builds a cover autotile mask for grass overlays at the given world coordinate.
-        /// Grass cover runs horizontally along the surface, so connectivity is decided purely by
-        /// the west/east neighbors on mask row y = 1 (mask[0,1], mask[1,1], mask[2,1]). Vertical and
+        /// Builds a cover autotile mask for the surface overlay at the given world coordinate.
+        /// Cover runs horizontally along the surface, so connectivity is decided purely by the
+        /// west/east neighbors on mask row y = 1 (mask[0,1], mask[1,1], mask[2,1]). Vertical and
         /// diagonal cells stay empty so the cover rule table matches cleanly.
+        ///
+        /// Vendor model (PixelTileEngine <c>LevelBuilder.SetCover</c>/<c>GetMask</c>): cover is an
+        /// overlay on any exposed-top ground cell, independent of ground material. A side neighbor
+        /// therefore reads by solidity alone — open air is an end cap, an exposed-top ground cell
+        /// continues the run, and a ground cell with more ground stacked above it is a cliff step.
         /// </summary>
-        /// <param name="hasGroundBody">Returns true when the coordinate holds any solid ground tile.</param>
+        /// <param name="isSolid">Returns true when the coordinate holds any solid ground tile.</param>
         public static int[,] BuildCoverMask(
-            Func<int, int, bool> sharesCoverGroup,
-            Func<int, int, bool> hasGroundBody,
+            Func<int, int, bool> isSolid,
             int worldX,
             int worldY)
         {
             int[,] mask = new int[3, 3];
             mask[1, 1] = 1;
-            mask[0, 1] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX - 1, worldY);
-            mask[2, 1] = ResolveCoverNeighbor(sharesCoverGroup, hasGroundBody, worldX + 1, worldY);
+            mask[0, 1] = ResolveCoverNeighbor(isSolid, worldX - 1, worldY);
+            mask[2, 1] = ResolveCoverNeighbor(isSolid, worldX + 1, worldY);
             return mask;
         }
 
@@ -650,30 +654,25 @@ namespace ProjectTwelve.Visual.Tiles
         }
 
         private static int ResolveCoverNeighbor(
-            Func<int, int, bool> sharesCoverGroup,
-            Func<int, int, bool> hasGroundBody,
+            Func<int, int, bool> isSolid,
             int neighborX,
             int neighborY)
         {
-            if (sharesCoverGroup(neighborX, neighborY))
-            {
-                return 1;
-            }
-
-            // Solid ground body on the same row (e.g. dirt beside grass) reads as a cliff-side edge.
-            if (hasGroundBody(neighborX, neighborY))
-            {
-                return 2;
-            }
-
-            // A solid column rising beside the tile reads as a cliff-side edge.
-            if (hasGroundBody(neighborX, neighborY + 1))
-            {
-                return 2;
-            }
-
             // Open air beside the tile reads as an end cap.
-            return 0;
+            if (!isSolid(neighborX, neighborY))
+            {
+                return 0;
+            }
+
+            // Ground stacked above the side neighbor means it is a buried cliff wall, not an exposed
+            // top — the cover run ends here in a rising step (vendor SetCover mask[1,0]/[1,2] = 2).
+            if (isSolid(neighborX, neighborY + 1))
+            {
+                return 2;
+            }
+
+            // Exposed-top ground beside the tile carries its own cover, so the run continues flat.
+            return 1;
         }
     }
 }

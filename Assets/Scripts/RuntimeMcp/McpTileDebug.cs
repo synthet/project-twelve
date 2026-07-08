@@ -318,8 +318,8 @@ namespace ProjectTwelve.RuntimeMcp
                 payload["cover"] = new JObject
                 {
                     ["rendered"] = false,
-                    ["reason"] = tile.id != SandboxRegistries.GrassIndex
-                        ? "Cover applies to grass surface tiles only."
+                    ["reason"] = tile.id == SandboxRegistries.AirIndex
+                        ? "Cover applies to solid ground tiles only."
                         : "Cover requires air directly above the tile."
                 };
                 return;
@@ -404,11 +404,6 @@ namespace ProjectTwelve.RuntimeMcp
             int worldY)
         {
             return AutotileMaskBuilder.BuildCoverMask(
-                (x, y) =>
-                {
-                    SandboxTile neighbor = world.GetTile(x, y);
-                    return catalog.SharesCoverAutotileGroup(SandboxRegistries.GrassIndex, neighbor.id);
-                },
                 (x, y) => world.GetTile(x, y).IsSolid,
                 worldX,
                 worldY);

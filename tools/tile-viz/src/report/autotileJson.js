@@ -9,7 +9,6 @@ import {
   DEFAULT_CATALOG,
   getCoverTilesetName,
   getGroundTilesetName,
-  sharesCoverAutotileGroup,
   sharesGroundAutotileGroup,
   shouldRenderGrassCover,
 } from '../visual/catalog.js';
@@ -176,7 +175,6 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables, visualO
     const ts = tilesets.get(coverName);
     if (ts) {
       const mask = buildCoverMask(
-        (nx, ny) => sharesCoverAutotileGroup(TileId.Grass, getTile(space, nx, ny).id),
         (nx, ny) => getTile(space, nx, ny).id !== TileId.Air,
         x,
         y,
@@ -194,16 +192,14 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables, visualO
       };
       applyVisualOverride(entry.autotile.cover, visualOverrides.get(overrideKey(x, y, 'cover')));
     }
-  } else if (tile.id === TileId.Grass) {
+  } else {
     entry.autotile.cover = {
       rendered: false,
       reason:
-        above.id !== TileId.Air
-          ? 'Cover requires air directly above the tile.'
-          : 'Cover applies to grass surface tiles only.',
+        tile.id === TileId.Air
+          ? 'Cover applies to solid ground tiles only.'
+          : 'Cover requires air directly above the tile.',
     };
-  } else {
-    entry.autotile.cover = { rendered: false, reason: 'Cover applies to grass surface tiles only.' };
   }
 
   return entry;

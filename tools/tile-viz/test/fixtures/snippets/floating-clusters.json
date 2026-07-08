@@ -2,29 +2,140 @@
   "format": "project-twelve/tile-space/v1",
   "kind": "snippet",
   "name": "floating-clusters",
-  "origin": { "x": 0, "y": 0 },
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
   "width": 12,
   "height": 2,
   "tiles": [
-    { "x": 0, "y": 0, "id": 1, "light": 4 },
-    { "x": 3, "y": 0, "id": 1, "light": 4 },
-    { "x": 4, "y": 0, "id": 1, "light": 4 },
-    { "x": 7, "y": 0, "id": 1, "light": 4 },
-    { "x": 7, "y": 1, "id": 1, "light": 4 },
-    { "x": 10, "y": 0, "id": 1, "light": 4 },
-    { "x": 10, "y": 1, "id": 1, "light": 4 },
-    { "x": 11, "y": 0, "id": 1, "light": 4 },
-    { "x": 11, "y": 1, "id": 1, "light": 4 }
+    {
+      "x": 0,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 11,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    }
   ],
-  "expect": [
-    { "x": 0, "y": 0, "ground": { "spriteId": "20", "flipX": false } },
-    { "x": 3, "y": 0, "ground": { "spriteId": "24", "flipX": false } },
-    { "x": 4, "y": 0, "ground": { "spriteId": "24", "flipX": true } },
-    { "x": 7, "y": 1, "ground": { "spriteId": "28", "flipX": false } },
-    { "x": 7, "y": 0, "ground": { "spriteId": "29", "flipX": false } },
-    { "x": 10, "y": 1, "ground": { "spriteId": "0", "flipX": false } },
-    { "x": 11, "y": 1, "ground": { "spriteId": "0", "flipX": true } },
-    { "x": 10, "y": 0, "ground": { "spriteId": "16", "flipX": false } },
-    { "x": 11, "y": 0, "ground": { "spriteId": "16", "flipX": true } }
+  "baselineExpect": [
+    {
+      "x": 0,
+      "y": 0,
+      "ground": {
+        "spriteId": "20",
+        "flipX": false
+      }
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "ground": {
+        "spriteId": "24",
+        "flipX": false
+      }
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "ground": {
+        "spriteId": "24",
+        "flipX": true
+      }
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "ground": {
+        "spriteId": "28",
+        "flipX": false
+      }
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "ground": {
+        "spriteId": "29",
+        "flipX": false
+      }
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "ground": {
+        "spriteId": "0",
+        "flipX": false
+      }
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "ground": {
+        "spriteId": "0",
+        "flipX": true
+      }
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "ground": {
+        "spriteId": "16",
+        "flipX": false
+      }
+    },
+    {
+      "x": 11,
+      "y": 0,
+      "ground": {
+        "spriteId": "16",
+        "flipX": true
+      }
+    }
   ]
 }

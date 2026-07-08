@@ -4,7 +4,7 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-06T05:45:00Z
+timestamp: 2026-07-07T00:00:00Z
 ---
 
 # Visual Behavior Specification
@@ -84,12 +84,13 @@ Fixture-backed guarantees at dirt/stone boundaries:
 
 ### Cover mask construction
 
-Start from the cover connectivity mask (grass connects only to grass).
+Cover is **material-agnostic** (vendor `LevelBuilder.SetCover`): the surface overlay applies to any
+exposed-top ground cell, independent of ground material. Each west/east cardinal at `[0,1]` and
+`[2,1]` is read by **solidity alone**:
 
-Then, for west and east cardinals at `[0,1]` and `[2,1]`:
-
-- If a **solid ground body** exists on the same row beside the cover tile, set that cardinal to `2` instead of `0` or `1`. This marks cliff/edge cover overlays beside dirt/stone bodies.
-- If a **solid column** exists directly above the neighbor cell, also set that cardinal to `2` (vertical cliff beside the grass run).
+- Neighbor is **air** (not solid) ⇒ `0` (end cap).
+- Neighbor is solid with **more ground stacked directly above it** ⇒ `2` (rising cliff step).
+- Neighbor is solid with **air above it** (an exposed top like the center) ⇒ `1` (run continues).
 
 Cover rules may use mask values `0`, `1`, and `2`.
 
@@ -98,8 +99,8 @@ Cover rules may use mask values `0`, `1`, and `2`.
 | Layer | Group rule |
 |-------|------------|
 | Ground | Same ground tileset **name** ⇒ connected |
-| Cover | Same tile ID (grass) ⇒ connected |
-| Cover visibility | Grass cover when tile above is **non-solid** |
+| Cover | Any exposed-top ground beside (solid, air above) ⇒ connected (material-agnostic) |
+| Cover visibility | Cover on any solid ground tile when the tile above is **non-solid** |
 
 ---
 
@@ -298,7 +299,7 @@ F3 logs the active mode name, index, and a one-line summary to the Unity Console
 
 While any non-`Off` F3 mode is active, moving the mouse over the game view shows a top-left HUD with world tile `(x, y)` plus owning chunk `(cx, cy)` and in-chunk local `(lx, ly)` for the tile under the cursor (same coordinate layout as MCP `tile_at`). This complements `CoordinateLabel`, which paints coordinates on every solid cell in the world.
 
-When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `ResolveDetail` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json` (Editor fallback: `tools/tile-viz/test/fixtures/baselines/`). `VisualOverrideLabel` reads the active `AutotileVisualOverrideMap` loaded from the world sidecar or set at runtime.
+When enabled, each loaded chunk draws a child `GroundAutotileDebug` mesh over solid cells using the same resolve path as chunk rendering (`AutotileGroundResolve` for ground; cover uses the same mask path as `SandboxChunkRenderer.AddCoverTile`). `ResolveDetail` reads `StreamingAssets/AutotileBaselines/sandbox-scene-mountain-autotile.json`. `VisualOverrideLabel` reads the active `AutotileVisualOverrideMap` loaded from the world sidecar or set at runtime.
 
 ### Drift RCA tooling
 
