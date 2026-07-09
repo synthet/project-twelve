@@ -61,9 +61,14 @@ python scripts/fetch_remotes.py --verify       # fail if misaligned
 
 ## Assets-first workflow
 
-1. Change art/catalogs in `Assets/_Licensed/`; commit and push to **project-twelve-assets**.
+1. Change art/catalogs/docs in `Assets/_Licensed/`; commit and push to **project-twelve-assets**.
 2. Submodule `pre-push` may **warn** that the parent gitlink is stale — expected until step 3.
-3. In the main repo: `git add Assets/_Licensed` and commit the pointer bump.
+3. In the main repo: bump the gitlink — use **`python scripts/publish_assets_submodule.py`** (skill: [`assets-submodule-publish`](../assets-submodule-publish/SKILL.md)) or manually `git add Assets/_Licensed` and commit.
+
+```bash
+python scripts/publish_assets_submodule.py --status
+python scripts/publish_assets_submodule.py -m "docs: …" --submodule-checkout main --pull-submodule
+```
 
 ## Safety
 

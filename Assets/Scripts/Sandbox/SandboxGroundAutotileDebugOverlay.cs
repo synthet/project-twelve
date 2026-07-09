@@ -367,11 +367,6 @@ public sealed class SandboxGroundAutotileDebugOverlay : MonoBehaviour
         }
 
         int[,] mask = AutotileMaskBuilder.BuildCoverMask(
-            (x, y) =>
-            {
-                SandboxTile neighbor = tileLookup(x, y);
-                return visualCatalog.SharesCoverAutotileGroup(tile.id, neighbor.id);
-            },
             (x, y) => tileLookup(x, y).IsSolid,
             worldCoord.x,
             worldCoord.y);

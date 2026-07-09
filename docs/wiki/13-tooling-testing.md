@@ -23,7 +23,7 @@ profiler targets live in [Quality Gates](quality-gates.md).
 
 ## WebGL prototype viewer
 
-A proposed [WebGL Prototype Viewer Tool](webgl-prototype-viewer-tool.md) would turn the existing
+The [WebGL Prototype Viewer Tool](webgl-prototype-viewer-tool.md) (`tools/webgl-viz`) turns the existing
 `tools/world-viz` and `tools/tile-viz` JavaScript visualizers into a browser-hosted proof-of-concept
 review surface. The intent is a lightweight world microscope for loading seeds, saves, tile-space
 captures, and autotile reports with pan/zoom, tile inspection, overlay toggles, and shareable evidence

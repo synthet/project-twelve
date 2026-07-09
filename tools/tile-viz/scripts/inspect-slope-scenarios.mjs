@@ -9,7 +9,7 @@ import { renderAutotilePng } from '../src/render/autotilePng.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const assetsRoot = path.resolve(root, '..', '..', 'Assets', '_Licensed', 'PixelFantasy', 'PixelTileEngine', 'Tiles');
-const outDir = path.join(root, 'out-slope');
+const outDir = path.join(root, 'out');
 
 function buildDescendingScenario() {
   const tiles = [];

@@ -51,16 +51,19 @@ export function sharesGroundAutotileGroup(tileIdA, tileIdB, catalog = DEFAULT_CA
   return nameA === nameB;
 }
 
+// Vendor cover model: cover renders on any exposed-top ground cell (solid here, air above),
+// independent of ground material. Mirrors SandboxTileVisualCatalog.ShouldRenderGrassCover.
 export function shouldRenderGrassCover(tileId, tileAbove) {
-  return tileId === TileId.Grass && tileAbove.id === TileId.Air;
+  return tileId !== TileId.Air && tileAbove.id === TileId.Air;
 }
 
 export function sharesCoverAutotileGroup(tileIdA, tileIdB) {
-  return tileIdA === TileId.Grass && tileIdB === TileId.Grass;
+  return tileIdA !== TileId.Air && tileIdB !== TileId.Air;
 }
 
+// Any solid ground tile maps to the single configured cover tileset; air has no cover.
 export function getCoverTilesetName(tileId, catalog = DEFAULT_CATALOG) {
-  if (tileId !== TileId.Grass) {
+  if (tileId === TileId.Air) {
     return null;
   }
   return catalog.grassCoverTileset;

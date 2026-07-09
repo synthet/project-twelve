@@ -76,6 +76,36 @@ public sealed class SandboxSaveLoadTests
     }
 
     [Test]
+    public void LoadFromPath_UpgradesLegacyEditedTilesWithUnsetLight()
+    {
+        string path = TempFile("legacy-unset-light.json");
+        File.WriteAllText(path, @"{
+            ""version"": 1,
+            ""seed"": 1337,
+            ""hasPlayerPosition"": false,
+            ""playerX"": 0,
+            ""playerY"": 0,
+            ""chunks"": [
+                {
+                    ""x"": 0,
+                    ""y"": 0,
+                    ""edits"": [
+                        { ""localX"": 1, ""localY"": 2, ""tile"": { ""id"": 3, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } }
+                    ]
+                }
+            ]
+        }");
+
+        SandboxWorld world = CreateWorld();
+        world.LoadFromPath(path);
+
+        SandboxTerrainGenerator generator = world.CreateTerrainGenerator();
+        byte expected = SandboxTerrainGenerator.GetPrototypeLight(2, generator.GetSurfaceHeight(1));
+        Assert.AreEqual(expected, world.GetTile(1, 2).light);
+        Assert.AreEqual((byte)4, expected);
+    }
+
+    [Test]
     public void SaveToPath_WritesPaletteMatchingCurrentRegistry()
     {
         SandboxWorld world = CreateWorld();

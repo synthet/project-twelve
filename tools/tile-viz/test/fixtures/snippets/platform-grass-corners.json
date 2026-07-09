@@ -1,48 +1,110 @@
 {
-
   "format": "project-twelve/tile-space/v1",
-
   "kind": "snippet",
-
   "name": "platform-grass-corners",
-
-  "origin": { "x": 0, "y": 0 },
-
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
   "width": 4,
-
   "height": 3,
-
   "tiles": [
-
-    { "x": 0, "y": 2, "id": 2, "light": 15 },
-
-    { "x": 1, "y": 2, "id": 2, "light": 15 },
-
-    { "x": 2, "y": 2, "id": 2, "light": 15 },
-
-    { "x": 3, "y": 2, "id": 1, "light": 4 },
-
-    { "x": 0, "y": 1, "id": 1, "light": 4 },
-
-    { "x": 1, "y": 1, "id": 1, "light": 4 },
-
-    { "x": 2, "y": 1, "id": 1, "light": 4 },
-
-    { "x": 3, "y": 1, "id": 1, "light": 4 }
-
+    {
+      "x": 0,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    }
   ],
-
-  "expect": [
-
-    { "x": 0, "y": 2, "ground": { "spriteId": "0" }, "cover": { "spriteId": "3", "rendered": true } },
-
-    { "x": 1, "y": 2, "ground": { "spriteId": "2" }, "cover": { "spriteId": "4", "rendered": true } },
-
-    { "x": 2, "y": 2, "ground": { "spriteId": "2" }, "cover": { "spriteId": "5", "rendered": true } },
-
-    { "x": 3, "y": 2, "ground": { "spriteId": "0", "flipX": true }, "cover": { "rendered": false } }
-
+  "baselineExpect": [
+    {
+      "x": 0,
+      "y": 2,
+      "ground": {
+        "spriteId": "0"
+      },
+      "cover": {
+        "spriteId": "3",
+        "flipX": false,
+        "rendered": true
+      }
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "ground": {
+        "spriteId": "2"
+      },
+      "cover": {
+        "spriteId": "4",
+        "rendered": true
+      }
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "ground": {
+        "spriteId": "2"
+      },
+      "cover": {
+        "spriteId": "4",
+        "rendered": true
+      }
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "ground": {
+        "spriteId": "0",
+        "flipX": true
+      },
+      "cover": {
+        "spriteId": "3",
+        "flipX": true,
+        "rendered": true
+      }
+    }
   ]
-
 }
-

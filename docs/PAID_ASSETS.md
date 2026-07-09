@@ -57,7 +57,13 @@ Or batch mode:
 Unity -batchmode -quit -projectPath . -executeMethod ProjectTwelve.Editor.Visual.VisualCatalogBatchImporter.ImportAllFromCommandLine -logFile Logs/unity-visual-import.log
 ```
 
-Commit updated catalogs in **project-twelve-assets**, then bump the submodule pointer in the main repo.
+Commit updated catalogs in **project-twelve-assets**, then bump the submodule pointer in the main repo:
+
+```bash
+python scripts/publish_assets_submodule.py -m "chore: regenerate visual catalogs" --submodule-checkout main --pull-submodule
+```
+
+Windows: `scripts\publish_assets_submodule.bat`. Skill: `.claude/skills/assets-submodule-publish/SKILL.md` (slash command: `/publish-assets-submodule`).
 
 Offline regeneration (no Unity Editor):
 
@@ -88,4 +94,4 @@ If you import a paid pack into the public repo by accident:
 2. Re-import under the assets submodule (or push to project-twelve-assets).
 3. Run `python3 scripts/check_paid_assets.py --staged`.
 
-See also [Visual setup](VISUAL_SETUP.md) and [Asset integration](wiki/15-assets-integration.md).
+See also [Visual setup](VISUAL_SETUP.md), [Licensed assets reference](wiki/licensed-assets-reference.md), and [Asset integration](wiki/15-assets-integration.md).

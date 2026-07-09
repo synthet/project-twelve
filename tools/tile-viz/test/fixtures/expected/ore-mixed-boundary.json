@@ -1,0 +1,639 @@
+{
+  "name": "ore-mixed-boundary",
+  "tiles": [
+    {
+      "x": 0,
+      "y": 1,
+      "ground": {
+        "tileset": "BricksA",
+        "materialGroup": "BricksA",
+        "visualMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "solidMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "connectivityMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rawMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalizedMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "matchedRuleId": "28",
+        "spriteId": "28",
+        "flipX": false,
+        "finalSpriteId": "28",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            4
+          ],
+          [
+            0,
+            5,
+            5
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": true,
+        "tileset": "GrassA",
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "3"
+        ],
+        "spriteId": "3",
+        "flipX": false,
+        "resolved": true
+      }
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "ground": {
+        "tileset": "BricksB",
+        "materialGroup": "BricksB",
+        "visualMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "solidMask": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "connectivityMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rawMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalizedMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "matchedRuleId": "28",
+        "spriteId": "28",
+        "flipX": false,
+        "finalSpriteId": "28",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            0,
+            4,
+            4
+          ],
+          [
+            0,
+            5,
+            5
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": true,
+        "tileset": "GrassA",
+        "mask": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "matchingSpriteIds": [
+          "3"
+        ],
+        "spriteId": "3",
+        "flipX": true,
+        "resolved": true
+      }
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "ground": {
+        "tileset": "BricksA",
+        "materialGroup": "BricksA",
+        "visualMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "solidMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ]
+        ],
+        "connectivityMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rawMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalizedMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "matchedRuleId": "29",
+        "spriteId": "29",
+        "flipX": false,
+        "finalSpriteId": "29",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            4,
+            0
+          ],
+          [
+            5,
+            5,
+            0
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "ground": {
+        "tileset": "BricksB",
+        "materialGroup": "BricksB",
+        "visualMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "solidMask": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "connectivityMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "rawMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalizedMask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "mask": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "normalization": {
+          "stairInterior": false,
+          "cavityUnderside": false,
+          "materialBoundary": false,
+          "innerCavity": false
+        },
+        "matchingSpriteIds": [
+          "28",
+          "29"
+        ],
+        "matchedRuleId": "29",
+        "spriteId": "29",
+        "flipX": false,
+        "finalSpriteId": "29",
+        "partnerSubstitution": false,
+        "neighborTileIds": [
+          [
+            4,
+            4,
+            0
+          ],
+          [
+            5,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "resolved": true
+      },
+      "cover": {
+        "rendered": false,
+        "reason": "Cover requires air directly above the tile."
+      }
+    }
+  ]
+}

@@ -50,6 +50,8 @@
 | Safety rules | `.agent/SAFETY.md` | Secret handling, git hygiene, and destructive-operation rules. |
 
 | Paid/licensed assets | `docs/PAID_ASSETS.md` | Private submodule `Assets/_Licensed/` → `project-twelve-assets`; guard via `scripts/check_paid_assets.py`. |
+| Licensed asset inventory (public index) | `docs/wiki/licensed-assets-reference.md` | Points to public contracts vs private `Assets/_Licensed/docs/` submodule inventory. |
+| Licensed asset inventory (private) | `Assets/_Licensed/docs/` (submodule) | Full vendor script API and asset catalogs; requires project-twelve-assets access. |
 
 | MCP server config | `.mcp.json` | Project-level MCP definitions with no inline secrets. |
 

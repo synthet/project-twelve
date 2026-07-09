@@ -1,0 +1,62 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "ceiling-cover-suppressed",
+  "note": "Ceiling underside ground sprites with cover suppressed (solid above).",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 3,
+  "height": 2,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 1,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 2,
+      "light": 15
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    }
+  ],
+  "baselineExpect": [
+    {
+      "x": 0,
+      "y": 0,
+      "ground": {
+        "spriteId": "16",
+        "flipX": false
+      },
+      "cover": {
+        "rendered": false
+      }
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "ground": {
+        "spriteId": "16",
+        "flipX": true
+      },
+      "cover": {
+        "rendered": false
+      }
+    }
+  ]
+}

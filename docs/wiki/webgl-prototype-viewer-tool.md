@@ -89,7 +89,6 @@ The implemented first spike is deliberately small:
 That scope proves the viewer architecture without requiring licensed sprites, Unity Web builds, or a
 full gameplay loop.
 
-
 ## Implemented package
 
 The current proof of concept lives in [`tools/webgl-viz`](../../tools/webgl-viz/) with package-local

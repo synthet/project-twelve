@@ -13,20 +13,20 @@ import {
 } from '../src/report/autotileCompare.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const MOUNTAIN = path.join(__dirname, 'fixtures', 'captures', 'sandbox-scene-mountain.json');
+const FIXTURE = path.join(__dirname, 'fixtures', 'snippets', 'dirt-window-inner-edges.json');
 
 test('extractCompareCell normalizes ground and cover fields', () => {
-  const space = loadTileSpaceFromFile(MOUNTAIN);
+  const space = loadTileSpaceFromFile(FIXTURE);
   const report = buildAutotileReport(space);
-  const tile = report.tiles.find((t) => t.x === -113 && t.y === 26);
+  const tile = report.tiles.find((t) => t.x === -118 && t.y === 29);
   assert.ok(tile);
   const cell = extractCompareCell(tile);
-  assert.equal(cell.ground.spriteId, '0');
+  assert.equal(cell.ground.spriteId, '9');
   assert.equal(cell.ground.flipX, false);
 });
 
 test('compareAutotileBaseline self-compare has zero mismatches', () => {
-  const space = loadTileSpaceFromFile(MOUNTAIN);
+  const space = loadTileSpaceFromFile(FIXTURE);
   const report = buildAutotileReport(space);
   const baseline = buildBaselineDocument(space, report);
   const result = compareAutotileBaseline(baseline, baseline, { maxDiffs: 10 });
@@ -51,7 +51,7 @@ test('diffCompareCells detects spriteId drift', () => {
 });
 
 test('compareAutotileBaseline respects coord filter', () => {
-  const space = loadTileSpaceFromFile(MOUNTAIN);
+  const space = loadTileSpaceFromFile(FIXTURE);
   const report = buildAutotileReport(space);
   const baseline = buildBaselineDocument(space, report);
   const mutated = JSON.parse(JSON.stringify(baseline));

@@ -562,6 +562,30 @@ public sealed class SandboxCoreTests
     }
 
     [Test]
+    public void SandboxWorld_SetTile_AssignsPrototypeLightForPlacedSolids()
+    {
+        GameObject go = new GameObject("World");
+        try
+        {
+            SandboxWorld world = go.AddComponent<SandboxWorld>();
+            SandboxTerrainGenerator generator = world.CreateTerrainGenerator();
+            int worldX = 4;
+            int surfaceY = generator.GetSurfaceHeight(worldX);
+            int undergroundY = surfaceY - 3;
+
+            world.SetTile(worldX, undergroundY, SandboxTileIds.Dirt);
+            world.SetTile(worldX, surfaceY, SandboxTileIds.Grass);
+
+            Assert.AreEqual((byte)4, world.GetTile(worldX, undergroundY).light);
+            Assert.AreEqual((byte)15, world.GetTile(worldX, surfaceY).light);
+        }
+        finally
+        {
+            Object.DestroyImmediate(go);
+        }
+    }
+
+    [Test]
     public void SandboxTerrainGenerator_DifferentSeedsProduceDifferentWorlds()
     {
         SandboxChunk a = GoldenGenerator(1337).GenerateChunk(Vector2Int.zero);
