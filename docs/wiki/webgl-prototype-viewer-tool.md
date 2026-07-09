@@ -4,7 +4,7 @@ title: WebGL Prototype Viewer Tool
 description: Proof-of-concept plan for turning the existing JavaScript visualizers into a browser-hosted ProjectTwelve viewer.
 resource: wiki/webgl-prototype-viewer-tool.md
 tags: [docs, wiki, tooling, webgl, prototype]
-timestamp: 2026-07-08T00:00:00Z
+timestamp: 2026-07-09T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -88,6 +88,22 @@ The implemented first spike is deliberately small:
 
 That scope proves the viewer architecture without requiring licensed sprites, Unity Web builds, or a
 full gameplay loop.
+
+
+## Implemented package
+
+The current proof of concept lives in [`tools/webgl-viz`](../../tools/webgl-viz/) with package-local
+usage notes and tests. Build it from the package directory:
+
+```bash
+cd tools/webgl-viz
+npm test
+npm run build
+python3 -m http.server 8080 --directory dist
+```
+
+The generated `dist/` directory is intentionally ignored; commit source, fixtures, and tests rather
+than local static build output.
 
 ## Follow-up capabilities
 
