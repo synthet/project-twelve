@@ -137,6 +137,7 @@ tools/world-viz/out.txt
 tools/world-viz/*.png
 tools/world-viz/*.html
 tools/world-viz/*.txt
+tools/webgl-viz/dist/
 
 # ============================================
 # Python (scripts/, agent memory, CI helpers)
