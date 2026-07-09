@@ -1,0 +1,14 @@
+{
+  "name": "webgl-viz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser-hosted WebGL proof-of-concept viewer for ProjectTwelve tile-space fixtures.",
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

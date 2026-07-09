@@ -4,13 +4,13 @@ title: WebGL Prototype Viewer Tool
 description: Proof-of-concept plan for turning the existing JavaScript visualizers into a browser-hosted ProjectTwelve viewer.
 resource: wiki/webgl-prototype-viewer-tool.md
 tags: [docs, wiki, tooling, webgl, prototype]
-timestamp: 2026-07-08T00:00:00Z
+timestamp: 2026-07-09T00:00:00Z
 okf_version: 0.1
 ---
 
 # WebGL Prototype Viewer Tool
 
-> **Status:** Proposal.
+> **Status:** Proof of concept implemented in [`tools/webgl-viz`](../../tools/webgl-viz/).
 > **Decision:** Treat WebGL as a proof-of-concept viewer/tooling surface first, not as a replacement runtime.
 > **Invariants:** Unity remains the authoritative game runtime; JavaScript visualizers stay deterministic, fixture-backed, and safe to run without licensed assets.
 
@@ -23,7 +23,7 @@ ProjectTwelve already has two engine-free JavaScript visualizers:
 - [`tools/tile-viz`](../../tools/tile-viz/) resolves autotile masks and, when local licensed art is
   available, composites the same sprite-sheet decisions used by Unity.
 
-The WebGL prototype viewer would package those ideas into a browser-first proof of concept: an
+The WebGL prototype viewer packages those ideas into a browser-first proof of concept: an
 interactive canvas that can load a pinned seed, a tile-space capture, or a local save export and let a
 reviewer pan, zoom, inspect tiles, toggle overlays, and compare visual hypotheses without opening
 Unity. It is a tooling and review surface for the sandbox, not the production Web build of the game.
@@ -77,18 +77,32 @@ check for engine behavior.
 
 ## Minimum proof of concept
 
-A useful first spike can be deliberately small:
+The implemented first spike is deliberately small:
 
-1. **Static bundled viewer:** `npm run build` emits a self-contained `dist/index.html` and JS bundle.
-2. **Load one fixture:** drag/drop or query-param load of a `project-twelve/tile-space/v1` JSON file.
-3. **Render flat debug tiles:** draw the same tile colours used by `world-viz` with pan/zoom.
-4. **Inspector panel:** hover or click a tile to show world coords, chunk/local coords, and tile id.
-5. **Overlay toggles:** chunk grid, light heatmap, collision/solid mask, saved edit markers.
-6. **Export evidence:** save a PNG screenshot and a small JSON report describing input fixture,
-   viewport, enabled overlays, and tool version.
+1. **Static bundled viewer:** `cd tools/webgl-viz && npm run build` emits a self-contained `dist/index.html` and normalized `payload.json`.
+2. **Load one fixture:** the default build embeds `grass-cover-middle.json`; compatible normalized payload JSON can be drag/dropped into the page.
+3. **Render flat debug tiles:** WebGL draws the same tile colours used by `world-viz` with pan/zoom.
+4. **Inspector panel:** clicking a tile shows world coords, chunk/local coords, tile id/name, light, fluid, solidity, and colour.
+5. **Overlay toggles:** chunk grid, light heatmap, and solid-tile tinting are available in the viewer.
+6. **Export evidence:** the page saves a small JSON report describing source payload, viewport, enabled overlays, and selected tile.
 
 That scope proves the viewer architecture without requiring licensed sprites, Unity Web builds, or a
 full gameplay loop.
+
+## Implemented package
+
+The current proof of concept lives in [`tools/webgl-viz`](../../tools/webgl-viz/) with package-local
+usage notes and tests. Build it from the package directory:
+
+```bash
+cd tools/webgl-viz
+npm test
+npm run build
+python3 -m http.server 8080 --directory dist
+```
+
+The generated `dist/` directory is intentionally ignored; commit source, fixtures, and tests rather
+than local static build output.
 
 ## Follow-up capabilities
 
