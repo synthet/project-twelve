@@ -60,7 +60,7 @@ run_check "Paid asset validation" \
     "python3 scripts/check_paid_assets.py --push"
 
 # 4. Assistant tree sync validation (if canonical or generated assets changed in the push range)
-if echo "${CHANGED_FILES}" | grep -qE "^\.claude/|^\.cursor/|^\.agents/skills/"; then
+if echo "${CHANGED_FILES}" | grep -qE "^\.claude/|^\.cursor/|^\.agents/"; then
     run_check "Assistant tree sync" \
         "python scripts/sync_assistant_trees.py --check"
 else
@@ -74,7 +74,7 @@ fi
 PY_FILES="$(git ls-files 'scripts/*.py')"
 if [ -n "${PY_FILES}" ]; then
     run_check "Python script syntax" \
-        "echo \"${PY_FILES}\" | xargs python -m py_compile"
+        "echo \"${PY_FILES}\" | xargs python3 -m py_compile"
 else
     echo "⊘ Python syntax check skipped (no tracked scripts/*.py files)"
     echo ""

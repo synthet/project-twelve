@@ -2,7 +2,7 @@
   "project": "ProjectTwelve",
   "review_date": "2026-07-10",
   "canonical_tree": ".claude",
-  "generated_trees": [".cursor", ".agents/skills"],
+  "generated_trees": [".cursor", ".agents"],
   "subsystems": {
     "commands": ".claude/commands",
     "skills": ".claude/skills",

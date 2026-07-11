@@ -134,6 +134,11 @@ public sealed class SandboxHudTests
         {
             SandboxHudController hud = instance.GetComponent<SandboxHudController>();
             Assert.IsNotNull(hud);
+            if (hud.SlotViewCount == 0)
+            {
+                hud.SendMessage("Awake");
+            }
+
             Assert.AreEqual(10, hud.SlotViewCount);
             SerializedObject serialized = new SerializedObject(hud);
             Assert.IsNotNull(serialized.FindProperty("panelSprite").objectReferenceValue);

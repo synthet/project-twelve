@@ -27,6 +27,7 @@ public sealed class SandboxHudController : MonoBehaviour
     [SerializeField] private Sprite panelSprite;
     [SerializeField] private Sprite frameSprite;
     [SerializeField] private Sprite selectionSprite;
+    [SerializeField] private Sprite slotSprite;
     [SerializeField] private Font pixelFont;
 
     [Header("Core presentation")]
@@ -159,7 +160,7 @@ public sealed class SandboxHudController : MonoBehaviour
         for (int i = 0; i < SandboxCreativeHotbarState.SlotCount; i++)
         {
             float x = 14f + i * 64f;
-            Image slot = CreateImage($"Slot{i + 1}", panel, panelSprite, SlotTint);
+            Image slot = CreateImage($"Slot{i + 1}", panel, slotSprite != null ? slotSprite : panelSprite, SlotTint);
             SetRect(slot.rectTransform, new Vector2(x, -15f), new Vector2(58f, 64f),
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
             slot.type = Image.Type.Sliced;

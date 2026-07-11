@@ -68,7 +68,8 @@ cd tools/tile-viz && npm test
 
 Slash commands live under `.claude/commands/` (canonical); Cursor mirrors them under
 `.cursor/commands/`. Codex uses the root `AGENTS.md`, `.codex/config.toml`, and generated
-`.agents/skills/` rather than these custom slash-command files.
+`.agents/skills/`. Antigravity uses `.agents/AGENTS.md`, `.agents/mcp_config.json`, and `.agents/skills/`
+rather than these custom slash-command files.
 See [`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asset map.
 
 ## Development Guidelines
@@ -82,7 +83,7 @@ See [`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asse
 - Never commit licensed Asset Store content into the **public** repo. Licensed art lives in the `Assets/_Licensed` submodule (`docs/PAID_ASSETS.md`). Run `python3 scripts/check_paid_assets.py --staged` before commits.
 - Never modify `.git/config` or introduce non-standard git extensions.
 - After editing `.claude/` assets, run `python scripts/sync_assistant_trees.py` and commit the
-  `.cursor/` and `.agents/skills/` mirrors together.
+  `.cursor/` and `.agents/` mirrors together.
 - When changing autotile behavior, keep Unity C#, EditMode fixtures, and `tools/tile-viz` JS resolver in sync (see parity table in [`tools/tile-viz/README.md`](tools/tile-viz/README.md)).
 
 ## Documentation

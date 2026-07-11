@@ -81,6 +81,21 @@ def sync(check: bool = False) -> int:
                 else:
                     shutil.copy2(child, CODEX_SKILLS / child.name)
             print("synced skills -> .agents/skills")
+
+    # Sync AGENTS.md to .agents/AGENTS.md for Gemini/Antigravity
+    agents_md = ROOT / "AGENTS.md"
+    target_agents_md = ROOT / ".agents" / "AGENTS.md"
+    if agents_md.is_file():
+        if check:
+            if not target_agents_md.exists():
+                changes.append("missing in .agents: AGENTS.md")
+            elif target_agents_md.read_text(encoding="utf-8") != agents_md.read_text(encoding="utf-8"):
+                changes.append("differs: .agents/AGENTS.md")
+        else:
+            target_agents_md.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(agents_md, target_agents_md)
+            print("synced AGENTS.md -> .agents/AGENTS.md")
+
     if check:
         if changes:
             print("OUT OF SYNC:")

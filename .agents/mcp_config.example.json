@@ -1,0 +1,24 @@
+{
+  "_comment": "Copy to .agents/mcp_config.json (gitignored) and customize relay, fff-mcp, and project paths.",
+  "mcpServers": {
+    "project-twelve-unity-mcp": {
+      "command": "RELAY_PATH",
+      "args": [
+        "--mcp"
+      ],
+      "env": {
+        "UNITY_PROJECT_PATH": "ABSOLUTE_PATH_TO_THIS_REPO"
+      }
+    },
+    "project-twelve-ingame-mcp": {
+      "serverUrl": "http://127.0.0.1:8765/mcp"
+    },
+    "project-twelve-fff-mcp": {
+      "command": "fff-mcp",
+      "args": [
+        "--no-warmup",
+        "ABSOLUTE_PATH_TO_THIS_REPO"
+      ]
+    }
+  }
+}

@@ -16,6 +16,7 @@ SKIP_RELATIVE_PREFIXES = (
     Path(".agent-memory/dreams"),
     Path(".agent-memory/raw-sessions"),
     Path(".agent-runs"),
+    Path(".agents/AGENTS.md"),
 )
 LICENSED_SUBMODULE = ROOT / "Assets" / "_Licensed"
 

@@ -75,12 +75,17 @@ public static class SandboxHudPrefabBuilder
     private static void AssignTheme(SandboxHudController controller)
     {
         SerializedObject serialized = new SerializedObject(controller);
-        SetAsset<Sprite>(serialized, "panelSprite", "Assets/_Licensed/PixelFantasy/Common/Sprites/UI/EleganceUI/Panel.png");
-        SetAsset<Sprite>(serialized, "frameSprite", "Assets/_Licensed/PixelFantasy/Common/Sprites/UI/EleganceUI/Frame.png");
-        SetAsset<Sprite>(serialized, "selectionSprite", "Assets/_Licensed/PixelFantasy/Common/Sprites/UI/Selected.png");
+        
+        string baseDir = "Assets/_Licensed/PixelFantasy/Common/Sprites/UI/ExtractedHUD/Starbound";
+        
+        SetAsset<Sprite>(serialized, "panelSprite", $"{baseDir}/panel_bg.png");
+        SetAsset<Sprite>(serialized, "frameSprite", $"{baseDir}/panel_border.png");
+        SetAsset<Sprite>(serialized, "slotSprite", $"{baseDir}/slot.png");
+        SetAsset<Sprite>(serialized, "selectionSprite", $"{baseDir}/slot_selected.png");
+        SetAsset<Sprite>(serialized, "heartSprite", $"{baseDir}/heart.png");
+        SetAsset<Sprite>(serialized, "portraitSprite", $"{baseDir}/portrait.png");
+        
         SetAsset<Font>(serialized, "pixelFont", "Assets/_Licensed/PixelFantasy/Common/Fonts/Pribambas [by Misha Panfilov].ttf");
-        SetAsset<Sprite>(serialized, "portraitSprite", "Assets/Sprites/Core/core_player_idle_00.png");
-        SetAsset<Sprite>(serialized, "heartSprite", "Assets/Sprites/Core/core_ui_heart_full.png");
         SetAsset<Sprite>(serialized, "dirtIcon", "Assets/Sprites/Core/core_tile_dirt_00.png");
         SetAsset<Sprite>(serialized, "grassIcon", "Assets/Sprites/Core/core_tile_grass_00.png");
         SetAsset<Sprite>(serialized, "stoneIcon", "Assets/Sprites/Core/core_tile_stone_00.png");

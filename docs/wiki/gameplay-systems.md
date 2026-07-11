@@ -45,6 +45,13 @@ The HUD is presentation over existing prototype state. It does not implement ite
 pickups, persistence, crafting, mana, or time-of-day; those remain owned by P2-INV-001 and the
 production UI flows in P4-UX-001.
 
+### HUD Style Switcher (Editor tool)
+You can swap the HUD style between different game references inside the Unity Editor:
+1. Go to the menu bar and select **ProjectTwelve -> HUD**.
+2. Click **Apply Terraria Style** (classic fantasy theme) or **Apply Starbound Style** (retro sci-fi theme).
+
+This utility copies the extracted asset files from `D:/Projects/project-twelve-extract` into `Assets/_Licensed/PixelFantasy/Common/Sprites/UI/ExtractedHUD/`, configures the Unity sprite import settings (Sprite UI type, Point filter mode, no compression), and programmatically assigns them to the `SandboxHUD` prefab using serializable field modifications.
+
 ## Inventory and Items
 
 Future inventory should be data-driven and registry-backed. Tile placement should consume item stacks after validation. Tool strength, range, cooldown, and tile damage should be item/tool properties rather than hard-coded player logic.

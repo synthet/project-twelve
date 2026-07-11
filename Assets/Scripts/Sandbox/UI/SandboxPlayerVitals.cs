@@ -10,13 +10,38 @@ public sealed class SandboxPlayerVitals : MonoBehaviour
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
 
-    public int CurrentHealth => currentHealth;
-    public int MaxHealth => maxHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            EnsureInitialized();
+            return currentHealth;
+        }
+    }
+
+    public int MaxHealth
+    {
+        get
+        {
+            EnsureInitialized();
+            return maxHealth;
+        }
+    }
 
     public event Action<int, int> Changed;
 
     private void Awake()
     {
+        EnsureInitialized();
+    }
+
+    private void EnsureInitialized()
+    {
+        if (maxHealth > 0)
+        {
+            return;
+        }
+
         int registeredMaximum = SandboxRegistries.Entities.Get(PlayerEntityId).MaxHealth;
         maxHealth = Mathf.Max(1, registeredMaximum);
         currentHealth = maxHealth;
@@ -24,6 +49,7 @@ public sealed class SandboxPlayerVitals : MonoBehaviour
 
     public void ApplyDamage(int amount)
     {
+        EnsureInitialized();
         if (amount <= 0)
         {
             return;
@@ -34,6 +60,7 @@ public sealed class SandboxPlayerVitals : MonoBehaviour
 
     public void Heal(int amount)
     {
+        EnsureInitialized();
         if (amount <= 0)
         {
             return;
@@ -44,6 +71,7 @@ public sealed class SandboxPlayerVitals : MonoBehaviour
 
     public void RestoreFull()
     {
+        EnsureInitialized();
         SetCurrentHealth(maxHealth);
     }
 

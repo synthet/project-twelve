@@ -23,7 +23,10 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [.claude/rules/*.md](../.claude/rules/) | Always-on rules | governance | active |
 | [.cursor/](../.cursor/) | Generated mirror of `.claude/` + `mcp.example.json` | mirror | generated |
 | [.codex/](../.codex/) | Codex project config and setup guide | configuration | active |
-| [.agents/skills/](../.agents/skills/) | Codex-native generated skill mirror | mirror | generated |
+| [.agents/mcp_config.example.json](../.agents/mcp_config.example.json) | Antigravity project config template | configuration | active |
+| [.agents/README.md](../.agents/README.md) | Antigravity environment setup guide | docs | active |
+| [.agents/AGENTS.md](../.agents/AGENTS.md) | Antigravity project rules | mirror | generated |
+| [.agents/skills/](../.agents/skills/) | Codex & Antigravity generated skill mirror | mirror | generated |
 | [.agent-memory/](../.agent-memory/) | Project memory (log → dream → promote) | memory | active |
 | [.cursorrules](../.cursorrules) | Supplementary Unity C# coding spec | coding | active |
 | [docs/CANONICAL_SOURCES.md](../docs/CANONICAL_SOURCES.md) | Authority map | governance | active |
