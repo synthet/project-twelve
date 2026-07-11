@@ -146,9 +146,20 @@ for each active cell c, bottom-up (row scan order from seeded PRNG):
       with the `SetTile` wake hook (`SandboxWorld.TileFluidWakeRequested`) and fluid read/write on
       `SandboxWorld`/`SandboxChunk` (2026-07-04).
 - [~] Conservation, settling, U-tube, determinism, and wake EditMode tests authored in
-      `Assets/Tests/EditMode/SandboxFluidSimulatorTests.cs` (with `FluidTestGrid`). *Not executed:
-      the Unity Editor is unavailable in this headless environment. Run before merge:*
+      `Assets/Tests/EditMode/SandboxFluidSimulatorTests.cs` (with `FluidTestGrid`). The Unity
+      Editor is unavailable in this headless environment, so the official EditMode run is still
+      required before merge:
       `Unity -batchmode -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`.
+      As interim evidence the simulator was ported line-for-line to Python and the same acceptance
+      properties executed offline (2026-07-05): **20/20 checks pass** — mass conservation
+      (|Δ| ≈ 3.6e-15 over 300 ticks), settling to a flat surface + empty active set (100 ticks,
+      spread 0.005), still-water zero-cost, U-tube equalization (both shafts top row 4), bitwise
+      determinism, edit-driven wake, unloaded-chunk containment, and the per-tick budget. The
+      offline run **found and fixed a bug in the merged `Wake_...` fixture**: its drop space was
+      open, so drained water correctly spread across the floor (~0.2/cell) instead of resting at
+      `(2,0)=1.0` — the assertion would have failed in Unity. Fixed by walling the drop space into
+      a one-wide well (`BuildWalledColumnOnShelf`). Algorithm logic is verified; only the in-engine
+      run and single-precision float behaviour remain unconfirmed.
 - [ ] Profiler evidence for budget and sleeping-lake cost attached. *(Requires the Unity Editor /
       Play Mode; see acceptance criteria.)*
 - [ ] Follow-up tasks created for lava/interactions and fluid rendering polish. *(Recorded as
