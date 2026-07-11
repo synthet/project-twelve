@@ -6,14 +6,22 @@
 // docs/wiki/generation-and-saving.md). Pure ESM — shared verbatim by the CLI and
 // the inlined in-browser generator.
 
-import { perlinNoise } from './perlin.js';
+import { hash, unitFloat } from './hash.js';
 import { roundToInt, fr } from './mathf.js';
 import { TileId, makeTile } from './tiles.js';
 
 export const CHUNK_SIZE = 32; // SandboxChunk.Size
 
-// float32 value of the 0.001f literal used for the noise Y input.
-const FR_0001 = fr(0.001);
+// SandboxGenPass.SurfaceHeightmap — passId component of the pass-1 sub-seed.
+const SURFACE_PASS = 1;
+
+// Quintic smootherstep (6t^5 - 15t^4 + 10t^3), float32 at each step to mirror the
+// engine's `float` SmoothStep. Named distinctly so it inlines cleanly into the HTML view.
+function smoothStep(t) {
+  const t3 = fr(fr(fr(t * t) * t));
+  const inner = fr(fr(t * fr(fr(t * 6) - 15)) + 10);
+  return fr(t3 * inner);
+}
 
 export const DEFAULT_PARAMS = Object.freeze({
   seed: 1337,
@@ -35,15 +43,20 @@ export class TerrainGenerator {
   }
 
   /**
-   * Surface height in world tiles for a world column. Mirrors
-   * GetSurfaceHeight: float32-emulated noise inputs, then banker's RoundToInt.
+   * Surface height in world tiles for a world column. Mirrors GetSurfaceHeight:
+   * pass-1 value noise — a smootherstep blend of per-lattice random samples drawn
+   * from the deterministic integer hash hash(seed, passId, latticeX). float32 at
+   * each step, then banker's RoundToInt. terrainFrequency sets the lattice spacing.
    */
   getSurfaceHeight(worldX) {
-    // Mirror the engine's float data flow: (int -> float) * float, all
-    // float32-rounded at each step. perlinNoise itself returns a float.
-    const xInput = fr(fr(worldX + this.seed) * this.terrainFrequency);
-    const yInput = fr(this.seed * FR_0001);
-    const noise = perlinNoise(xInput, yInput);
+    const t = fr(worldX * this.terrainFrequency);
+    const latticeX = Math.floor(t);
+    const frac = fr(t - latticeX);
+
+    const a = unitFloat(hash(this.seed >>> 0, SURFACE_PASS, latticeX >>> 0));
+    const b = unitFloat(hash(this.seed >>> 0, SURFACE_PASS, (latticeX + 1) >>> 0));
+    // a + (b - a) * smoothStep(frac), all float32.
+    const noise = fr(a + fr(fr(b - a) * smoothStep(frac)));
     // (noise - 0.5f) * TerrainAmplitude * 2f, then banker's RoundToInt.
     const offset = roundToInt(fr(fr(fr(noise - 0.5) * this.terrainAmplitude) * 2));
     return this.surfaceHeight + offset;

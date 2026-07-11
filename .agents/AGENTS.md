@@ -66,7 +66,7 @@ python scripts/agent-memory/context.py
   [`.cursor/mcp.example.json`](.cursor/mcp.example.json) → `.cursor/mcp.json` (gitignored) for Cursor.
 - Codex loads portable project servers from [`.codex/config.toml`](.codex/config.toml); keep
   machine-specific relay paths in user-level `~/.codex/config.toml` (setup: [`.codex/README.md`](.codex/README.md)).
-- Antigravity/Gemini loads project servers from [`.agents/mcp_config.json`](.agents/mcp_config.json);
+- Antigravity/Gemini loads project servers from `.agents/mcp_config.json` (gitignored);
   copy [`.agents/mcp_config.example.json`](.agents/mcp_config.example.json) and set machine paths.
 - **Naming:** `<scope>-<role>-*` (e.g. `project-twelve-unity-mcp`, `project-twelve-github`).
 - **Secrets via env only**, never CLI args. Reload the MCP client after changing keys.
