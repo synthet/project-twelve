@@ -21,14 +21,16 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Claude subagents | `.claude/agents/*.md` | **Canonical** authoring source |
 | Claude rules | `.claude/rules/*.md` | Always-on guidance |
 | Cursor mirror | `.cursor/{rules,commands,skills,agents}` | **Generated** from `.claude/` — do not edit by hand |
-| MCP template | `.cursor/mcp.example.json`, `.mcp.json` | Copy to gitignored `.cursor/mcp.json` to attach servers |
+| Codex config | `.codex/config.toml` | Trusted-project sandbox, agent, and portable MCP defaults |
+| Codex skills | `.agents/skills/*/SKILL.md` | **Generated** from `.claude/skills/` — do not edit by hand |
+| MCP configuration | `.cursor/mcp.example.json`, `.mcp.json`, `.codex/config.toml` | Surface-specific project server definitions |
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks |
 | Project memory | `.agent-memory/` | **Session start:** read `memory.md`; log → dream → promote (see `CURSOR_USAGE.md`; rule: `.claude/rules/agent-memory.md`) |
 | Workflow playbooks | `.agent/workflows/*.md` | spec / plan / implement / pr-ready / test-and-fix / … |
 | Unity C# rules (supplementary) | `.cursorrules` | Long-form Unity coding spec |
 
 **Single source of truth:** edit assets under `.claude/` + `.agent/`, then run
-`python scripts/sync_assistant_trees.py` to regenerate the `.cursor/` mirror.
+`python scripts/sync_assistant_trees.py` to regenerate the `.cursor/` and `.agents/skills/` mirrors.
 Validate CLI tooling skills with `python scripts/validate_cli_skills.py` (see [`.agent/cli-tools-skills-spec.md`](../../.agent/cli-tools-skills-spec.md)).
 
 ## The SDLC loop
@@ -81,7 +83,7 @@ When the Unity Editor is open, agents can call Editor tools (scenes, assets, con
 
 ## FFF file search MCP
 
-Optional [FFF](https://github.com/dmtrKovalenko/fff) server for fast, frecency-ranked repo search (`fffind`, `ffgrep`, `fff-multi-grep`). Setup: `AGENTS.md` → **FFF file search MCP**; template key `project-twelve-fff-mcp` in `.cursor/mcp.example.json`.
+Optional [FFF](https://github.com/dmtrKovalenko/fff) server for fast, frecency-ranked repo search (`fffind`, `ffgrep`, `fff-multi-grep`). Setup: `AGENTS.md` → **FFF file search MCP**; template key `project-twelve-fff-mcp` in `.cursor/mcp.example.json` and portable Codex definition in `.codex/config.toml`.
 
 ## Safety
 

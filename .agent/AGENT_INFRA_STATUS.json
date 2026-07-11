@@ -1,22 +1,24 @@
 {
   "project": "ProjectTwelve",
-  "review_date": "2026-06-28",
+  "review_date": "2026-07-10",
   "canonical_tree": ".claude",
-  "generated_tree": ".cursor",
+  "generated_trees": [".cursor", ".agents/skills"],
   "subsystems": {
     "commands": ".claude/commands",
     "skills": ".claude/skills",
     "agents": ".claude/agents",
     "rules": ".claude/rules",
+    "codex_config": ".codex/config.toml",
+    "codex_skills": ".agents/skills",
     "governance": ".agent",
     "workflows": ".agent/workflows",
     "memory": ".agent-memory",
     "docs": "docs"
   },
   "watchlist": [
-    "Regenerate .cursor mirror after editing .claude (scripts/sync_assistant_trees.py)",
+    "Regenerate .cursor and .agents/skills mirrors after editing .claude (scripts/sync_assistant_trees.py)",
     "Regenerate AGENTS.md MCP tool inventory when tools change",
-    "Ship .claude and .cursor changes in the same PR",
+    "Ship .claude, .cursor, and .agents/skills changes in the same PR",
     "Run check_paid_assets.py before commit/push"
   ]
 }

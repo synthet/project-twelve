@@ -1,9 +1,9 @@
 # Agent infrastructure inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-04. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+**Last reviewed:** 2026-07-10. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
 
 Keep this table current as the single catalog of every agent-facing asset. `.claude/` is canonical;
-`.cursor/` is generated from it.
+`.cursor/` and `.agents/skills/` are generated from it.
 
 | Path | Purpose | Scope | Status |
 |------|---------|-------|--------|
@@ -22,6 +22,8 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [.claude/agents/*.md](../.claude/agents/) | Subagents | coding | active |
 | [.claude/rules/*.md](../.claude/rules/) | Always-on rules | governance | active |
 | [.cursor/](../.cursor/) | Generated mirror of `.claude/` + `mcp.example.json` | mirror | generated |
+| [.codex/](../.codex/) | Codex project config and setup guide | configuration | active |
+| [.agents/skills/](../.agents/skills/) | Codex-native generated skill mirror | mirror | generated |
 | [.agent-memory/](../.agent-memory/) | Project memory (log → dream → promote) | memory | active |
 | [.cursorrules](../.cursorrules) | Supplementary Unity C# coding spec | coding | active |
 | [docs/CANONICAL_SOURCES.md](../docs/CANONICAL_SOURCES.md) | Authority map | governance | active |
@@ -31,10 +33,11 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [docs/ai-workflow/README.md](../docs/ai-workflow/README.md) | Asset map + SDLC loop | workflow | active |
 | [scripts/check_paid_assets.py](../scripts/check_paid_assets.py) | Block licensed paths on commit/push | governance | active |
 | [scripts/check_markdown_links.py](../scripts/check_markdown_links.py) | Markdown link checker | docs | active |
-| [scripts/sync_assistant_trees.py](../scripts/sync_assistant_trees.py) | Regenerate `.cursor/` from `.claude/` | agents | active |
+| [scripts/sync_assistant_trees.py](../scripts/sync_assistant_trees.py) | Regenerate `.cursor/` and `.agents/skills/` from `.claude/` | agents | active |
 
 ## Drift watchlist
 
-- **`.cursor/` mirror:** regenerate via `python scripts/sync_assistant_trees.py` after editing `.claude/`.
+- **Generated mirrors:** regenerate `.cursor/` and `.agents/skills/` via
+  `python scripts/sync_assistant_trees.py` after editing `.claude/`.
 - **MCP tool inventory:** regenerate the `<!-- BEGIN/END MCP TOOL INVENTORY -->` block in `AGENTS.md` when tools change.
-- **Skills:** any skill/command/agent change ships both trees in the same PR.
+- **Skills:** any skill change ships the canonical tree and both generated mirrors in the same PR.

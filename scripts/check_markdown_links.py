@@ -11,6 +11,12 @@ ROOT = Path(__file__).resolve().parents[1]
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#")
 SKIP_DIR_PARTS = {".git", "Library", "node_modules"}
+SKIP_RELATIVE_PREFIXES = (
+    Path(".agent/scratch"),
+    Path(".agent-memory/dreams"),
+    Path(".agent-memory/raw-sessions"),
+    Path(".agent-runs"),
+)
 LICENSED_SUBMODULE = ROOT / "Assets" / "_Licensed"
 
 
@@ -19,6 +25,9 @@ def markdown_files() -> list[Path]:
         path
         for path in ROOT.rglob("*.md")
         if not SKIP_DIR_PARTS.intersection(path.parts)
+        and not any(
+            path.is_relative_to(ROOT / prefix) for prefix in SKIP_RELATIVE_PREFIXES
+        )
     )
 
 

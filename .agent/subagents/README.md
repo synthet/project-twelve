@@ -1,6 +1,8 @@
 # Subagents and logical roles — ProjectTwelve
 
 Logical roles map to subagent definitions under `.claude/agents/` (mirrored in `.cursor/agents/`).
+Codex uses its native collaboration agents and the repo guidance in `AGENTS.md`; the Claude/Cursor
+agent definition format is not copied into `.agents/skills/`.
 
 | Role | Subagent | Allowed | Forbidden |
 |------|----------|---------|-----------|
@@ -13,4 +15,5 @@ Logical roles map to subagent definitions under `.claude/agents/` (mirrored in `
 External review agents require the sibling `subagent-orchestrator` MCP server (project key
 `project-twelve-subagent-orchestrator`). See [`docs/EXTERNAL_CLI_REVIEWS.md`](../../docs/EXTERNAL_CLI_REVIEWS.md).
 
-After editing subagent files, run `python scripts/sync_assistant_trees.py` and commit both trees.
+After editing subagent files, run `python scripts/sync_assistant_trees.py` and commit the canonical
+and generated Cursor trees.

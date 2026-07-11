@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Generate the Cursor assistant tree (.cursor/) from the canonical Claude tree (.claude/).
+"""Generate Cursor and Codex assistant assets from the canonical Claude tree (.claude/).
 
 Single source of truth: author rules/commands/skills/agents under `.claude/`, then run this script
-to regenerate `.cursor/`. Idempotent: re-running produces no diff.
+to regenerate `.cursor/` and Codex-native `.agents/skills/`. Idempotent: re-running produces no
+diff.
 
 Mappings:
   .claude/commands/*.md        -> .cursor/commands/*.md       (verbatim)
   .claude/skills/<n>/**        -> .cursor/skills/<n>/**       (verbatim, whole dir)
   .claude/agents/*.md          -> .cursor/agents/*.md         (verbatim)
   .claude/rules/*.md           -> .cursor/rules/*.mdc         (extension change; content kept)
+  .claude/skills/<n>/**        -> .agents/skills/<n>/**       (Codex repo skills, verbatim)
 
-`.cursor/mcp.example.json` and other hand-authored Cursor files are left untouched.
+`.cursor/mcp.example.json`, `.codex/config.toml`, and other hand-authored files are left untouched.
 """
 
 from __future__ import annotations
@@ -23,6 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CLAUDE = ROOT / ".claude"
 CURSOR = ROOT / ".cursor"
+CODEX_SKILLS = ROOT / ".agents" / "skills"
 
 # (subdir, dest_subdir, mode) — mode: "tree" copies whole dir, "rules" converts .md->.mdc
 SUBDIRS = [
@@ -65,6 +68,19 @@ def sync(check: bool = False) -> int:
             for md in sorted(src.glob("*.md")):
                 shutil.copy2(md, dst / md.name)
         print(f"synced {src_name} -> .cursor/{dst_name}")
+
+    claude_skills = CLAUDE / "skills"
+    if claude_skills.is_dir():
+        if check:
+            changes.extend(_diff_tree(claude_skills, CODEX_SKILLS, ".agents/skills"))
+        else:
+            _reset_dir(CODEX_SKILLS)
+            for child in sorted(claude_skills.iterdir()):
+                if child.is_dir():
+                    shutil.copytree(child, CODEX_SKILLS / child.name)
+                else:
+                    shutil.copy2(child, CODEX_SKILLS / child.name)
+            print("synced skills -> .agents/skills")
     if check:
         if changes:
             print("OUT OF SYNC:")
@@ -82,14 +98,14 @@ def _expected_name(p: Path, mode: str) -> str:
 def _diff(src: Path, dst: Path, mode: str) -> list[str]:
     out: list[str] = []
     if mode == "tree":
-        src_names = {c.name for c in src.iterdir()}
-        dst_names = {c.name for c in dst.iterdir()} if dst.is_dir() else set()
-        for name in sorted(src_names - dst_names):
-            out.append(f"missing in .cursor: {dst.name}/{name}")
-        for name in sorted(dst_names - src_names):
-            out.append(f"stale in .cursor: {dst.name}/{name}")
-        return out
+        return _diff_tree(src, dst, f".cursor/{dst.name}")
     pat = "*.md"
+    expected_names = {_expected_name(f, mode) for f in src.glob(pat)}
+    actual_names = (
+        {f.name for f in dst.iterdir() if f.is_file()} if dst.is_dir() else set()
+    )
+    for name in sorted(actual_names - expected_names):
+        out.append(f"stale in .cursor: {dst.name}/{name}")
     for f in sorted(src.glob(pat)):
         target = dst / _expected_name(f, mode)
         if not target.exists():
@@ -99,8 +115,26 @@ def _diff(src: Path, dst: Path, mode: str) -> list[str]:
     return out
 
 
+def _diff_tree(src: Path, dst: Path, label: str) -> list[str]:
+    out: list[str] = []
+    src_files = {p.relative_to(src) for p in src.rglob("*") if p.is_file()}
+    dst_files = (
+        {p.relative_to(dst) for p in dst.rglob("*") if p.is_file()}
+        if dst.is_dir()
+        else set()
+    )
+    for rel in sorted(src_files - dst_files):
+        out.append(f"missing in {label}: {rel.as_posix()}")
+    for rel in sorted(dst_files - src_files):
+        out.append(f"stale in {label}: {rel.as_posix()}")
+    for rel in sorted(src_files & dst_files):
+        if (src / rel).read_bytes() != (dst / rel).read_bytes():
+            out.append(f"differs: {label}/{rel.as_posix()}")
+    return out
+
+
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Sync .cursor/ from .claude/")
+    ap = argparse.ArgumentParser(description="Sync .cursor/ and .agents/skills/ from .claude/")
     ap.add_argument("--check", action="store_true", help="Report drift without writing (CI gate)")
     args = ap.parse_args()
     return sync(check=args.check)

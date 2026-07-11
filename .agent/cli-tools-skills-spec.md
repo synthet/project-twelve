@@ -6,7 +6,8 @@ Vendored from the agent CLI tools enablement prompt. **Canonical skill paths** i
 .claude/skills/<name>/SKILL.md
 ```
 
-Mirror to `.cursor/skills/` via `python scripts/sync_assistant_trees.py`. Do not use repo-root `skills/`.
+Mirror to `.cursor/skills/` and Codex-native `.agents/skills/` via
+`python scripts/sync_assistant_trees.py`. Do not use repo-root `skills/`.
 
 ## Goal
 
