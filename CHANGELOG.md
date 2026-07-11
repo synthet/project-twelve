@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-07-11
+
+Sandbox HUD editor tooling and test coverage for the prototype hotbar/vitals UI.
+
+### Added
+
+- Editor `SandboxHudPrefabBuilder` (`ProjectTwelve/UI/Rebuild Sandbox HUD`): rebuilds
+  `Assets/Prefabs/UI/SandboxHUD.prefab`, assigns theme sprites/fonts, and wires the HUD into
+  `Assets/Scene.unity` with `SandboxPlayerVitals` on the player.
+- EditMode `SandboxHudTests` plus Editor/EditMode asmdef references for sandbox UI coverage.
+- HUD documentation in `docs/wiki/gameplay-systems.md`.
+
 ## [0.3.0] — 2026-07-11
 
 Grass growth simulation: grass becomes real, simulated tile state instead of a render-time overlay.
@@ -70,5 +82,7 @@ registry migration, autotile/visual work, and sandbox gameplay prototypes merged
 
 - Session-scoped `AgentDebugLog` debug instrumentation.
 
-[Unreleased]: https://github.com/synthet/project-twelve/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/synthet/project-twelve/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/synthet/project-twelve/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/synthet/project-twelve/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/synthet/project-twelve/releases/tag/v0.2.0
