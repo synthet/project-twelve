@@ -1,3 +1,13 @@
+---
+type: Architecture
+title: Procedural Generation
+description: Deterministic multi-pass terrain generation — pass order, per-pass sub-seeds, and the hash value-noise that replaced engine-native perlin.
+resource: wiki/07-procedural-generation.md
+tags: [docs, wiki, generation, determinism, p2]
+timestamp: 2026-07-11T00:00:00Z
+okf_version: 0.1
+---
+
 # 07 — Procedural Generation
 
 > **Status:** Planning.
@@ -6,6 +16,27 @@
 
 Determinism is non-negotiable: it lets saves store only diffs (see [Saving & Loading](11-saving-loading.md)),
 makes bugs reproducible, and lets the server and any late-joining client agree on untouched terrain.
+
+## Deterministic noise (no engine-native perlin) — P2-GEN-001
+
+Generation must be reproducible **outside** the engine so the offline tool
+(`tools/world-viz`) can mirror it bit-for-bit for parity tests and debugging. Unity's
+`Mathf.PerlinNoise` is native C++ whose gradient/permutation tables are not published and
+could not be reproduced offline (Unity's own reference `Perlin.cs` and community ports all
+disagree with it), so any JS port drifted from the engine and the parity gate stayed red.
+
+Terrain noise is therefore **project-owned**, built on a shared deterministic 32-bit integer
+hash (`SandboxHash.Hash` in C#, `tools/world-viz/src/core/hash.js` in JS — FNV-1a plus an
+xorshift-multiply finalizer, the same mix the fluid sim uses). Pass 1 surface height is a
+value noise: a quintic-smootherstep blend of per-lattice samples drawn from
+`hash(seed, passId, latticeX)`, mapped to `[0, 1]` by `UnitFloat` (word ÷ 2³²). Because the
+whole path is pure integer math plus explicit `float`/`Math.fround` steps, C# and JS agree
+exactly — verified offline by **known-answer hash and surface-height vectors duplicated in
+both test suites** (`SandboxHashTests` ↔ `hash.test.js`), independent of any Unity run.
+
+Per-pass sub-seeds follow the `hash(seed, passId, coord)` convention (`SandboxGenPass` numbers
+the passes); each pass draws from an independent, coordinate-addressable stream, never from
+iteration order.
 
 ## Pass order
 

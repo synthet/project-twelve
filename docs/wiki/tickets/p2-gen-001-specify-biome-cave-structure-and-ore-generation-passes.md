@@ -3,7 +3,7 @@ type: Task
 id: P2-GEN-001
 title: "[P2-GEN-001] Specify biome, cave, structure, and ore generation passes."
 description: Fixed-order deterministic generation passes with per-pass sub-seeds, chunk-addressable output, and golden-seed verification.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/35"
@@ -140,6 +140,33 @@ server/client agreement (P3-NET-002) both depend on.
 - `docs/wiki/07-procedural-generation.md` — mark decisions as adopted where the spec firms up.
 - P2-VISUAL-004 ticket — confirm the biome-assignment contract cross-link stays accurate.
 - Update `docs/wiki/spec-driven-development-tasks.md` if task scope or sequencing changes.
+
+## Progress log
+
+**2026-07-11 — Determinism foundation + parity fix (branch `feat/p2-gen-001-deterministic-noise`).**
+Groundwork for the pass pipeline, driven by a pre-existing failure: the offline JS port
+(`tools/world-viz`) drifted from the engine on 77% of surface columns because it reimplemented
+Ken Perlin improved-noise while the generator called native `Mathf.PerlinNoise`, whose tables are
+not reproducible offline (Unity's own `Perlin.cs` reference disagrees too). Fixed by making terrain
+noise project-owned:
+
+- `SandboxHash` (C#) + `hash.js` (JS) — shared FNV-1a + xorshift 32-bit integer hash and `UnitFloat`.
+- `SandboxGenPass` enum — fixed pass ids for the `hash(seed, passId, coord)` sub-seed convention.
+- `SandboxTerrainGenerator.GetSurfaceHeight` now uses pass-1 hash value noise (quintic smootherstep)
+  instead of `Mathf.PerlinNoise`; JS `getSurfaceHeight` mirrors it op-for-op in float32.
+- Second latent parity bug fixed: JS `TileId` now uses the engine registry's frozen ordinal indices
+  (air 0, copper_ore 1, dirt 2, gold_ore 3, grass 4, iron_ore 5, silver_ore 6, stone 7).
+- Offline cross-impl anchor: known-answer hash + surface-height vectors duplicated in
+  `SandboxHashTests` ↔ `hash.test.js` / `TerrainFixtureExportTests`.
+
+**Verified offline:** `tools/world-viz` `node --test` green (14/14, parity restored); HTML bundler
+inlines `hash.js`. **Deferred to Unity (editor open → batchmode locked):** compile + run EditMode
+`SandboxHashTests`/`TerrainFixtureExportTests` to confirm the C# known-answers and **regenerate the
+engine-authored golden fixture** (flips `_provenance` from `provisional-worldviz-offline` to
+`unity-editmode`; height/id data should be unchanged if C#/JS math matches).
+
+**Still open (this ticket):** passes 3–7 (caves, biomes, ores, structures, validation), the full
+sub-seed/conflict spec in `generation-and-saving.md`, and chunk-addressability/border EditMode tests.
 
 ## Exit evidence checklist
 

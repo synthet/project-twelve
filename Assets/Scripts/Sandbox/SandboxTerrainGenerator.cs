@@ -67,11 +67,38 @@ public readonly struct SandboxTerrainGenerator
     /// <summary>
     /// Surface height in world tiles for the given world column. Determined solely by
     /// the seed, the column, and the terrain shaping parameters.
+    ///
+    /// Pass 1 (<see cref="SandboxGenPass.SurfaceHeightmap"/>) value noise: a smooth
+    /// interpolation between per-lattice random samples drawn from the deterministic
+    /// integer hash <c>SandboxHash.Hash(seed, passId, latticeX)</c>. This replaces the
+    /// engine-native <c>Mathf.PerlinNoise</c> so the standalone JS port
+    /// (<c>tools/world-viz</c>) can reproduce generation bit-for-bit — Unity's native
+    /// perlin tables could not be matched offline. <see cref="TerrainFrequency"/> sets
+    /// the lattice spacing (tiles per noise cell = 1 / frequency).
     /// </summary>
     public int GetSurfaceHeight(int worldX)
     {
-        float noise = Mathf.PerlinNoise((worldX + Seed) * TerrainFrequency, Seed * 0.001f);
+        const int passId = (int)SandboxGenPass.SurfaceHeightmap;
+
+        float t = worldX * TerrainFrequency;
+        int latticeX = Mathf.FloorToInt(t);
+        float frac = t - latticeX;
+
+        float a = SandboxHash.UnitFloat(SandboxHash.Hash((uint)Seed, (uint)passId, (uint)latticeX));
+        float b = SandboxHash.UnitFloat(SandboxHash.Hash((uint)Seed, (uint)passId, (uint)(latticeX + 1)));
+        float noise = a + (b - a) * SmoothStep(frac);
+
         return SurfaceHeight + Mathf.RoundToInt((noise - 0.5f) * TerrainAmplitude * 2f);
+    }
+
+    /// <summary>
+    /// Quintic smootherstep (6t^5 - 15t^4 + 10t^3), the C2-continuous ease Ken Perlin
+    /// uses for improved noise. Applied to the in-cell fraction so surface height is
+    /// smooth across lattice boundaries. Evaluated in <c>float</c> to match the JS port.
+    /// </summary>
+    private static float SmoothStep(float t)
+    {
+        return t * t * t * (t * (t * 6f - 15f) + 10f);
     }
 
     /// <summary>

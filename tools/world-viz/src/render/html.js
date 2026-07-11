@@ -14,7 +14,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CORE_DIR = path.join(__dirname, '..', 'core');
 
 // Dependency order matters: dependencies before dependents.
-const CORE_FILES = ['mathf.js', 'tiles.js', 'perlin.js', 'generator.js', 'world.js'];
+const CORE_FILES = ['mathf.js', 'tiles.js', 'hash.js', 'generator.js', 'world.js'];
 
 /** Read core modules and strip ESM import/export so they concatenate cleanly. */
 function inlineCore() {

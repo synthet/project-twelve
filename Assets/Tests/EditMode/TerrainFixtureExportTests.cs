@@ -48,6 +48,10 @@ public sealed class TerrainFixtureExportTests
         var sb = new StringBuilder();
 
         sb.Append('{');
+        // Provenance marker: distinguishes an engine-authored fixture from a
+        // provisional one authored offline by tools/world-viz. Regenerating here
+        // (Unity EditMode) stamps "unity-editmode"; the parity test ignores it.
+        sb.Append("\"_provenance\":\"unity-editmode\",");
         sb.AppendFormat(ci, "\"seed\":{0},", Seed);
         sb.AppendFormat(ci, "\"surfaceHeight\":{0},", SurfaceHeight);
         sb.AppendFormat(ci, "\"terrainAmplitude\":{0},", TerrainAmplitude);
@@ -134,6 +138,26 @@ public sealed class TerrainFixtureExportTests
         for (int x = MinX; x <= MaxX; x++)
         {
             Assert.AreEqual(a.GetSurfaceHeight(x), b.GetSurfaceHeight(x), $"surface height differs at x={x}");
+        }
+    }
+
+    // Known-answer surface heights for the hash value-noise (P2-GEN-001, pass 1).
+    // Duplicated in tools/world-viz/test/hash.test.js so C# and the JS port are
+    // cross-checked offline; if these drift, the engine and the offline tool have
+    // diverged and the golden fixture must be regenerated.
+    private static readonly int[][] SurfaceKnownAnswers =
+    {
+        new[] { -100, 27 }, new[] { -64, 32 }, new[] { -1, 29 }, new[] { 0, 29 },
+        new[] { 1, 29 }, new[] { 32, 33 }, new[] { 64, 31 }, new[] { 100, 34 },
+    };
+
+    [Test]
+    public void SurfaceHeightMatchesKnownAnswer()
+    {
+        SandboxTerrainGenerator gen = Generator();
+        foreach (int[] pair in SurfaceKnownAnswers)
+        {
+            Assert.AreEqual(pair[1], gen.GetSurfaceHeight(pair[0]), $"surface height at x={pair[0]}");
         }
     }
 
