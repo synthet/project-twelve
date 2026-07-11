@@ -159,7 +159,7 @@ public sealed class SandboxHudController : MonoBehaviour
         for (int i = 0; i < SandboxCreativeHotbarState.SlotCount; i++)
         {
             float x = 14f + i * 64f;
-            Image slot = CreateImage($"Slot{i + 1}", panel, frameSprite, SlotTint);
+            Image slot = CreateImage($"Slot{i + 1}", panel, panelSprite, SlotTint);
             SetRect(slot.rectTransform, new Vector2(x, -15f), new Vector2(58f, 64f),
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
             slot.type = Image.Type.Sliced;
@@ -255,7 +255,7 @@ public sealed class SandboxHudController : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            KeyControl key = index == 9 ? keyboard.digit0Key : keyboard[(Key)((int)Key.Digit1 + index)];
+            var key = index == 9 ? keyboard.digit0Key : keyboard[(Key)((int)Key.Digit1 + index)];
             if (key != null && key.wasPressedThisFrame)
             {
                 return true;

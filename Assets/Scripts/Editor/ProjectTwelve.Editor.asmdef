@@ -2,7 +2,8 @@
     "name": "ProjectTwelve.Editor",
     "rootNamespace": "",
     "references": [
-        "ProjectTwelve.Runtime"
+        "ProjectTwelve.Runtime",
+        "Unity.ugui"
     ],
     "includePlatforms": [
         "Editor"

@@ -27,6 +27,24 @@ Simulation and visuals are intentionally separated:
 
 Gameplay code must not depend on `SpriteRenderer` bounds or vendor animation scripts. Equipment appearance is data on `CharacterComposer` (layer strings) resolved at compose time — see [Visual integration](visual-integration.md).
 
+### Creative sandbox HUD
+
+The prototype scene includes a screen-space HUD for the current creative tile-edit loop. Its
+bottom hotbar has ten slots: dirt, grass, stone, and copper ore occupy slots 1–4, while slots 5–10
+are intentionally empty. Number keys select any slot; the mouse wheel cycles through populated
+slots only. A populated selection changes the registered solid tile placed with right-click. An
+empty selection disables placement without affecting left-click removal. The infinity marker is a
+creative-mode affordance, not an inventory quantity.
+
+The top-left vitals panel reads `SandboxPlayerVitals`, which initializes from the `core:player`
+entity definition and exposes damage/heal events for later combat integration. No normal gameplay
+damage source is part of this prototype. The top-right panel reports the live seed, player tile,
+and owning chunk using the same coordinate conversion as world streaming and debug tools.
+
+The HUD is presentation over existing prototype state. It does not implement item consumption,
+pickups, persistence, crafting, mana, or time-of-day; those remain owned by P2-INV-001 and the
+production UI flows in P4-UX-001.
+
 ## Inventory and Items
 
 Future inventory should be data-driven and registry-backed. Tile placement should consume item stacks after validation. Tool strength, range, cooldown, and tile damage should be item/tool properties rather than hard-coded player logic.
