@@ -142,7 +142,78 @@ public sealed class SandboxHudTests
             Assert.AreEqual(10, hud.SlotViewCount);
             SerializedObject serialized = new SerializedObject(hud);
             Assert.IsNotNull(serialized.FindProperty("panelSprite").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("emptyHeartSprite").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("pixelFont").objectReferenceValue);
+
+            Sprite slotSprite = serialized.FindProperty("slotSprite").objectReferenceValue as Sprite;
+            Assert.IsNotNull(slotSprite);
+            Assert.LessOrEqual(slotSprite.border.x / slotSprite.pixelsPerUnit * 100f, 12f);
+            Assert.LessOrEqual(slotSprite.border.y / slotSprite.pixelsPerUnit * 100f, 12f);
+
+            RectTransform vitals = instance.transform.Find("Vitals") as RectTransform;
+            RectTransform hotbar = instance.transform.Find("CreativeHotbar") as RectTransform;
+            RectTransform telemetry = instance.transform.Find("WorldInfo") as RectTransform;
+            Assert.IsNotNull(vitals);
+            Assert.IsNotNull(hotbar);
+            Assert.IsNotNull(telemetry);
+            Assert.LessOrEqual(vitals.rect.width, 320f);
+            Assert.LessOrEqual(vitals.rect.height, 92f);
+            Assert.LessOrEqual(hotbar.rect.width, 612f);
+            Assert.LessOrEqual(hotbar.rect.height, 82f);
+            Assert.LessOrEqual(telemetry.rect.width, 188f);
+            Assert.LessOrEqual(telemetry.rect.height, 70f);
+
+            RectTransform firstSlot = instance.transform.Find("CreativeHotbar/Slot1") as RectTransform;
+            RectTransform secondSlot = instance.transform.Find("CreativeHotbar/Slot2") as RectTransform;
+            Assert.IsNotNull(firstSlot);
+            Assert.IsNotNull(secondSlot);
+            float firstSelectedY = firstSlot.anchoredPosition.y;
+            Assert.IsTrue(hud.Hotbar.Select(1));
+            Assert.AreEqual(firstSelectedY - 4f, firstSlot.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(firstSelectedY, secondSlot.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(secondSlot, secondSlot.Find("SelectedItem").parent);
+
+            hud.SetDebugTelemetryVisible(false);
+            Assert.IsFalse(hud.DebugTelemetryVisible);
+            hud.SetDebugTelemetryVisible(true);
+            Assert.IsTrue(hud.DebugTelemetryVisible);
+        }
+        finally
+        {
+            Object.DestroyImmediate(instance);
+        }
+    }
+
+    [TestCase(1920f, 1080f)]
+    [TestCase(2560f, 1440f)]
+    [TestCase(1920f, 1200f)]
+    [TestCase(2560f, 1080f)]
+    [TestCase(1024f, 768f)]
+    public void HudLayout_FitsRepresentativeAspectRatios(float screenWidth, float screenHeight)
+    {
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/SandboxHUD.prefab");
+        GameObject instance = Object.Instantiate(prefab);
+        try
+        {
+            SandboxHudController hud = instance.GetComponent<SandboxHudController>();
+            if (hud.SlotViewCount == 0)
+            {
+                hud.SendMessage("Awake");
+            }
+
+            CanvasScaler scaler = instance.GetComponent<CanvasScaler>();
+            float widthScale = screenWidth / scaler.referenceResolution.x;
+            float heightScale = screenHeight / scaler.referenceResolution.y;
+            float scale = Mathf.Sqrt(widthScale * heightScale);
+            float canvasWidth = screenWidth / scale;
+            float canvasHeight = screenHeight / scale;
+
+            RectTransform vitals = instance.transform.Find("Vitals") as RectTransform;
+            RectTransform hotbar = instance.transform.Find("CreativeHotbar") as RectTransform;
+            RectTransform telemetry = instance.transform.Find("WorldInfo") as RectTransform;
+            Assert.GreaterOrEqual(canvasWidth, hotbar.rect.width + 32f);
+            Assert.GreaterOrEqual(canvasWidth, vitals.rect.width + telemetry.rect.width + 48f);
+            Assert.GreaterOrEqual(canvasHeight, vitals.rect.height + hotbar.rect.height + 96f);
         }
         finally
         {
