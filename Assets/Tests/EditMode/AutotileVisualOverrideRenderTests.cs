@@ -82,11 +82,15 @@ public sealed class AutotileVisualOverrideRenderTests
     public void CoverOverride_UsesGrassASpriteDecision()
     {
         AutotileTileset tileset = CreateCoverTileset();
+        // Masks are indexed [x, y] (AutotileRule.Matches compares pattern[x + y*3] to
+        // mask[x, y]), so a horizontal "middle run" (cover both sides -> sprite "4") has
+        // its 1s in row y = 1: mask[0,1] = mask[1,1] = mask[2,1] = 1. Written as a C#
+        // literal that is the middle column, since the outer index is x.
         int[,] mask =
         {
-            { 0, 0, 0 },
-            { 1, 1, 1 },
-            { 0, 0, 0 }
+            { 0, 1, 0 },
+            { 0, 1, 0 },
+            { 0, 1, 0 }
         };
 
         string autoSpriteId = AutotileResolver.ResolveSpriteId(tileset, mask, out bool automaticFlipX);

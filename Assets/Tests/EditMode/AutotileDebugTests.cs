@@ -26,7 +26,10 @@ public sealed class AutotileDebugTests
     [Test]
     public void GroundAutotileDebugModes_Normalize_MapsLegacyEnumValues()
     {
-        Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)1));
+        // 1, 2, 4, 5 are live enum members (Normalize returns them unchanged); only the
+        // removed values 3/8 and 6/7/9 are remapped. (Value 1 is VisualOverrideEdit since
+        // the enum was renumbered in the visual-override work.)
+        Assert.AreEqual(GroundAutotileDebugMode.VisualOverrideEdit, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)1));
         Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)2));
         Assert.AreEqual(GroundAutotileDebugMode.SpriteIdLabel, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)3));
         Assert.AreEqual(GroundAutotileDebugMode.GroundCoverSplit, GroundAutotileDebugModes.Normalize((GroundAutotileDebugMode)4));
