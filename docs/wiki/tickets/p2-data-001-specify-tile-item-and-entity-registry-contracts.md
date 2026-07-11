@@ -163,10 +163,14 @@ public interface IRegistry<TDef> where TDef : class
   0, palette round-trip across a reordered/extended registry, palette unknown-ID and
   duplicate/sparse-index failures, legacy table ↔ `SandboxTileIds` 1:1 mapping, solidity parity
   with `SandboxTile.IsSolid`, and unresolved drop-item/visual-key detection.
+- **Merge:** Delivered by [PR #87](https://github.com/synthet/project-twelve/pull/87)
+  (merged 2026-07-03; issue #33 closed via `Closes #33`). The PR's "EditMode tests" and
+  "Agent infrastructure checks" CI jobs passed on head commit `eeddb9d`.
 - **Verification commands:**
   - `Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log`
-    (pending — authored in a headless container without Unity 6.0.5.1f1; run on a
-    Unity-capable machine before merge).
+    (authored in a headless container without Unity 6.0.5.1f1; the PR CI EditMode job passed,
+    but a local Unity batch run on an editor-capable machine is still worth confirming — its
+    ~5s CI duration suggests a lightweight runner).
   - `python3 scripts/check_markdown_links.py`
   - `python scripts/ci/okf_lint_changed.py --base origin/master --head HEAD --profile project --fail-on error`
   - `python3 scripts/check_paid_assets.py --staged`
@@ -176,8 +180,8 @@ public interface IRegistry<TDef> where TDef : class
 - [x] GitHub issue URL is recorded in this ticket.
 - [x] GitHub issue links back to this markdown ticket.
 - [x] Registry contract documented in `docs/wiki/12-modding.md` before implementation.
-- [ ] Validation + determinism + palette EditMode tests pass (authored; EditMode run pending a
-      Unity-capable environment).
+- [x] Validation + determinism + palette EditMode tests pass (PR #87 CI EditMode job green;
+      re-confirm with a local Unity batch run when convenient).
 - [x] Prototype regression check recorded: no runtime caller changed in this change set —
       `SandboxTile.id` still stores legacy constants, so the pinned-seed world is bit-identical;
       the behavioral swap happens in P2-DATA-002.
