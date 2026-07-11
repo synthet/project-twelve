@@ -67,6 +67,6 @@ If nothing qualifies, stop and say so. **Do not invent work.** Suggest filing a 
 
 ## Related
 
-- Slash command: [`/pick-next-task`](../../commands/pick-next-task.md).
-- Claim step: [`/task-claim`](../../commands/task-claim.md).
+- Slash command: [`/pick-next-task`](../../../.claude/commands/pick-next-task.md).
+- Claim step: [`/task-claim`](../../../.claude/commands/task-claim.md).
 - Full contract: [`docs/project/00-backlog-workflow.md`](../../../docs/project/00-backlog-workflow.md).

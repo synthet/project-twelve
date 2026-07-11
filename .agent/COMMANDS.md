@@ -32,7 +32,7 @@ python scripts/agent-memory/context.py
 ## Agent assets
 
 ```bash
-python scripts/sync_assistant_trees.py           # regenerate .cursor/ from .claude/
+python scripts/sync_assistant_trees.py           # regenerate .cursor/ + .agents/skills/ from .claude/
 python scripts/sync_assistant_trees.py --check   # CI drift gate
 python scripts/validate_cli_skills.py            # CLI skill headings/structure
 ```

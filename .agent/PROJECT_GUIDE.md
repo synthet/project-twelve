@@ -11,6 +11,7 @@
 | Backlog tickets | [`docs/wiki/tickets/`](../docs/wiki/tickets/) |
 | Safety rules | [`.agent/SAFETY.md`](SAFETY.md) |
 | Paid assets | [`docs/PAID_ASSETS.md`](../docs/PAID_ASSETS.md) |
+| Codex setup | [`.codex/README.md`](../.codex/README.md) |
 
 ## `.agent/` layout
 
@@ -36,3 +37,4 @@
 ```
 
 Slash commands: `.claude/commands/` (canonical). Cursor mirror: `.cursor/commands/` (generated).
+Codex skills: `.agents/skills/` (generated); project defaults: `.codex/config.toml`.

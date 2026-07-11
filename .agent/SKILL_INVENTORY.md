@@ -1,6 +1,6 @@
 # Skill inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-04
+**Last reviewed:** 2026-07-10
 
 | Skill | Path | Tier | Notes |
 |-------|------|------|-------|
@@ -40,5 +40,7 @@ After adding or materially changing a skill, update this table and run:
 python scripts/validate_cli_skills.py
 python scripts/sync_assistant_trees.py
 ```
+
+The sync generates both `.cursor/skills/` and Codex-native `.agents/skills/`.
 
 See also [AGENT_INFRA_INVENTORY.md](./AGENT_INFRA_INVENTORY.md) for the full agent asset catalog.

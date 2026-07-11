@@ -59,12 +59,12 @@ fi
 run_check "Paid asset validation" \
     "python3 scripts/check_paid_assets.py --push"
 
-# 4. Assistant tree sync validation (if .claude/ or .cursor/ changed in the push range)
-if echo "${CHANGED_FILES}" | grep -qE "^\.claude/|^\.cursor/"; then
+# 4. Assistant tree sync validation (if canonical or generated assets changed in the push range)
+if echo "${CHANGED_FILES}" | grep -qE "^\.claude/|^\.cursor/|^\.agents/skills/"; then
     run_check "Assistant tree sync" \
         "python scripts/sync_assistant_trees.py --check"
 else
-    echo "⊘ Tree sync skipped (no .claude/ or .cursor/ changes in ${RANGE})"
+    echo "⊘ Tree sync skipped (no canonical/generated assistant changes in ${RANGE})"
     echo ""
 fi
 

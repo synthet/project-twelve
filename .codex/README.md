@@ -1,0 +1,38 @@
+# Codex project setup
+
+Codex loads the root [`AGENTS.md`](../AGENTS.md) as project guidance and, after the repository is
+trusted, loads [`config.toml`](config.toml). Repository skills are generated at
+`.agents/skills/` from the canonical `.claude/skills/` tree.
+
+## First run
+
+```powershell
+codex doctor --summary
+python scripts/sync_assistant_trees.py --check
+codex
+```
+
+The committed config keeps command execution in the workspace-write sandbox, asks before escalation,
+keeps sandboxed network access off, and enables the portable in-game and FFF MCP definitions. Install
+`fff-mcp` and put it on `PATH` as described in [`AGENTS.md`](../AGENTS.md). The in-game endpoint is
+available only while the game is in Play Mode or a desktop build is running.
+
+## Unity Editor MCP
+
+The Unity relay path and absolute project path are machine-specific, so they belong in the user-level
+`~/.codex/config.toml`, not this committed file. Configure them once:
+
+```powershell
+codex mcp add project-twelve-unity-mcp --env UNITY_PROJECT_PATH="D:\Projects\project-twelve" -- "$HOME\.unity\relay\relay_win.exe" --mcp
+```
+
+Adjust the project and relay paths for the machine. Keep secrets in environment variables; never add
+tokens or machine-specific credentials to the project config.
+
+## Ownership
+
+- Author skills under `.claude/skills/`.
+- Run `python scripts/sync_assistant_trees.py` to regenerate `.cursor/` and `.agents/skills/`.
+- Do not hand-edit `.agents/skills/`.
+- Codex does not consume the repo's Claude/Cursor custom slash-command files. Use the matching skill
+  or the workflow playbooks under `.agent/workflows/` in Codex tasks.

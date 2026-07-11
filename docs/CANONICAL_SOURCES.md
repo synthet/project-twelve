@@ -1,3 +1,13 @@
+---
+type: Technical Reference
+title: Canonical Sources
+description: Authority map for project, agent, tooling, documentation, and asset configuration sources.
+resource: CANONICAL_SOURCES.md
+tags: [docs, governance, agents]
+timestamp: 2026-07-10T00:00:00Z
+okf_version: 0.1
+---
+
 # Canonical Sources
 
 
@@ -15,6 +25,8 @@
 | Claude commands/skills/agents | `.claude/` | Canonical authoring source for slash commands, skills, subagents, rules. |
 
 | Cursor mirror | `.cursor/` | Generated from `.claude/` via `scripts/sync_assistant_trees.py`. |
+| Codex project config | `.codex/config.toml` | Trusted-project sandbox, agent, and portable MCP defaults. |
+| Codex skill mirror | `.agents/skills/` | Generated from `.claude/skills/` via `scripts/sync_assistant_trees.py`. |
 
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks. |
 
@@ -58,8 +70,9 @@
 | Unity AI Assistant | `Packages/manifest.json` → `com.unity.ai.assistant` | Official Unity MCP bridge and Assistant tooling; see `AGENTS.md`. |
 
 | Unity MCP (Cursor) | `.cursor/mcp.json` (local) | Relay bridge to Unity Editor; template in `.cursor/mcp.example.json`. |
+| Unity MCP (Codex) | `~/.codex/config.toml` (local) | Machine-specific relay bridge; setup in `.codex/README.md`. |
 
-| FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json` / `.mcp.json`. |
+| FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json`, `.mcp.json`, and `.codex/config.toml`. |
 
 | Unity C# coding rules (supplementary) | `.cursorrules` | Long-form Cursor rules for Unity C# style and patterns. |
 

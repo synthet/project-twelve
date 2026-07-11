@@ -25,6 +25,8 @@ python scripts/install_githooks.py    # optional: paid-asset + submodule sync ho
 python scripts/fetch_remotes.py       # sync main repo + Assets/_Licensed submodule
 cp .cursor/mcp.example.json .cursor/mcp.json   # then set RELAY_PATH + UNITY_PROJECT_PATH
 # Optional: install FFF file search MCP — see AGENTS.md § FFF file search MCP
+codex doctor --summary              # Codex install/auth/config health
+# Codex project setup and machine-local Unity MCP: .codex/README.md
 ```
 
 Open Unity 6.0.5.1f1; confirm Unity MCP bridge is **Running**. Reload Cursor after MCP config changes.
@@ -55,12 +57,12 @@ python3 scripts/check_paid_assets.py --staged
 1. Change files under `.claude/` or `.agent/`.
 2. Run `python scripts/sync_assistant_trees.py`.
 3. Run `python scripts/validate_cli_skills.py` when CLI skills changed.
-4. Commit `.claude/` and `.cursor/` in the same PR.
+4. Commit `.claude/`, `.cursor/`, and `.agents/skills/` in the same PR.
 
 See [`.agent/SKILL_CHANGE_AST10_REVIEW.md`](SKILL_CHANGE_AST10_REVIEW.md).
 
 ## Known pitfalls
 
-- Edit assets under `.claude/` (canonical), not `.cursor/` (generated).
+- Edit assets under `.claude/` (canonical), not `.cursor/` or `.agents/skills/` (generated).
 - Memory: never hand-edit `.agent-memory/memory.md`; use log → dream → promote.
 - `.agent/scratch/`, `.agent-memory/raw-sessions/`, `.agent-memory/dreams/` are gitignored.

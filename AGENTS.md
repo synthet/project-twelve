@@ -2,17 +2,18 @@
 
 ## Overview
 
-ProjectTwelve is a Unity 2D sandbox prototype. This repo ships agent scaffolding for Claude Code and
-Cursor: slash commands, skills, subagents, safety rules, an `.agent/` governance hub, a project-memory
-subsystem, and OKF docs tooling. This file is the **source of truth** for how agents build/test/run and
-which tools they may use.
+ProjectTwelve is a Unity 2D sandbox prototype. This repo ships agent scaffolding for Claude Code,
+Cursor, and Codex: commands, skills, subagents, safety rules, an `.agent/` governance hub, a
+project-memory subsystem, and OKF docs tooling. This file is the **source of truth** for how agents
+build/test/run and which tools they may use.
 
 ## Authoring & skill source of truth
 
 - **Canonical** assets are authored under `.claude/` (+ `.agent/`).
-- The **`.cursor/`** tree (rules/commands/skills/agents) is **generated** by
-  `python scripts/sync_assistant_trees.py` — do not hand-edit it; edit `.claude/` and re-run sync.
-- When you change a skill/command/agent, run the sync and commit both trees in the **same PR**
+- The **`.cursor/`** tree (rules/commands/skills/agents) and Codex-native **`.agents/skills/`** tree
+  are **generated** by `python scripts/sync_assistant_trees.py` — do not hand-edit them; edit
+  `.claude/` and re-run sync.
+- When you change a skill/command/agent, run the sync and commit the canonical and generated trees in the **same PR**
   (see [`.agent/SKILL_CHANGE_AST10_REVIEW.md`](.agent/SKILL_CHANGE_AST10_REVIEW.md)).
 
 ## Session start (all agents)
@@ -44,7 +45,7 @@ python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs
 python3 scripts/wiki_lint.py --exclude-prefix archive/
 
 # Agent assets:
-python scripts/sync_assistant_trees.py    # regenerate .cursor/ from .claude/
+python scripts/sync_assistant_trees.py    # regenerate .cursor/ + .agents/skills/ from .claude/
 
 # Offline tooling (no Unity):
 cd tools/world-viz && npm test             # terrain parity vs Unity golden fixture
@@ -63,18 +64,23 @@ python scripts/agent-memory/context.py
 
 - Define project servers in [`.mcp.json`](.mcp.json) (Claude Code) and copy
   [`.cursor/mcp.example.json`](.cursor/mcp.example.json) → `.cursor/mcp.json` (gitignored) for Cursor.
+- Codex loads portable project servers from [`.codex/config.toml`](.codex/config.toml); keep
+  machine-specific relay paths in user-level `~/.codex/config.toml` (setup: [`.codex/README.md`](.codex/README.md)).
 - **Naming:** `<scope>-<role>-*` (e.g. `project-twelve-unity-mcp`, `project-twelve-github`).
 - **Secrets via env only**, never CLI args. Reload the MCP client after changing keys.
 - User-level `~/.cursor/mcp.json` holds cross-repo tools; project keys live in this repo.
 
 ### Unity MCP (Editor bridge)
 
-Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). This project declares `com.unity.ai.assistant` in `Packages/manifest.json`.
+Connect Cursor, Claude Code, and Codex to the running Unity Editor via [Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.9/manual/integration/unity-mcp-overview.html). This project declares `com.unity.ai.assistant` in `Packages/manifest.json`.
 
 **One-time setup (per machine):**
 1. Open the project in Unity 6.0.5.1f1 and let Package Manager resolve `com.unity.ai.assistant`.
 2. Go to **Edit → Project Settings → AI → Unity MCP** and confirm **Unity Bridge** is **Running** (green). Unity installs the relay binary to `%USERPROFILE%\.unity\relay\relay_win.exe` on first Editor start.
-3. Under **Integrations**, select **Cursor** (or Claude Code) and click **Configure** (recommended). Or copy [`.cursor/mcp.example.json`](.cursor/mcp.example.json) to `.cursor/mcp.json`, set `RELAY_PATH` and `UNITY_PROJECT_PATH`, then restart Cursor.
+3. Under **Integrations**, select **Cursor** (or Claude Code) and click **Configure** (recommended).
+   For Codex, follow [`.codex/README.md`](.codex/README.md). Or copy
+   [`.cursor/mcp.example.json`](.cursor/mcp.example.json) to `.cursor/mcp.json`, set `RELAY_PATH` and
+   `UNITY_PROJECT_PATH`, then restart Cursor.
 4. On first connect, approve the pending client under **Pending Connections** in Unity MCP settings.
 
 **Before each session:** Unity Editor open on this project with the MCP bridge **Running**.
@@ -89,7 +95,8 @@ Connect Cursor and Claude Code to the running Unity Editor via [Unity MCP](https
 
 While the game is running, `ProjectTwelve.RuntimeMcp` hosts a JSON-RPC MCP endpoint at
 `http://127.0.0.1:8765/mcp` (loopback only). Cursor connects via the `project-twelve-ingame-mcp`
-http entry in [`.cursor/mcp.example.json`](.cursor/mcp.example.json).
+entry in [`.cursor/mcp.example.json`](.cursor/mcp.example.json); Codex uses the committed
+[`.codex/config.toml`](.codex/config.toml) entry.
 
 **Before each session:** enter Play Mode (or launch a desktop build) so the runtime server is listening.
 
@@ -120,7 +127,7 @@ server is connected.
 
 Then add `project-twelve-fff-mcp` from [`.cursor/mcp.example.json`](.cursor/mcp.example.json) to
 gitignored `.cursor/mcp.json` (or enable in [`.mcp.json`](.mcp.json) for Claude Code) and reload the
-MCP client.
+MCP client. Codex already has the portable server definition in [`.codex/config.toml`](.codex/config.toml).
 
 **Agent guidance:** for file search or grep in the current git-indexed directory, prefer FFF MCP tools
 (`fffind`, `ffgrep`, `fff-multi-grep`) over built-in search when available.
@@ -193,7 +200,7 @@ submodule local sync after pull/checkout. Network sync: `python scripts/fetch_re
 | Paid assets guard | Block licensed paths in public repo | `config/paid-assets.local-only.example.txt` | `python3 scripts/check_paid_assets.py --staged` (commit) or `--push` |
 | Visual catalog regen | Submodule catalog generator | `scripts/generate_visual_catalogs.py` | `python3 scripts/generate_visual_catalogs.py` |
 | OKF lint | Docs frontmatter checker | `docs/` | `python3 scripts/okf_lint.py --profile project --exclude-prefix archive/ docs` |
-| Cursor sync check | `.cursor/` drift gate | `scripts/sync_assistant_trees.py` | `python scripts/sync_assistant_trees.py --check` |
+| Assistant sync check | `.cursor/` + `.agents/skills/` drift gate | `scripts/sync_assistant_trees.py` | `python scripts/sync_assistant_trees.py --check` |
 | world-viz tests | Engine-free terrain JS port | `tools/world-viz/` | `cd tools/world-viz && npm test` |
 | tile-viz tests | Engine-free autotile resolver/render | `tools/tile-viz/` | `cd tools/tile-viz && npm test` |
 
@@ -203,9 +210,9 @@ Recent fix history shows recurring agent mistakes that must be checked before co
 
 - **Docs metadata:** fixes repeatedly repaired missing OKF frontmatter in `docs/**` and
   `docs/wiki/tickets/**`. When editing docs, add/maintain frontmatter and run the docs lint gates.
-- **Generated mirrors:** `.cursor/**` is generated from `.claude/**`. Do not hand-edit generated
-  Cursor rules/commands/skills/agents; edit `.claude/**`, run `python scripts/sync_assistant_trees.py`,
-  and commit both trees.
+- **Generated mirrors:** `.cursor/**` and `.agents/skills/**` are generated from `.claude/**`. Do not
+  hand-edit generated Cursor assets or Codex skills; edit `.claude/**`, run
+  `python scripts/sync_assistant_trees.py`, and commit all generated trees.
 - **Safety scripts fail safe:** paid-asset and CI guard scripts must handle missing upstreams, detached
   HEAD, shallow clones, no staged files, and absent base refs without allowing licensed assets through.
 - **Unity visual assumptions:** rendering/collision fixes must account for sprite bounds, pivots, tile
@@ -213,7 +220,7 @@ Recent fix history shows recurring agent mistakes that must be checked before co
 - **Required history check for rule/tooling changes:** when asked to update agent rules, Codex rules,
   skills, commands, CI guards, or docs conventions, inspect recent fixes with
   `git log --oneline --grep='fix' -n 20` and encode any repeated failure mode into the canonical
-  `.claude/` source plus generated `.cursor/` mirror.
+  `.claude/` source plus generated `.cursor/` and `.agents/skills/` mirrors.
 
 ## Coding-agent contract
 
@@ -234,6 +241,8 @@ Recent fix history shows recurring agent mistakes that must be checked before co
 | Assistant orientation | `CLAUDE.md` |
 | Claude commands/skills/agents | `.claude/` (canonical) |
 | Cursor mirror | `.cursor/` (generated) |
+| Codex project config | `.codex/config.toml` + `.codex/README.md` |
+| Codex skill mirror | `.agents/skills/` (generated) |
 | Safety rules | `.agent/SAFETY.md` |
 | Agent inventory | `.agent/AGENT_INFRA_INVENTORY.md` |
 | Workflow playbooks | `.agent/workflows/` |

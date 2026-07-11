@@ -105,17 +105,18 @@ python3 scripts/check_paid_assets.py --staged
 
 ### 3. CI/CD assistant tree sync
 
-Before every commit that touches `.claude/` or `.cursor/` directories:
+Before every commit that touches `.claude/`, `.cursor/`, or `.agents/skills/` directories:
 
 ```bash
 python scripts/sync_assistant_trees.py --check
 ```
 
 **Checks:**
-- `.claude/` and `.cursor/` command/skill/rule trees are in sync.
+- `.claude/`, `.cursor/`, and `.agents/skills/` trees are in sync.
 - No duplicated or orphaned files.
 
-**On failure:** Run `python scripts/sync_assistant_trees.py` to auto-sync; commit both trees together.
+**On failure:** Run `python scripts/sync_assistant_trees.py` to auto-sync; commit the canonical and
+generated trees together.
 
 ### 4. Unity project validation (batch mode)
 

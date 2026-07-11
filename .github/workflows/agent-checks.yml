@@ -28,7 +28,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install pyyaml
 
-      - name: Verify .cursor mirror is in sync
+      - name: Verify assistant mirrors are in sync
         run: python scripts/sync_assistant_trees.py --check
 
       - name: Agent frontmatter contract
