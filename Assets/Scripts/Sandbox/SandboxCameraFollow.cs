@@ -11,6 +11,8 @@ public sealed class SandboxCameraFollow : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float smoothTime = 0.15f;
     [SerializeField] private float zOffset = -10f;
+    [SerializeField] private bool snapToPixelGrid = true;
+    [SerializeField] private float pixelsPerUnit = 16f;
 
     private Vector3 followVelocity;
 
@@ -33,7 +35,8 @@ public sealed class SandboxCameraFollow : MonoBehaviour
         }
 
         Vector3 desired = new Vector3(target.position.x, target.position.y, zOffset);
-        transform.position = Vector3.SmoothDamp(transform.position, desired, ref followVelocity, smoothTime);
+        Vector3 position = Vector3.SmoothDamp(transform.position, desired, ref followVelocity, smoothTime);
+        transform.position = snapToPixelGrid ? SnapToPixelGrid(position, pixelsPerUnit) : position;
     }
 
     private void SnapToTarget()
@@ -44,6 +47,19 @@ public sealed class SandboxCameraFollow : MonoBehaviour
         }
 
         followVelocity = Vector3.zero;
-        transform.position = new Vector3(target.position.x, target.position.y, zOffset);
+        Vector3 position = new Vector3(target.position.x, target.position.y, zOffset);
+        transform.position = snapToPixelGrid ? SnapToPixelGrid(position, pixelsPerUnit) : position;
+    }
+
+    internal static Vector3 SnapToPixelGrid(Vector3 position, float pixelsPerUnit)
+    {
+        if (pixelsPerUnit <= 0f)
+        {
+            return position;
+        }
+
+        float snappedX = Mathf.Round(position.x * pixelsPerUnit) / pixelsPerUnit;
+        float snappedY = Mathf.Round(position.y * pixelsPerUnit) / pixelsPerUnit;
+        return new Vector3(snappedX, snappedY, position.z);
     }
 }

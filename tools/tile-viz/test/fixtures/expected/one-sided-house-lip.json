@@ -313,7 +313,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -799,7 +799,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -945,7 +945,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1093,7 +1093,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1240,7 +1240,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1385,31 +1385,8 @@
         "resolved": true
       },
       "cover": {
-        "rendered": true,
-        "tileset": "GrassA",
-        "mask": [
-          [
-            0,
-            2,
-            0
-          ],
-          [
-            0,
-            1,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "matchingSpriteIds": [
-          "1"
-        ],
-        "spriteId": "1",
-        "flipX": true,
-        "resolved": true
+        "rendered": false,
+        "reason": "Cover renders only on grass tiles."
       }
     }
   ]

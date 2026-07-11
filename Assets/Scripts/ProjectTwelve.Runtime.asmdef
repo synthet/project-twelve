@@ -6,7 +6,9 @@
 
         "Unity.2D.Animation.Runtime",
 
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+
+        "Unity.ugui"
 
     ],
 

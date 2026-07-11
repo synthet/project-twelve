@@ -198,7 +198,9 @@ function buildTileAutotile(space, x, y, tile, catalog, tilesets, tables, visualO
       reason:
         tile.id === TileId.Air
           ? 'Cover applies to solid ground tiles only.'
-          : 'Cover requires air directly above the tile.',
+          : tile.id !== TileId.Grass
+            ? 'Cover renders only on grass tiles.'
+            : 'Cover requires air directly above the tile.',
     };
   }
 

@@ -477,6 +477,6 @@ public sealed class SandboxGroundAutotileDebugHud : MonoBehaviour
         }
 
         string text = GroundAutotileDebugCoordinates.FormatHoverCoordinates(tile.x, tile.y);
-        GUI.Label(new Rect(12f, 12f, 480f, 48f), text);
+        GUI.Label(new Rect(12f, 124f, 480f, 48f), text);
     }
 }

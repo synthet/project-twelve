@@ -825,7 +825,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -971,7 +971,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1459,7 +1459,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1606,7 +1606,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1753,7 +1753,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -1899,7 +1899,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -2387,7 +2387,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -2534,7 +2534,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -2681,7 +2681,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -2828,7 +2828,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -2975,7 +2975,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -3121,7 +3121,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -3609,7 +3609,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -3756,7 +3756,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -3903,7 +3903,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -4050,7 +4050,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -4197,7 +4197,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -4344,7 +4344,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -4491,7 +4491,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -4637,7 +4637,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5125,7 +5125,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5272,7 +5272,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5419,7 +5419,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5566,7 +5566,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5713,7 +5713,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -5860,7 +5860,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -6007,7 +6007,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -6154,7 +6154,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -6301,7 +6301,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -6447,7 +6447,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -6935,7 +6935,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7082,7 +7082,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7229,7 +7229,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7376,7 +7376,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7523,7 +7523,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7670,7 +7670,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7817,7 +7817,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -7964,7 +7964,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8111,7 +8111,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8258,7 +8258,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8405,7 +8405,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8551,7 +8551,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8697,7 +8697,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8844,7 +8844,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -8991,7 +8991,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9138,7 +9138,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9285,7 +9285,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9432,7 +9432,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9579,7 +9579,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9726,7 +9726,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -9873,7 +9873,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10020,7 +10020,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10167,7 +10167,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10314,7 +10314,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10461,7 +10461,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10607,7 +10607,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10754,7 +10754,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -10902,7 +10902,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11050,7 +11050,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11198,7 +11198,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11346,7 +11346,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11494,7 +11494,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11642,7 +11642,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11790,7 +11790,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -11938,7 +11938,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -12086,7 +12086,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -12234,7 +12234,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -12382,7 +12382,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -12530,7 +12530,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     },
     {
@@ -12676,7 +12676,7 @@
       },
       "cover": {
         "rendered": false,
-        "reason": "Cover requires air directly above the tile."
+        "reason": "Cover renders only on grass tiles."
       }
     }
   ]

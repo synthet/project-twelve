@@ -101,9 +101,7 @@
         "flipX": true
       },
       "cover": {
-        "spriteId": "3",
-        "flipX": true,
-        "rendered": true
+        "rendered": false
       }
     }
   ]

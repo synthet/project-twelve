@@ -1,0 +1,62 @@
+[
+  {
+    "name": "horizontal-dirt-on-stone",
+    "pattern": "111/222",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\horizontal-dirt-on-stone.json",
+    "boundaryCells": 6
+  },
+  {
+    "name": "dirt-stone-dirt-row",
+    "pattern": "111/121",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\dirt-stone-dirt-row.json",
+    "boundaryCells": 4
+  },
+  {
+    "name": "framed-dirt-stone-core",
+    "pattern": "111/121/121/111",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\framed-dirt-stone-core.json",
+    "boundaryCells": 8
+  },
+  {
+    "name": "stone-column-through-dirt",
+    "pattern": "1111/1221/1221/1221",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\stone-column-through-dirt.json",
+    "boundaryCells": 14
+  },
+  {
+    "name": "stone-band-through-dirt",
+    "pattern": "1111/1221/1111",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\stone-band-through-dirt.json",
+    "boundaryCells": 8
+  },
+  {
+    "name": "vertical-single-column",
+    "pattern": "1/2",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\vertical-single-column.json",
+    "boundaryCells": 2
+  },
+  {
+    "name": "vertical-two-wide",
+    "pattern": "11/22",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\vertical-two-wide.json",
+    "boundaryCells": 4
+  },
+  {
+    "name": "alternating-columns",
+    "pattern": "12/12",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\alternating-columns.json",
+    "boundaryCells": 4
+  },
+  {
+    "name": "partial-stone-intrusion",
+    "pattern": "112/112",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\partial-stone-intrusion.json",
+    "boundaryCells": 4
+  },
+  {
+    "name": "stone-heavy-top",
+    "pattern": "211/211",
+    "file": "D:\\Projects\\project-twelve\\tools\\tile-viz\\test\\fixtures\\snippets\\material-exp\\stone-heavy-top.json",
+    "boundaryCells": 4
+  }
+]

@@ -44,9 +44,7 @@
         "flipX": false
       },
       "cover": {
-        "spriteId": "3",
-        "flipX": false,
-        "rendered": true
+        "rendered": false
       }
     },
     {
@@ -57,9 +55,7 @@
         "flipX": false
       },
       "cover": {
-        "spriteId": "3",
-        "flipX": true,
-        "rendered": true
+        "rendered": false
       }
     }
   ]

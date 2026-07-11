@@ -1,0 +1,49 @@
+{
+  "format": "project-twelve/tile-space/v1",
+  "kind": "snippet",
+  "name": "dirt-stone-dirt-row",
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "width": 3,
+  "height": 2,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "id": 3,
+      "light": 4
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "id": 1,
+      "light": 4
+    }
+  ]
+}

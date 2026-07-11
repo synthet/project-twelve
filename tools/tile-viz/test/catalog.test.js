@@ -31,17 +31,18 @@ test('sharesGroundAutotileGroup connects same tileset only', () => {
   assert.equal(sharesGroundAutotileGroup(TileId.Air, TileId.Dirt), false);
 });
 
-test('shouldRenderGrassCover is material-agnostic exposed-top gating', () => {
-  assert.equal(shouldRenderGrassCover(TileId.Dirt, { id: TileId.Air }), true);
-  assert.equal(shouldRenderGrassCover(TileId.Stone, { id: TileId.Air }), true);
-  assert.equal(shouldRenderGrassCover(TileId.CopperOre, { id: TileId.Air }), true);
-  assert.equal(shouldRenderGrassCover(TileId.Dirt, { id: TileId.Dirt }), false);
+test('shouldRenderGrassCover gates on grass material with an exposed top', () => {
+  assert.equal(shouldRenderGrassCover(TileId.Grass, { id: TileId.Air }), true);
+  assert.equal(shouldRenderGrassCover(TileId.Dirt, { id: TileId.Air }), false);
+  assert.equal(shouldRenderGrassCover(TileId.Stone, { id: TileId.Air }), false);
+  assert.equal(shouldRenderGrassCover(TileId.CopperOre, { id: TileId.Air }), false);
+  assert.equal(shouldRenderGrassCover(TileId.Grass, { id: TileId.Dirt }), false);
   assert.equal(shouldRenderGrassCover(TileId.Air, { id: TileId.Air }), false);
 });
 
-test('getCoverTilesetName returns GrassA for any solid tile', () => {
+test('getCoverTilesetName returns GrassA only for grass', () => {
   assert.equal(getCoverTilesetName(TileId.Grass, DEFAULT_CATALOG), 'GrassA');
-  assert.equal(getCoverTilesetName(TileId.Stone, DEFAULT_CATALOG), 'GrassA');
-  assert.equal(getCoverTilesetName(TileId.CopperOre, DEFAULT_CATALOG), 'GrassA');
+  assert.equal(getCoverTilesetName(TileId.Stone, DEFAULT_CATALOG), null);
+  assert.equal(getCoverTilesetName(TileId.CopperOre, DEFAULT_CATALOG), null);
   assert.equal(getCoverTilesetName(TileId.Air, DEFAULT_CATALOG), null);
 });

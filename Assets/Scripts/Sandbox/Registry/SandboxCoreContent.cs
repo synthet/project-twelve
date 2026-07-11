@@ -12,7 +12,9 @@ namespace ProjectTwelve.Sandbox.Registry
     public static class SandboxCoreContent
     {
         public const string AirTileId = "core:air";
+        public const string DirtTileId = "core:dirt";
         public const string GrassTileId = "core:grass";
+        public const string StoneTileId = "core:stone";
 
         /// <summary>
         /// Legacy P1-prototype numeric tile ID → stable string ID, index-aligned: element N is

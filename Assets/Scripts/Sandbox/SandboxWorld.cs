@@ -37,6 +37,12 @@ public sealed class SandboxWorld : MonoBehaviour
     [SerializeField] private bool debugOverrideModeEnabled;
     [SerializeField] private int autotileExposureFloorY = AutotileExposure.DefaultSandboxFloorY;
 
+    [Header("Grass")]
+    [Tooltip("Probability (0–1) that each persisted grass tile reverts to dirt when a save is loaded.")]
+    [SerializeField, Range(0f, 1f)] private float loadGrassLossChance = 0.1f;
+
+    private System.Random loadGrassRng;
+
     private readonly Dictionary<Vector2Int, SandboxChunk> chunks = new Dictionary<Vector2Int, SandboxChunk>();
     private readonly Dictionary<Vector2Int, SandboxChunkRenderer> renderers = new Dictionary<Vector2Int, SandboxChunkRenderer>();
     private readonly Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay> debugOverlays =
@@ -76,6 +82,12 @@ public sealed class SandboxWorld : MonoBehaviour
 
     /// <summary>Number of chunks with active renderers.</summary>
     public int LoadedChunkCount => renderers.Count;
+
+    /// <summary>
+    /// Coordinates of chunks in the streamed (renderer-backed) window. The grass simulation scans
+    /// only these so growth is bounded to the loaded set and never generates chunks on query.
+    /// </summary>
+    public IEnumerable<Vector2Int> LoadedChunkCoords => renderers.Keys;
 
     /// <summary>Build/runtime gate for tile-edit overrides, debug persistence shortcuts, and MCP writes.</summary>
     public static bool CanUseDebugOverrides(bool requested)
@@ -467,6 +479,29 @@ public sealed class SandboxWorld : MonoBehaviour
         return new SandboxTile(tile.id, light, tile.fluid, tile.metadata);
     }
 
+    /// <summary>
+    /// Rolls the load-time grass-loss chance for a persisted tile: with probability
+    /// <see cref="loadGrassLossChance"/> a grass tile reverts to dirt as a save is loaded, so lawns
+    /// recede a little between sessions. Non-grass tiles pass through unchanged. The roll uses a
+    /// plain PRNG (not a position hash) so each load is independent. Note this only touches persisted
+    /// (edited) chunks — untouched chunks regenerate fresh surface grass from the seed.
+    /// </summary>
+    private SandboxTile ApplyLoadGrassLoss(SandboxTile tile)
+    {
+        if (loadGrassLossChance <= 0f || tile.id != SandboxRegistries.GrassIndex)
+        {
+            return tile;
+        }
+
+        loadGrassRng ??= new System.Random();
+        if (loadGrassRng.NextDouble() >= loadGrassLossChance)
+        {
+            return tile;
+        }
+
+        return new SandboxTile(SandboxRegistries.DirtIndex, tile.light, tile.fluid, tile.metadata);
+    }
+
     /// <summary>Current fluid amount (0.0–1.0+ under pressure) at a world tile coordinate.</summary>
     public float GetTileFluid(int x, int y)
     {
@@ -666,6 +701,7 @@ public sealed class SandboxWorld : MonoBehaviour
                 tile.id = ResolveSavedTileId(tile.id, paletteRemap, chunkData, edit);
                 Vector2Int worldCoord = ChunkLocalToWorld(chunkData.Coord, edit.localX, edit.localY);
                 tile = NormalizeEditedTileLight(tile, worldCoord.x, worldCoord.y, generator);
+                tile = ApplyLoadGrassLoss(tile);
                 chunk.SetLocalTile(edit.localX, edit.localY, tile, false);
             }
 

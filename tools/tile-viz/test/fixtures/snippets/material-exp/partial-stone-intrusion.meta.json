@@ -1,0 +1,55 @@
+{
+  "name": "partial-stone-intrusion",
+  "pattern": "112/112",
+  "boundaryCellCount": 4,
+  "boundaryCells": [
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": true,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": true,
+      "foreignEast": false,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": true,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": true,
+      "foreignEast": false,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    }
+  ]
+}

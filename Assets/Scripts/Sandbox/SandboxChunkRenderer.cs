@@ -522,7 +522,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return;
         }
 
-        AutotileSpriteMeshBuilder.AppendSprite(
+        AutotileSpriteMeshBuilder.AppendGroundAutotileSprite(
             meshLayer.Vertices,
             meshLayer.Triangles,
             meshLayer.Uvs,

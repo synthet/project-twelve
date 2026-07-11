@@ -1,0 +1,103 @@
+{
+  "name": "framed-dirt-stone-core",
+  "pattern": "111/121/121/111",
+  "boundaryCellCount": 8,
+  "boundaryCells": [
+    {
+      "x": 1,
+      "y": 3,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": true,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": true,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": true,
+      "foreignWest": true,
+      "foreignEast": true,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": true,
+      "foreignEast": false,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": true,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": true,
+      "foreignAbove": false,
+      "foreignWest": true,
+      "foreignEast": true,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": false,
+      "foreignWest": true,
+      "foreignEast": false,
+      "isHorizontalSeam": false,
+      "isVerticalSeam": true
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": false,
+      "foreignAbove": true,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    }
+  ]
+}

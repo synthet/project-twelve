@@ -4,7 +4,7 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-07T00:00:00Z
+timestamp: 2026-07-10T00:00:00Z
 ---
 
 # Visual Behavior Specification
@@ -84,9 +84,12 @@ Fixture-backed guarantees at dirt/stone boundaries:
 
 ### Cover mask construction
 
-Cover is **material-agnostic** (vendor `LevelBuilder.SetCover`): the surface overlay applies to any
-exposed-top ground cell, independent of ground material. Each west/east cardinal at `[0,1]` and
-`[2,1]` is read by **solidity alone**:
+Cover is **grass gameplay state**, not a material-agnostic overlay: the green cover renders only on a
+`core:grass` tile whose top is exposed (non-solid above). Grass is real, simulated tile state (see
+[`SandboxGrassSimulator`](../Assets/Scripts/Sandbox/Grass/SandboxGrassSimulator.cs) and the grass
+rules below), so bare dirt, stone, and ores are **uncovered** even when exposed until grass grows onto
+them. Where cover does render, each west/east cardinal at `[0,1]` and `[2,1]` is still read by
+**solidity alone** (the mask connectivity is unchanged from the vendor `LevelBuilder.SetCover` model):
 
 - Neighbor is **air** (not solid) ⇒ `0` (end cap).
 - Neighbor is solid with **more ground stacked directly above it** ⇒ `2` (rising cliff step).
@@ -99,8 +102,23 @@ Cover rules may use mask values `0`, `1`, and `2`.
 | Layer | Group rule |
 |-------|------------|
 | Ground | Same ground tileset **name** ⇒ connected |
-| Cover | Any exposed-top ground beside (solid, air above) ⇒ connected (material-agnostic) |
-| Cover visibility | Cover on any solid ground tile when the tile above is **non-solid** |
+| Cover | Grass beside grass ⇒ connected; the cover mask still reads neighbor **solidity** (any solid) |
+| Cover visibility | Cover on a `core:grass` tile when the tile above is **non-solid** |
+
+### Grass growth simulation
+
+Grass is dynamic tile state, not a fixed surface. `SandboxGrassSimulator` (driven by
+`SandboxGrassController` on a slow cadence) applies:
+
+- **Seeded on generation** — worldgen places `core:grass` only on the top row of each column.
+- **Buried / unlit death** — grass whose top becomes solid, or that loses sunlight, reverts to
+  `core:dirt`. Placing a tile on grass buries it immediately (edit event).
+- **Spread** — a healthy grass tile has a chance to grow onto an eligible neighbor.
+- **Spontaneous growth** — exposed, sunlit, dry bare dirt has a small chance to sprout grass.
+- **Never on stone** — only `core:dirt` becomes grass.
+- **Sunlight** — a vertical sky-cast: a clear column of non-solid tiles up to open sky. Roofed
+  underground pockets are never sunlit, so grass cannot grow there.
+- **Load loss** — each persisted grass tile has a chance to revert to dirt when a save is loaded.
 
 ---
 
@@ -307,7 +325,7 @@ See [wiki/autotile-drift-rca.md](wiki/autotile-drift-rca.md) for the layered pla
 
 ### Mesh compositing vs tile-viz blit
 
-Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendGroundAutotileSprite` for ground layers: **always** a fixed 16×16 UV quad (`AppendFixedCellQuad`) to match tile-viz `blitSprite`, regardless of sprite mesh bounds. Cover layers still use `AppendSprite`. Horizontal flip mirrors within the cell width.
+Unity chunk rendering uses `AutotileSpriteMeshBuilder.AppendGroundAutotileSprite` for ground and cover layers: **always** a fixed 16×16 UV quad (`AppendFixedCellQuad`) to match tile-viz `blitSprite`, regardless of sprite mesh bounds. Horizontal flip mirrors within the cell width.
 
 #### Visual override transform contract
 

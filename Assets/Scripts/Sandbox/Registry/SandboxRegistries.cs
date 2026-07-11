@@ -13,7 +13,9 @@ namespace ProjectTwelve.Sandbox.Registry
         private static ContentRegistry<ItemDefinition> items;
         private static ContentRegistry<EntityDefinition> entities;
         private static int airIndex = -1;
+        private static int dirtIndex = -1;
         private static int grassIndex = -1;
+        private static int stoneIndex = -1;
 
         /// <summary>Frozen tile registry; validated against <see cref="Items"/> on first build.</summary>
         public static ContentRegistry<TileDefinition> Tiles => tiles ?? (tiles = BuildTiles());
@@ -27,8 +29,14 @@ namespace ProjectTwelve.Sandbox.Registry
         /// <summary>Cached runtime index of <see cref="SandboxCoreContent.AirTileId"/> (the frozen empty slot, always 0).</summary>
         public static int AirIndex => airIndex >= 0 ? airIndex : (airIndex = Tiles.GetIndex(SandboxCoreContent.AirTileId));
 
+        /// <summary>Cached runtime index of <see cref="SandboxCoreContent.DirtTileId"/>.</summary>
+        public static int DirtIndex => dirtIndex >= 0 ? dirtIndex : (dirtIndex = Tiles.GetIndex(SandboxCoreContent.DirtTileId));
+
         /// <summary>Cached runtime index of <see cref="SandboxCoreContent.GrassTileId"/>.</summary>
         public static int GrassIndex => grassIndex >= 0 ? grassIndex : (grassIndex = Tiles.GetIndex(SandboxCoreContent.GrassTileId));
+
+        /// <summary>Cached runtime index of <see cref="SandboxCoreContent.StoneTileId"/>.</summary>
+        public static int StoneIndex => stoneIndex >= 0 ? stoneIndex : (stoneIndex = Tiles.GetIndex(SandboxCoreContent.StoneTileId));
 
         /// <summary>
         /// Test-only: swaps the live registries (pass null to rebuild core content on next touch),
@@ -45,7 +53,9 @@ namespace ProjectTwelve.Sandbox.Registry
             items = newItems;
             entities = newEntities;
             airIndex = -1;
+            dirtIndex = -1;
             grassIndex = -1;
+            stoneIndex = -1;
         }
 
         private static ContentRegistry<TileDefinition> BuildTiles()

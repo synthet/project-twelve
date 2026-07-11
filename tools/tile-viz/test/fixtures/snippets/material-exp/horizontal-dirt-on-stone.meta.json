@@ -1,0 +1,79 @@
+{
+  "name": "horizontal-dirt-on-stone",
+  "pattern": "111/222",
+  "boundaryCellCount": 6,
+  "boundaryCells": [
+    {
+      "x": 0,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": true,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": true,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "tileId": 1,
+      "groundTileset": "Humus",
+      "foreignBelow": true,
+      "foreignAbove": false,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": true,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": true,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "tileId": 3,
+      "groundTileset": "Rocks",
+      "foreignBelow": false,
+      "foreignAbove": true,
+      "foreignWest": false,
+      "foreignEast": false,
+      "isHorizontalSeam": true,
+      "isVerticalSeam": false
+    }
+  ]
+}

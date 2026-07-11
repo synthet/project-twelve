@@ -585,6 +585,31 @@ public sealed class SandboxCoreTests
         }
     }
 
+    [TestCase(1.031f, 2.094f, 1.0f, 2.125f)]
+    [TestCase(-1.031f, -2.094f, -1.0f, -2.125f)]
+    public void SandboxCameraFollow_SnapToPixelGridRoundsToSixteenthPixels(
+        float x,
+        float y,
+        float expectedX,
+        float expectedY)
+    {
+        Vector3 snapped = SandboxCameraFollow.SnapToPixelGrid(new Vector3(x, y, -10f), 16f);
+
+        Assert.AreEqual(expectedX, snapped.x, 0.0001f);
+        Assert.AreEqual(expectedY, snapped.y, 0.0001f);
+        Assert.AreEqual(-10f, snapped.z, 0.0001f);
+    }
+
+    [Test]
+    public void SandboxCameraFollow_SnapToPixelGridIgnoresInvalidPixelsPerUnit()
+    {
+        Vector3 position = new Vector3(1.031f, 2.094f, -10f);
+
+        Vector3 snapped = SandboxCameraFollow.SnapToPixelGrid(position, 0f);
+
+        Assert.AreEqual(position, snapped);
+    }
+
     [Test]
     public void SandboxTerrainGenerator_DifferentSeedsProduceDifferentWorlds()
     {

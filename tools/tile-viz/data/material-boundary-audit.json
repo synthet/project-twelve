@@ -1,0 +1,40 @@
+{
+  "format": "project-twelve/material-boundary-audit/v1",
+  "auditedAt": "2026-07-09T05:00:00Z",
+  "assetsRoot": "Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles",
+  "findings": {
+    "transitionGroundSheets": false,
+    "groundSheets": [
+      "Humus",
+      "Rocks",
+      "BricksA",
+      "BricksB",
+      "BricksC",
+      "BricksD",
+      "Frozen",
+      "Magma",
+      "Sand"
+    ],
+    "coverSheets": [
+      "GrassA",
+      "GrassB",
+      "GrassC",
+      "Moss",
+      "SandA",
+      "SandB",
+      "SnowA",
+      "SnowB",
+      "SnowC",
+      "SnowD",
+      "Ice",
+      "Icicles",
+      "Lianas",
+      "CarpetA",
+      "CarpetB",
+      "WoodenFloor"
+    ],
+    "vendorBlendLayer": "Cover/overlay (Grass, Moss, Sand, Snow, Ice, …)",
+    "chosenArtPath": "overlay-first-then-ground-flat-top",
+    "rationale": "No dirt↔stone transition ground sheets exist. Vendor blends via Cover. Horizontal sky gaps come from lip/bridge ground sprites (24/25) with open-bottom art over foreign stone; seal with flat-top ground (1/2) plus Moss boundary cover on stone-under-dirt cells."
+  }
+}

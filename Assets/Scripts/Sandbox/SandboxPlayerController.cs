@@ -35,7 +35,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private Rigidbody2D body;
     private BoxCollider2D playerCollider;
     private Camera mainCamera;
-    private int placeTileRuntimeIndex;
+    private int placeTileRuntimeIndex = -1;
 
     private float horizontalInput;
     private float externalMoveInput;
@@ -47,6 +47,36 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     /// <summary>Current rigidbody velocity (world units per second).</summary>
     public Vector2 Velocity => body != null ? body.linearVelocity : Vector2.zero;
+
+    /// <summary>The registered solid tile selected for creative placement, or null for an empty slot.</summary>
+    public string ActivePlacementTileId => placeTileRuntimeIndex >= 0 ? placeTileId : null;
+
+    /// <summary>
+    /// Selects a registered, solid, non-air tile for right-click creative placement. Invalid IDs
+    /// leave the current selection unchanged.
+    /// </summary>
+    public bool TrySetActivePlacementTile(string tileId)
+    {
+        if (string.IsNullOrEmpty(tileId)
+            || !SandboxRegistries.Tiles.TryGet(tileId, out TileDefinition tile)
+            || !tile.Solid
+            || tileId == SandboxCoreContent.AirTileId
+            || !SandboxRegistries.Tiles.TryGetIndex(tileId, out int runtimeIndex))
+        {
+            return false;
+        }
+
+        placeTileId = tileId;
+        placeTileRuntimeIndex = runtimeIndex;
+        return true;
+    }
+
+    /// <summary>Clears creative placement while preserving left-click tile removal.</summary>
+    public void ClearActivePlacementTile()
+    {
+        placeTileId = null;
+        placeTileRuntimeIndex = -1;
+    }
 
     /// <summary>
     /// Sets external horizontal movement input for MCP or automation callers.
@@ -90,7 +120,11 @@ public sealed class SandboxPlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
-        placeTileRuntimeIndex = SandboxRegistries.Tiles.GetIndex(placeTileId);
+        if (!TrySetActivePlacementTile(placeTileId))
+        {
+            Debug.LogWarning($"SandboxPlayerController: placement tile '{placeTileId}' is not a registered solid tile; placement disabled.");
+            ClearActivePlacementTile();
+        }
 
         PhysicsMaterial2D frictionless = SandboxPhysicsMaterials.ZeroFriction;
         body.sharedMaterial = frictionless;
@@ -204,7 +238,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
         }
 
         bool remove = SandboxScreenPointer.WasLeftButtonPressedThisFrame();
-        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame();
+        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame() && placeTileRuntimeIndex >= 0;
         if (!remove && !place)
         {
             return;

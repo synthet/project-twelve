@@ -257,8 +257,8 @@ public sealed class AutotileFixtureExportTests
         sb.Append("\"cover\":{");
         Vector2Int aboveKey = new Vector2Int(x, y + 1);
         space.TryGetValue(aboveKey, out SandboxTile above);
-        // Vendor cover: any exposed-top ground cell (solid here, air above) carries a cover overlay.
-        if (!tile.IsSolid || above.IsSolid)
+        // Grass-growth cover: only a grass tile with an exposed (non-solid) top carries a cover overlay.
+        if (tile.id != SandboxRegistries.GrassIndex || above.IsSolid)
         {
             sb.Append("\"rendered\":false}");
             return;

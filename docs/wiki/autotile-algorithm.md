@@ -4,7 +4,7 @@ title: Autotile Algorithm Reference
 description: How ProjectTwelve resolves occupancy into ground and cover sprites — blob mask, direct/mirror resolution, weighted variants, cover rules, and the project normalization layer.
 resource: wiki/autotile-algorithm.md
 tags: [docs, wiki, autotile, visual, reference]
-timestamp: 2026-07-07T00:00:00Z
+timestamp: 2026-07-10T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -129,12 +129,13 @@ Cover tilesets have **6 sprites** and use the cover rules. A cover cell survives
 is ground **at** the cell and **no** ground directly above it — i.e. an exposed top edge; otherwise
 it is not drawn.
 
-Cover is **material-agnostic** (vendor `PixelTileEngine LevelBuilder.SetCover`): the overlay applies
-to *any* exposed-top ground cell regardless of its ground material — dirt, stone, or grass all take
-the same surface cover. It is **not** bound to a "grass" tile. `ShouldRenderGrassCover` therefore
-gates on `tileId != Air && !tileAbove.IsSolid`, and `TryGetCoverTileset` maps every solid ground
-tile to the single configured cover tileset. Only vertical faces (a tile with solid ground directly
-above it) go uncovered — so a stair-stepped slope covers the treads, never the risers.
+Cover is **grass gameplay state**, not a material-agnostic overlay: the green cover renders only on a
+`core:grass` tile with an exposed top. `ShouldRenderGrassCover` gates on
+`tileId == GrassIndex && !tileAbove.IsSolid`, and `TryGetCoverTileset` returns the configured cover
+tileset only for grass. Bare dirt, stone, and ores stay uncovered even when exposed — grass is grown
+onto them by `SandboxGrassSimulator` (see `docs/VISUAL_BEHAVIOR_SPEC.md` § Grass growth simulation).
+Buried grass (a tile with solid ground directly above it) goes uncovered — so on a grassed
+stair-stepped slope the treads cover, never the risers.
 
 The cover mask is horizontal: only the middle row (west / center / east) is meaningful. Its
 neighbor values are built by `AutotileMaskBuilder.BuildCoverMask`, which reads each side neighbor by

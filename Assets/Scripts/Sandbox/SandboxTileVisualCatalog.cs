@@ -47,10 +47,11 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     public bool TryGetCoverTileset(int tileId, out AutotileTileset tileset)
     {
         tileset = null;
-        // Vendor cover model: the surface overlay applies to any ground material, not just grass, so
-        // every solid ground tile maps to the single configured cover tileset. Air has no cover.
+        // Grass-growth model (see docs/VISUAL_BEHAVIOR_SPEC.md § Cover): the green cover is gameplay
+        // state, not a material-agnostic overlay, so only the grass tile carries a cover tileset.
+        // Dirt, stone, and ores are bare even when exposed until grass grows onto them.
         if (autotileCatalog == null
-            || tileId == SandboxRegistries.AirIndex
+            || tileId != SandboxRegistries.GrassIndex
             || string.IsNullOrEmpty(grassCoverTileset))
         {
             return false;
@@ -79,13 +80,15 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
     }
 
     /// <summary>
-    /// Returns whether a surface cover overlay should render on the given tile. Vendor model
-    /// (PixelTileEngine <c>SetCover</c>): cover renders on any exposed-top ground cell — solid
-    /// ground here with no solid ground directly above — regardless of ground material.
+    /// Returns whether a surface cover overlay should render on the given tile. Grass-growth model:
+    /// the cover renders only on a <c>core:grass</c> tile whose top is exposed (no solid tile
+    /// directly above). Grass is real, simulated tile state (see
+    /// <see cref="ProjectTwelve.Sandbox.Grass.SandboxGrassSimulator"/>), so bare dirt and stone show
+    /// no cover until grass grows onto them.
     /// </summary>
     public bool ShouldRenderGrassCover(int tileId, SandboxTile tileAbove)
     {
-        return tileId != SandboxRegistries.AirIndex && !tileAbove.IsSolid;
+        return tileId == SandboxRegistries.GrassIndex && !tileAbove.IsSolid;
     }
 
     /// <summary>
