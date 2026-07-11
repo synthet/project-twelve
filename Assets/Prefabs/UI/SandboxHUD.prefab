@@ -100,13 +100,16 @@ MonoBehaviour:
   world: {fileID: 0}
   playerController: {fileID: 0}
   playerVitals: {fileID: 0}
-  panelSprite: {fileID: 21300000, guid: 4fa556501df73e84785e6d2b2e787a0c, type: 3}
-  frameSprite: {fileID: 21300000, guid: b3ed14eece1a78e499ab8e1664fc1cb1, type: 3}
-  selectionSprite: {fileID: 21300000, guid: d42e41d0d125cbd468e8053f6816424b, type: 3}
-  slotSprite: {fileID: 21300000, guid: 97d7f3d9b9204aa4f90f9ddf2de09480, type: 3}
+  showDebugTelemetry: 1
+  hideDebugTelemetryInReleaseBuilds: 1
+  panelSprite: {fileID: 21300000, guid: 0b42bc926cd34346951f5a55f1279bf6, type: 3}
+  frameSprite: {fileID: 21300000, guid: 4fe749d249c340dd894011e8c2f3b735, type: 3}
+  selectionSprite: {fileID: 21300000, guid: 91862b2ae0c14c1ba63e027340c9f9a8, type: 3}
+  slotSprite: {fileID: 21300000, guid: a2e5345e4df441919572351a88520f6d, type: 3}
   pixelFont: {fileID: 12800000, guid: 7b377208f1df45148d2fedf987d07403, type: 3}
-  portraitSprite: {fileID: 21300000, guid: 2b702b18f57f14e44877d81a994abedc, type: 3}
-  heartSprite: {fileID: 21300000, guid: 79f13cc8bf73a934aabcb50625031f0c, type: 3}
+  portraitSprite: {fileID: 21300000, guid: 6f7dda1083cc6e4c924da39239b0c099, type: 3}
+  heartSprite: {fileID: 21300000, guid: d90c0a828a12438cb861ac32ad9dedff, type: 3}
+  emptyHeartSprite: {fileID: 21300000, guid: f379ce07734343ba8b469ff91b405950, type: 3}
   dirtIcon: {fileID: 21300000, guid: 7de6b0707c0898d6c8e892e6e4195a57, type: 3}
   grassIcon: {fileID: 21300000, guid: 721b644869ec56785ada8e9ba9371d6f, type: 3}
   stoneIcon: {fileID: 21300000, guid: c335504c652aa1f4ad9339e94f93cf39, type: 3}

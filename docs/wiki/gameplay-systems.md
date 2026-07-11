@@ -4,7 +4,7 @@ title: Gameplay Systems
 description: Simulation/presentation split for player, inventory, and enemy systems, including the P2-AI-001 enemy nav and spawn contract.
 resource: wiki/gameplay-systems.md
 tags: [docs, wiki, gameplay, ai, p2]
-timestamp: 2026-07-04T00:00:00Z
+timestamp: 2026-07-11T16:52:00Z
 okf_version: 0.1
 ---
 
@@ -36,21 +36,22 @@ slots only. A populated selection changes the registered solid tile placed with 
 empty selection disables placement without affecting left-click removal. The infinity marker is a
 creative-mode affordance, not an inventory quantity.
 
-The top-left vitals panel reads `SandboxPlayerVitals`, which initializes from the `core:player`
-entity definition and exposes damage/heal events for later combat integration. No normal gameplay
-damage source is part of this prototype. The top-right panel reports the live seed, player tile,
-and owning chunk using the same coordinate conversion as world streaming and debug tools.
+The compact top-left vitals panel reads `SandboxPlayerVitals`, which initializes from the
+`core:player` entity definition and exposes damage/heal events for later combat integration. No
+normal gameplay damage source is part of this prototype. The selected hotbar slot is lifted and
+marked in gold, with its item name shown as a compact label immediately above the slot.
+
+Seed, player tile, and owning chunk are presented separately as lightweight development telemetry
+using the same coordinate conversion as world streaming and debug tools. The telemetry has an
+independent visibility API and is suppressed by default in non-development player builds.
 
 The HUD is presentation over existing prototype state. It does not implement item consumption,
 pickups, persistence, crafting, mana, or time-of-day; those remain owned by P2-INV-001 and the
 production UI flows in P4-UX-001.
 
-### HUD Style Switcher (Editor tool)
-You can swap the HUD style between different game references inside the Unity Editor:
-1. Go to the menu bar and select **ProjectTwelve -> HUD**.
-2. Click **Apply Terraria Style** (classic fantasy theme) or **Apply Starbound Style** (retro sci-fi theme).
-
-This utility copies the extracted asset files from `D:/Projects/project-twelve-extract` into `Assets/_Licensed/PixelFantasy/Common/Sprites/UI/ExtractedHUD/`, configures the Unity sprite import settings (Sprite UI type, Point filter mode, no compression), and programmatically assigns them to the `SandboxHUD` prefab using serializable field modifications.
+The HUD uses the repo-owned original sprites in `Assets/Sprites/UI/Generated`. Rebuilding the HUD
+through **ProjectTwelve → UI → Rebuild Sandbox HUD** preserves this theme; there is no vendor-style
+switcher or dependency on an external extracted-graphics directory.
 
 ## Inventory and Items
 

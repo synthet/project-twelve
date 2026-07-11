@@ -38,10 +38,13 @@ namespace ProjectTwelve.Visual.AutotileDebug
                 return mode;
             }
 
+            // Only genuinely-removed values reach here: 1, 2, 4, 5 are live members handled
+            // by the CycleOrder short-circuit above. (The enum was renumbered in the
+            // visual-override work; the old 1/2 -> SpriteIdLabel and 4/5 -> GroundCoverSplit
+            // mappings are now dead and would be wrong, so they are dropped.)
             return (int)mode switch
             {
-                1 or 2 or 3 or 8 => GroundAutotileDebugMode.SpriteIdLabel,
-                4 or 5 => GroundAutotileDebugMode.GroundCoverSplit,
+                3 or 8 => GroundAutotileDebugMode.SpriteIdLabel,
                 6 or 7 or 9 => GroundAutotileDebugMode.VisualOverrideLabel,
                 _ => GroundAutotileDebugMode.Off,
             };

@@ -13,8 +13,8 @@ public sealed class SandboxHudController : MonoBehaviour
     public const int HealthPerHeart = 10;
 
     private static readonly Color PanelTint = new Color(0.18f, 0.19f, 0.22f, 0.97f);
-    private static readonly Color SlotTint = new Color(0.12f, 0.13f, 0.16f, 0.96f);
-    private static readonly Color Gold = new Color(1f, 0.72f, 0.25f, 1f);
+    private static readonly Color DebugPanelTint = new Color(0.03f, 0.04f, 0.06f, 0.78f);
+    private static readonly Color SelectionGold = new Color(1f, 0.72f, 0.22f, 1f);
     private static readonly Color Silver = new Color(0.78f, 0.82f, 0.86f, 1f);
     private static readonly Color HeartEmpty = new Color(0.16f, 0.08f, 0.1f, 0.8f);
 
@@ -23,7 +23,11 @@ public sealed class SandboxHudController : MonoBehaviour
     [SerializeField] private SandboxPlayerController playerController;
     [SerializeField] private SandboxPlayerVitals playerVitals;
 
-    [Header("Licensed PixelFantasy theme")]
+    [Header("Debug telemetry")]
+    [SerializeField] private bool showDebugTelemetry = true;
+    [SerializeField] private bool hideDebugTelemetryInReleaseBuilds = true;
+
+    [Header("HUD theme")]
     [SerializeField] private Sprite panelSprite;
     [SerializeField] private Sprite frameSprite;
     [SerializeField] private Sprite selectionSprite;
@@ -33,6 +37,7 @@ public sealed class SandboxHudController : MonoBehaviour
     [Header("Core presentation")]
     [SerializeField] private Sprite portraitSprite;
     [SerializeField] private Sprite heartSprite;
+    [SerializeField] private Sprite emptyHeartSprite;
     [SerializeField] private Sprite dirtIcon;
     [SerializeField] private Sprite grassIcon;
     [SerializeField] private Sprite stoneIcon;
@@ -40,14 +45,18 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private readonly List<Image> heartFills = new List<Image>();
     private readonly List<GameObject> hotbarSelections = new List<GameObject>();
+    private readonly List<RectTransform> hotbarSlots = new List<RectTransform>();
+    private readonly List<Vector2> hotbarSlotPositions = new List<Vector2>();
     private Text healthText;
     private Text selectedItemText;
     private Text worldInfoText;
+    private GameObject worldInfoPanel;
     private SandboxCreativeHotbarState hotbar;
     private Vector2Int lastWorldTile = new Vector2Int(int.MinValue, int.MinValue);
 
     public SandboxCreativeHotbarState Hotbar => hotbar;
     public int SlotViewCount => hotbarSelections.Count;
+    public bool DebugTelemetryVisible => worldInfoPanel != null && worldInfoPanel.activeSelf;
 
     private void Awake()
     {
@@ -82,6 +91,11 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void Update()
     {
+        if (hotbar == null)
+        {
+            return;
+        }
+
         HandleHotbarInput();
         RefreshWorldInfo(force: false);
     }
@@ -119,83 +133,93 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildVitalsPanel(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(390f, 104f),
+        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(320f, 92f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
 
         Image portraitFrame = CreateImage("PortraitFrame", panel, frameSprite, Silver);
-        SetRect(portraitFrame.rectTransform, new Vector2(14f, -14f), new Vector2(76f, 76f),
+        SetRect(portraitFrame.rectTransform, new Vector2(14f, -14f), new Vector2(64f, 64f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         portraitFrame.type = Image.Type.Sliced;
 
         Image portrait = CreateImage("Portrait", portraitFrame.rectTransform, portraitSprite, Color.white);
-        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(48f, 48f),
+        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(42f, 42f),
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         portrait.preserveAspect = true;
 
         RectTransform hearts = CreateRect("Hearts", panel);
-        SetRect(hearts, new Vector2(104f, -20f), new Vector2(260f, 46f),
+        SetRect(hearts, new Vector2(88f, -14f), new Vector2(218f, 34f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         HorizontalLayoutGroup layout = hearts.gameObject.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 4f;
+        layout.spacing = 3f;
         layout.childAlignment = TextAnchor.MiddleLeft;
         layout.childControlWidth = false;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
 
-        healthText = CreateText("HealthValue", panel, "100 / 100", 20, TextAnchor.MiddleLeft, Silver);
-        SetRect(healthText.rectTransform, new Vector2(104f, -68f), new Vector2(250f, 24f),
+        healthText = CreateText("HealthValue", panel, "100 / 100", 18, TextAnchor.MiddleLeft, Silver);
+        SetRect(healthText.rectTransform, new Vector2(88f, -54f), new Vector2(180f, 22f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
     }
 
     private void BuildHotbar(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("CreativeHotbar", parent, new Vector2(0f, 18f), new Vector2(664f, 94f),
-            new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-
-        selectedItemText = CreateText("SelectedItem", parent, "Dirt", 22, TextAnchor.MiddleCenter, Color.white);
-        SetRect(selectedItemText.rectTransform, new Vector2(0f, 116f), new Vector2(320f, 32f),
+        RectTransform panel = CreatePanel("CreativeHotbar", parent, new Vector2(0f, 16f), new Vector2(612f, 82f),
             new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
 
         for (int i = 0; i < SandboxCreativeHotbarState.SlotCount; i++)
         {
-            float x = 14f + i * 64f;
-            Image slot = CreateImage($"Slot{i + 1}", panel, slotSprite != null ? slotSprite : panelSprite, SlotTint);
-            SetRect(slot.rectTransform, new Vector2(x, -15f), new Vector2(58f, 64f),
+            float x = 19f + i * 58f;
+            Image slot = CreateImage($"Slot{i + 1}", panel,
+                slotSprite != null ? slotSprite : panelSprite, Color.white);
+            SetRect(slot.rectTransform, new Vector2(x, -13f), new Vector2(52f, 56f),
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
             slot.type = Image.Type.Sliced;
+            hotbarSlots.Add(slot.rectTransform);
+            hotbarSlotPositions.Add(slot.rectTransform.anchoredPosition);
 
             Sprite iconSprite = GetIcon(i);
             Image icon = CreateImage("Icon", slot.rectTransform, iconSprite, Color.white);
-            SetRect(icon.rectTransform, new Vector2(0f, -3f), new Vector2(32f, 32f),
+            SetRect(icon.rectTransform, new Vector2(0f, -1f), new Vector2(32f, 32f),
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             icon.preserveAspect = true;
             icon.enabled = iconSprite != null;
 
             string keyLabel = i == 9 ? "0" : (i + 1).ToString();
-            Text key = CreateText("Key", slot.rectTransform, keyLabel, 14, TextAnchor.UpperLeft, Silver);
-            SetStretch(key.rectTransform, 6f, 5f, 3f, 4f);
+            Text key = CreateText("Key", slot.rectTransform, keyLabel, 13, TextAnchor.UpperLeft, Silver);
+            SetStretch(key.rectTransform, 10f, 7f, 7f, 6f);
 
             Text infinity = CreateText("Quantity", slot.rectTransform,
-                hotbar.Slots[i].IsPopulated ? "∞" : string.Empty, 17, TextAnchor.LowerRight, Color.white);
-            SetStretch(infinity.rectTransform, 4f, 6f, 4f, 3f);
+                hotbar.Slots[i].IsPopulated ? "∞" : string.Empty, 15, TextAnchor.LowerRight, Color.white);
+            SetStretch(infinity.rectTransform, 7f, 10f, 6f, 7f);
 
             Image selection = CreateImage("Selected", slot.rectTransform,
-                selectionSprite != null ? selectionSprite : frameSprite, Gold);
-            SetStretch(selection.rectTransform, -3f, -3f, -3f, -3f);
+                selectionSprite != null ? selectionSprite : frameSprite, Color.white);
+            SetStretch(selection.rectTransform, -1f, -1f, -1f, -1f);
             selection.type = Image.Type.Sliced;
+            Image marker = CreateImage("Marker", selection.rectTransform, null, SelectionGold);
+            SetRect(marker.rectTransform, new Vector2(0f, 5f), new Vector2(26f, 3f),
+                new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
             selection.gameObject.SetActive(i == 0);
             hotbarSelections.Add(selection.gameObject);
         }
+
+        selectedItemText = CreateText("SelectedItem", hotbarSlots[0], "Dirt", 16,
+            TextAnchor.MiddleCenter, Color.white);
+        PositionSelectedItemText(hotbarSlots[0]);
     }
 
     private void BuildWorldPanel(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("WorldInfo", parent, new Vector2(-16f, -16f), new Vector2(244f, 116f),
+        Image panel = CreateImage("WorldInfo", parent, null, DebugPanelTint);
+        SetRect(panel.rectTransform, new Vector2(-16f, -16f), new Vector2(188f, 70f),
             new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
-        worldInfoText = CreateText("WorldInfoText", panel, string.Empty, 18, TextAnchor.MiddleLeft, Silver);
-        SetStretch(worldInfoText.rectTransform, 24f, 24f, 18f, 18f);
-        worldInfoText.lineSpacing = 1.12f;
+        worldInfoPanel = panel.gameObject;
+        worldInfoText = CreateText("WorldInfoText", panel.rectTransform, string.Empty, 14,
+            TextAnchor.MiddleLeft, Silver);
+        SetStretch(worldInfoText.rectTransform, 10f, 10f, 8f, 8f);
+        worldInfoText.lineSpacing = 1.05f;
+        worldInfoPanel.SetActive(ShouldShowDebugTelemetry());
     }
 
     private void RebuildHearts(int maximum)
@@ -216,9 +240,11 @@ public sealed class SandboxHudController : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             RectTransform heart = CreateRect($"Heart{i + 1}", heartsParent);
-            heart.sizeDelta = new Vector2(20f, 20f);
+            heart.sizeDelta = new Vector2(18f, 18f);
 
-            Image empty = CreateImage("Empty", heart, heartSprite, HeartEmpty);
+            Image empty = CreateImage("Empty", heart,
+                emptyHeartSprite != null ? emptyHeartSprite : heartSprite,
+                emptyHeartSprite != null ? Color.white : HeartEmpty);
             SetStretch(empty.rectTransform, 0f, 0f, 0f, 0f);
             empty.preserveAspect = true;
 
@@ -301,11 +327,14 @@ public sealed class SandboxHudController : MonoBehaviour
     {
         for (int i = 0; i < hotbarSelections.Count; i++)
         {
-            hotbarSelections[i].SetActive(i == index);
+            bool selected = i == index;
+            hotbarSelections[i].SetActive(selected);
+            hotbarSlots[i].anchoredPosition = hotbarSlotPositions[i] + (selected ? Vector2.up * 4f : Vector2.zero);
         }
 
         if (selectedItemText != null)
         {
+            PositionSelectedItemText(hotbarSlots[index]);
             selectedItemText.text = slot.IsPopulated ? slot.DisplayName : "Empty Slot";
             selectedItemText.color = slot.IsPopulated ? Color.white : Silver;
         }
@@ -344,7 +373,8 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void RefreshWorldInfo(bool force)
     {
-        if (world == null || worldInfoText == null || !world.TryGetPlayerWorldPosition(out Vector2 position))
+        if (!DebugTelemetryVisible || world == null || worldInfoText == null ||
+            !world.TryGetPlayerWorldPosition(out Vector2 position))
         {
             return;
         }
@@ -358,6 +388,19 @@ public sealed class SandboxHudController : MonoBehaviour
         lastWorldTile = tile;
         Vector2Int chunk = SandboxWorld.WorldToChunkCoord(tile.x, tile.y);
         worldInfoText.text = FormatWorldInfo(world.Seed, tile, chunk);
+    }
+
+    public void SetDebugTelemetryVisible(bool visible)
+    {
+        showDebugTelemetry = visible;
+        if (worldInfoPanel != null)
+        {
+            worldInfoPanel.SetActive(ShouldShowDebugTelemetry());
+            if (worldInfoPanel.activeSelf)
+            {
+                RefreshWorldInfo(force: true);
+            }
+        }
     }
 
     public static string FormatWorldInfo(int seed, Vector2Int tile, Vector2Int chunk)
@@ -397,7 +440,30 @@ public sealed class SandboxHudController : MonoBehaviour
     private RectTransform CreatePanel(string name, RectTransform parent, Vector2 position, Vector2 size,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)
     {
-        Image image = CreateImage(name, parent, panelSprite, PanelTint);
+        return CreatePanel(name, parent, position, size, panelSprite, anchorMin, anchorMax, pivot);
+    }
+
+    private void PositionSelectedItemText(RectTransform slot)
+    {
+        selectedItemText.rectTransform.SetParent(slot, false);
+        SetRect(selectedItemText.rectTransform, new Vector2(0f, 16f), new Vector2(108f, 20f),
+            new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0f));
+    }
+
+    private bool ShouldShowDebugTelemetry()
+    {
+        if (!showDebugTelemetry)
+        {
+            return false;
+        }
+
+        return !hideDebugTelemetryInReleaseBuilds || Application.isEditor || Debug.isDebugBuild;
+    }
+
+    private RectTransform CreatePanel(string name, RectTransform parent, Vector2 position, Vector2 size,
+        Sprite sprite, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot)
+    {
+        Image image = CreateImage(name, parent, sprite, sprite != null ? Color.white : PanelTint);
         image.type = Image.Type.Sliced;
         SetRect(image.rectTransform, position, size, anchorMin, anchorMax, pivot);
         return image.rectTransform;

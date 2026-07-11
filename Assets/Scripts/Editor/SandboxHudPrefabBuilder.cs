@@ -36,7 +36,7 @@ public static class SandboxHudPrefabBuilder
             scaler.referenceResolution = new Vector2(1280f, 720f);
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
-            scaler.referencePixelsPerUnit = 16f;
+            scaler.referencePixelsPerUnit = 100f;
 
             AssignTheme(root.GetComponent<SandboxHudController>());
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
@@ -76,14 +76,15 @@ public static class SandboxHudPrefabBuilder
     {
         SerializedObject serialized = new SerializedObject(controller);
         
-        string baseDir = "Assets/_Licensed/PixelFantasy/Common/Sprites/UI/ExtractedHUD/Starbound";
-        
-        SetAsset<Sprite>(serialized, "panelSprite", $"{baseDir}/panel_bg.png");
-        SetAsset<Sprite>(serialized, "frameSprite", $"{baseDir}/panel_border.png");
-        SetAsset<Sprite>(serialized, "slotSprite", $"{baseDir}/slot.png");
-        SetAsset<Sprite>(serialized, "selectionSprite", $"{baseDir}/slot_selected.png");
-        SetAsset<Sprite>(serialized, "heartSprite", $"{baseDir}/heart.png");
-        SetAsset<Sprite>(serialized, "portraitSprite", $"{baseDir}/portrait.png");
+        const string baseDir = "Assets/Sprites/UI/Generated";
+
+        SetAsset<Sprite>(serialized, "panelSprite", $"{baseDir}/hud_panel_main.png");
+        SetAsset<Sprite>(serialized, "frameSprite", $"{baseDir}/hud_portrait_frame.png");
+        SetAsset<Sprite>(serialized, "slotSprite", $"{baseDir}/hud_slot_normal.png");
+        SetAsset<Sprite>(serialized, "selectionSprite", $"{baseDir}/hud_slot_selected.png");
+        SetAsset<Sprite>(serialized, "heartSprite", $"{baseDir}/hud_heart_full.png");
+        SetAsset<Sprite>(serialized, "emptyHeartSprite", $"{baseDir}/hud_heart_empty.png");
+        SetAsset<Sprite>(serialized, "portraitSprite", "Assets/Sprites/Core/core_player_idle_00.png");
         
         SetAsset<Font>(serialized, "pixelFont", "Assets/_Licensed/PixelFantasy/Common/Fonts/Pribambas [by Misha Panfilov].ttf");
         SetAsset<Sprite>(serialized, "dirtIcon", "Assets/Sprites/Core/core_tile_dirt_00.png");
