@@ -9,9 +9,9 @@ TextureImporter:
     enableMipMap: 0
   textureType: 8
   spriteMode: 1
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteMeshType: 1
-  spriteBorder: {x: 36, y: 36, z: 36, w: 36}
+  spriteBorder: {x: 6, y: 6, z: 6, w: 6}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1

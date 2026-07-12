@@ -115,7 +115,7 @@ public sealed class SandboxHudTests
         Vector2Int chunk = SandboxWorld.WorldToChunkCoord(tile.x, tile.y);
 
         Assert.AreEqual(new Vector2Int(-1, 2), chunk);
-        Assert.AreEqual("SEED  1337\nTILE  -1, 64\nCHUNK -1, 2",
+        Assert.AreEqual("DEBUG  SEED 1337\nTILE  -1, 64\nCHUNK -1, 2",
             SandboxHudController.FormatWorldInfo(1337, tile, chunk));
     }
 
@@ -156,12 +156,12 @@ public sealed class SandboxHudTests
             Assert.IsNotNull(vitals);
             Assert.IsNotNull(hotbar);
             Assert.IsNotNull(telemetry);
-            Assert.LessOrEqual(vitals.rect.width, 320f);
-            Assert.LessOrEqual(vitals.rect.height, 92f);
+            Assert.LessOrEqual(vitals.rect.width, 210f);
+            Assert.LessOrEqual(vitals.rect.height, 70f);
             Assert.LessOrEqual(hotbar.rect.width, 612f);
-            Assert.LessOrEqual(hotbar.rect.height, 82f);
-            Assert.LessOrEqual(telemetry.rect.width, 188f);
-            Assert.LessOrEqual(telemetry.rect.height, 70f);
+            Assert.LessOrEqual(hotbar.rect.height, 60f);
+            Assert.LessOrEqual(telemetry.rect.width, 160f);
+            Assert.LessOrEqual(telemetry.rect.height, 62f);
 
             RectTransform firstSlot = instance.transform.Find("CreativeHotbar/Slot1") as RectTransform;
             RectTransform secondSlot = instance.transform.Find("CreativeHotbar/Slot2") as RectTransform;
@@ -169,9 +169,20 @@ public sealed class SandboxHudTests
             Assert.IsNotNull(secondSlot);
             float firstSelectedY = firstSlot.anchoredPosition.y;
             Assert.IsTrue(hud.Hotbar.Select(1));
-            Assert.AreEqual(firstSelectedY - 4f, firstSlot.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(firstSelectedY - 2f, firstSlot.anchoredPosition.y, 0.001f);
             Assert.AreEqual(firstSelectedY, secondSlot.anchoredPosition.y, 0.001f);
-            Assert.AreEqual(secondSlot, secondSlot.Find("SelectedItem").parent);
+            RectTransform selectedItem = secondSlot.Find("SelectedItem") as RectTransform;
+            Assert.IsNotNull(selectedItem);
+            Assert.AreEqual(secondSlot, selectedItem.parent);
+            Assert.AreEqual(8f, selectedItem.anchoredPosition.y, 0.001f);
+            Transform selectedFrame = secondSlot.Find("Selected");
+            Assert.IsNotNull(selectedFrame);
+            Assert.IsNotNull(selectedFrame.Find("MarkerTop"));
+            Assert.IsNotNull(selectedFrame.Find("MarkerBottom"));
+            Assert.IsNotNull(selectedFrame.Find("MarkerLeft"));
+            Assert.IsNotNull(selectedFrame.Find("MarkerRight"));
+
+            Assert.IsNull(instance.transform.Find("Vitals/HealthValue"));
 
             hud.SetDebugTelemetryVisible(false);
             Assert.IsFalse(hud.DebugTelemetryVisible);
@@ -182,6 +193,15 @@ public sealed class SandboxHudTests
         {
             Object.DestroyImmediate(instance);
         }
+    }
+
+    [TestCase(1f, 2f, false)]
+    [TestCase(2f, 2f, true)]
+    [TestCase(3f, 2f, true)]
+    public void SelectedItemLabel_ExpiresAtConfiguredTime(float currentTime, float hideAt, bool expected)
+    {
+        Assert.AreEqual(expected, SandboxHudController.IsSelectedItemLabelExpired(currentTime, hideAt));
+        Assert.That(SandboxHudController.SelectedItemLabelDurationSeconds, Is.InRange(1.5f, 2f));
     }
 
     [TestCase(1920f, 1080f)]

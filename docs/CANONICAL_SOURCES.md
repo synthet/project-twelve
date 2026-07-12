@@ -4,7 +4,7 @@ title: Canonical Sources
 description: Authority map for project, agent, tooling, documentation, and asset configuration sources.
 resource: CANONICAL_SOURCES.md
 tags: [docs, governance, agents]
-timestamp: 2026-07-10T00:00:00Z
+timestamp: 2026-07-11T17:10:00Z
 okf_version: 0.1
 ---
 
@@ -29,6 +29,8 @@ okf_version: 0.1
 | Codex skill mirror | `.agents/skills/` | Generated from `.claude/skills/` via `scripts/sync_assistant_trees.py`. |
 
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks. |
+
+| Agent task prompts | `docs/prompts/` | Focused implementation and review prompts for agents (e.g. HUD polish). |
 
 | Project memory | `.agent-memory/` | log → dream → promote workflow; see `CURSOR_USAGE.md`. |
 

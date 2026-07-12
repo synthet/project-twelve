@@ -36,10 +36,11 @@ slots only. A populated selection changes the registered solid tile placed with 
 empty selection disables placement without affecting left-click removal. The infinity marker is a
 creative-mode affordance, not an inventory quantity.
 
-The compact top-left vitals panel reads `SandboxPlayerVitals`, which initializes from the
-`core:player` entity definition and exposes damage/heal events for later combat integration. No
-normal gameplay damage source is part of this prototype. The selected hotbar slot is lifted and
-marked in gold, with its item name shown as a compact label immediately above the slot.
+The compact single-row vitals panel reads `SandboxPlayerVitals`, which initializes from the
+`core:player` entity definition and exposes damage/heal events for later combat integration. Its
+ten hearts encode the full 100-point health state without a redundant numeric readout. No normal
+gameplay damage source is part of this prototype. The selected hotbar slot is lifted and marked in
+gold, with its item name shown briefly in a compact backed label immediately above the slot.
 
 Seed, player tile, and owning chunk are presented separately as lightweight development telemetry
 using the same coordinate conversion as world streaming and debug tools. The telemetry has an

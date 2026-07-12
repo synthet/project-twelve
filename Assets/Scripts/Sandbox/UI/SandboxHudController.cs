@@ -11,10 +11,13 @@ using UnityEngine.InputSystem;
 public sealed class SandboxHudController : MonoBehaviour
 {
     public const int HealthPerHeart = 10;
+    public const float SelectedItemLabelDurationSeconds = 1.75f;
 
     private static readonly Color PanelTint = new Color(0.18f, 0.19f, 0.22f, 0.97f);
-    private static readonly Color DebugPanelTint = new Color(0.03f, 0.04f, 0.06f, 0.78f);
-    private static readonly Color SelectionGold = new Color(1f, 0.72f, 0.22f, 1f);
+    private static readonly Color HotbarTint = new Color(0.035f, 0.04f, 0.055f, 0.82f);
+    private static readonly Color DebugPanelTint = new Color(0.03f, 0.04f, 0.06f, 0.7f);
+    private static readonly Color ItemLabelTint = new Color(0.025f, 0.03f, 0.04f, 0.88f);
+    private static readonly Color SelectionGold = new Color(1f, 0.76f, 0.24f, 1f);
     private static readonly Color Silver = new Color(0.78f, 0.82f, 0.86f, 1f);
     private static readonly Color HeartEmpty = new Color(0.16f, 0.08f, 0.1f, 0.8f);
 
@@ -47,11 +50,12 @@ public sealed class SandboxHudController : MonoBehaviour
     private readonly List<GameObject> hotbarSelections = new List<GameObject>();
     private readonly List<RectTransform> hotbarSlots = new List<RectTransform>();
     private readonly List<Vector2> hotbarSlotPositions = new List<Vector2>();
-    private Text healthText;
+    private Image selectedItemLabel;
     private Text selectedItemText;
     private Text worldInfoText;
     private GameObject worldInfoPanel;
     private SandboxCreativeHotbarState hotbar;
+    private float selectedItemLabelHideAt;
     private Vector2Int lastWorldTile = new Vector2Int(int.MinValue, int.MinValue);
 
     public SandboxCreativeHotbarState Hotbar => hotbar;
@@ -97,6 +101,7 @@ public sealed class SandboxHudController : MonoBehaviour
         }
 
         HandleHotbarInput();
+        UpdateSelectedItemLabelVisibility();
         RefreshWorldInfo(force: false);
     }
 
@@ -133,46 +138,45 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildVitalsPanel(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(320f, 92f),
+        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(210f, 70f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
 
         Image portraitFrame = CreateImage("PortraitFrame", panel, frameSprite, Silver);
-        SetRect(portraitFrame.rectTransform, new Vector2(14f, -14f), new Vector2(64f, 64f),
+        SetRect(portraitFrame.rectTransform, new Vector2(7f, -7f), new Vector2(56f, 56f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         portraitFrame.type = Image.Type.Sliced;
 
         Image portrait = CreateImage("Portrait", portraitFrame.rectTransform, portraitSprite, Color.white);
-        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(42f, 42f),
+        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(38f, 38f),
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         portrait.preserveAspect = true;
 
         RectTransform hearts = CreateRect("Hearts", panel);
-        SetRect(hearts, new Vector2(88f, -14f), new Vector2(218f, 34f),
+        SetRect(hearts, new Vector2(70f, -10f), new Vector2(130f, 50f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         HorizontalLayoutGroup layout = hearts.gameObject.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 3f;
+        layout.spacing = 1f;
         layout.childAlignment = TextAnchor.MiddleLeft;
         layout.childControlWidth = false;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
 
-        healthText = CreateText("HealthValue", panel, "100 / 100", 18, TextAnchor.MiddleLeft, Silver);
-        SetRect(healthText.rectTransform, new Vector2(88f, -54f), new Vector2(180f, 22f),
-            new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
     }
 
     private void BuildHotbar(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("CreativeHotbar", parent, new Vector2(0f, 16f), new Vector2(612f, 82f),
+        Image panelImage = CreateImage("CreativeHotbar", parent, null, HotbarTint);
+        SetRect(panelImage.rectTransform, new Vector2(0f, 14f), new Vector2(612f, 60f),
             new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+        RectTransform panel = panelImage.rectTransform;
 
         for (int i = 0; i < SandboxCreativeHotbarState.SlotCount; i++)
         {
             float x = 19f + i * 58f;
             Image slot = CreateImage($"Slot{i + 1}", panel,
                 slotSprite != null ? slotSprite : panelSprite, Color.white);
-            SetRect(slot.rectTransform, new Vector2(x, -13f), new Vector2(52f, 56f),
+            SetRect(slot.rectTransform, new Vector2(x, -4f), new Vector2(52f, 52f),
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
             slot.type = Image.Type.Sliced;
             hotbarSlots.Add(slot.rectTransform);
@@ -197,27 +201,38 @@ public sealed class SandboxHudController : MonoBehaviour
                 selectionSprite != null ? selectionSprite : frameSprite, Color.white);
             SetStretch(selection.rectTransform, -1f, -1f, -1f, -1f);
             selection.type = Image.Type.Sliced;
-            Image marker = CreateImage("Marker", selection.rectTransform, null, SelectionGold);
-            SetRect(marker.rectTransform, new Vector2(0f, 5f), new Vector2(26f, 3f),
+            Image bottomMarker = CreateImage("MarkerBottom", selection.rectTransform, null, SelectionGold);
+            SetRect(bottomMarker.rectTransform, new Vector2(0f, 6f), new Vector2(28f, 2f),
                 new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+            Image topMarker = CreateImage("MarkerTop", selection.rectTransform, null, SelectionGold);
+            SetRect(topMarker.rectTransform, new Vector2(0f, -6f), new Vector2(28f, 2f),
+                new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+            Image leftMarker = CreateImage("MarkerLeft", selection.rectTransform, null, SelectionGold);
+            SetRect(leftMarker.rectTransform, new Vector2(6f, 0f), new Vector2(2f, 28f),
+                new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f));
+            Image rightMarker = CreateImage("MarkerRight", selection.rectTransform, null, SelectionGold);
+            SetRect(rightMarker.rectTransform, new Vector2(-6f, 0f), new Vector2(2f, 28f),
+                new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f));
             selection.gameObject.SetActive(i == 0);
             hotbarSelections.Add(selection.gameObject);
         }
 
-        selectedItemText = CreateText("SelectedItem", hotbarSlots[0], "Dirt", 16,
+        selectedItemLabel = CreateImage("SelectedItem", hotbarSlots[0], null, ItemLabelTint);
+        selectedItemText = CreateText("Text", selectedItemLabel.rectTransform, "Dirt", 15,
             TextAnchor.MiddleCenter, Color.white);
-        PositionSelectedItemText(hotbarSlots[0]);
+        SetStretch(selectedItemText.rectTransform, 5f, 5f, 2f, 2f);
+        PositionSelectedItemLabel(hotbarSlots[0]);
     }
 
     private void BuildWorldPanel(RectTransform parent)
     {
         Image panel = CreateImage("WorldInfo", parent, null, DebugPanelTint);
-        SetRect(panel.rectTransform, new Vector2(-16f, -16f), new Vector2(188f, 70f),
+        SetRect(panel.rectTransform, new Vector2(-16f, -16f), new Vector2(160f, 62f),
             new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
         worldInfoPanel = panel.gameObject;
         worldInfoText = CreateText("WorldInfoText", panel.rectTransform, string.Empty, 14,
             TextAnchor.MiddleLeft, Silver);
-        SetStretch(worldInfoText.rectTransform, 10f, 10f, 8f, 8f);
+        SetStretch(worldInfoText.rectTransform, 8f, 8f, 6f, 6f);
         worldInfoText.lineSpacing = 1.05f;
         worldInfoPanel.SetActive(ShouldShowDebugTelemetry());
     }
@@ -240,7 +255,7 @@ public sealed class SandboxHudController : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             RectTransform heart = CreateRect($"Heart{i + 1}", heartsParent);
-            heart.sizeDelta = new Vector2(18f, 18f);
+            heart.sizeDelta = new Vector2(12f, 12f);
 
             Image empty = CreateImage("Empty", heart,
                 emptyHeartSprite != null ? emptyHeartSprite : heartSprite,
@@ -329,14 +344,16 @@ public sealed class SandboxHudController : MonoBehaviour
         {
             bool selected = i == index;
             hotbarSelections[i].SetActive(selected);
-            hotbarSlots[i].anchoredPosition = hotbarSlotPositions[i] + (selected ? Vector2.up * 4f : Vector2.zero);
+            hotbarSlots[i].anchoredPosition = hotbarSlotPositions[i] + (selected ? Vector2.up * 2f : Vector2.zero);
         }
 
         if (selectedItemText != null)
         {
-            PositionSelectedItemText(hotbarSlots[index]);
+            PositionSelectedItemLabel(hotbarSlots[index]);
             selectedItemText.text = slot.IsPopulated ? slot.DisplayName : "Empty Slot";
             selectedItemText.color = slot.IsPopulated ? Color.white : Silver;
+            selectedItemLabel.gameObject.SetActive(true);
+            selectedItemLabelHideAt = Time.unscaledTime + SelectedItemLabelDurationSeconds;
         }
 
         if (playerController != null)
@@ -365,10 +382,6 @@ public sealed class SandboxHudController : MonoBehaviour
             heartFills[i].fillAmount = GetHeartFill(current, maximum, i);
         }
 
-        if (healthText != null)
-        {
-            healthText.text = $"{current} / {maximum}";
-        }
     }
 
     private void RefreshWorldInfo(bool force)
@@ -405,7 +418,7 @@ public sealed class SandboxHudController : MonoBehaviour
 
     public static string FormatWorldInfo(int seed, Vector2Int tile, Vector2Int chunk)
     {
-        return $"SEED  {seed}\nTILE  {tile.x}, {tile.y}\nCHUNK {chunk.x}, {chunk.y}";
+        return $"DEBUG  SEED {seed}\nTILE  {tile.x}, {tile.y}\nCHUNK {chunk.x}, {chunk.y}";
     }
 
     public static float GetHeartFill(int current, int maximum, int heartIndex)
@@ -443,11 +456,25 @@ public sealed class SandboxHudController : MonoBehaviour
         return CreatePanel(name, parent, position, size, panelSprite, anchorMin, anchorMax, pivot);
     }
 
-    private void PositionSelectedItemText(RectTransform slot)
+    private void PositionSelectedItemLabel(RectTransform slot)
     {
-        selectedItemText.rectTransform.SetParent(slot, false);
-        SetRect(selectedItemText.rectTransform, new Vector2(0f, 16f), new Vector2(108f, 20f),
+        selectedItemLabel.rectTransform.SetParent(slot, false);
+        SetRect(selectedItemLabel.rectTransform, new Vector2(0f, 8f), new Vector2(96f, 20f),
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0f));
+    }
+
+    private void UpdateSelectedItemLabelVisibility()
+    {
+        if (selectedItemLabel != null && selectedItemLabel.gameObject.activeSelf &&
+            IsSelectedItemLabelExpired(Time.unscaledTime, selectedItemLabelHideAt))
+        {
+            selectedItemLabel.gameObject.SetActive(false);
+        }
+    }
+
+    internal static bool IsSelectedItemLabelExpired(float currentTime, float hideAt)
+    {
+        return currentTime >= hideAt;
     }
 
     private bool ShouldShowDebugTelemetry()

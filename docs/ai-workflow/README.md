@@ -4,7 +4,7 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-07-04T16:55:00Z
+timestamp: 2026-07-11T17:10:00Z
 okf_version: 0.1
 ---
 
@@ -27,6 +27,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks |
 | Project memory | `.agent-memory/` | **Session start:** read `memory.md`; log → dream → promote (see `CURSOR_USAGE.md`; rule: `.claude/rules/agent-memory.md`) |
 | Workflow playbooks | `.agent/workflows/*.md` | spec / plan / implement / pr-ready / test-and-fix / … |
+| Agent task prompts | [`docs/prompts/`](../prompts/) | Focused implementation/review prompts (HUD polish consolidated; final frame fix) |
 | Unity C# rules (supplementary) | `.cursorrules` | Long-form Unity coding spec |
 
 **Single source of truth:** edit assets under `.claude/` + `.agent/`, then run
