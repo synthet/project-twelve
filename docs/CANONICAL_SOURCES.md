@@ -76,6 +76,8 @@ okf_version: 0.1
 
 | FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json`, `.mcp.json`, and `.codex/config.toml`. |
 
+| PixelLab MCP (Vibe Coding) | [pixellab.ai/mcp](https://www.pixellab.ai/mcp) | Optional pixel art generation; skill [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md); template in `.cursor/mcp.example.json` `_optionalServers.pixellab`. |
+
 | Unity C# coding rules (supplementary) | `.cursorrules` | Long-form Cursor rules for Unity C# style and patterns. |
 
 

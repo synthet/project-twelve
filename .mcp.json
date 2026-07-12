@@ -25,6 +25,14 @@
       "args": ["--no-warmup", "ABSOLUTE_PATH_TO_THIS_REPO"]
     }
   },
+  "_pixellabMcpTemplate": {
+    "pixellab": {
+      "url": "https://api.pixellab.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PIXELLAB_API_KEY}"
+      }
+    }
+  },
   "mcpServers": {
     "project-twelve-unity-mcp": {
       "command": "C:\\Users\\dmnsy\\.unity\\relay\\relay_win.exe",
@@ -43,6 +51,12 @@
       "type": "stdio",
       "command": "C:\\Users\\dmnsy\\AppData\\Local\\fff-mcp\\bin\\fff-mcp.exe",
       "args": ["--no-warmup", "D:\\Projects\\project-twelve"]
+    },
+    "pixellab": {
+      "url": "https://api.pixellab.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PIXELLAB_API_KEY}"
+      }
     }
   }
 }

@@ -19,6 +19,12 @@
         "--no-warmup",
         "ABSOLUTE_PATH_TO_THIS_REPO"
       ]
+    },
+    "pixellab": {
+      "url": "https://api.pixellab.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PIXELLAB_API_KEY}"
+      }
     }
   }
 }

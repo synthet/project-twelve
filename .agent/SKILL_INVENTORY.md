@@ -1,6 +1,6 @@
 # Skill inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-10
+**Last reviewed:** 2026-07-11
 
 | Skill | Path | Tier | Notes |
 |-------|------|------|-------|
@@ -21,6 +21,7 @@
 | install-checklist | `.claude/skills/install-checklist/SKILL.md` | L2 | Human workstation provisioning only |
 | lint-format-security | `.claude/skills/lint-format-security/SKILL.md` | L2 | shellcheck, trivy, gitleaks, ruff |
 | mcp-code-intelligence | `.claude/skills/mcp-code-intelligence/SKILL.md` | L2 | MCP / indexed / embedding search layers |
+| pixellab-mcp | `.claude/skills/pixellab-mcp/SKILL.md` | L2 | Remote pixel-art generation; paid writes, capability URLs, and destructive/remote-execution gates |
 | windows-agent-tooling | `.claude/skills/windows-agent-tooling/SKILL.md` | L2 | Native Windows / PowerShell agent setup |
 | wsl2-agent-tooling | `.claude/skills/wsl2-agent-tooling/SKILL.md` | L2 | WSL2 Ubuntu agent execution environment |
 | critical-commit-audit | `.claude/skills/critical-commit-audit/SKILL.md` | L2 | High-severity bug hunt |

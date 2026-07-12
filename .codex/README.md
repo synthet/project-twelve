@@ -17,6 +17,18 @@ keeps sandboxed network access off, and enables the portable in-game and FFF MCP
 `fff-mcp` and put it on `PATH` as described in [`AGENTS.md`](../AGENTS.md). The in-game endpoint is
 available only while the game is in Play Mode or a desktop build is running.
 
+## PixelLab MCP
+
+This project's [`config.toml`](config.toml) declares PixelLab as a **stdio** `mcp-remote` bridge
+(not a bare `url`). ChatGPT Codex rejects a project `url` entry when the same server already
+exists as stdio in `~/.codex/config.toml` (`url is not supported for stdio in mcp_servers.pixellab`),
+which blocks thread resume.
+
+Set `PIXELLAB_API_KEY` in the environment (never commit the key). If you also define
+`[mcp_servers.pixellab]` in the user config, keep it stdio-only — do not add `url` / `headers` there.
+
+Token: [pixellab.ai/mcp](https://www.pixellab.ai/mcp). Skill: [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md).
+
 ## Unity Editor MCP
 
 The Unity relay path and absolute project path are machine-specific, so they belong in the user-level

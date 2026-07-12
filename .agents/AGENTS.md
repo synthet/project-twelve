@@ -170,6 +170,18 @@ Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_POR
 
 Upstream: [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff). Binary: `fff-mcp`.
 
+### pixellab (pixel art generation, remote HTTP)
+
+| Tool category | Kind | Description |
+|------|------|-------------|
+| Characters | write | `create_character`, `animate_character`, `create_character_state` — async jobs (~2–5 min) |
+| Tilesets | write | `create_sidescroller_tileset`, `create_topdown_tileset` — chain via base tile IDs |
+| UI / objects | write | `create_ui_asset`, `create_map_object`, `create_isometric_tile` |
+| Status / download | read | `get_*`, `list_*` — poll until completed; download from response URLs |
+| Help | read | `agent_help`, `agent_feedback`, `get_balance` |
+
+Endpoint: `https://api.pixellab.ai/mcp` (Bearer token via `PIXELLAB_API_KEY` env or gitignored `.cursor/mcp.json`). Skill: [`.claude/skills/pixellab-mcp/SKILL.md`](.claude/skills/pixellab-mcp/SKILL.md). Setup: [pixellab.ai/mcp](https://www.pixellab.ai/mcp).
+
 <!-- END MCP TOOL INVENTORY -->
 
 ## Common workflows

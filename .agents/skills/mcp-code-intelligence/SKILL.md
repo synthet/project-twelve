@@ -68,6 +68,7 @@ In addition to generic tiers above:
 - **Unity MCP** (`project-twelve-unity-mcp`) — Editor bridge when Unity is open; see [AGENTS.md](../../../AGENTS.md).
 - **In-game runtime MCP** (`project-twelve-ingame-mcp`) — Play Mode / desktop build at loopback.
 - **fff MCP** (`project-twelve-fff-mcp`) — indexed file search; use `--no-warmup` and explicit repo path per [`.cursor/mcp.example.json`](../../../.cursor/mcp.example.json).
+- **PixelLab MCP** (`pixellab`) — async pixel art generation (characters, tilesets, UI panels); see [pixellab-mcp](../pixellab-mcp/SKILL.md).
 
 ## Agent-Safe Patterns
 

@@ -26,6 +26,14 @@
     },
     "project-twelve-subagent-orchestrator": {
       "_note": "Sibling subagent-orchestrator repo; see docs/EXTERNAL_CLI_REVIEWS.md"
+    },
+    "pixellab": {
+      "_note": "Pixel art generation (Vibe Coding). Token from https://www.pixellab.ai/mcp — set PIXELLAB_API_KEY env var. Skill: .claude/skills/pixellab-mcp/SKILL.md",
+      "url": "https://api.pixellab.ai/mcp",
+      "type": "http",
+      "headers": {
+        "Authorization": "Bearer ${PIXELLAB_API_KEY}"
+      }
     }
   },
   "_platformRelayPaths": {
