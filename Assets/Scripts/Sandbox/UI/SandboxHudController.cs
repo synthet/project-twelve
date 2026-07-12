@@ -138,7 +138,7 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildVitalsPanel(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(210f, 70f),
+        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(206f, 70f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
 
         Image portraitFrame = CreateImage("PortraitFrame", panel, frameSprite, Silver);
@@ -152,7 +152,7 @@ public sealed class SandboxHudController : MonoBehaviour
         portrait.preserveAspect = true;
 
         RectTransform hearts = CreateRect("Hearts", panel);
-        SetRect(hearts, new Vector2(70f, -10f), new Vector2(130f, 50f),
+        SetRect(hearts, new Vector2(70f, -10f), new Vector2(129f, 50f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         HorizontalLayoutGroup layout = hearts.gameObject.AddComponent<HorizontalLayoutGroup>();
         layout.spacing = 1f;
