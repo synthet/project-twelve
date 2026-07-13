@@ -137,8 +137,11 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return;
         }
 
+        float z = transform.position.z;
         body.position = worldPosition;
         body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
+        transform.position = new Vector3(worldPosition.x, worldPosition.y, z);
+        Physics2D.SyncTransforms();
     }
 
 #if ENABLE_INPUT_SYSTEM

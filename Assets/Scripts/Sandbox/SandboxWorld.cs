@@ -120,7 +120,7 @@ public sealed class SandboxWorld : MonoBehaviour
             return false;
         }
 
-        position = playerTarget.position;
+        position = ReadPlayerPose();
         return true;
     }
 
@@ -669,9 +669,10 @@ public sealed class SandboxWorld : MonoBehaviour
 
         if (playerTarget != null)
         {
+            Vector2 pose = ReadPlayerPose();
             saveData.hasPlayerPosition = true;
-            saveData.playerX = playerTarget.position.x;
-            saveData.playerY = playerTarget.position.y;
+            saveData.playerX = pose.x;
+            saveData.playerY = pose.y;
         }
 
         string directory = Path.GetDirectoryName(path);
@@ -733,6 +734,12 @@ public sealed class SandboxWorld : MonoBehaviour
         }
 
         MarkAllLoadedRenderersDirty();
+        RebuildDirtyChunks();
+        if (saveData.hasPlayerPosition)
+        {
+            ResolvePlayerPoseIfOverlappingSolid();
+        }
+
         autotileVisualOverrides.Clear();
         LoadVisualOverrideSidecar(path);
     }
@@ -791,20 +798,79 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void RestorePlayerPosition(Vector2 position)
     {
+        WritePlayerPose(position);
+    }
+
+    /// <summary>
+    /// Reads the authoritative player pose: Rigidbody2D.position when present, else Transform.
+    /// </summary>
+    private Vector2 ReadPlayerPose()
+    {
+        if (playerTarget != null && playerTarget.TryGetComponent(out Rigidbody2D body))
+        {
+            return body.position;
+        }
+
+        return playerTarget != null ? (Vector2)playerTarget.position : Vector2.zero;
+    }
+
+    /// <summary>
+    /// Writes the player pose to both Rigidbody2D and Transform so chunk streaming sees the same
+    /// position immediately (Interpolate leaves Transform lagging behind body.position alone).
+    /// </summary>
+    private void WritePlayerPose(Vector2 position)
+    {
         if (playerTarget == null)
         {
             return;
         }
 
+        float z = playerTarget.position.z;
         if (playerTarget.TryGetComponent(out Rigidbody2D body))
         {
             body.position = position;
             body.linearVelocity = Vector2.zero;
+        }
+
+        playerTarget.position = new Vector3(position.x, position.y, z);
+        Physics2D.SyncTransforms();
+    }
+
+    /// <summary>
+    /// Lifts the player upward out of solid tiles after load so a one-frame collider gap or a
+    /// slightly-penetrating save cannot leave them underground.
+    /// </summary>
+    private void ResolvePlayerPoseIfOverlappingSolid()
+    {
+        if (playerTarget == null)
+        {
             return;
         }
 
-        Vector3 current = playerTarget.position;
-        playerTarget.position = new Vector3(position.x, position.y, current.z);
+        Vector2 offset = Vector2.zero;
+        Vector2 size = new Vector2(tileSize, tileSize);
+        if (playerTarget.TryGetComponent(out BoxCollider2D box))
+        {
+            offset = box.offset;
+            size = box.size;
+        }
+
+        Vector2 center = ReadPlayerPose();
+        if (!SandboxPlayerLoadPose.TryResolveStandingPose(
+                center,
+                offset,
+                size,
+                tileSize,
+                (x, y) => GetTile(x, y).IsSolid,
+                out Vector2 resolved))
+        {
+            return;
+        }
+
+        WritePlayerPose(resolved);
+        RefreshLoadedChunks();
+        MarkAllLoadedRenderersDirty();
+        RebuildDirtyChunks();
     }
 
     public bool IsSolidAtWorldPosition(Vector2 worldPosition)
@@ -894,9 +960,10 @@ public sealed class SandboxWorld : MonoBehaviour
             return Vector2Int.zero;
         }
 
+        Vector2 pose = ReadPlayerPose();
         return WorldToChunkCoord(
-            Mathf.FloorToInt(playerTarget.position.x / tileSize),
-            Mathf.FloorToInt(playerTarget.position.y / tileSize));
+            Mathf.FloorToInt(pose.x / tileSize),
+            Mathf.FloorToInt(pose.y / tileSize));
     }
 
     private void UnloadDistantRenderers(Vector2Int centerChunk)

@@ -301,11 +301,120 @@ public sealed class SandboxSaveLoadTests
         Assert.AreEqual(stone, world.GetTile(2, 2).id, "A missing save file must not mutate the world.");
     }
 
+    [Test]
+    public void LoadFromPath_RestoresRigidbodyAndTransformToSavedPose()
+    {
+        GameObject player = CreatePlayer(new Vector2(100f, 200f));
+        SandboxWorld world = CreateWorld();
+        world.SetPlayerTarget(player.transform);
+
+        string path = TempFile("pose-sync.json");
+        File.WriteAllText(path, BuildMinimalSaveJson(seed: 1337, playerX: 12.5f, playerY: 40.25f));
+
+        world.LoadFromPath(path);
+
+        Rigidbody2D body = player.GetComponent<Rigidbody2D>();
+        Assert.AreEqual(12.5f, body.position.x, 0.0001f);
+        Assert.AreEqual(40.25f, body.position.y, 0.0001f);
+        Assert.AreEqual(12.5f, player.transform.position.x, 0.0001f);
+        Assert.AreEqual(40.25f, player.transform.position.y, 0.0001f);
+        Assert.AreEqual(0f, body.linearVelocity.x, 0.0001f);
+        Assert.AreEqual(0f, body.linearVelocity.y, 0.0001f);
+    }
+
+    [Test]
+    public void LoadFromPath_CentersChunkStreamingOnSavedPoseNotPreLoadTransform()
+    {
+        // Player is standing far from the saved pose; before the fix, RefreshLoadedChunks used the
+        // stale Transform and streamed the wrong neighborhood.
+        GameObject player = CreatePlayer(new Vector2(500f, 500f));
+        SandboxWorld world = CreateWorld();
+        world.SetPlayerTarget(player.transform);
+
+        const float savedX = 3.5f;
+        const float savedY = 42.5f;
+        string path = TempFile("chunk-center.json");
+        File.WriteAllText(path, BuildMinimalSaveJson(seed: 1337, playerX: savedX, playerY: savedY));
+
+        world.LoadFromPath(path);
+
+        Assert.IsTrue(world.TryGetPlayerWorldPosition(out Vector2 pose));
+        Assert.AreEqual(savedX, pose.x, 0.0001f);
+        Assert.AreEqual(savedY, pose.y, 0.0001f);
+
+        Vector2Int expectedChunk = SandboxWorld.WorldToChunkCoord(
+            Mathf.FloorToInt(savedX / world.TileSize),
+            Mathf.FloorToInt(savedY / world.TileSize));
+        Vector2Int farChunk = SandboxWorld.WorldToChunkCoord(
+            Mathf.FloorToInt(500f / world.TileSize),
+            Mathf.FloorToInt(500f / world.TileSize));
+        Assert.AreNotEqual(farChunk, expectedChunk, "Precondition: far transform must be a different chunk.");
+
+        // Destination neighborhood must be loaded; the far pre-load chunk must not be required.
+        Assert.IsNotNull(
+            world.transform.Find($"Chunk_{expectedChunk.x}_{expectedChunk.y}"),
+            "Load must stream chunks around the saved pose.");
+    }
+
+    [Test]
+    public void LoadFromPath_LiftsPlayerOutOfSolidTiles()
+    {
+        GameObject player = CreatePlayer(new Vector2(0.5f, 0.5f));
+        BoxCollider2D box = player.GetComponent<BoxCollider2D>();
+        box.offset = Vector2.zero;
+        box.size = Vector2.one;
+
+        SandboxWorld world = CreateWorld();
+        world.SetPlayerTarget(player.transform);
+
+        // Empty save: load regenerates seed terrain. y=8 is underground for the default surface.
+        string path = TempFile("overlap-lift.json");
+        File.WriteAllText(path, BuildMinimalSaveJson(seed: 1337, playerX: 0.5f, playerY: 8.5f));
+
+        world.LoadFromPath(path);
+
+        Assert.IsTrue(world.TryGetPlayerWorldPosition(out Vector2 pose));
+        Assert.AreEqual(0.5f, pose.x, 0.0001f);
+        Assert.Greater(pose.y, 8.5f, "Player must be lifted above the buried save pose.");
+        Assert.IsFalse(
+            SandboxPlayerLoadPose.OverlapsSolid(
+                pose,
+                box.offset,
+                box.size,
+                world.TileSize,
+                (x, y) => world.GetTile(x, y).IsSolid),
+            "Resolved pose must not overlap solid tiles.");
+    }
+
     private SandboxWorld CreateWorld()
     {
         GameObject go = new GameObject("SaveLoadTestWorld");
         spawned.Add(go);
         return go.AddComponent<SandboxWorld>();
+    }
+
+    private GameObject CreatePlayer(Vector2 position)
+    {
+        GameObject player = new GameObject("SaveLoadTestPlayer");
+        spawned.Add(player);
+        player.transform.position = position;
+        Rigidbody2D body = player.AddComponent<Rigidbody2D>();
+        body.position = position;
+        body.linearVelocity = new Vector2(3f, -4f);
+        player.AddComponent<BoxCollider2D>();
+        return player;
+    }
+
+    private static string BuildMinimalSaveJson(int seed, float playerX, float playerY)
+    {
+        return $@"{{
+            ""version"": 1,
+            ""seed"": {seed},
+            ""hasPlayerPosition"": true,
+            ""playerX"": {playerX},
+            ""playerY"": {playerY},
+            ""chunks"": []
+        }}";
     }
 
     private string TempFile(string name)
