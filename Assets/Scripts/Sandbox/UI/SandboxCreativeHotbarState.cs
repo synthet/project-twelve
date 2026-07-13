@@ -27,7 +27,10 @@ public sealed class SandboxCreativeHotbarState
         new Slot("core:dirt", "Dirt"),
         new Slot("core:grass", "Grass"),
         new Slot("core:stone", "Stone"),
-        new Slot("core:copper_ore", "Copper Ore"),
+        // core:copper_ore currently renders with the BricksA tileset (no ore art
+        // exists in the licensed pack yet), so the player-facing name says what
+        // the tile actually looks like. Rename back when real ore art lands.
+        new Slot("core:copper_ore", "Stone Bricks"),
         default,
         default,
         default,

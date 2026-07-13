@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using ProjectTwelve.Sandbox.Inventory;
+using ProjectTwelve.Sandbox.Registry;
+using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM
@@ -52,6 +55,7 @@ public sealed class SandboxHudController : MonoBehaviour
     private readonly List<Image> heartFills = new List<Image>();
     private readonly List<GameObject> hotbarSelections = new List<GameObject>();
     private readonly List<RectTransform> hotbarSlots = new List<RectTransform>();
+    private readonly List<Text> hotbarQuantities = new List<Text>();
     private Image selectedItemLabel;
     private Text selectedItemText;
     private Text worldInfoText;
@@ -70,6 +74,11 @@ public sealed class SandboxHudController : MonoBehaviour
         hotbar = new SandboxCreativeHotbarState();
         BuildView();
         hotbar.SelectionChanged += OnHotbarSelectionChanged;
+
+        if (playerController?.Inventory != null)
+        {
+            playerController.Inventory.Changed += OnInventoryChanged;
+        }
 
         if (playerVitals != null)
         {
@@ -92,6 +101,11 @@ public sealed class SandboxHudController : MonoBehaviour
         if (playerVitals != null)
         {
             playerVitals.Changed -= OnVitalsChanged;
+        }
+
+        if (playerController?.Inventory != null)
+        {
+            playerController.Inventory.Changed -= OnInventoryChanged;
         }
     }
 
@@ -194,13 +208,23 @@ public sealed class SandboxHudController : MonoBehaviour
             icon.preserveAspect = true;
             icon.enabled = iconSprite != null;
 
+            // Grass renders as ground + cover overlay in the world; mirror that in the icon.
+            Sprite coverSprite = ResolveTileCoverSprite(hotbar.Slots[i].TileId);
+            if (coverSprite != null)
+            {
+                Image iconCover = CreateImage("IconCover", icon.rectTransform, coverSprite, Color.white);
+                SetStretch(iconCover.rectTransform, 0f, 0f, 0f, 0f);
+                iconCover.preserveAspect = true;
+            }
+
             string keyLabel = i == 9 ? "0" : (i + 1).ToString();
             Text key = CreateText("Key", slot.rectTransform, keyLabel, 13, TextAnchor.UpperLeft, Silver);
             SetStretch(key.rectTransform, 10f, 7f, 7f, 6f);
 
-            Text infinity = CreateText("Quantity", slot.rectTransform,
-                hotbar.Slots[i].IsPopulated ? "∞" : string.Empty, 15, TextAnchor.LowerRight, Color.white);
-            SetStretch(infinity.rectTransform, 7f, 10f, 6f, 7f);
+            Text quantity = CreateText("Quantity", slot.rectTransform,
+                GetInventoryQuantity(i), 15, TextAnchor.LowerRight, Color.white);
+            SetStretch(quantity.rectTransform, 7f, 10f, 6f, 7f);
+            hotbarQuantities.Add(quantity);
 
             Image selection = CreateImage("Selected", slot.rectTransform,
                 selectionSprite != null ? selectionSprite : frameSprite, Color.white);
@@ -370,15 +394,39 @@ public sealed class SandboxHudController : MonoBehaviour
 
         if (playerController != null)
         {
-            if (slot.IsPopulated)
+            if (!playerController.SelectInventorySlot(index) && slot.IsPopulated)
             {
                 playerController.TrySetActivePlacementTile(slot.TileId);
             }
-            else
+            else if (!slot.IsPopulated)
             {
                 playerController.ClearActivePlacementTile();
             }
         }
+    }
+
+    private void OnInventoryChanged()
+    {
+        for (int i = 0; i < hotbarQuantities.Count; i++)
+        {
+            hotbarQuantities[i].text = GetInventoryQuantity(i);
+        }
+
+        if (playerController != null && hotbar != null)
+        {
+            playerController.SelectInventorySlot(hotbar.SelectedIndex);
+        }
+    }
+
+    private string GetInventoryQuantity(int index)
+    {
+        if (playerController?.Inventory == null || index >= playerController.Inventory.SlotCount)
+        {
+            return string.Empty;
+        }
+
+        SandboxInventory.Slot slot = playerController.Inventory.GetSlot(index);
+        return slot.IsEmpty ? string.Empty : slot.Count.ToString();
     }
 
     private void OnVitalsChanged(int current, int maximum)
@@ -452,6 +500,12 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private Sprite GetIcon(int index)
     {
+        Sprite tileSprite = ResolveTileGroundSprite(hotbar.Slots[index].TileId);
+        if (tileSprite != null)
+        {
+            return tileSprite;
+        }
+
         return index switch
         {
             0 => dirtIcon,
@@ -460,6 +514,56 @@ public sealed class SandboxHudController : MonoBehaviour
             3 => copperOreIcon,
             _ => null,
         };
+    }
+
+    /// <summary>
+    /// Resolves the isolated-island sprite of the tile's ground autotile set so
+    /// hotbar icons show the art the tile actually renders with in the world.
+    /// Falls back to the serialized mock icons when no world catalog is available
+    /// (e.g. prefab instantiated outside a scene with a SandboxWorld).
+    /// </summary>
+    private Sprite ResolveTileGroundSprite(string tileId)
+    {
+        SandboxTileVisualCatalog catalog = world != null ? world.TileVisualCatalog : null;
+        if (catalog == null || string.IsNullOrEmpty(tileId))
+        {
+            return null;
+        }
+
+        int tileIndex = SandboxRegistries.Tiles.GetIndex(tileId);
+        if (!catalog.TryGetGroundTileset(tileIndex, out AutotileTileset tileset))
+        {
+            return null;
+        }
+
+        int[,] mask = AutotileMaskBuilder.BuildGroundMask(IsIconCenterCell, IsIconCenterCell, 0, 0);
+        return AutotileResolver.ResolveSprite(tileset, mask, out _);
+    }
+
+    /// <summary>
+    /// Resolves the isolated cover-cap sprite (grass overlay) for tiles that carry one.
+    /// </summary>
+    private Sprite ResolveTileCoverSprite(string tileId)
+    {
+        SandboxTileVisualCatalog catalog = world != null ? world.TileVisualCatalog : null;
+        if (catalog == null || string.IsNullOrEmpty(tileId))
+        {
+            return null;
+        }
+
+        int tileIndex = SandboxRegistries.Tiles.GetIndex(tileId);
+        if (!catalog.TryGetCoverTileset(tileIndex, out AutotileTileset tileset))
+        {
+            return null;
+        }
+
+        int[,] mask = AutotileMaskBuilder.BuildCoverMask(IsIconCenterCell, 0, 0);
+        return AutotileResolver.ResolveSprite(tileset, mask, out _);
+    }
+
+    private static bool IsIconCenterCell(int x, int y)
+    {
+        return x == 0 && y == 0;
     }
 
     private RectTransform CreatePanel(string name, RectTransform parent, Vector2 position, Vector2 size,
