@@ -84,4 +84,22 @@ public sealed class SandboxPlayerLoadPoseTests
         Assert.IsFalse(resolved);
         Assert.AreEqual(buried, result);
     }
+
+    [Test]
+    public void TryResolveStandingPose_FallsBackToFirstAirPoseWhenNoSupportExists()
+    {
+        // Tiny collider: one tile up clears the solid and the support probe misses it too.
+        Vector2 tiny = new Vector2(1f, 0.1f);
+        Vector2 buried = new Vector2(0.5f, 2.5f);
+        bool resolved = SandboxPlayerLoadPose.TryResolveStandingPose(
+            buried,
+            DefaultOffset,
+            tiny,
+            TileSize,
+            (x, y) => y == 2,
+            out Vector2 result);
+
+        Assert.IsTrue(resolved);
+        Assert.AreEqual(3.5f, result.y, 0.0001f);
+    }
 }
