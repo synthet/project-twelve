@@ -16,7 +16,7 @@ public sealed class SandboxSaveLoadShortcutTests
     }
 
     [Test]
-    public void NormalMode_F5SavesAndF9LoadsUnchanged()
+    public void NormalMode_F5SavesAndF6LoadsUnchanged()
     {
         Assert.AreEqual(
             SandboxSaveLoadShortcutRouter.ShortcutCommand.SaveWorld,

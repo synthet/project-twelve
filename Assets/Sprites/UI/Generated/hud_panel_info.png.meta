@@ -11,7 +11,7 @@ TextureImporter:
   spriteMode: 1
   spritePixelsToUnits: 300
   spriteMeshType: 1
-  spriteBorder: {x: 30, y: 30, z: 30, w: 30}
+  spriteBorder: {x: 2, y: 2, z: 2, w: 2}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1

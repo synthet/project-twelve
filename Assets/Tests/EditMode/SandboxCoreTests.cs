@@ -653,7 +653,7 @@ public sealed class SandboxCoreTests
     }
 
     [Test]
-    public void SandboxWorld_SetTile_AssignsPrototypeLightForPlacedSolids()
+    public void SandboxWorld_SetTile_RecomputesDerivedLightForPlacedSolids()
     {
         GameObject go = new GameObject("World");
         try
@@ -667,8 +667,8 @@ public sealed class SandboxCoreTests
             world.SetTile(worldX, undergroundY, SandboxTileIds.Dirt);
             world.SetTile(worldX, surfaceY, SandboxTileIds.Grass);
 
-            Assert.AreEqual((byte)4, world.GetTile(worldX, undergroundY).light);
-            Assert.AreEqual((byte)15, world.GetTile(worldX, surfaceY).light);
+            Assert.AreEqual((byte)3, world.GetTile(worldX, undergroundY).light);
+            Assert.AreEqual((byte)12, world.GetTile(worldX, surfaceY).light);
         }
         finally
         {

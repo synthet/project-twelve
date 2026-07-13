@@ -5,8 +5,16 @@ namespace ProjectTwelve.Sandbox.Registry
     /// </summary>
     public sealed class ItemDefinition : IContentDefinition
     {
-        public ItemDefinition(string id, int maxStack = 999, string placesTileId = null)
+        public ItemDefinition(
+            string id,
+            int maxStack = ProjectTwelve.Sandbox.Inventory.SandboxInventoryConstants.DefaultMaxStack,
+            string placesTileId = null)
         {
+            if (maxStack < 1)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(maxStack), maxStack, "Max stack must be at least 1.");
+            }
+
             Id = id;
             MaxStack = maxStack;
             PlacesTileId = placesTileId;

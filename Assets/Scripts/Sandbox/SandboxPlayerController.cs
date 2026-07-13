@@ -1,4 +1,5 @@
 using System.IO;
+using ProjectTwelve.Sandbox.Inventory;
 using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
@@ -13,7 +14,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float jumpVelocity = 11f;
     [SerializeField] private string placeTileId = "core:dirt";
-    [SerializeField] private float editRange = 6f;
+    [SerializeField] private float editRange = SandboxInventoryConstants.EditRange;
     [SerializeField] private string saveFileName = "sandbox-world.json";
 
     private bool visualOverrideModeActive;
@@ -36,6 +37,11 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private BoxCollider2D playerCollider;
     private Camera mainCamera;
     private int placeTileRuntimeIndex = -1;
+    private int selectedInventorySlot;
+    private float nextEditTime;
+    private SandboxInventory inventory;
+    private SandboxInventoryEditService inventoryEditService;
+    private SandboxWorldInventoryAdapter inventoryWorld;
 
     private float horizontalInput;
     private float externalMoveInput;
@@ -50,6 +56,11 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     /// <summary>The registered solid tile selected for creative placement, or null for an empty slot.</summary>
     public string ActivePlacementTileId => placeTileRuntimeIndex >= 0 ? placeTileId : null;
+
+    /// <summary>Fixed-size registry-backed player inventory; the first ten slots are the hotbar.</summary>
+    public SandboxInventory Inventory => inventory;
+
+    public int SelectedInventorySlot => selectedInventorySlot;
 
     /// <summary>
     /// Selects a registered, solid, non-air tile for right-click creative placement. Invalid IDs
@@ -76,6 +87,27 @@ public sealed class SandboxPlayerController : MonoBehaviour
     {
         placeTileId = null;
         placeTileRuntimeIndex = -1;
+    }
+
+    /// <summary>Selects a hotbar slot and resolves its placeable tile, if any.</summary>
+    public bool SelectInventorySlot(int index)
+    {
+        if (inventory == null || index < 0 || index >= SandboxInventoryConstants.HotbarSlotCount)
+        {
+            return false;
+        }
+
+        selectedInventorySlot = index;
+        SandboxInventory.Slot slot = inventory.GetSlot(index);
+        if (slot.IsEmpty
+            || !SandboxRegistries.Items.TryGet(slot.ItemId, out ItemDefinition item)
+            || string.IsNullOrEmpty(item.PlacesTileId)
+            || !TrySetActivePlacementTile(item.PlacesTileId))
+        {
+            ClearActivePlacementTile();
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -120,6 +152,8 @@ public sealed class SandboxPlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
+        inventory = SandboxInventory.CreatePrototypeLoadout(SandboxRegistries.Items);
+        inventoryEditService = new SandboxInventoryEditService(SandboxRegistries.Tiles, SandboxRegistries.Items);
         if (!TrySetActivePlacementTile(placeTileId))
         {
             Debug.LogWarning($"SandboxPlayerController: placement tile '{placeTileId}' is not a registered solid tile; placement disabled.");
@@ -138,6 +172,8 @@ public sealed class SandboxPlayerController : MonoBehaviour
         if (world != null)
         {
             world.SetPlayerTarget(transform);
+            world.SetPlayerInventory(inventory);
+            inventoryWorld = new SandboxWorldInventoryAdapter(world);
         }
 
         visualOverrideInput = GetComponent<SandboxVisualOverrideInput>();
@@ -232,14 +268,14 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private void HandleTileEditing()
     {
         EnsureMainCamera();
-        if (world == null || mainCamera == null || !world.IsDebugOverrideModeEnabled)
+        if (world == null || mainCamera == null || inventoryWorld == null || visualOverrideModeActive)
         {
             return;
         }
 
         bool remove = SandboxScreenPointer.WasLeftButtonPressedThisFrame();
-        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame() && placeTileRuntimeIndex >= 0;
-        if (!remove && !place)
+        bool place = SandboxScreenPointer.WasRightButtonPressedThisFrame();
+        if ((!remove && !place) || Time.unscaledTime < nextEditTime)
         {
             return;
         }
@@ -249,7 +285,42 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return;
         }
 
-        world.TrySetDebugOverrideTile(tile.x, tile.y, remove ? SandboxRegistries.AirIndex : placeTileRuntimeIndex);
+        Vector3 targetCenter = world.TileToWorldCenter(tile.x, tile.y);
+        float maxWorldRange = Mathf.Max(0f, editRange) * world.TileSize;
+        if (!SandboxInventoryEditService.IsWithinReach(
+                transform.position.x,
+                transform.position.y,
+                targetCenter.x,
+                targetCenter.y,
+                maxWorldRange))
+        {
+            return;
+        }
+
+        SandboxInventoryEditResult result;
+        if (remove)
+        {
+            result = inventoryEditService.TryBreak(inventoryWorld, tile.x, tile.y, out SandboxItemStack drop);
+            if (result == SandboxInventoryEditResult.Success)
+            {
+                SandboxItemPickup.Spawn(drop.ItemId, drop.Count, targetCenter, inventory, transform);
+            }
+        }
+        else
+        {
+            if (playerCollider != null && playerCollider.bounds.Contains(targetCenter))
+            {
+                return;
+            }
+
+            result = inventoryEditService.TryPlace(inventoryWorld, inventory, selectedInventorySlot, tile.x, tile.y);
+        }
+
+        if (result == SandboxInventoryEditResult.Success)
+        {
+            nextEditTime = Time.unscaledTime + SandboxInventoryConstants.EditIntervalSeconds;
+            SelectInventorySlot(selectedInventorySlot);
+        }
     }
 
     private void EnsureMainCamera()
@@ -398,14 +469,15 @@ public sealed class SandboxPlayerController : MonoBehaviour
             return true;
         }
 
-        if (Keyboard.current != null && Keyboard.current.f9Key.wasPressedThisFrame)
+        // F6 — not F9: Unity Editor binds F9 to Profiler RecordToggle by default.
+        if (Keyboard.current != null && Keyboard.current.f6Key.wasPressedThisFrame)
         {
             return true;
         }
 #endif
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-        return Input.GetKeyDown(KeyCode.F9);
+        return Input.GetKeyDown(KeyCode.F6);
 #else
         return false;
 #endif
@@ -424,7 +496,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
         jumpAction = new InputAction("Jump", InputActionType.Button, "<Keyboard>/space");
         saveAction = new InputAction("Save", InputActionType.Button, "<Keyboard>/f5");
-        loadAction = new InputAction("Load", InputActionType.Button, "<Keyboard>/f9");
+        loadAction = new InputAction("Load", InputActionType.Button, "<Keyboard>/f6");
     }
 #endif
 

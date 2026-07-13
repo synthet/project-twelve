@@ -39,13 +39,13 @@ namespace ProjectTwelve.Sandbox.Registry
         {
             ContentRegistry<TileDefinition> tiles = new ContentRegistry<TileDefinition>(AirTileId);
             tiles.Register(new TileDefinition(AirTileId, solid: false, opaque: false, hardness: 0f));
-            tiles.Register(new TileDefinition("core:dirt", solid: true, opaque: true, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
-            tiles.Register(new TileDefinition("core:grass", solid: true, opaque: true, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
-            tiles.Register(new TileDefinition("core:stone", solid: true, opaque: true, atlasSprite: "Rocks", dropItemId: "core:stone", hardness: 2f));
-            tiles.Register(new TileDefinition("core:copper_ore", solid: true, opaque: true, atlasSprite: "BricksA", dropItemId: "core:copper_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:iron_ore", solid: true, opaque: true, atlasSprite: "BricksB", dropItemId: "core:iron_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:silver_ore", solid: true, opaque: true, atlasSprite: "BricksC", dropItemId: "core:silver_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:gold_ore", solid: true, opaque: true, atlasSprite: "BricksD", dropItemId: "core:gold_ore", hardness: 2f));
+            tiles.Register(new TileDefinition("core:dirt", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
+            tiles.Register(new TileDefinition("core:grass", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
+            tiles.Register(new TileDefinition("core:stone", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Rocks", dropItemId: "core:stone", hardness: 2f));
+            tiles.Register(new TileDefinition("core:copper_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksA", dropItemId: "core:copper_ore", hardness: 2f));
+            tiles.Register(new TileDefinition("core:iron_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksB", dropItemId: "core:iron_ore", hardness: 2f));
+            tiles.Register(new TileDefinition("core:silver_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksC", dropItemId: "core:silver_ore", hardness: 2f));
+            tiles.Register(new TileDefinition("core:gold_ore", solid: true, opaque: true, lightEmission: 12, lightAttenuation: 3, atlasSprite: "BricksD", dropItemId: "core:gold_ore", hardness: 2f));
             tiles.Freeze();
             return tiles;
         }
@@ -55,6 +55,7 @@ namespace ProjectTwelve.Sandbox.Registry
         {
             ContentRegistry<ItemDefinition> items = new ContentRegistry<ItemDefinition>();
             items.Register(new ItemDefinition("core:dirt", placesTileId: "core:dirt"));
+            items.Register(new ItemDefinition("core:grass", placesTileId: "core:grass"));
             items.Register(new ItemDefinition("core:stone", placesTileId: "core:stone"));
             items.Register(new ItemDefinition("core:copper_ore", placesTileId: "core:copper_ore"));
             items.Register(new ItemDefinition("core:iron_ore", placesTileId: "core:iron_ore"));
@@ -110,6 +111,12 @@ namespace ProjectTwelve.Sandbox.Registry
                 if (tile.LightEmission > 15)
                 {
                     throw new InvalidOperationException($"Tile '{tile.Id}' light emission {tile.LightEmission} exceeds 15.");
+                }
+
+                if (tile.LightAttenuation < 1 || tile.LightAttenuation > 15)
+                {
+                    throw new InvalidOperationException(
+                        $"Tile '{tile.Id}' light attenuation {tile.LightAttenuation} must be in the range 1-15.");
                 }
             }
 

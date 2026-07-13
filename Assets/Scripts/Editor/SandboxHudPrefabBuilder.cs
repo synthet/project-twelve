@@ -21,6 +21,7 @@ public static class SandboxHudPrefabBuilder
             typeof(RectTransform),
             typeof(Canvas),
             typeof(CanvasScaler),
+            typeof(SandboxHudPixelPerfectScaler),
             typeof(SandboxHudController));
 
         try
@@ -31,11 +32,12 @@ public static class SandboxHudPrefabBuilder
             canvas.pixelPerfect = true;
             canvas.sortingOrder = 100;
 
+            // Constant pixel size + SandboxHudPixelPerfectScaler keeps the scale
+            // factor integer; ScaleWithScreenSize produced fractional factors that
+            // resampled the point-filtered sprites into jagged, broken-looking frames.
             CanvasScaler scaler = root.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
             scaler.referenceResolution = new Vector2(1280f, 720f);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 0.5f;
             scaler.referencePixelsPerUnit = 100f;
 
             AssignTheme(root.GetComponent<SandboxHudController>());
@@ -79,18 +81,21 @@ public static class SandboxHudPrefabBuilder
         const string baseDir = "Assets/Sprites/UI/Generated";
 
         SetAsset<Sprite>(serialized, "panelSprite", $"{baseDir}/hud_panel_main.png");
+        SetAsset<Sprite>(serialized, "hotbarSprite", $"{baseDir}/hud_hotbar_backing.png");
+        SetAsset<Sprite>(serialized, "debugPanelSprite", $"{baseDir}/hud_panel_info.png");
         SetAsset<Sprite>(serialized, "frameSprite", $"{baseDir}/hud_portrait_frame.png");
         SetAsset<Sprite>(serialized, "slotSprite", $"{baseDir}/hud_slot_normal.png");
         SetAsset<Sprite>(serialized, "selectionSprite", $"{baseDir}/hud_slot_selected.png");
+        SetAsset<Sprite>(serialized, "itemLabelSprite", $"{baseDir}/hud_selected_item_label.png");
         SetAsset<Sprite>(serialized, "heartSprite", $"{baseDir}/hud_heart_full.png");
         SetAsset<Sprite>(serialized, "emptyHeartSprite", $"{baseDir}/hud_heart_empty.png");
-        SetAsset<Sprite>(serialized, "portraitSprite", "Assets/Sprites/Core/core_player_idle_00.png");
+        SetAsset<Sprite>(serialized, "portraitSprite", $"{baseDir}/hud_player_portrait.png");
         
         SetAsset<Font>(serialized, "pixelFont", "Assets/_Licensed/PixelFantasy/Common/Fonts/Pribambas [by Misha Panfilov].ttf");
-        SetAsset<Sprite>(serialized, "dirtIcon", "Assets/Sprites/Core/core_tile_dirt_00.png");
-        SetAsset<Sprite>(serialized, "grassIcon", "Assets/Sprites/Core/core_tile_grass_00.png");
-        SetAsset<Sprite>(serialized, "stoneIcon", "Assets/Sprites/Core/core_tile_stone_00.png");
-        SetAsset<Sprite>(serialized, "copperOreIcon", "Assets/Sprites/Core/core_tile_ore_copper_00.png");
+        SetAsset<Sprite>(serialized, "dirtIcon", $"{baseDir}/hud_tile_dirt.png");
+        SetAsset<Sprite>(serialized, "grassIcon", $"{baseDir}/hud_tile_grass.png");
+        SetAsset<Sprite>(serialized, "stoneIcon", $"{baseDir}/hud_tile_stone.png");
+        SetAsset<Sprite>(serialized, "copperOreIcon", $"{baseDir}/hud_tile_copper_ore.png");
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 

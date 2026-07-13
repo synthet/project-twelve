@@ -1,8 +1,18 @@
+---
+type: Specification
+title: Tile Lighting
+description: P2 tile-light propagation, dirty-window updates, sunlight, emissive sources, and rendering integration.
+resource: wiki/06-lighting.md
+tags: [docs, wiki, lighting, simulation, p2]
+timestamp: 2026-07-12T00:00:00Z
+okf_version: 0.1
+---
+
 # 06 — Lighting
 
-> **Status:** Planning.
-> **Decisions:** Custom **tile lightmap** with **BFS flood-fill** propagation; update **dirty
-> regions** only. Not Unity 2D URP lights.
+> **Status:** Adopted for P2-LIGHT-001.
+> **Decisions:** Custom single-channel **0–15 tile lightmap** with **BFS flood-fill** propagation;
+> update **dirty regions** only. Not Unity 2D URP lights.
 > **Invariants:** Light is derived state recomputed locally on tile/light-source changes.
 
 ## Why not Unity 2D lights
@@ -13,14 +23,12 @@ and is blocked/attenuated by solid tiles" the way *Terraria*/*Starbound* do. Tha
 
 ## Model
 
-- Maintain a per-tile light value `light[x,y]` (e.g. 0–15, or 0–255; or three channels for
-  colored light). This is cached on the `Tile` (see [Data Models](02-data-models.md)) and/or in a
-  per-chunk light layer.
-- **Sources:** the sky (sunlight, scaled by time of day) feeds open-air tiles at the surface;
-  emissive tiles (torches, lava, glowing ore) feed point light.
-- **Attenuation:** light drops by 1 per step through air, and more per step through opaque solid
-  tiles. The exact solid cost is a **tunable per-material constant** (the architecture blueprint
-  uses solid −3, the prose design doc used −2); set it via the tile registry, not a magic number.
+- Maintain `SandboxTile.light` in the inclusive range 0–15. It is a derived cache and is never
+  authoritative save data.
+- **Sources:** strength-15 sunlight enters at the first open cell above the deterministic surface;
+  `TileDefinition.LightEmission` supplies point sources. `core:gold_ore` emits 12 for the prototype.
+- **Attenuation:** `TileDefinition.LightAttenuation` is the cost of entering a tile. Air costs 1;
+  core opaque tiles cost 3. Registry validation rejects costs outside 1–15.
 
 ## BFS flood-fill propagation
 
@@ -70,22 +78,32 @@ Never relight the world. On a change, relight only a bounded region:
 - **Time of day:** sunlight changes are gradual; update surface-fed columns incrementally, or
   rescale the sky contribution and re-propagate affected open-air regions.
 
-A correct, simple scheme: on edit, collect the window, set those cells to 0, seed the queue with
-every cell on the window's border (and any source inside it) at its current value, and run the BFS
-above. Cross-chunk windows read neighbors via `World.GetTile`.
+A correct, simple scheme: on edit, collect the radius-15 window, set available cells to 0, seed the
+queue with intrinsic sources plus attenuated light entering from cells just outside the window,
+and run the BFS above. Cross-chunk reads go through a non-generating world adapter; unavailable
+chunks are boundaries rather than an invitation to generate speculative world data.
+
+Chunk generation/load relights the new chunk plus a radius-15 halo. Loading either side of a seam
+therefore re-evaluates the shared border, so final light is independent of chunk load order.
 
 ## Applying light to the screen
 
 Two common paths (see [Rendering](04-rendering.md)):
 
-- **Vertex colors:** when building a chunk mesh, set each quad corner's color from `light` (sample
-  neighboring tiles per corner for smooth gradients). The shader multiplies sprite color by light.
+- **Vertex colors (implemented):** each tile quad uses its cached light value, mapped from a 0.35
+  darkness floor to full brightness. Per-corner neighbor sampling remains a polish follow-up.
 - **Lightmap texture:** write `light` into a texture sampled by a full-screen or per-chunk shader.
   A blurred low-res lightmap gives the soft falloff look; some demos render open-air to a second
   camera, blur it, and composite to darken covered areas — but the underlying values still come
   from the tile fill above.
 
-Colored light: store/propagate R, G, B independently (or a `Color32`); same rules per channel.
+Colored light, time-of-day scaling, and smooth corner sampling are follow-up work.
+
+## Persistence
+
+Lighting writes mark only the affected chunk's render mesh dirty. They do not affect collision,
+navigation versions, edit flags, or save dirtiness. New saves clear the cached `light` byte in tile
+edit records; loaders ignore any legacy cached value and recompute after tile data is restored.
 
 ## Pitfalls
 

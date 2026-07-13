@@ -41,8 +41,8 @@ Design notes:
   are migrated (P2-DATA-002) — `SandboxTile.id` stores live runtime indices, saves persist the
   string-ID palette, and version-1 saves still load through the fixed legacy table — see
   [Modding & Content](12-modding.md) § "Registry contract (P2-DATA-001)".
-- `light` and `fluid` are **derived/simulated** state, not authored content. On save you may
-  persist them or recompute on load (recomputing light is cheap; fluid may need persistence).
+- `light` and `fluid` are **derived/simulated** state, not authored content. Light is cleared from
+  new save records and recomputed on load; fluid may need persistence.
 - If memory pressure demands it, split rarely-used fields (e.g. `metadata`) into a sparse side
   table keyed by local index, keeping the hot array tiny.
 

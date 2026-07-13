@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ProjectTwelve.Sandbox.Debug;
+using ProjectTwelve.Sandbox.Inventory;
+using ProjectTwelve.Sandbox.Lighting;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
@@ -50,6 +52,8 @@ public sealed class SandboxWorld : MonoBehaviour
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
     private readonly AutotileVisualOverrideMap autotileVisualOverrides = new AutotileVisualOverrideMap();
     private float nextChunkRefreshTime;
+    private SandboxWorldLightGrid lightGrid;
+    private SandboxInventory playerInventory;
 
     public float TileSize => tileSize;
     public int Seed => seed;
@@ -123,6 +127,12 @@ public sealed class SandboxWorld : MonoBehaviour
     public void SetPlayerTarget(Transform target)
     {
         playerTarget = target;
+    }
+
+    /// <summary>Registers the player inventory that joins this world's save payload.</summary>
+    public void SetPlayerInventory(SandboxInventory inventory)
+    {
+        playerInventory = inventory;
     }
 
     /// <summary>The transform chunk loading follows; also the chase target for enemies.</summary>
@@ -231,12 +241,7 @@ public sealed class SandboxWorld : MonoBehaviour
     public SandboxTile GetTile(int x, int y)
     {
         Vector2Int chunkCoord = WorldToChunkCoord(x, y);
-        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
-        {
-            chunk = GenerateChunk(chunkCoord);
-            chunks.Add(chunkCoord, chunk);
-        }
-
+        SandboxChunk chunk = GetOrCreateChunk(chunkCoord);
         Vector2Int local = WorldToLocalCoord(x, y);
         return chunk.GetLocalTile(local.x, local.y);
     }
@@ -450,9 +455,9 @@ public sealed class SandboxWorld : MonoBehaviour
         Vector2Int chunkCoord = WorldToChunkCoord(x, y);
         SandboxChunk chunk = GetOrCreateChunk(chunkCoord);
         Vector2Int local = WorldToLocalCoord(x, y);
-        byte light = ResolvePlacedTileLight(x, y, tileId);
-        ApplyTileEdit(chunks, chunk, local.x, local.y, new SandboxTile(tileId, light));
+        ApplyTileEdit(chunks, chunk, local.x, local.y, new SandboxTile(tileId));
         EnsureRenderer(chunkCoord);
+        SandboxLightSolver.RelightAfterEdit(GetLightGrid(), x, y);
         TileFluidWakeRequested?.Invoke(x, y);
     }
 
@@ -480,35 +485,6 @@ public sealed class SandboxWorld : MonoBehaviour
 
         owningChunk.SetLocalTile(localX, localY, tile);
         MarkBorderNeighborsDirty(loadedChunks, owningChunk.Coord, localX, localY);
-    }
-
-    private byte ResolvePlacedTileLight(int worldX, int worldY, int tileId)
-    {
-        if (tileId == SandboxRegistries.AirIndex)
-        {
-            return 0;
-        }
-
-        SandboxTerrainGenerator generator = CreateTerrainGenerator();
-        return SandboxTerrainGenerator.GetPrototypeLight(worldY, generator.GetSurfaceHeight(worldX));
-    }
-
-    /// <summary>
-    /// Upgrades legacy edited tiles that stored default light 0 so they match procedural brightness.
-    /// </summary>
-    internal static SandboxTile NormalizeEditedTileLight(
-        SandboxTile tile,
-        int worldX,
-        int worldY,
-        SandboxTerrainGenerator generator)
-    {
-        if (!tile.IsSolid || tile.light != 0)
-        {
-            return tile;
-        }
-
-        byte light = SandboxTerrainGenerator.GetPrototypeLight(worldY, generator.GetSurfaceHeight(worldX));
-        return new SandboxTile(tile.id, light, tile.fluid, tile.metadata);
     }
 
     /// <summary>
@@ -666,7 +642,8 @@ public sealed class SandboxWorld : MonoBehaviour
         SandboxSaveData saveData = new SandboxSaveData
         {
             seed = seed,
-            tilePalette = RegistryPalette.Capture(SandboxRegistries.Tiles)
+            tilePalette = RegistryPalette.Capture(SandboxRegistries.Tiles),
+            inventory = playerInventory?.ToSaveData()
         };
         foreach (KeyValuePair<Vector2Int, SandboxChunk> pair in chunks)
         {
@@ -680,7 +657,9 @@ public sealed class SandboxWorld : MonoBehaviour
             {
                 for (int y = 0; y < SandboxChunk.Size; y++)
                 {
-                    chunkData.edits.Add(new SandboxTileEditData(x, y, pair.Value.GetLocalTile(x, y)));
+                    SandboxTile savedTile = pair.Value.GetLocalTile(x, y);
+                    savedTile.light = 0;
+                    chunkData.edits.Add(new SandboxTileEditData(x, y, savedTile));
                 }
             }
 
@@ -717,13 +696,17 @@ public sealed class SandboxWorld : MonoBehaviour
         seed = saveData.seed;
         chunks.Clear();
 
+        if (saveData.inventory != null && playerInventory != null)
+        {
+            playerInventory.LoadFromSaveData(saveData.inventory);
+        }
+
         // Palette saves remap saved runtime indices to the live registry; version-1 prototype
         // saves carry no palette and store the fixed legacy numbering instead.
         int[] paletteRemap = saveData.HasTilePalette
             ? saveData.tilePalette.BuildRemap(SandboxRegistries.Tiles)
             : null;
 
-        SandboxTerrainGenerator generator = CreateTerrainGenerator();
         foreach (SandboxChunkSaveData chunkData in saveData.chunks)
         {
             SandboxChunk chunk = GenerateChunk(chunkData.Coord);
@@ -731,8 +714,7 @@ public sealed class SandboxWorld : MonoBehaviour
             {
                 SandboxTile tile = edit.tile;
                 tile.id = ResolveSavedTileId(tile.id, paletteRemap, chunkData, edit);
-                Vector2Int worldCoord = ChunkLocalToWorld(chunkData.Coord, edit.localX, edit.localY);
-                tile = NormalizeEditedTileLight(tile, worldCoord.x, worldCoord.y, generator);
+                tile.light = 0;
                 tile = ApplyLoadGrassLoss(tile);
                 chunk.SetLocalTile(edit.localX, edit.localY, tile, false);
             }
@@ -741,6 +723,8 @@ public sealed class SandboxWorld : MonoBehaviour
             chunk.MarkClean();
             chunks.Add(chunkData.Coord, chunk);
         }
+
+        RelightAllKnownChunks();
 
         if (saveData.hasPlayerPosition)
         {
@@ -1040,9 +1024,95 @@ public sealed class SandboxWorld : MonoBehaviour
         {
             chunk = GenerateChunk(chunkCoord);
             chunks.Add(chunkCoord, chunk);
+            RelightChunkAndNeighbors(chunkCoord);
         }
 
         return chunk;
+    }
+
+    internal bool TryGetExistingTileForLighting(int x, int y, out SandboxTile tile)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            tile = default;
+            return false;
+        }
+
+        Vector2Int local = WorldToLocalCoord(x, y);
+        tile = chunk.GetLocalTile(local.x, local.y);
+        return true;
+    }
+
+    internal void SetTileLightForLighting(int x, int y, byte light)
+    {
+        Vector2Int chunkCoord = WorldToChunkCoord(x, y);
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            return;
+        }
+
+        Vector2Int local = WorldToLocalCoord(x, y);
+        chunk.SetLocalLight(local.x, local.y, light);
+    }
+
+    /// <summary>
+    /// Sunlight enters at the first air cell above the deterministic terrain surface. Known
+    /// player-built blockers above that cell suppress the source; probing never creates chunks.
+    /// </summary>
+    internal bool IsSkySourceForLighting(int x, int y)
+    {
+        SandboxTerrainGenerator generator = CreateTerrainGenerator();
+        if (y != generator.GetSurfaceHeight(x) + 1)
+        {
+            return false;
+        }
+
+        int columnChunkX = WorldToChunkCoord(x, y).x;
+        int highestKnownY = y;
+        foreach (Vector2Int coord in chunks.Keys)
+        {
+            if (coord.x == columnChunkX)
+            {
+                highestKnownY = Mathf.Max(highestKnownY, coord.y * SandboxChunk.Size + SandboxChunk.Size - 1);
+            }
+        }
+
+        for (int scanY = y + 1; scanY <= highestKnownY; scanY++)
+        {
+            if (TryGetExistingTileForLighting(x, scanY, out SandboxTile above)
+                && SandboxRegistries.Tiles.Get(above.id).Opaque)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private SandboxWorldLightGrid GetLightGrid()
+    {
+        lightGrid ??= new SandboxWorldLightGrid(this);
+        return lightGrid;
+    }
+
+    private void RelightChunkAndNeighbors(Vector2Int chunkCoord)
+    {
+        SandboxLightSolver.RelightAfterChunkLoad(
+            GetLightGrid(),
+            chunkCoord.x,
+            chunkCoord.y,
+            SandboxChunk.Size);
+    }
+
+    private void RelightAllKnownChunks()
+    {
+        List<Vector2Int> coords = new List<Vector2Int>(chunks.Keys);
+        coords.Sort((a, b) => a.x != b.x ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
+        foreach (Vector2Int coord in coords)
+        {
+            RelightChunkAndNeighbors(coord);
+        }
     }
 
     private void EnsureRenderer(Vector2Int chunkCoord)

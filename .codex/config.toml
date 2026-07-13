@@ -26,8 +26,8 @@ startup_timeout_sec = 15
 tool_timeout_sec = 30
 
 [mcp_servers.pixellab]
-command = "npx"
-args = ["-y", "mcp-remote", "https://api.pixellab.ai/mcp", "--header", "Authorization: Bearer ${PIXELLAB_API_KEY}"]
+command = "node"
+args = ["scripts/start-pixellab-mcp.js"]
 enabled = true
 required = false
 startup_timeout_sec = 20

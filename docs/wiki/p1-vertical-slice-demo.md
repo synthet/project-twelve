@@ -4,7 +4,7 @@ title: P1 Vertical-Slice Demo Runbook
 description: Reviewer-executable demo script validating movement, generation, rendering, collision, editing, autotile terrain, and the composed avatar in one scene.
 resource: wiki/p1-vertical-slice-demo.md
 tags: [docs, wiki, runbook, qa, p1]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-13T02:18:45Z
 okf_version: 0.1
 ---
 
@@ -33,7 +33,7 @@ orders the checks and defines the evidence. See [Quality Gates](quality-gates.md
 | Generation parameters | `surfaceHeight 28`, `terrainAmplitude 8`, `terrainFrequency 0.06`, `dirtDepth 8` (scene defaults) |
 | Chunk constants | 32×32 tiles per chunk, tile size 1 world unit, load radius 3 chunks, unload padding 1 chunk |
 | Player spawn | Authored scene position `(0.5, 40)`; the player falls onto the generated surface (y ≈ 28 ± 8) |
-| Save shortcuts | **Do not press F5/F9 during the run** — F5 overwrites and F9 loads `sandbox-world.json`, which breaks the determinism steps |
+| Save shortcuts | **Do not press F5/F6 during the run** — F5 overwrites and F6 loads `sandbox-world.json`, which breaks the determinism steps |
 
 ### Required local setup (full pass)
 

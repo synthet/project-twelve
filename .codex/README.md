@@ -24,7 +24,10 @@ This project's [`config.toml`](config.toml) declares PixelLab as a **stdio** `mc
 exists as stdio in `~/.codex/config.toml` (`url is not supported for stdio in mcp_servers.pixellab`),
 which blocks thread resume.
 
-Set `PIXELLAB_API_KEY` in the environment (never commit the key). If you also define
+Set `PIXELLAB_API_KEY` in the gitignored project `.env` file or in the parent environment (never
+commit the key). The `scripts/start-pixellab-mcp.js` launcher loads `.env`, passes the credential to
+`mcp-remote` through a process-only environment variable, and keeps the token out of the committed
+TOML and command-line arguments. Restart Codex after adding or changing the key. If you also define
 `[mcp_servers.pixellab]` in the user config, keep it stdio-only — do not add `url` / `headers` there.
 
 Token: [pixellab.ai/mcp](https://www.pixellab.ai/mcp). Skill: [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md).

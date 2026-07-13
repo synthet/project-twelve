@@ -21,9 +21,10 @@
       ]
     },
     "pixellab": {
+      "_note": "Set PIXELLAB_API_KEY in repo-root .env and User env (HTTP MCP cannot load envFile).",
       "url": "https://api.pixellab.ai/mcp",
       "headers": {
-        "Authorization": "Bearer ${PIXELLAB_API_KEY}"
+        "Authorization": "Bearer ${env:PIXELLAB_API_KEY}"
       }
     }
   }

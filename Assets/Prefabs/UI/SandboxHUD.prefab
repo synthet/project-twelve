@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 100001}
   - component: {fileID: 100002}
   - component: {fileID: 100003}
+  - component: {fileID: 5040911387945628499}
   - component: {fileID: 100004}
   m_Layer: 5
   m_Name: SandboxHUD
@@ -74,17 +75,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &5040911387945628499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c33cf57551bc15748a5c66788b3ba360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectTwelve.Runtime::SandboxHudPixelPerfectScaler
 --- !u!114 &100004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,14 +116,17 @@ MonoBehaviour:
   showDebugTelemetry: 1
   hideDebugTelemetryInReleaseBuilds: 1
   panelSprite: {fileID: 21300000, guid: 0b42bc926cd34346951f5a55f1279bf6, type: 3}
+  hotbarSprite: {fileID: 21300000, guid: f1a8c2e4d6b9470ca351829fd742e60b, type: 3}
+  debugPanelSprite: {fileID: 21300000, guid: fb6cfe7c2b3e42e99117757457c302e0, type: 3}
   frameSprite: {fileID: 21300000, guid: 4fe749d249c340dd894011e8c2f3b735, type: 3}
   selectionSprite: {fileID: 21300000, guid: 91862b2ae0c14c1ba63e027340c9f9a8, type: 3}
   slotSprite: {fileID: 21300000, guid: a2e5345e4df441919572351a88520f6d, type: 3}
+  itemLabelSprite: {fileID: 21300000, guid: 1cfdebcef6664727b52c95c5260adcca, type: 3}
   pixelFont: {fileID: 12800000, guid: 7b377208f1df45148d2fedf987d07403, type: 3}
-  portraitSprite: {fileID: 21300000, guid: 6f7dda1083cc6e4c924da39239b0c099, type: 3}
+  portraitSprite: {fileID: 21300000, guid: b2f4d6a8c0e14973a5b7c9d1e3f50628, type: 3}
   heartSprite: {fileID: 21300000, guid: d90c0a828a12438cb861ac32ad9dedff, type: 3}
   emptyHeartSprite: {fileID: 21300000, guid: f379ce07734343ba8b469ff91b405950, type: 3}
-  dirtIcon: {fileID: 21300000, guid: 7de6b0707c0898d6c8e892e6e4195a57, type: 3}
-  grassIcon: {fileID: 21300000, guid: 721b644869ec56785ada8e9ba9371d6f, type: 3}
-  stoneIcon: {fileID: 21300000, guid: c335504c652aa1f4ad9339e94f93cf39, type: 3}
-  copperOreIcon: {fileID: 21300000, guid: 1ee09f7db0f70374838b0fc619399aff, type: 3}
+  dirtIcon: {fileID: 21300000, guid: c3e5f7a9b1d24068ace02468bdf13579, type: 3}
+  grassIcon: {fileID: 21300000, guid: d4f6a8c0b2e34179bdf13579ace02468, type: 3}
+  stoneIcon: {fileID: 21300000, guid: e5a7c9b1d3f44280ace13579bdf02468, type: 3}
+  copperOreIcon: {fileID: 21300000, guid: f6b8d0a2c4e54391bdf24680ace13579, type: 3}

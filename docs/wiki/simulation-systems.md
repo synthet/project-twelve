@@ -12,7 +12,16 @@ okf_version: 0.1
 
 ## Lighting
 
-Lighting should be tile-based, not a large field of Unity lights. Store light values in tiles or a chunk-local light buffer, propagate sunlight and emissive sources with breadth-first search, and rebuild only dirty light regions.
+Lighting is a single-channel 0–15 cache on `SandboxTile`. `SandboxLightSolver` performs four-way
+BFS propagation, taking the maximum contribution from strength-15 surface sunlight and registry
+`LightEmission` sources. Air attenuation is 1; each tile definition supplies its entry cost, with
+core opaque tiles using 3.
+
+Tile edits use clear-then-refill over a radius-15 window, seeded from sources inside and unaffected
+light outside. The `SandboxWorldLightGrid` adapter refuses unavailable cells, so cross-chunk
+propagation reaches already-generated neighbors without creating new chunks. Light writes mark
+rendering only and are recomputed rather than persisted. The current renderer maps tile light to
+flat vertex tint; colored light, time-of-day scaling, and smooth corner gradients are deferred.
 
 ## Liquids
 

@@ -86,6 +86,21 @@ public sealed class SandboxChunk
         tiles[x, y].fluid = amount;
     }
 
+    /// <summary>
+    /// Writes derived lighting without changing authored tile state. A changed value rebuilds the
+    /// mesh tint only; it never dirties collision, navigation, edits, or persistence.
+    /// </summary>
+    public void SetLocalLight(int x, int y, byte light)
+    {
+        if (!IsLocalInBounds(x, y) || tiles[x, y].light == light)
+        {
+            return;
+        }
+
+        tiles[x, y].light = light;
+        NeedsRenderRebuild = true;
+    }
+
     public void MarkClean()
     {
         IsDirty = false;

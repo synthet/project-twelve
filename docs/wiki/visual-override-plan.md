@@ -2,9 +2,9 @@
 type: Plan
 title: Visual Override Mode Plan
 description: Shortcut and persistence plan for sandbox visual override editing.
-resource: visual-override-plan.md
+resource: wiki/visual-override-plan.md
 tags: [docs, visual, debug, shortcuts]
-timestamp: 2026-07-06T04:00:00Z
+timestamp: 2026-07-13T02:18:45Z
 ---
 
 # Visual Override Mode Plan
@@ -16,9 +16,9 @@ Visual Override Mode is a debug/editing mode for saving visual-only adjustments 
 | Context | Key | Action |
 |---------|-----|--------|
 | Normal sandbox play | `F5` | Save `sandbox-world.json` through `SandboxWorld.SaveToPath`. |
-| Normal sandbox play | `F9` | Load `sandbox-world.json` through `SandboxWorld.LoadFromPath`. |
+| Normal sandbox play | `F6` | Load `sandbox-world.json` through `SandboxWorld.LoadFromPath` (not F9 — Unity Profiler RecordToggle). |
 | Visual Override Mode | `F5` | Save `sandbox-world.json` and the visual override sidecar `sandbox-world.visual-overrides.json`. |
-| Visual Override Mode | `F9` | Unchanged normal load of `sandbox-world.json`; visual override saving never uses `F9`. |
+| Visual Override Mode | `F6` | Unchanged normal load of `sandbox-world.json`; visual override saving never uses `F6`. |
 | Debug gate on (`debugOverrideModeEnabled`) | `F8` | Toggle Visual Override Mode (logs state to Console). |
 | Visual Override Mode active | `Tab` | Switch Ground / Cover layer for the hovered cell. Cover edits apply only on **exposed grass** (air directly above). |
 | Visual Override Mode active | `[` / `]` | Previous / next override sprite id (ground: 0–31; GrassA cover: 0–5). |
@@ -37,4 +37,4 @@ F8 logs:
 
 ## Regression guard
 
-`SandboxSaveLoadShortcutRouter` owns shortcut routing as a pure input-level seam. EditMode tests assert that Visual Override Mode + `F5` resolves to sidecar save and never to `LoadWorld`, preserving the normal `F5`/`F9` behavior while preventing future save/load key conflicts.
+`SandboxSaveLoadShortcutRouter` owns shortcut routing as a pure input-level seam. EditMode tests assert that Visual Override Mode + `F5` resolves to sidecar save and never to `LoadWorld`, preserving the normal `F5`/`F6` behavior while preventing future save/load key conflicts.

@@ -3,7 +3,7 @@ type: Task
 id: P2-INV-001
 title: "[P2-INV-001] Specify inventory-backed placement and pickup rules."
 description: Item-consuming tile placement and drop-yielding tile breaking through the SetTile choke point, with stack, reach, and hotbar rules.
-status: open
+status: claimed
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/36"

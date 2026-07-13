@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "spec_id": "project-twelve/hud-assets/v3",
+  "title": "ProjectTwelve Creative HUD Asset Specification",
+  "source_prompt": "docs/prompts/hud-polish-consolidated.md",
+  "final_override": "docs/prompts/hud-fix-health-frame.md",
+  "redesign_plan": "docs/wiki/hud-redesign-pixellab.md",
+  "reference_mockup": "docs/images/hud-mockups/hud-overlay-1280x720.png",
+  "coordinate_system": {
+    "reference_resolution_px": [1280, 720],
+    "origin": "top-left for this specification; convert to Unity anchors as documented per module",
+    "canvas_scaler": "Scale With Screen Size",
+    "screen_match_mode": "Match Width Or Height",
+    "match": 0.5,
+    "reference_pixels_per_unit": 100,
+    "pixel_perfect": true,
+    "integer_positions_only": true
+  },
+  "unity_import_defaults": {
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "bit_depth_per_channel": 8,
+    "sprite_mode": "Single",
+    "pixels_per_unit": 100,
+    "filter_mode": "Point",
+    "compression": "None",
+    "generate_mip_maps": false,
+    "alpha_is_transparency": true,
+    "wrap_mode": "Clamp",
+    "mesh_type": "Full Rect"
+  },
+  "pixel_grid": {
+    "world_art_ppu": 16,
+    "hud_source_grid_px": 1,
+    "hud_detail_module_px": 2,
+    "source_to_reference_scale": 1,
+    "runtime_scaling_rule": "CanvasScaler may scale the complete canvas; never apply non-uniform scale to an individual sprite. Sliced sprites stretch only their edge/center bands at 1:1 pixel density.",
+    "art_rule": "Draw ornaments and icons on a 2 px detail module where practical; retain 1 px highlights only for legibility."
+  },
+  "v3_contract_rules": {
+    "nine_slice_first": "Sliced panels ship as small sliceable bitmaps; on-screen size lives in the RectTransform (display_size_px), not the bitmap (source_size_px).",
+    "generation_size_grid": "Every Simple-sprite display size times an integer factor (2 or 4) must land on a PixelLab generation tier; downscale is nearest-neighbor by that exact factor only.",
+    "style_chain": "Panels, slots, and label come from one pieces-templated hero sheet (fixed seed and palette); small objects use style_images cropped from the approved sheet.",
+    "no_stretch": "Assets that fail the integer factor check are re-rolled, never stretched non-uniformly."
+  },
+  "palette": {
+    "transparent": "#00000000",
+    "panel": "#0B0E16F0",
+    "panel_soft": "#0B0E16D8",
+    "slot_fill": "#171C27FF",
+    "shadow": "#020308FF",
+    "silver_dark": "#545B68FF",
+    "silver": "#A7AFB9FF",
+    "silver_light": "#E2E5E7FF",
+    "gold_dark": "#7C4B10FF",
+    "gold": "#D99B2BFF",
+    "gold_light": "#FFD66BFF",
+    "heart_dark": "#75141AFF",
+    "heart": "#D82F36FF",
+    "heart_light": "#FF7272FF",
+    "cyan": "#36B8D4FF",
+    "text": "#F2F3F4FF"
+  },
+  "modules": {
+    "vitals": {
+      "anchor": "top-left",
+      "position_px": [16, 16],
+      "size_px": [252, 64],
+      "content_order": ["panel_main", "portrait_frame", "player_portrait", "hearts"],
+      "portrait_frame_rect_px": [8, 8, 48, 48],
+      "portrait_rect_px": [12, 12, 40, 40],
+      "hearts_origin_px": [64, 24],
+      "heart_count": 10,
+      "heart_size_px": [16, 16],
+      "heart_spacing_px": 2,
+      "numeric_health_visible": false
+    },
+    "hotbar": {
+      "anchor": "bottom-center",
+      "position_px": [360, 646],
+      "size_px": [560, 60],
+      "slot_origin_px": [13, 6],
+      "slot_size_px": [48, 48],
+      "slot_stride_px": 54,
+      "slot_count": 10,
+      "icon_size_px": [32, 32],
+      "icon_offset_px": [8, 8],
+      "selected_overlay_size_px": [48, 48],
+      "selected_lift_px": 2,
+      "rails": false
+    },
+    "selected_item_label": {
+      "anchor": "selected-slot-top-center",
+      "size_px": [96, 20],
+      "gap_px": 6,
+      "visible_duration_seconds": 1.75,
+      "text": "GRASS"
+    },
+    "debug": {
+      "anchor": "top-right",
+      "position_px": [1104, 16],
+      "size_px": [160, 62],
+      "padding_px": [8, 6, 8, 6],
+      "text": ["DEBUG", "SEED 1337", "TILE -90, 31", "CHUNK -3, 0"]
+    }
+  },
+  "generation_prompt_defaults": {
+    "use_case": "ui-mockup",
+    "style": "crisp 2D pixel-art fantasy HUD, dark navy charcoal panels, polished muted silver frames, restrained warm gold accents, nearest-neighbor edges",
+    "background": "transparent",
+    "constraints": [
+      "no antialiasing",
+      "no gradients",
+      "no soft glow or bloom",
+      "no text unless the asset explicitly requests text",
+      "no watermark",
+      "integer pixel edges",
+      "balanced padding"
+    ]
+  },
+  "pixellab_generation_v3_plan": {
+    "status": "generated_and_wired_2026-07-12",
+    "tag": "project-twelve-hud-v3",
+    "hero_sheet_ui_asset_id": "c71619ee-82db-402a-b32f-b3bcb2ece6e8",
+    "promoted_objects": {
+      "player_portrait": "06e3c0ba-0b3e-46a6-b8fc-af2c6ef6e3f5",
+      "heart_full": "1216bfbb-36b8-4cd9-bbd4-64b76031d7d5",
+      "tile_dirt": "cf72a4d3-a887-4362-8d64-63795389a6fb",
+      "tile_grass": "a5af33b0-e7d4-4e0c-af5c-234ecf1a30ec",
+      "tile_stone": "7300ef10-e30e-4714-9b09-3b79712a4c5d",
+      "tile_copper_ore": "c4926be7-98ef-4ef9-a48d-2f8d1ea5ff3b"
+    },
+    "workflow": "docs/wiki/hud-redesign-pixellab.md",
+    "hero_sheet": {
+      "tool": "create_ui_asset",
+      "output_size_px": [512, 512],
+      "color_palette": "dark navy panel, polished silver frame, gold corner accents",
+      "no_background": true,
+      "pieces_note": "Virtual editor canvas is 512x512 for a square output; piece coordinates below are assumed top-left based and verified against the returned image before cropping.",
+      "pieces": [
+        {"id": "panel_main", "kind": "rounded_rect", "x": 16, "y": 16, "w": 256, "h": 256, "label": "main HUD panel frame, dark navy fill, silver edge, gold corner ornaments"},
+        {"id": "slot_normal", "kind": "rounded_rect", "x": 304, "y": 16, "w": 192, "h": 192, "label": "square inventory slot, dark well, chunky silver corners"},
+        {"id": "slot_selected", "kind": "rounded_rect", "x": 304, "y": 240, "w": 192, "h": 192, "label": "selected inventory slot, hard gold inner border, gold corner markers, no glow"},
+        {"id": "label_bar", "kind": "rounded_rect", "x": 16, "y": 304, "w": 192, "h": 64, "label": "plain low-contrast label backing, one-pixel silver edge, no ornaments"}
+      ],
+      "crops": {
+        "panel_main": {"virtual_rect": [16, 16, 256, 256], "downscale_factor": 4, "target_source_px": [64, 64], "symmetrize": "top_left_quadrant", "interior_fill": {"ring_px": 12, "palette_color": "panel"}},
+        "slot_normal": {"virtual_rect": [304, 16, 192, 192], "downscale_factor": 4, "target_source_px": [48, 48]},
+        "slot_selected": {"virtual_rect": [304, 240, 192, 192], "downscale_factor": 4, "target_source_px": [48, 48], "punch_center": {"ring_px": 12}},
+        "label_bar": {"virtual_rect": [16, 304, 192, 64], "downscale_factor": 4, "target_source_px": [48, 16]},
+        "portrait_frame": {"note": "reuses the slot_normal crop; the portrait frame is the same 48x48 sliced frame"}
+      }
+    },
+    "object_jobs": [
+      {"id": "heart_full", "tool": "create_1_direction_object", "size": 48, "candidates": 16, "downscale_factor": 3, "derivations": "half and empty states derived deterministically from the promoted full-heart master (v2 method)"},
+      {"id": "tile_icons", "tool": "create_1_direction_object", "size": 64, "candidates": 16, "downscale_factor": 2, "item_descriptions": ["dirt block", "grass-over-dirt block", "stone block", "copper ore in stone block"]},
+      {"id": "player_portrait", "tool": "create_1_direction_object", "size": 80, "candidates": 16, "downscale_factor": 2, "status": "promoted 2026-07-12 (object 06e3c0ba-0b3e-46a6-b8fc-af2c6ef6e3f5, tag project-twelve-hud-v3)"}
+    ],
+    "operational_lessons": [
+      "64-candidate packs (size <= 42) timed out server-side twice on 2026-07-12; prefer 43-85 px packs (16 candidates), which completed reliably.",
+      "style_images cannot be combined with an explicit size: the largest style image dictates the output size, so candidate-grid jobs run without style refs and carry palette hints in the description instead."
+    ],
+    "budget_note": "Roughly 2 UI-asset calls plus 5-6 object jobs plus a 50% re-roll reserve; subscription had 1640 generations remaining on 2026-07-12."
+  },
+  "pixellab_generation_history": {
+    "v1_component_sheet": {
+      "ui_asset_id": "f7b8c244-a1ce-4a86-9f11-fc9728e90cba",
+      "name": "ProjectTwelve HUD Component Sheet v1",
+      "seed": 1337,
+      "requested_size_px": [512, 512],
+      "cost_generations": 40,
+      "status": "rejected_visual_draft",
+      "source_file": "docs/images/hud-mockups/pixellab-hud-component-sheet-v1-rejected.png",
+      "review_file": "docs/images/hud-mockups/pixellab-hud-component-sheet-v1-rejected-preview.png",
+      "rejection_reasons": [
+        "generated a complete fantasy menu instead of isolated HUD components",
+        "included baked LOAD GAME, OPTIONS, and EXIT text despite the no-text constraint",
+        "included character and environment art outside the HUD asset scope",
+        "did not provide the required heart states, slot frames, label backing, or debug backing",
+        "cannot be cropped into the exact per-asset dimensions without inventing missing content"
+      ],
+      "integration_allowed": false
+    },
+    "v2_individual_generation": {
+      "status": "accepted_and_wired_superseded_by_v3_plan",
+      "tag": "project-twelve-hud-v2",
+      "normalizer": "scripts/normalize_pixellab_hud_assets.py",
+      "production_contact_sheet": "docs/images/hud-mockups/pixellab-wired-production-contact-sheet.png",
+      "accepted_ui_assets": {
+        "health_panel_frame": "a918d975-2295-4501-a027-60657a359d29",
+        "hotbar_backing": "7bcaecda-fc57-496b-9765-39372482a97a",
+        "slot_normal": "9c4a4483-6255-4ecd-8d7c-0196d6c7838e",
+        "slot_selected": "09c564c7-863e-457d-87c2-98e914a8946a",
+        "debug_panel": "f4113de8-387c-4ebb-97d9-78e366c4a329"
+      },
+      "accepted_objects": {
+        "player_portrait": "e32c9008-4499-4501-90bc-118f29a91865",
+        "heart_full": "5b3cf576-fcb7-4c77-8d57-b341e6e78472",
+        "tile_dirt": "f66f926f-ad8c-4fe0-8453-8cb815f849a7",
+        "tile_grass": "ab012245-d634-42e0-9b37-e26262e8f744",
+        "tile_stone": "9826db93-c922-42d9-b03f-60167e0829f0",
+        "tile_copper_ore": "ac92b5ad-6c0c-4e8f-b0ee-372a118b2d1d",
+        "hud_cursor": "a4f3b1ea-9f00-47f6-8771-acc8173b87e5"
+      },
+      "rejected_ui_assets": {
+        "portrait_frame": {
+          "id": "3dcaccc1-0a46-4e70-8946-ecf3bc1842ec",
+          "reason": "generated a multi-component UI kit instead of one portrait frame (root cause: create_ui_asset cannot target small exact sizes; below-192 requests scaffold component kits)"
+        },
+        "selected_item_label": {
+          "id": "612aaf3b-568c-4569-9241-1170cb71815d",
+          "reason": "generated an unintended checker texture instead of a plain label backing"
+        }
+      },
+      "integration_notes": [
+        "v2 production art remains wired until v3 assets are approved and normalized",
+        "portrait disconnected artifacts removed by deterministic connected-component cleanup",
+        "empty and half hearts deterministically derived from the accepted full-heart source so all three states share one silhouette, outline, and pixel grid",
+        "frame widths normalized with horizontal 9-slice-safe center scaling"
+      ]
+    }
+  },
+  "assets": [
+    {
+      "id": "panel_main",
+      "file": "hud_panel_main.png",
+      "role": "nine_slice_frame",
+      "source_size_px": [64, 64],
+      "display_size_px": [252, 64],
+      "scale": 1,
+      "slice_border_px": [16, 16, 16, 16],
+      "prompt": {
+        "primary_request": "A square sliceable fantasy panel frame with a dark navy filled center, crisp silver metal edges, and small warm-gold corner ornaments fully contained in the 16x16 corner regions.",
+        "constraints": ["all four 16x16 corner regions self-contained and symmetrical", "horizontal and vertical stretch bands free of ornaments", "no center medallion"]
+      }
+    },
+    {
+      "id": "portrait_frame",
+      "file": "hud_portrait_frame.png",
+      "role": "nine_slice_frame",
+      "source_size_px": [48, 48],
+      "display_size_px": [48, 48],
+      "scale": 1,
+      "slice_border_px": [12, 12, 12, 12],
+      "prompt": {
+        "primary_request": "Reuse the slot_normal crop from the hero sheet: a square dark frame with chunky silver corners; transparent or dark center well for the portrait.",
+        "constraints": ["identical style family to the hotbar slots", "no separate generation job"]
+      }
+    },
+    {
+      "id": "player_portrait",
+      "file": "hud_player_portrait.png",
+      "role": "portrait",
+      "source_size_px": [40, 40],
+      "display_size_px": [40, 40],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {
+        "primary_request": "Front-facing tiny sandbox adventurer portrait, brown hair, blue tunic, warm skin, readable at 40 pixels.",
+        "constraints": ["centered character", "transparent background", "simple block clusters", "no frame"]
+      }
+    },
+    {
+      "id": "heart_empty",
+      "file": "hud_heart_empty.png",
+      "role": "heart_empty",
+      "source_size_px": [16, 16],
+      "display_size_px": [16, 16],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "Empty 16x16 heart sharing the full-heart master's exact alpha silhouette, with a dark-red cavity fill.", "constraints": ["same source, silhouette, perimeter, and pixel grid as full and half hearts"]}
+    },
+    {
+      "id": "heart_half",
+      "file": "hud_heart_half.png",
+      "role": "heart_half",
+      "source_size_px": [16, 16],
+      "display_size_px": [16, 16],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "Half-filled 16x16 heart from the full-heart master; bright left fill, empty-state fill on the right of a crisp vertical split.", "constraints": ["same source, silhouette, perimeter, and pixel grid as full and empty hearts"]}
+    },
+    {
+      "id": "heart_full",
+      "file": "hud_heart_full.png",
+      "role": "heart_full",
+      "source_size_px": [16, 16],
+      "display_size_px": [16, 16],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A full 16x16 bright red pixel heart with a dark outline and a single crisp highlight cluster.", "constraints": ["same silhouette as half and empty hearts", "readable half-state split point"]}
+    },
+    {
+      "id": "hotbar_backing",
+      "file": "hud_hotbar_backing.png",
+      "role": "panel",
+      "source_size_px": [612, 60],
+      "display_size_px": [560, 60],
+      "scale": 1,
+      "slice_border_px": [6, 6, 6, 6],
+      "prompt": {"primary_request": "Retained accepted v2 asset: compact low-contrast charcoal hotbar backing; Unity slicing narrows the center band to the 560px v3 display width.", "constraints": ["no rails", "no medallions", "no large ornaments", "subordinate to slot frames"]}
+    },
+    {
+      "id": "slot_normal",
+      "file": "hud_slot_normal.png",
+      "role": "slot",
+      "source_size_px": [48, 48],
+      "display_size_px": [48, 48],
+      "scale": 1,
+      "slice_border_px": [12, 12, 12, 12],
+      "prompt": {"primary_request": "A square dark inventory slot with chunky silver corners, restrained gold fasteners, and a clean 32x32 icon well.", "constraints": ["symmetrical corners", "no external rail pieces"]}
+    },
+    {
+      "id": "slot_selected",
+      "file": "hud_slot_selected.png",
+      "role": "slot_selected",
+      "source_size_px": [48, 48],
+      "display_size_px": [48, 48],
+      "scale": 1,
+      "slice_border_px": [12, 12, 12, 12],
+      "prompt": {"primary_request": "A selected-slot overlay matching the normal slot with a bright warm-gold 2-pixel inner border and four crisp corner markers.", "constraints": ["transparent center", "no glow", "no scaling animation", "readable over bright and dark terrain"]}
+    },
+    {
+      "id": "selected_item_label",
+      "file": "hud_selected_item_label.png",
+      "role": "label_panel",
+      "source_size_px": [48, 16],
+      "display_size_px": [96, 20],
+      "scale": 1,
+      "slice_border_px": [6, 6, 6, 6],
+      "prompt": {"primary_request": "A subtle semi-transparent dark navy pixel label backing with a one-pixel silver-dark outline, from the hero sheet label bar.", "constraints": ["no ornate frame", "no baked text", "high contrast on sky, grass, snow, and dirt"]}
+    },
+    {
+      "id": "debug_panel",
+      "file": "hud_panel_info.png",
+      "role": "debug_panel",
+      "source_size_px": [160, 62],
+      "display_size_px": [160, 62],
+      "scale": 1,
+      "slice_border_px": [2, 2, 2, 2],
+      "prompt": {"primary_request": "Unchanged accepted v2 asset: plain semi-transparent charcoal debug telemetry backing with a one-pixel muted border.", "constraints": ["no fantasy ornaments", "no baked text", "visually subordinate"]}
+    },
+    {
+      "id": "tile_dirt",
+      "file": "hud_tile_dirt.png",
+      "role": "tile_icon",
+      "source_size_px": [32, 32],
+      "display_size_px": [32, 32],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A 32x32 pixel-art dirt block icon, warm brown soil with sparse darker pebbles.", "constraints": ["single centered square block", "transparent outside the block"]}
+    },
+    {
+      "id": "tile_grass",
+      "file": "hud_tile_grass.png",
+      "role": "tile_icon",
+      "source_size_px": [32, 32],
+      "display_size_px": [32, 32],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A 32x32 grass-over-dirt block icon matching the world terrain, bright green top fringe and warm brown soil.", "constraints": ["single centered square block", "transparent outside the block"]}
+    },
+    {
+      "id": "tile_stone",
+      "file": "hud_tile_stone.png",
+      "role": "tile_icon",
+      "source_size_px": [32, 32],
+      "display_size_px": [32, 32],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A 32x32 cool gray stone block icon with chunky irregular facets and small highlights.", "constraints": ["single centered square block", "transparent outside the block"]}
+    },
+    {
+      "id": "tile_copper_ore",
+      "file": "hud_tile_copper_ore.png",
+      "role": "tile_icon",
+      "source_size_px": [32, 32],
+      "display_size_px": [32, 32],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A 32x32 dark gray stone block icon with several readable copper-orange ore clusters.", "constraints": ["single centered square block", "transparent outside the block", "ore remains visible at HUD size"]}
+    },
+    {
+      "id": "hud_cursor",
+      "file": "hud_cursor.png",
+      "role": "cursor",
+      "source_size_px": [16, 16],
+      "display_size_px": [16, 16],
+      "scale": 1,
+      "slice_border_px": [0, 0, 0, 0],
+      "prompt": {"primary_request": "A crisp 16x16 pixel cursor arrow in silver-white with a charcoal shadow pixel edge and one gold accent pixel.", "constraints": ["clear top-left hotspot", "transparent background"]}
+    }
+  ],
+  "mockup_outputs": [
+    {"file": "hud-overlay-1280x720.png", "size_px": [1280, 720], "background": "transparent"},
+    {"file": "hud-asset-contact-sheet.png", "size_px": [1280, 960], "background": "#111522FF"}
+  ]
+}

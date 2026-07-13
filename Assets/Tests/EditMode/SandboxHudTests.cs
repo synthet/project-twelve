@@ -128,6 +128,9 @@ public sealed class SandboxHudTests
         CanvasScaler scaler = prefab.GetComponent<CanvasScaler>();
         Assert.IsNotNull(scaler);
         Assert.AreEqual(new Vector2(1280f, 720f), scaler.referenceResolution);
+        Assert.AreEqual(CanvasScaler.ScaleMode.ConstantPixelSize, scaler.uiScaleMode);
+        Assert.IsNotNull(prefab.GetComponent<SandboxHudPixelPerfectScaler>(),
+            "Pixel-art HUD needs the integer scale driver to avoid fractional resampling.");
 
         GameObject instance = Object.Instantiate(prefab);
         try
@@ -136,19 +139,28 @@ public sealed class SandboxHudTests
             Assert.IsNotNull(hud);
             if (hud.SlotViewCount == 0)
             {
-                hud.SendMessage("Awake");
+                hud.Awake();
             }
 
             Assert.AreEqual(10, hud.SlotViewCount);
             SerializedObject serialized = new SerializedObject(hud);
             Assert.IsNotNull(serialized.FindProperty("panelSprite").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("hotbarSprite").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("debugPanelSprite").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("emptyHeartSprite").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("portraitSprite").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("dirtIcon").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("grassIcon").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("stoneIcon").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("copperOreIcon").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("pixelFont").objectReferenceValue);
 
             Sprite slotSprite = serialized.FindProperty("slotSprite").objectReferenceValue as Sprite;
             Assert.IsNotNull(slotSprite);
-            Assert.LessOrEqual(slotSprite.border.x / slotSprite.pixelsPerUnit * 100f, 12f);
-            Assert.LessOrEqual(slotSprite.border.y / slotSprite.pixelsPerUnit * 100f, 12f);
+            // Corner brackets in the slot art extend to pixel 15; the 9-slice
+            // border must fully contain them so they never get sliced through.
+            Assert.AreEqual(16f, slotSprite.border.x / slotSprite.pixelsPerUnit * 100f, 0.001f);
+            Assert.AreEqual(16f, slotSprite.border.y / slotSprite.pixelsPerUnit * 100f, 0.001f);
 
             RectTransform vitals = instance.transform.Find("Vitals") as RectTransform;
             RectTransform hotbar = instance.transform.Find("CreativeHotbar") as RectTransform;
@@ -156,7 +168,7 @@ public sealed class SandboxHudTests
             Assert.IsNotNull(vitals);
             Assert.IsNotNull(hotbar);
             Assert.IsNotNull(telemetry);
-            Assert.LessOrEqual(vitals.rect.width, 210f);
+            Assert.LessOrEqual(vitals.rect.width, 252f);
             Assert.LessOrEqual(vitals.rect.height, 70f);
             Assert.LessOrEqual(hotbar.rect.width, 612f);
             Assert.LessOrEqual(hotbar.rect.height, 60f);
@@ -167,20 +179,31 @@ public sealed class SandboxHudTests
             RectTransform secondSlot = instance.transform.Find("CreativeHotbar/Slot2") as RectTransform;
             Assert.IsNotNull(firstSlot);
             Assert.IsNotNull(secondSlot);
-            float firstSelectedY = firstSlot.anchoredPosition.y;
+            // Slots stay put on selection — a vertical pop reads as misalignment
+            // against the pixel-perfect grid.
+            float firstSlotY = firstSlot.anchoredPosition.y;
             Assert.IsTrue(hud.Hotbar.Select(1));
-            Assert.AreEqual(firstSelectedY - 2f, firstSlot.anchoredPosition.y, 0.001f);
-            Assert.AreEqual(firstSelectedY, secondSlot.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(firstSlotY, firstSlot.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(firstSlotY, secondSlot.anchoredPosition.y, 0.001f);
             RectTransform selectedItem = secondSlot.Find("SelectedItem") as RectTransform;
             Assert.IsNotNull(selectedItem);
             Assert.AreEqual(secondSlot, selectedItem.parent);
-            Assert.AreEqual(8f, selectedItem.anchoredPosition.y, 0.001f);
+            Assert.AreEqual(6f, selectedItem.anchoredPosition.y, 0.001f);
             Transform selectedFrame = secondSlot.Find("Selected");
             Assert.IsNotNull(selectedFrame);
-            Assert.IsNotNull(selectedFrame.Find("MarkerTop"));
-            Assert.IsNotNull(selectedFrame.Find("MarkerBottom"));
-            Assert.IsNotNull(selectedFrame.Find("MarkerLeft"));
-            Assert.IsNotNull(selectedFrame.Find("MarkerRight"));
+            bool hasSelectionSprite = serialized.FindProperty("selectionSprite").objectReferenceValue != null;
+            if (hasSelectionSprite)
+            {
+                Assert.IsNull(selectedFrame.Find("MarkerTop"),
+                    "Selection sprite carries the gold cues; fallback markers must be absent.");
+            }
+            else
+            {
+                Assert.IsNotNull(selectedFrame.Find("MarkerTop"));
+                Assert.IsNotNull(selectedFrame.Find("MarkerBottom"));
+                Assert.IsNotNull(selectedFrame.Find("MarkerLeft"));
+                Assert.IsNotNull(selectedFrame.Find("MarkerRight"));
+            }
 
             Assert.IsNull(instance.transform.Find("Vitals/HealthValue"));
 
@@ -204,11 +227,26 @@ public sealed class SandboxHudTests
         Assert.That(SandboxHudController.SelectedItemLabelDurationSeconds, Is.InRange(1.5f, 2f));
     }
 
+    [TestCase(1280f, 720f, 1)]
+    [TestCase(1920f, 1080f, 1)]
+    [TestCase(2560f, 1440f, 2)]
+    [TestCase(3840f, 2160f, 3)]
+    [TestCase(2560f, 1080f, 1)]
+    [TestCase(1024f, 768f, 1)]
+    [TestCase(640f, 360f, 1)]
+    public void PixelPerfectScaler_FloorsToIntegerAndNeverDropsBelowOne(
+        float screenWidth, float screenHeight, int expected)
+    {
+        Assert.AreEqual(expected, SandboxHudPixelPerfectScaler.ComputeScaleFactor(
+            screenWidth, screenHeight, new Vector2(1280f, 720f)));
+    }
+
     [TestCase(1920f, 1080f)]
     [TestCase(2560f, 1440f)]
     [TestCase(1920f, 1200f)]
     [TestCase(2560f, 1080f)]
     [TestCase(1024f, 768f)]
+    [TestCase(3840f, 2160f)]
     public void HudLayout_FitsRepresentativeAspectRatios(float screenWidth, float screenHeight)
     {
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/SandboxHUD.prefab");
@@ -218,13 +256,12 @@ public sealed class SandboxHudTests
             SandboxHudController hud = instance.GetComponent<SandboxHudController>();
             if (hud.SlotViewCount == 0)
             {
-                hud.SendMessage("Awake");
+                hud.Awake();
             }
 
             CanvasScaler scaler = instance.GetComponent<CanvasScaler>();
-            float widthScale = screenWidth / scaler.referenceResolution.x;
-            float heightScale = screenHeight / scaler.referenceResolution.y;
-            float scale = Mathf.Sqrt(widthScale * heightScale);
+            float scale = SandboxHudPixelPerfectScaler.ComputeScaleFactor(
+                screenWidth, screenHeight, scaler.referenceResolution);
             float canvasWidth = screenWidth / scale;
             float canvasHeight = screenHeight / scale;
 

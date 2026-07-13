@@ -249,6 +249,36 @@ public sealed class ContentRegistryTests
     }
 
     [Test]
+    public void CoreGoldOre_ProvidesPrototypeEmissiveSource()
+    {
+        TileDefinition gold = SandboxCoreContent.CreateTileRegistry().Get("core:gold_ore");
+
+        Assert.AreEqual((byte)12, gold.LightEmission);
+        Assert.AreEqual((byte)3, gold.LightAttenuation);
+    }
+
+    [Test]
+    public void TileDefinition_DefaultAttenuationTracksOpacity()
+    {
+        Assert.AreEqual((byte)1, new TileDefinition("test:air", solid: false).LightAttenuation);
+        Assert.AreEqual((byte)3, new TileDefinition("test:wall", solid: true, opaque: true).LightAttenuation);
+    }
+
+    [TestCase(0)]
+    [TestCase(16)]
+    public void ValidateTileReferences_RejectsOutOfRangeAttenuation(byte attenuation)
+    {
+        ContentRegistry<TileDefinition> tiles = new ContentRegistry<TileDefinition>("test:air");
+        tiles.Register(new TileDefinition("test:air", solid: false, lightAttenuation: attenuation, hardness: 0f));
+        tiles.Freeze();
+
+        ContentRegistry<ItemDefinition> items = new ContentRegistry<ItemDefinition>();
+        items.Freeze();
+
+        Assert.Throws<InvalidOperationException>(() => SandboxCoreContent.ValidateTileReferences(tiles, items));
+    }
+
+    [Test]
     public void ValidateTileReferences_FailsOnUnresolvedDropItem()
     {
         ContentRegistry<TileDefinition> tiles = new ContentRegistry<TileDefinition>("test:air");

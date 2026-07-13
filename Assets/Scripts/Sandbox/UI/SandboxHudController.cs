@@ -32,9 +32,12 @@ public sealed class SandboxHudController : MonoBehaviour
 
     [Header("HUD theme")]
     [SerializeField] private Sprite panelSprite;
+    [SerializeField] private Sprite hotbarSprite;
+    [SerializeField] private Sprite debugPanelSprite;
     [SerializeField] private Sprite frameSprite;
     [SerializeField] private Sprite selectionSprite;
     [SerializeField] private Sprite slotSprite;
+    [SerializeField] private Sprite itemLabelSprite;
     [SerializeField] private Font pixelFont;
 
     [Header("Core presentation")]
@@ -49,7 +52,6 @@ public sealed class SandboxHudController : MonoBehaviour
     private readonly List<Image> heartFills = new List<Image>();
     private readonly List<GameObject> hotbarSelections = new List<GameObject>();
     private readonly List<RectTransform> hotbarSlots = new List<RectTransform>();
-    private readonly List<Vector2> hotbarSlotPositions = new List<Vector2>();
     private Image selectedItemLabel;
     private Text selectedItemText;
     private Text worldInfoText;
@@ -62,7 +64,7 @@ public sealed class SandboxHudController : MonoBehaviour
     public int SlotViewCount => hotbarSelections.Count;
     public bool DebugTelemetryVisible => worldInfoPanel != null && worldInfoPanel.activeSelf;
 
-    private void Awake()
+    internal void Awake()
     {
         ResolveSources();
         hotbar = new SandboxCreativeHotbarState();
@@ -138,21 +140,23 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildVitalsPanel(RectTransform parent)
     {
-        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(206f, 70f),
+        RectTransform panel = CreatePanel("Vitals", parent, new Vector2(16f, -16f), new Vector2(252f, 64f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
 
-        Image portraitFrame = CreateImage("PortraitFrame", panel, frameSprite, Silver);
-        SetRect(portraitFrame.rectTransform, new Vector2(7f, -7f), new Vector2(56f, 56f),
+        Image portraitFrame = CreateImage("PortraitFrame", panel, frameSprite, Color.white);
+        SetRect(portraitFrame.rectTransform, new Vector2(8f, -8f), new Vector2(48f, 48f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         portraitFrame.type = Image.Type.Sliced;
 
         Image portrait = CreateImage("Portrait", portraitFrame.rectTransform, portraitSprite, Color.white);
-        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(38f, 38f),
+        SetRect(portrait.rectTransform, Vector2.zero, new Vector2(40f, 40f),
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
         portrait.preserveAspect = true;
 
+        // 10 hearts at 16px + 9x1 spacing = 169, keeping the row inside the
+        // panel's 16px sliced frame border (content area ends at x = 236).
         RectTransform hearts = CreateRect("Hearts", panel);
-        SetRect(hearts, new Vector2(70f, -10f), new Vector2(129f, 50f),
+        SetRect(hearts, new Vector2(64f, -14f), new Vector2(169f, 36f),
             new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
         HorizontalLayoutGroup layout = hearts.gameObject.AddComponent<HorizontalLayoutGroup>();
         layout.spacing = 1f;
@@ -166,25 +170,26 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildHotbar(RectTransform parent)
     {
-        Image panelImage = CreateImage("CreativeHotbar", parent, null, HotbarTint);
-        SetRect(panelImage.rectTransform, new Vector2(0f, 14f), new Vector2(612f, 60f),
+        Image panelImage = CreateImage("CreativeHotbar", parent, hotbarSprite,
+            hotbarSprite != null ? Color.white : HotbarTint);
+        SetRect(panelImage.rectTransform, new Vector2(0f, 14f), new Vector2(560f, 60f),
             new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+        panelImage.type = hotbarSprite != null ? Image.Type.Sliced : Image.Type.Simple;
         RectTransform panel = panelImage.rectTransform;
 
         for (int i = 0; i < SandboxCreativeHotbarState.SlotCount; i++)
         {
-            float x = 19f + i * 58f;
+            float x = 13f + i * 54f;
             Image slot = CreateImage($"Slot{i + 1}", panel,
                 slotSprite != null ? slotSprite : panelSprite, Color.white);
-            SetRect(slot.rectTransform, new Vector2(x, -4f), new Vector2(52f, 52f),
+            SetRect(slot.rectTransform, new Vector2(x, -6f), new Vector2(48f, 48f),
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f));
             slot.type = Image.Type.Sliced;
             hotbarSlots.Add(slot.rectTransform);
-            hotbarSlotPositions.Add(slot.rectTransform.anchoredPosition);
 
             Sprite iconSprite = GetIcon(i);
             Image icon = CreateImage("Icon", slot.rectTransform, iconSprite, Color.white);
-            SetRect(icon.rectTransform, new Vector2(0f, -1f), new Vector2(32f, 32f),
+            SetRect(icon.rectTransform, new Vector2(0f, 0f), new Vector2(32f, 32f),
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             icon.preserveAspect = true;
             icon.enabled = iconSprite != null;
@@ -199,25 +204,32 @@ public sealed class SandboxHudController : MonoBehaviour
 
             Image selection = CreateImage("Selected", slot.rectTransform,
                 selectionSprite != null ? selectionSprite : frameSprite, Color.white);
-            SetStretch(selection.rectTransform, -1f, -1f, -1f, -1f);
+            SetStretch(selection.rectTransform, 0f, 0f, 0f, 0f);
             selection.type = Image.Type.Sliced;
-            Image bottomMarker = CreateImage("MarkerBottom", selection.rectTransform, null, SelectionGold);
-            SetRect(bottomMarker.rectTransform, new Vector2(0f, 6f), new Vector2(28f, 2f),
-                new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
-            Image topMarker = CreateImage("MarkerTop", selection.rectTransform, null, SelectionGold);
-            SetRect(topMarker.rectTransform, new Vector2(0f, -6f), new Vector2(28f, 2f),
-                new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
-            Image leftMarker = CreateImage("MarkerLeft", selection.rectTransform, null, SelectionGold);
-            SetRect(leftMarker.rectTransform, new Vector2(6f, 0f), new Vector2(2f, 28f),
-                new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f));
-            Image rightMarker = CreateImage("MarkerRight", selection.rectTransform, null, SelectionGold);
-            SetRect(rightMarker.rectTransform, new Vector2(-6f, 0f), new Vector2(2f, 28f),
-                new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f));
+            if (selectionSprite == null)
+            {
+                // Fallback markers only when no dedicated selection sprite carries
+                // the gold border and corner cues itself.
+                Image bottomMarker = CreateImage("MarkerBottom", selection.rectTransform, null, SelectionGold);
+                SetRect(bottomMarker.rectTransform, new Vector2(0f, 6f), new Vector2(28f, 2f),
+                    new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f));
+                Image topMarker = CreateImage("MarkerTop", selection.rectTransform, null, SelectionGold);
+                SetRect(topMarker.rectTransform, new Vector2(0f, -6f), new Vector2(28f, 2f),
+                    new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f));
+                Image leftMarker = CreateImage("MarkerLeft", selection.rectTransform, null, SelectionGold);
+                SetRect(leftMarker.rectTransform, new Vector2(6f, 0f), new Vector2(2f, 28f),
+                    new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f));
+                Image rightMarker = CreateImage("MarkerRight", selection.rectTransform, null, SelectionGold);
+                SetRect(rightMarker.rectTransform, new Vector2(-6f, 0f), new Vector2(2f, 28f),
+                    new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f));
+            }
             selection.gameObject.SetActive(i == 0);
             hotbarSelections.Add(selection.gameObject);
         }
 
-        selectedItemLabel = CreateImage("SelectedItem", hotbarSlots[0], null, ItemLabelTint);
+        selectedItemLabel = CreateImage("SelectedItem", hotbarSlots[0], itemLabelSprite,
+            itemLabelSprite != null ? Color.white : ItemLabelTint);
+        selectedItemLabel.type = itemLabelSprite != null ? Image.Type.Sliced : Image.Type.Simple;
         selectedItemText = CreateText("Text", selectedItemLabel.rectTransform, "Dirt", 15,
             TextAnchor.MiddleCenter, Color.white);
         SetStretch(selectedItemText.rectTransform, 5f, 5f, 2f, 2f);
@@ -226,9 +238,11 @@ public sealed class SandboxHudController : MonoBehaviour
 
     private void BuildWorldPanel(RectTransform parent)
     {
-        Image panel = CreateImage("WorldInfo", parent, null, DebugPanelTint);
+        Image panel = CreateImage("WorldInfo", parent, debugPanelSprite,
+            debugPanelSprite != null ? Color.white : DebugPanelTint);
         SetRect(panel.rectTransform, new Vector2(-16f, -16f), new Vector2(160f, 62f),
             new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
+        panel.type = debugPanelSprite != null ? Image.Type.Sliced : Image.Type.Simple;
         worldInfoPanel = panel.gameObject;
         worldInfoText = CreateText("WorldInfoText", panel.rectTransform, string.Empty, 14,
             TextAnchor.MiddleLeft, Silver);
@@ -255,7 +269,7 @@ public sealed class SandboxHudController : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             RectTransform heart = CreateRect($"Heart{i + 1}", heartsParent);
-            heart.sizeDelta = new Vector2(12f, 12f);
+            heart.sizeDelta = new Vector2(16f, 16f);
 
             Image empty = CreateImage("Empty", heart,
                 emptyHeartSprite != null ? emptyHeartSprite : heartSprite,
@@ -342,9 +356,7 @@ public sealed class SandboxHudController : MonoBehaviour
     {
         for (int i = 0; i < hotbarSelections.Count; i++)
         {
-            bool selected = i == index;
-            hotbarSelections[i].SetActive(selected);
-            hotbarSlots[i].anchoredPosition = hotbarSlotPositions[i] + (selected ? Vector2.up * 2f : Vector2.zero);
+            hotbarSelections[i].SetActive(i == index);
         }
 
         if (selectedItemText != null)
@@ -459,7 +471,7 @@ public sealed class SandboxHudController : MonoBehaviour
     private void PositionSelectedItemLabel(RectTransform slot)
     {
         selectedItemLabel.rectTransform.SetParent(slot, false);
-        SetRect(selectedItemLabel.rectTransform, new Vector2(0f, 8f), new Vector2(96f, 20f),
+        SetRect(selectedItemLabel.rectTransform, new Vector2(0f, 6f), new Vector2(96f, 20f),
             new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 0f));
     }
 

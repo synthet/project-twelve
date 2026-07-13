@@ -3,7 +3,7 @@ type: Task
 id: P2-LIGHT-001
 title: "[P2-LIGHT-001] Specify lighting data layout and propagation rules."
 description: Tile lightmap (0–15) with BFS flood-fill propagation, dirty-window relight, cross-chunk seeding, and sky-column sunlight.
-status: open
+status: claimed
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/37"
@@ -149,3 +149,20 @@ equals a full relight.
 - [ ] Falloff, occlusion, border, and dirty-window-equivalence EditMode tests pass.
 - [ ] Play-mode cave/torch check recorded with capture.
 - [ ] Follow-up tasks created for colored light, time-of-day, and shader polish.
+
+## Progress log
+
+**2026-07-12 — Claimed and implemented locally.** Added the pure bounded BFS solver and
+non-generating world adapter; registry attenuation and prototype gold-ore emission; render-only
+light writes; edit/chunk-load relighting; derived save/load behavior; and EditMode coverage for
+falloff, opaque cost, overlapping sources, removal, dirty/full equivalence, unavailable cells,
+chunk dirty flags, registry contracts, and renderer brightness. Verification evidence remains
+pending below until the canonical Unity gates complete.
+
+**Local verification:** `ProjectTwelve.Runtime.csproj` and `ProjectTwelve.EditModeTests.csproj`
+compile with zero errors (the latter using the generated project's matching v4.7.2 target); all 10
+`SandboxLightSolverTests` pass through a temporary Mono reflection harness over the compiled Unity
+test assembly; Markdown links pass (343 files); focused project-profile OKF lint passes for all four
+edited docs; targeted `git diff --check` passes. The full OKF/wiki lint remains red on 22 unrelated
+pre-existing missing-frontmatter files. Unity batch EditMode and Play Mode/profiling remain pending
+because this checkout is open in the Editor and the Unity MCP connection is revoked.

@@ -680,7 +680,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         return color;
     }
 
-    private static Color GetTileLightColor(SandboxTile tile)
+    internal static Color GetTileLightColor(SandboxTile tile)
     {
         float light = Mathf.Clamp01(tile.light / 15f);
         float brightness = Mathf.Lerp(0.35f, 1f, light);

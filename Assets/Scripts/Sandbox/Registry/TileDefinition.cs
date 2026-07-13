@@ -12,6 +12,7 @@ namespace ProjectTwelve.Sandbox.Registry
             bool solid,
             bool opaque = false,
             byte lightEmission = 0,
+            byte? lightAttenuation = null,
             string atlasSprite = null,
             string dropItemId = null,
             float hardness = 1f)
@@ -20,6 +21,7 @@ namespace ProjectTwelve.Sandbox.Registry
             Solid = solid;
             Opaque = opaque;
             LightEmission = lightEmission;
+            LightAttenuation = lightAttenuation ?? (opaque ? (byte)3 : (byte)1);
             AtlasSprite = atlasSprite;
             DropItemId = dropItemId;
             Hardness = hardness;
@@ -35,6 +37,9 @@ namespace ProjectTwelve.Sandbox.Registry
 
         /// <summary>Emitted light level 0–15 (P2-LIGHT-001).</summary>
         public byte LightEmission { get; }
+
+        /// <summary>Light lost when propagation enters this tile; core opaque tiles use 3.</summary>
+        public byte LightAttenuation { get; }
 
         /// <summary>Visual key resolved by the rendering catalog (ground tileset name today).</summary>
         public string AtlasSprite { get; }

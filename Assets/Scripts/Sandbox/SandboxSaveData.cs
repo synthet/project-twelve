@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProjectTwelve.Sandbox.Inventory;
 using ProjectTwelve.Sandbox.Registry;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public sealed class SandboxSaveData
     public bool hasPlayerPosition;
     public float playerX;
     public float playerY;
+    public SandboxInventorySaveData inventory;
     public List<SandboxChunkSaveData> chunks = new List<SandboxChunkSaveData>();
 
     // Tile identity palette (string ID → runtime index at save time). Absent or empty on

@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-07-12
+
+Tile lighting (P2-LIGHT-001), deterministic terrain noise (P2-GEN-001), PixelLab HUD
+pipeline, and related specs/tooling.
+
+### Added
+
+- Sandbox lighting runtime (`Assets/Scripts/Sandbox/Lighting/`): BFS `SandboxLightSolver`
+  (clear-then-refill, outside-seeded dirty updates), `SandboxWorldLightGrid`, and
+  `TileDefinition.LightAttenuation` (opaque core tiles attenuate by 3). Wired through
+  chunk light writes and `SandboxWorld` edit/load relight; EditMode
+  `SandboxLightSolverTests`. Lighting wiki marked adopted for P2-LIGHT-001.
+- Sandbox inventory runtime (`Assets/Scripts/Sandbox/Inventory/`): hotbar-backed place/pick
+  via `SandboxInventoryEditService` and world adapter.
+- Project-owned deterministic noise for terrain generation (P2-GEN-001): `SandboxHash` /
+  gen-pass integration with `world-viz` parity.
+- PixelLab MCP skill (`.claude/skills/pixellab-mcp/`) plus import/normalize scripts,
+  HUD asset manifest/redesign docs, and production sprites under
+  `Assets/Sprites/UI/Generated/` (hearts, panels, slots, portrait, hotbar, tile icons).
+- `SandboxHudPixelPerfectScaler` and expanded HUD prefab/controller coverage for the
+  PixelLab v3 layout contract.
+- Specs and backlog docs: save/load format, enemy navigation/spawn, P2-QA-001 CI runner
+  ticket, expanded P2-DATA-002; HUD mockup contact sheets under `docs/images/hud-mockups/`.
+
+### Changed
+
+- Sandbox HUD vitals/hotbar/selected-item layout and theme wiring; health-panel frame
+  sizing; MCP example configs scoped to project settings.
+- Paid-assets push-base handling and documentation navigation refinements.
+
+### Fixed
+
+- Autotile EditMode drift repairs; P2-FLUID-001 wake fixture correction.
+- HUD health panel frame distortion and layout width.
+
 ## [0.4.0] — 2026-07-11
 
 Sandbox HUD editor tooling and test coverage for the prototype hotbar/vitals UI.

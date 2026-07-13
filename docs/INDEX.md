@@ -83,6 +83,14 @@ This index groups the repository documentation by purpose. For the recommended r
 - [wiki/glossary.md](wiki/glossary.md) — shared vocabulary.
 - [wiki/spec-driven-development-tasks.md](wiki/spec-driven-development-tasks.md) — phase-by-phase backlog and verification gates.
 
+## Implementation wiki: HUD and PixelLab assets
+
+- [wiki/hud-assets-manifest.md](wiki/hud-assets-manifest.md) — exact bitmap, Unity import, layout, and generation contract for the creative HUD.
+- [wiki/hud-redesign-pixellab.md](wiki/hud-redesign-pixellab.md) — PixelLab capability research and the v3 asset contract plan.
+- [wiki/pixellab-api-v2.md](wiki/pixellab-api-v2.md) — PixelLab MCP/REST routing, security, polling, and integration rules.
+- [wiki/hud-conversation-summary.md](wiki/hud-conversation-summary.md) — chronological record of the HUD design and generation work.
+- [specs/hud-assets.json](specs/hud-assets.json) — machine-readable HUD asset contract (companion to the manifest).
+
 ## Activity
 
 - [log.md](log.md) — append-only documentation activity log.

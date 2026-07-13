@@ -89,6 +89,15 @@ Project-owned rendering, player avatar, creature, and effect systems. Local sour
 | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
 | [Asset integration requirements](15-assets-integration.md) | Sprites, atlases, animation schema (Set B reference) |
 
+### HUD & PixelLab asset generation
+
+| Page | Scope |
+|------|-------|
+| [HUD asset manifest](hud-assets-manifest.md) | Exact bitmap, Unity import, layout, and generation contract for the creative HUD |
+| [HUD redesign for PixelLab](hud-redesign-pixellab.md) | PixelLab capability research and the v3 asset contract plan sized to the tool's generation tiers |
+| [PixelLab API v2 reference](pixellab-api-v2.md) | Routing, security, polling, and integration rules for PixelLab MCP/REST |
+| [HUD development conversation summary](hud-conversation-summary.md) | Chronological record of the HUD design, generation, wiring, and validation work |
+
 ### How the page sets correspond
 
 | Topic | Set A (prototype) | Set B (reference) |

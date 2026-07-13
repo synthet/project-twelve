@@ -4,7 +4,7 @@ title: Canonical Sources
 description: Authority map for project, agent, tooling, documentation, and asset configuration sources.
 resource: CANONICAL_SOURCES.md
 tags: [docs, governance, agents]
-timestamp: 2026-07-11T17:10:00Z
+timestamp: 2026-07-12T06:10:00Z
 okf_version: 0.1
 ---
 
@@ -77,6 +77,7 @@ okf_version: 0.1
 | FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json`, `.mcp.json`, and `.codex/config.toml`. |
 
 | PixelLab MCP (Vibe Coding) | [pixellab.ai/mcp](https://www.pixellab.ai/mcp) | Optional pixel art generation; skill [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md); template in `.cursor/mcp.example.json` `_optionalServers.pixellab`. |
+| PixelLab REST API v2 | [api.pixellab.ai/v2/llms.txt](https://api.pixellab.ai/v2/llms.txt) | HTTP/SDK endpoint index; local skill copy [`.claude/skills/pixellab-mcp/references/api-v2-llms.md`](../.claude/skills/pixellab-mcp/references/api-v2-llms.md). Prefer MCP when connected. |
 
 | Unity C# coding rules (supplementary) | `.cursorrules` | Long-form Cursor rules for Unity C# style and patterns. |
 

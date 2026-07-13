@@ -99,10 +99,8 @@ public sealed class SandboxSaveLoadTests
         SandboxWorld world = CreateWorld();
         world.LoadFromPath(path);
 
-        SandboxTerrainGenerator generator = world.CreateTerrainGenerator();
-        byte expected = SandboxTerrainGenerator.GetPrototypeLight(2, generator.GetSurfaceHeight(1));
-        Assert.AreEqual(expected, world.GetTile(1, 2).light);
-        Assert.AreEqual((byte)4, expected);
+        Assert.AreEqual((byte)0, world.GetTile(1, 2).light,
+            "Legacy cached light must be ignored and recomputed as derived state.");
     }
 
     [Test]
@@ -125,6 +123,27 @@ public sealed class SandboxSaveLoadTests
                 tiles.GetIndex(entry.id),
                 entry.runtimeIndex,
                 $"Palette entry '{entry.id}' must record the live runtime index.");
+        }
+    }
+
+    [Test]
+    public void SaveToPath_ClearsDerivedLightFromEveryTileEdit()
+    {
+        SandboxWorld world = CreateWorld();
+        world.SetTile(0, 0, SandboxRegistries.Tiles.GetIndex("core:gold_ore"));
+
+        string path = TempFile("derived-light-save.json");
+        world.SaveToPath(path);
+
+        SandboxSaveData saved = JsonUtility.FromJson<SandboxSaveData>(File.ReadAllText(path));
+        Assert.IsNotEmpty(saved.chunks);
+        foreach (SandboxChunkSaveData chunk in saved.chunks)
+        {
+            foreach (SandboxTileEditData edit in chunk.edits)
+            {
+                Assert.AreEqual(0, edit.tile.light,
+                    $"Cached light persisted at chunk ({chunk.x},{chunk.y}) local ({edit.localX},{edit.localY}).");
+            }
         }
     }
 
