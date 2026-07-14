@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// Pure state for the prototype creative hotbar. Inventory quantities and persistence deliberately
-/// remain outside this type until P2-INV-001 lands.
+/// Pure selection/presentation state for the ten-slot hotbar. Quantities live in the player's
+/// registry-backed SandboxInventory so this type stays focused on input order and display labels.
 /// </summary>
 public sealed class SandboxCreativeHotbarState
 {
@@ -27,16 +27,13 @@ public sealed class SandboxCreativeHotbarState
         new Slot("core:dirt", "Dirt"),
         new Slot("core:grass", "Grass"),
         new Slot("core:stone", "Stone"),
-        // core:copper_ore currently renders with the BricksA tileset (no ore art
-        // exists in the licensed pack yet), so the player-facing name says what
-        // the tile actually looks like. Rename back when real ore art lands.
-        new Slot("core:copper_ore", "Stone Bricks"),
-        default,
-        default,
-        default,
-        default,
-        default,
-        default,
+        new Slot("core:bricks_a", "Bricks A"),
+        new Slot("core:bricks_b", "Bricks B"),
+        new Slot("core:bricks_c", "Bricks C"),
+        new Slot("core:bricks_d", "Bricks D"),
+        new Slot("core:frozen", "Frozen"),
+        new Slot("core:magma", "Magma"),
+        new Slot("core:sand", "Sand"),
     };
 
     private readonly Slot[] slots;
@@ -72,6 +69,25 @@ public sealed class SandboxCreativeHotbarState
     public int SelectedIndex => selectedIndex;
     public Slot SelectedSlot => slots[selectedIndex];
     public string SelectedTileId => SelectedSlot.TileId;
+
+    public void SetSlot(int index, Slot slot)
+    {
+        if (index < 0 || index >= SlotCount)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"Slot must be in 0-{SlotCount - 1}.");
+        }
+
+        if (slots[index].TileId == slot.TileId && slots[index].DisplayName == slot.DisplayName)
+        {
+            return;
+        }
+
+        slots[index] = slot;
+        if (index == selectedIndex)
+        {
+            SelectionChanged?.Invoke(selectedIndex, SelectedSlot);
+        }
+    }
 
     public bool Select(int index)
     {

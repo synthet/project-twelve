@@ -156,6 +156,7 @@ public sealed class SandboxPlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
         inventory = SandboxInventory.CreatePrototypeLoadout(SandboxRegistries.Items);
+        inventory.Changed += OnInventoryChanged;
         inventoryEditService = new SandboxInventoryEditService(SandboxRegistries.Tiles, SandboxRegistries.Items);
         if (!TrySetActivePlacementTile(placeTileId))
         {
@@ -213,12 +214,22 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (inventory != null)
+        {
+            inventory.Changed -= OnInventoryChanged;
+        }
+
 #if ENABLE_INPUT_SYSTEM
         moveAction?.Dispose();
         jumpAction?.Dispose();
         saveAction?.Dispose();
         loadAction?.Dispose();
 #endif
+    }
+
+    private void OnInventoryChanged()
+    {
+        SelectInventorySlot(selectedInventorySlot);
     }
 
     private void Update()
@@ -290,12 +301,15 @@ public sealed class SandboxPlayerController : MonoBehaviour
 
         Vector3 targetCenter = world.TileToWorldCenter(tile.x, tile.y);
         float maxWorldRange = Mathf.Max(0f, editRange) * world.TileSize;
-        if (!SandboxInventoryEditService.IsWithinReach(
+        bool playerOccluded = place && playerCollider != null && playerCollider.bounds.Contains(targetCenter);
+        SandboxInventoryEditResult validation = SandboxInventoryEditService.ValidateControllerRequest(
                 transform.position.x,
                 transform.position.y,
                 targetCenter.x,
                 targetCenter.y,
-                maxWorldRange))
+                maxWorldRange,
+                playerOccluded);
+        if (validation != SandboxInventoryEditResult.Success)
         {
             return;
         }
@@ -306,16 +320,17 @@ public sealed class SandboxPlayerController : MonoBehaviour
             result = inventoryEditService.TryBreak(inventoryWorld, tile.x, tile.y, out SandboxItemStack drop);
             if (result == SandboxInventoryEditResult.Success)
             {
-                SandboxItemPickup.Spawn(drop.ItemId, drop.Count, targetCenter, inventory, transform);
+                SandboxItemPickup.Spawn(
+                    drop.ItemId,
+                    drop.Count,
+                    targetCenter,
+                    inventory,
+                    transform,
+                    world.TileSize);
             }
         }
         else
         {
-            if (playerCollider != null && playerCollider.bounds.Contains(targetCenter))
-            {
-                return;
-            }
-
             result = inventoryEditService.TryPlace(inventoryWorld, inventory, selectedInventorySlot, tile.x, tile.y);
         }
 

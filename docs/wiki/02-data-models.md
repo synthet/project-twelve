@@ -147,29 +147,16 @@ it through `World`. Movement/collision detail lives in [Collision & Physics](05-
 
 ## Inventory
 
-```csharp
-public sealed class Inventory
-{
-    public Dictionary<int,int> items = new();        // itemId → quantity
+P2-INV-001 adopts a fixed-size ordered slot array rather than the earlier dictionary sketch. Each
+slot is either empty or holds `(itemId, count)`, where `itemId` is a stable registry string ID and
+`1 ≤ count ≤ ItemDefinition.MaxStack`. The 40-slot player inventory reserves slots 0–9 as the
+hotbar. Stack insertion is deterministic: matching non-full stacks in slot order, followed by empty
+slots in slot order. Save data records only populated slots as `(index, itemId, count)`, preserving
+empty positions and avoiding process-local registry indices.
 
-    public void AddItem(int itemId, int qty = 1)
-    {
-        items.TryGetValue(itemId, out int have);
-        items[itemId] = have + qty;
-    }
-
-    public bool RemoveItem(int itemId, int qty = 1)
-    {
-        if (!items.TryGetValue(itemId, out int have) || have < qty) return false;
-        items[itemId] = have - qty;
-        return true;
-    }
-}
-```
-
-Item IDs are registry IDs (see [Modding & Content](12-modding.md)). For UI with fixed slots,
-back this with an ordered slot array instead of a dictionary; the dictionary form is the
-simplest correct starting point.
+Item IDs are registry IDs (see [Modding & Content](12-modding.md)). This ordered form is the
+authoritative runtime and persistence contract; a dictionary remains useful only for aggregate
+count queries in tools.
 
 ## See also
 

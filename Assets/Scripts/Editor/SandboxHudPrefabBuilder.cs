@@ -95,7 +95,7 @@ public static class SandboxHudPrefabBuilder
         SetAsset<Sprite>(serialized, "dirtIcon", $"{baseDir}/hud_tile_dirt.png");
         SetAsset<Sprite>(serialized, "grassIcon", $"{baseDir}/hud_tile_grass.png");
         SetAsset<Sprite>(serialized, "stoneIcon", $"{baseDir}/hud_tile_stone.png");
-        SetAsset<Sprite>(serialized, "copperOreIcon", $"{baseDir}/hud_tile_copper_ore.png");
+        SetAsset<Sprite>(serialized, "bricksIcon", $"{baseDir}/hud_tile_bricks.png");
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 

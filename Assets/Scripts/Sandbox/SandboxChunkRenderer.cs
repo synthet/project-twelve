@@ -12,16 +12,16 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private static readonly Rect DirtUv = GetLegacyAtlasUv(0);
     private static readonly Rect GrassUv = GetLegacyAtlasUv(1);
     private static readonly Rect StoneUv = GetLegacyAtlasUv(2);
-    private static readonly Rect CopperOreUv = GetLegacyAtlasUv(3);
+    private static readonly Rect BricksUv = GetLegacyAtlasUv(3);
 
     // Registry runtime indices resolved once; the per-tile rebuild loop stays free of
     // string lookups (P2-DATA-002 hot-path requirement).
     private static readonly int GrassTileIndex = SandboxRegistries.Tiles.GetIndex("core:grass");
     private static readonly int StoneTileIndex = SandboxRegistries.Tiles.GetIndex("core:stone");
-    private static readonly int CopperOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:copper_ore");
-    private static readonly int IronOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:iron_ore");
-    private static readonly int SilverOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:silver_ore");
-    private static readonly int GoldOreTileIndex = SandboxRegistries.Tiles.GetIndex("core:gold_ore");
+    private static readonly int BricksATileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_a");
+    private static readonly int BricksBTileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_b");
+    private static readonly int BricksCTileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_c");
+    private static readonly int BricksDTileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_d");
     private static readonly HashSet<string> MissingOverrideSpriteWarnings = new HashSet<string>();
 
     private MeshFilter meshFilter;
@@ -640,12 +640,12 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             return StoneUv;
         }
 
-        if (tile.id == CopperOreTileIndex
-            || tile.id == IronOreTileIndex
-            || tile.id == SilverOreTileIndex
-            || tile.id == GoldOreTileIndex)
+        if (tile.id == BricksATileIndex
+            || tile.id == BricksBTileIndex
+            || tile.id == BricksCTileIndex
+            || tile.id == BricksDTileIndex)
         {
-            return CopperOreUv;
+            return BricksUv;
         }
 
         return DirtUv;
@@ -654,12 +654,12 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private static Color GetLegacyTileColor(SandboxTile tile)
     {
         Color color = GetTileLightColor(tile);
-        if (tile.id == IronOreTileIndex)
+        if (tile.id == BricksBTileIndex)
         {
             return new Color(color.r * 0.82f, color.g * 0.82f, color.b * 0.88f, color.a);
         }
 
-        if (tile.id == SilverOreTileIndex)
+        if (tile.id == BricksCTileIndex)
         {
             return new Color(
                 Mathf.Min(1f, color.r * 1.08f),
@@ -668,7 +668,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 color.a);
         }
 
-        if (tile.id == GoldOreTileIndex)
+        if (tile.id == BricksDTileIndex)
         {
             return new Color(
                 Mathf.Min(1f, color.r * 1.12f),

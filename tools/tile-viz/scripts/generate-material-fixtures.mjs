@@ -13,16 +13,17 @@ import { fileURLToPath } from 'node:url';
 import { DEFAULT_CATALOG } from '../src/visual/catalog.js';
 import { listBoundaryCells } from '../src/visual/materialBoundarySelection.js';
 import { loadTileSpace } from '../src/io/tileSpace.js';
-import { TileId } from '../../world-viz/src/core/tiles.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const outDir = path.join(root, 'test', 'fixtures', 'snippets', 'material-exp');
 
+const LegacyTileId = Object.freeze({ Air: 0, Dirt: 1, Grass: 2, Stone: 3 });
+
 const CHAR_TO_TILE = {
-  '1': TileId.Dirt,
-  '2': TileId.Stone,
-  '.': TileId.Air,
+  '1': LegacyTileId.Dirt,
+  '2': LegacyTileId.Stone,
+  '.': LegacyTileId.Air,
 };
 
 const PATTERNS = [
@@ -56,10 +57,10 @@ function buildSnippet(name, grid) {
     const worldY = height - 1 - row;
     for (let col = 0; col < grid[row].length; col++) {
       const id = grid[row][col];
-      if (id === TileId.Air) {
+      if (id === LegacyTileId.Air) {
         continue;
       }
-      tiles.push({ x: col, y: worldY, id, light: id === TileId.Grass ? 15 : 4 });
+      tiles.push({ x: col, y: worldY, id, light: id === LegacyTileId.Grass ? 15 : 4 });
     }
   }
 

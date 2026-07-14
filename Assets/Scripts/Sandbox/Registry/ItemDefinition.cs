@@ -1,7 +1,7 @@
 namespace ProjectTwelve.Sandbox.Registry
 {
     /// <summary>
-    /// Minimal pure-data item definition contract; extended by P2-INV-001 (stack rules, tools).
+    /// Pure-data item definition contract for stack limits and optional tile placement.
     /// </summary>
     public sealed class ItemDefinition : IContentDefinition
     {

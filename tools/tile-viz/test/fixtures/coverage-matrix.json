@@ -21,7 +21,7 @@
     "cover.chirality": ["roof-slope-left-vs-right", "symmetric-pyramid"],
     "catalog.humusGrouping": ["grass-cover-middle", "platform-grass-corners"],
     "catalog.rocksGrouping": ["material-boundary-horizontal", "dirt-stone-reentrant-west"],
-    "catalog.oreIsolation": ["ore-dirt-boundary", "ore-mixed-boundary"],
+    "catalog.brickIsolation": ["bricks-dirt-boundary", "bricks-mixed-boundary"],
     "integration.windowScene": ["mountain-window-corner"]
   }
 }

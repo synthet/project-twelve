@@ -45,7 +45,8 @@ public sealed class SandboxSaveLoadTests
     public void LoadFromPath_V1LegacyFixtureMapsThroughLegacyTable()
     {
         // Version-1 prototype save shape: no tilePalette, tile ids in the fixed legacy
-        // numbering (air=0, dirt=1, grass=2, stone=3, copper=4, iron=5, silver=6, gold=7).
+        // numbering (air=0, dirt=1, grass=2, stone=3, bricks A-D=4-7, then
+        // frozen=8, magma=9, sand=10).
         string path = TempFile("legacy-v1.json");
         File.WriteAllText(path, @"{
             ""version"": 1,
@@ -60,6 +61,9 @@ public sealed class SandboxSaveLoadTests
                     ""edits"": [
                         { ""localX"": 1, ""localY"": 2, ""tile"": { ""id"": 3, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } },
                         { ""localX"": 4, ""localY"": 5, ""tile"": { ""id"": 7, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } },
+                        { ""localX"": 8, ""localY"": 8, ""tile"": { ""id"": 8, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } },
+                        { ""localX"": 9, ""localY"": 9, ""tile"": { ""id"": 9, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } },
+                        { ""localX"": 10, ""localY"": 10, ""tile"": { ""id"": 10, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } },
                         { ""localX"": 6, ""localY"": 7, ""tile"": { ""id"": 0, ""light"": 15, ""fluid"": 0, ""metadata"": 0 } }
                     ]
                 }
@@ -71,7 +75,10 @@ public sealed class SandboxSaveLoadTests
 
         ContentRegistry<TileDefinition> tiles = SandboxRegistries.Tiles;
         Assert.AreEqual(tiles.GetIndex("core:stone"), world.GetTile(1, 2).id, "Legacy id 3 must load as stone.");
-        Assert.AreEqual(tiles.GetIndex("core:gold_ore"), world.GetTile(4, 5).id, "Legacy id 7 must load as gold ore.");
+        Assert.AreEqual(tiles.GetIndex("core:bricks_d"), world.GetTile(4, 5).id, "Legacy id 7 must load as bricks D.");
+        Assert.AreEqual(tiles.GetIndex("core:frozen"), world.GetTile(8, 8).id, "Legacy id 8 must load as frozen.");
+        Assert.AreEqual(tiles.GetIndex("core:magma"), world.GetTile(9, 9).id, "Legacy id 9 must load as magma.");
+        Assert.AreEqual(tiles.GetIndex("core:sand"), world.GetTile(10, 10).id, "Legacy id 10 must load as sand.");
         Assert.AreEqual(tiles.GetIndex("core:air"), world.GetTile(6, 7).id, "Legacy id 0 must load as air.");
     }
 
@@ -130,7 +137,7 @@ public sealed class SandboxSaveLoadTests
     public void SaveToPath_ClearsDerivedLightFromEveryTileEdit()
     {
         SandboxWorld world = CreateWorld();
-        world.SetTile(0, 0, SandboxRegistries.Tiles.GetIndex("core:gold_ore"));
+        world.SetTile(0, 0, SandboxRegistries.Tiles.GetIndex("core:bricks_d"));
 
         string path = TempFile("derived-light-save.json");
         world.SaveToPath(path);
@@ -151,11 +158,11 @@ public sealed class SandboxSaveLoadTests
     public void SaveThenLoad_RoundTripSurvivesSimulatedRegistryReorder()
     {
         ContentRegistry<TileDefinition> originalTiles = SandboxRegistries.Tiles;
-        int goldBefore = originalTiles.GetIndex("core:gold_ore");
+        int bricksDBefore = originalTiles.GetIndex("core:bricks_d");
         int dirtBefore = originalTiles.GetIndex("core:dirt");
 
         SandboxWorld world = CreateWorld();
-        world.SetTile(3, 4, goldBefore);
+        world.SetTile(3, 4, bricksDBefore);
         world.SetTile(5, 6, dirtBefore);
 
         string path = TempFile("reorder-roundtrip.json");
@@ -174,21 +181,57 @@ public sealed class SandboxSaveLoadTests
         SandboxRegistries.ResetForTests(reordered);
 
         Assert.AreNotEqual(
-            goldBefore,
-            reordered.GetIndex("core:gold_ore"),
-            "Precondition: the reorder must actually change gold's runtime index.");
+            bricksDBefore,
+            reordered.GetIndex("core:bricks_d"),
+            "Precondition: the reorder must actually change bricks D's runtime index.");
 
         SandboxWorld reloaded = CreateWorld();
         reloaded.LoadFromPath(path);
 
         Assert.AreEqual(
-            reordered.GetIndex("core:gold_ore"),
+            reordered.GetIndex("core:bricks_d"),
             reloaded.GetTile(3, 4).id,
-            "Saved gold ore must resolve to gold ore's new runtime index via the palette.");
+            "Saved bricks D must resolve to its new runtime index via the palette.");
         Assert.AreEqual(
             reordered.GetIndex("core:dirt"),
             reloaded.GetTile(5, 6).id,
             "Saved dirt must resolve to dirt's new runtime index via the palette.");
+    }
+
+    [Test]
+    public void LoadFromPath_ResolvesRetiredPaletteIdsThroughAliases()
+    {
+        // Palette saves written before the ore → bricks rename persist the retired string IDs;
+        // the registry alias table must keep them loading as the brick tiles.
+        string path = TempFile("renamed-palette.json");
+        File.WriteAllText(path, @"{
+            ""version"": 2,
+            ""seed"": 1337,
+            ""hasPlayerPosition"": false,
+            ""playerX"": 0,
+            ""playerY"": 0,
+            ""tilePalette"": { ""entries"": [
+                { ""id"": ""core:air"", ""runtimeIndex"": 0 },
+                { ""id"": ""core:gold_ore"", ""runtimeIndex"": 1 }
+            ] },
+            ""chunks"": [
+                {
+                    ""x"": 0,
+                    ""y"": 0,
+                    ""edits"": [
+                        { ""localX"": 1, ""localY"": 1, ""tile"": { ""id"": 1, ""light"": 0, ""fluid"": 0, ""metadata"": 0 } }
+                    ]
+                }
+            ]
+        }");
+
+        SandboxWorld world = CreateWorld();
+        world.LoadFromPath(path);
+
+        Assert.AreEqual(
+            SandboxRegistries.Tiles.GetIndex("core:bricks_d"),
+            world.GetTile(1, 1).id,
+            "A palette entry with the retired 'core:gold_ore' ID must resolve to bricks D.");
     }
 
     [Test]
@@ -407,14 +450,14 @@ public sealed class SandboxSaveLoadTests
 
     private static string BuildMinimalSaveJson(int seed, float playerX, float playerY)
     {
-        return $@"{{
-            ""version"": 1,
-            ""seed"": {seed},
-            ""hasPlayerPosition"": true,
-            ""playerX"": {playerX},
-            ""playerY"": {playerY},
-            ""chunks"": []
-        }}";
+        return JsonUtility.ToJson(new SandboxSaveData
+        {
+            version = 1,
+            seed = seed,
+            hasPlayerPosition = true,
+            playerX = playerX,
+            playerY = playerY
+        });
     }
 
     private string TempFile(string name)

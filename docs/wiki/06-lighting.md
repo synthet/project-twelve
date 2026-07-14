@@ -26,7 +26,8 @@ and is blocked/attenuated by solid tiles" the way *Terraria*/*Starbound* do. Tha
 - Maintain `SandboxTile.light` in the inclusive range 0–15. It is a derived cache and is never
   authoritative save data.
 - **Sources:** strength-15 sunlight enters at the first open cell above the deterministic surface;
-  `TileDefinition.LightEmission` supplies point sources. `core:gold_ore` emits 12 for the prototype.
+  `TileDefinition.LightEmission` supplies point sources. `core:magma` emits 12 for the prototype;
+  the four brick materials are non-emissive.
 - **Attenuation:** `TileDefinition.LightAttenuation` is the cost of entering a tile. Air costs 1;
   core opaque tiles cost 3. Registry validation rejects costs outside 1–15.
 

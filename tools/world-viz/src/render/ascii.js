@@ -47,10 +47,13 @@ function legend() {
     TileId.Dirt,
     TileId.Grass,
     TileId.Stone,
-    TileId.CopperOre,
-    TileId.IronOre,
-    TileId.SilverOre,
-    TileId.GoldOre,
+    TileId.BricksA,
+    TileId.BricksB,
+    TileId.BricksC,
+    TileId.BricksD,
+    TileId.Frozen,
+    TileId.Magma,
+    TileId.Sand,
   ];
   return ids.map((id) => `${TILE_GLYPHS[id]}=${TILE_NAMES[id]}`).join('  ');
 }

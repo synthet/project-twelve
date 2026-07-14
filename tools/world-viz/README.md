@@ -34,7 +34,8 @@ node src/cli.js load --save /path/to/sandbox-world.json --html save.html --ascii
   coords, id, light and fluid, toggle a light heatmap, and move **live sliders** for
   seed / surfaceHeight / amplitude / frequency / dirtDepth to regenerate in-browser.
   The page inlines the *same* generator code the CLI runs, so the two cannot diverge.
-- **ASCII** — a text grid (`.`=Air `#`=Dirt `"`=Grass `%`=Stone `c/i/s/g`=ores) plus a
+- **ASCII** — a text grid (`.`=Air, `#`=Dirt, `"`=Grass, `%`=Stone, `A`–`D`=Bricks,
+  `F`=Frozen, `M`=Magma, `~`=Sand) plus a
   per-column surface-height table.
 
 Rows are ordered top-down with higher world-Y at the top, matching in-game orientation.

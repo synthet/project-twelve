@@ -18,9 +18,13 @@ namespace ProjectTwelve.Sandbox.Registry
 
         /// <summary>
         /// Legacy P1-prototype numeric tile ID → stable string ID, index-aligned: element N is
-        /// the string ID of legacy tile ID N (air=0, dirt=1, grass=2, stone=3, then the ores).
-        /// Fixed forever; version-1 saves load through it. Note <see cref="SandboxTileIds"/> no
-        /// longer carries this numbering — its fields are registry runtime indices now.
+        /// the string ID of legacy tile ID N (air=0, dirt=1, grass=2, stone=3, then the four
+        /// brick variants that were originally misnamed "ores", followed by the additional
+        /// licensed ground materials). Existing numeric slots are fixed
+        /// forever; the strings track renames of the same tile (see
+        /// <see cref="RenamedTileIdAliases"/>). Version-1 saves load through this table. Note
+        /// <see cref="SandboxTileIds"/> no longer carries this numbering — its fields are
+        /// registry runtime indices now.
         /// </summary>
         public static readonly IReadOnlyList<string> LegacyTileIdToStringId = new[]
         {
@@ -28,13 +32,31 @@ namespace ProjectTwelve.Sandbox.Registry
             "core:dirt",
             "core:grass",
             "core:stone",
-            "core:copper_ore",
-            "core:iron_ore",
-            "core:silver_ore",
-            "core:gold_ore",
+            "core:bricks_a",
+            "core:bricks_b",
+            "core:bricks_c",
+            "core:bricks_d",
+            "core:frozen",
+            "core:magma",
+            "core:sand",
         };
 
-        /// <summary>Builds and freezes the core tile registry (8 defs, air pinned to index 0).</summary>
+        /// <summary>
+        /// Retired string IDs → canonical replacements, registered as registry aliases so
+        /// palette saves and inventories written before the rename keep loading. The four
+        /// "ore" tiles never had ore art — they always rendered with the vendor BricksA–D
+        /// tilesets — so they were renamed to match the vendor art (the source of truth).
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, string> RenamedTileIdAliases =
+            new Dictionary<string, string>
+            {
+                ["core:copper_ore"] = "core:bricks_a",
+                ["core:iron_ore"] = "core:bricks_b",
+                ["core:silver_ore"] = "core:bricks_c",
+                ["core:gold_ore"] = "core:bricks_d",
+            };
+
+        /// <summary>Builds and freezes the core tile registry (11 defs, air pinned to index 0).</summary>
         public static ContentRegistry<TileDefinition> CreateTileRegistry()
         {
             ContentRegistry<TileDefinition> tiles = new ContentRegistry<TileDefinition>(AirTileId);
@@ -42,10 +64,14 @@ namespace ProjectTwelve.Sandbox.Registry
             tiles.Register(new TileDefinition("core:dirt", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
             tiles.Register(new TileDefinition("core:grass", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Humus", dropItemId: "core:dirt", hardness: 1f));
             tiles.Register(new TileDefinition("core:stone", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Rocks", dropItemId: "core:stone", hardness: 2f));
-            tiles.Register(new TileDefinition("core:copper_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksA", dropItemId: "core:copper_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:iron_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksB", dropItemId: "core:iron_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:silver_ore", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksC", dropItemId: "core:silver_ore", hardness: 2f));
-            tiles.Register(new TileDefinition("core:gold_ore", solid: true, opaque: true, lightEmission: 12, lightAttenuation: 3, atlasSprite: "BricksD", dropItemId: "core:gold_ore", hardness: 2f));
+            tiles.Register(new TileDefinition("core:bricks_a", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksA", dropItemId: "core:bricks_a", hardness: 2f));
+            tiles.Register(new TileDefinition("core:bricks_b", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksB", dropItemId: "core:bricks_b", hardness: 2f));
+            tiles.Register(new TileDefinition("core:bricks_c", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksC", dropItemId: "core:bricks_c", hardness: 2f));
+            tiles.Register(new TileDefinition("core:bricks_d", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "BricksD", dropItemId: "core:bricks_d", hardness: 2f));
+            tiles.Register(new TileDefinition("core:frozen", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Frozen", dropItemId: "core:frozen", hardness: 2f));
+            tiles.Register(new TileDefinition("core:magma", solid: true, opaque: true, lightEmission: 12, lightAttenuation: 3, atlasSprite: "Magma", dropItemId: "core:magma", hardness: 2f));
+            tiles.Register(new TileDefinition("core:sand", solid: true, opaque: true, lightAttenuation: 3, atlasSprite: "Sand", dropItemId: "core:sand", hardness: 1f));
+            RegisterRenamedAliases(tiles);
             tiles.Freeze();
             return tiles;
         }
@@ -57,12 +83,29 @@ namespace ProjectTwelve.Sandbox.Registry
             items.Register(new ItemDefinition("core:dirt", placesTileId: "core:dirt"));
             items.Register(new ItemDefinition("core:grass", placesTileId: "core:grass"));
             items.Register(new ItemDefinition("core:stone", placesTileId: "core:stone"));
-            items.Register(new ItemDefinition("core:copper_ore", placesTileId: "core:copper_ore"));
-            items.Register(new ItemDefinition("core:iron_ore", placesTileId: "core:iron_ore"));
-            items.Register(new ItemDefinition("core:silver_ore", placesTileId: "core:silver_ore"));
-            items.Register(new ItemDefinition("core:gold_ore", placesTileId: "core:gold_ore"));
+            items.Register(new ItemDefinition("core:bricks_a", placesTileId: "core:bricks_a"));
+            items.Register(new ItemDefinition("core:bricks_b", placesTileId: "core:bricks_b"));
+            items.Register(new ItemDefinition("core:bricks_c", placesTileId: "core:bricks_c"));
+            items.Register(new ItemDefinition("core:bricks_d", placesTileId: "core:bricks_d"));
+            items.Register(new ItemDefinition("core:frozen", placesTileId: "core:frozen"));
+            items.Register(new ItemDefinition("core:magma", placesTileId: "core:magma"));
+            items.Register(new ItemDefinition("core:sand", placesTileId: "core:sand"));
+            RegisterRenamedAliases(items);
             items.Freeze();
             return items;
+        }
+
+        /// <summary>
+        /// Registers the retired "ore" string IDs as aliases so pre-rename palette saves and
+        /// inventories keep resolving. Tile and item IDs share the same rename history.
+        /// </summary>
+        private static void RegisterRenamedAliases<TDef>(ContentRegistry<TDef> registry)
+            where TDef : class, IContentDefinition
+        {
+            foreach (KeyValuePair<string, string> alias in RenamedTileIdAliases)
+            {
+                registry.RegisterAlias(alias.Key, alias.Value);
+            }
         }
 
         /// <summary>Builds and freezes the core entity registry (player only for now).</summary>

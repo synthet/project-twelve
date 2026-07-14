@@ -23,6 +23,9 @@ namespace ProjectTwelve.Sandbox.Registry
         private readonly Dictionary<string, TDef> definitionsById =
             new Dictionary<string, TDef>(StringComparer.Ordinal);
 
+        private readonly Dictionary<string, string> aliasById =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+
         private readonly string emptyId;
         private TDef[] definitionsByIndex;
         private Dictionary<string, int> indexById;
@@ -78,7 +81,46 @@ namespace ProjectTwelve.Sandbox.Registry
                 throw new ArgumentException($"Duplicate definition ID '{def.Id}'.", nameof(def));
             }
 
+            if (aliasById.ContainsKey(def.Id))
+            {
+                throw new ArgumentException($"Definition ID '{def.Id}' is already registered as an alias.", nameof(def));
+            }
+
             definitionsById.Add(def.Id, def);
+        }
+
+        /// <summary>
+        /// Maps a retired string ID to its canonical replacement so persisted data written before
+        /// a rename keeps resolving. Pre-freeze only; alias targets are validated at freeze.
+        /// </summary>
+        public void RegisterAlias(string aliasId, string canonicalId)
+        {
+            if (IsFrozen)
+            {
+                throw new InvalidOperationException("Registry is frozen; aliases cannot be registered after Freeze().");
+            }
+
+            if (!IsValidId(aliasId))
+            {
+                throw new ArgumentException($"Alias ID '{aliasId}' is not a valid 'namespace:name' ID.", nameof(aliasId));
+            }
+
+            if (!IsValidId(canonicalId))
+            {
+                throw new ArgumentException($"Canonical ID '{canonicalId}' is not a valid 'namespace:name' ID.", nameof(canonicalId));
+            }
+
+            if (definitionsById.ContainsKey(aliasId))
+            {
+                throw new ArgumentException($"Alias ID '{aliasId}' is already a registered definition.", nameof(aliasId));
+            }
+
+            if (aliasById.ContainsKey(aliasId))
+            {
+                throw new ArgumentException($"Duplicate alias ID '{aliasId}'.", nameof(aliasId));
+            }
+
+            aliasById.Add(aliasId, canonicalId);
         }
 
         /// <summary>
@@ -96,6 +138,15 @@ namespace ProjectTwelve.Sandbox.Registry
             if (emptyId != null && !definitionsById.ContainsKey(emptyId))
             {
                 throw new InvalidOperationException($"Empty definition '{emptyId}' was declared but never registered.");
+            }
+
+            foreach (KeyValuePair<string, string> alias in aliasById)
+            {
+                if (!definitionsById.ContainsKey(alias.Value))
+                {
+                    throw new InvalidOperationException(
+                        $"Alias '{alias.Key}' targets unregistered definition '{alias.Value}'.");
+                }
             }
 
             List<string> orderedIds = new List<string>(definitionsById.Count);
@@ -151,7 +202,18 @@ namespace ProjectTwelve.Sandbox.Registry
         public bool TryGet(string id, out TDef def)
         {
             def = null;
-            return id != null && definitionsById.TryGetValue(id, out def);
+            if (id == null)
+            {
+                return false;
+            }
+
+            if (definitionsById.TryGetValue(id, out def))
+            {
+                return true;
+            }
+
+            return aliasById.TryGetValue(id, out string canonical)
+                && definitionsById.TryGetValue(canonical, out def);
         }
 
         /// <summary>Runtime index of a string ID. Post-freeze only; unknown IDs throw.</summary>
@@ -169,7 +231,18 @@ namespace ProjectTwelve.Sandbox.Registry
         {
             RequireFrozen();
             index = 0;
-            return id != null && indexById.TryGetValue(id, out index);
+            if (id == null)
+            {
+                return false;
+            }
+
+            if (indexById.TryGetValue(id, out index))
+            {
+                return true;
+            }
+
+            return aliasById.TryGetValue(id, out string canonical)
+                && indexById.TryGetValue(canonical, out index);
         }
 
         /// <summary>

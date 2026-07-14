@@ -2,9 +2,9 @@
 // Export a rectangular region of a Unity SandboxSaveData JSON save into a
 // project-twelve/tile-space/v1 `space` fixture (only non-air tiles emitted).
 //
-// The save stores tile ids as runtime *palette* indices (see `tilePalette`),
-// which differ from tile-viz TileId. This script remaps via the palette's
-// canonical string ids so the fixture uses tile-viz TileId values.
+// The save stores tile ids as runtime *palette* indices (see `tilePalette`).
+// This script remaps via stable string ids so tile-space/v1 keeps its frozen
+// numeric contract even when registry runtime indices change.
 //
 // Usage:
 //   node scripts/export-sandbox-scene.mjs <save.json> <out.json> \
@@ -17,12 +17,19 @@ import path from 'node:path';
 
 const CHUNK_SIZE = 32;
 
-// Canonical string id -> tile-viz TileId (world-viz/src/core/tiles.js).
+// Canonical/retired string id -> stable tile-space/v1 id.
 const STRING_ID_TO_TILE_ID = {
   'core:air': 0,
   'core:dirt': 1,
   'core:grass': 2,
   'core:stone': 3,
+  'core:bricks_a': 4,
+  'core:bricks_b': 5,
+  'core:bricks_c': 6,
+  'core:bricks_d': 7,
+  'core:frozen': 8,
+  'core:magma': 9,
+  'core:sand': 10,
   'core:copper_ore': 4,
   'core:iron_ore': 5,
   'core:silver_ore': 6,

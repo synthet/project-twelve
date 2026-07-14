@@ -6,10 +6,13 @@ export const DEFAULT_CATALOG = Object.freeze({
   dirtGroundTileset: 'Humus',
   grassGroundTileset: 'Humus',
   stoneGroundTileset: 'Rocks',
-  copperOreGroundTileset: 'BricksA',
-  ironOreGroundTileset: 'BricksB',
-  silverOreGroundTileset: 'BricksC',
-  goldOreGroundTileset: 'BricksD',
+  bricksAGroundTileset: 'BricksA',
+  bricksBGroundTileset: 'BricksB',
+  bricksCGroundTileset: 'BricksC',
+  bricksDGroundTileset: 'BricksD',
+  frozenGroundTileset: 'Frozen',
+  magmaGroundTileset: 'Magma',
+  sandGroundTileset: 'Sand',
   grassCoverTileset: 'GrassA',
 });
 
@@ -26,14 +29,20 @@ export function getGroundTilesetName(tileId, catalog = DEFAULT_CATALOG) {
       return catalog.grassGroundTileset;
     case TileId.Stone:
       return catalog.stoneGroundTileset;
-    case TileId.CopperOre:
-      return catalog.copperOreGroundTileset;
-    case TileId.IronOre:
-      return catalog.ironOreGroundTileset;
-    case TileId.SilverOre:
-      return catalog.silverOreGroundTileset;
-    case TileId.GoldOre:
-      return catalog.goldOreGroundTileset;
+    case TileId.BricksA:
+      return catalog.bricksAGroundTileset;
+    case TileId.BricksB:
+      return catalog.bricksBGroundTileset;
+    case TileId.BricksC:
+      return catalog.bricksCGroundTileset;
+    case TileId.BricksD:
+      return catalog.bricksDGroundTileset;
+    case TileId.Frozen:
+      return catalog.frozenGroundTileset;
+    case TileId.Magma:
+      return catalog.magmaGroundTileset;
+    case TileId.Sand:
+      return catalog.sandGroundTileset;
     default:
       return null;
   }

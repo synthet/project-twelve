@@ -518,7 +518,7 @@ namespace ProjectTwelve.RuntimeMcp
 
         /// <summary>
         /// Display name for a registry runtime tile index, derived from the definition's string
-        /// ID (segment after the namespace, PascalCased — "core:gold_ore" → "GoldOre").
+        /// ID (segment after the namespace, PascalCased — "core:bricks_d" → "BricksD").
         /// </summary>
         public static string GetTileName(int tileId)
         {
@@ -562,14 +562,20 @@ namespace ProjectTwelve.RuntimeMcp
                     return 'g';
                 case "core:stone":
                     return 's';
-                case "core:copper_ore":
-                    return 'c';
-                case "core:iron_ore":
-                    return 'i';
-                case "core:silver_ore":
-                    return 'v';
-                case "core:gold_ore":
-                    return 'o';
+                case "core:bricks_a":
+                    return 'A';
+                case "core:bricks_b":
+                    return 'B';
+                case "core:bricks_c":
+                    return 'C';
+                case "core:bricks_d":
+                    return 'D';
+                case "core:frozen":
+                    return 'F';
+                case "core:magma":
+                    return 'M';
+                case "core:sand":
+                    return '~';
                 default:
                     return '?';
             }

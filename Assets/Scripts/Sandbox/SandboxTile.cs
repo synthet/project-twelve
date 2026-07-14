@@ -35,8 +35,8 @@ public static class SandboxTileIds
     public static readonly int Dirt = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:dirt");
     public static readonly int Grass = ProjectTwelve.Sandbox.Registry.SandboxRegistries.GrassIndex;
     public static readonly int Stone = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:stone");
-    public static readonly int CopperOre = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:copper_ore");
-    public static readonly int IronOre = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:iron_ore");
-    public static readonly int SilverOre = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:silver_ore");
-    public static readonly int GoldOre = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:gold_ore");
+    public static readonly int BricksA = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:bricks_a");
+    public static readonly int BricksB = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:bricks_b");
+    public static readonly int BricksC = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:bricks_c");
+    public static readonly int BricksD = ProjectTwelve.Sandbox.Registry.SandboxRegistries.Tiles.GetIndex("core:bricks_d");
 }

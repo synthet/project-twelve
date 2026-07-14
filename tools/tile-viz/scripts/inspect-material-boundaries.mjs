@@ -32,8 +32,8 @@ const FIXTURES = [
   'material-boundary-vertical',
   'dirt-stone-reentrant-west',
   'dirt-over-stone-slab',
-  'ore-dirt-boundary',
-  'ore-mixed-boundary',
+  'bricks-dirt-boundary',
+  'bricks-mixed-boundary',
 ];
 
 /** Sprites commonly relevant at material edges (from ground-autotile-32-rules.md). */
@@ -395,13 +395,13 @@ async function main() {
         ruleProposal: 'No change; anti-regression: do not collapse 17 to fill 9/10.',
       },
       {
-        fixture: 'ore-dirt-boundary',
+        fixture: 'bricks-dirt-boundary',
         issue: 'Same cap topology as vertical boundary but across BricksA/Humus tilesets; 28/29/21 caps are correct per mask.',
         bestManualFix: 'None via sprite id — ore tileset art defines the seam.',
         ruleProposal: 'Keep foreign-material disconnect in blob mask (already correct).',
       },
       {
-        fixture: 'ore-mixed-boundary',
+        fixture: 'bricks-mixed-boundary',
         issue: 'BricksA/BricksB side-by-side uses mirrored 28 caps; seam is ore-to-ore art boundary.',
         bestManualFix: 'None — topology is correct.',
         ruleProposal: 'No resolver change.',

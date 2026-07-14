@@ -10,6 +10,26 @@ import { parseSaveText } from '../../../world-viz/src/io/saveLoad.js';
 
 export const FORMAT = 'project-twelve/tile-space/v1';
 
+// tile-space/v1 stores stable legacy IDs, while the resolver works with the
+// registry's current lexicographically assigned runtime indices.
+const LEGACY_TO_RUNTIME_TILE_ID = Object.freeze([
+  TileId.Air,
+  TileId.Dirt,
+  TileId.Grass,
+  TileId.Stone,
+  TileId.BricksA,
+  TileId.BricksB,
+  TileId.BricksC,
+  TileId.BricksD,
+  TileId.Frozen,
+  TileId.Magma,
+  TileId.Sand,
+]);
+
+const RUNTIME_TO_LEGACY_TILE_ID = new Map(
+  LEGACY_TO_RUNTIME_TILE_ID.map((runtimeId, legacyId) => [runtimeId, legacyId]),
+);
+
 /**
  * @param {string} filePath
  * @returns {object}
@@ -85,13 +105,13 @@ function loadSnippet(doc) {
     for (const t of doc.tiles) {
       const x = t.x ?? originX + (t.dx ?? 0);
       const y = t.y ?? originY + (t.dy ?? 0);
-      tiles.set(worldKey(x, y), normalizeTile(t));
+      tiles.set(worldKey(x, y), normalizeLegacyTile(t));
     }
   } else if (Array.isArray(doc.ids)) {
     let i = 0;
     for (let dy = 0; dy < height; dy++) {
       for (let dx = 0; dx < width; dx++, i++) {
-        const id = doc.ids[i] ?? TileId.Air;
+        const id = legacyToRuntimeTileId(doc.ids[i] ?? 0);
         if (id !== TileId.Air) {
           tiles.set(worldKey(originX + dx, originY + dy), makeTile(id, 15));
         }
@@ -117,7 +137,7 @@ function loadSpace(doc) {
   const tiles = new Map();
   if (Array.isArray(doc.tiles)) {
     for (const t of doc.tiles) {
-      tiles.set(worldKey(t.x, t.y), normalizeTile(t));
+      tiles.set(worldKey(t.x, t.y), normalizeLegacyTile(t));
     }
   }
   return {
@@ -147,7 +167,7 @@ function loadWorld(doc, baseDir) {
 
   if (Array.isArray(doc.edits)) {
     for (const e of doc.edits) {
-      edits.set(worldKey(e.x, e.y), normalizeTile(e));
+      edits.set(worldKey(e.x, e.y), normalizeRuntimeTile(e));
     }
   }
 
@@ -238,7 +258,12 @@ function normalizeVisualOverrides(input) {
     .filter(Boolean);
 }
 
-function normalizeTile(t) {
+function normalizeLegacyTile(t) {
+  const legacyId = t.id ?? t.tileId ?? 0;
+  return normalizeRuntimeTile({ ...t, id: legacyToRuntimeTileId(legacyId) });
+}
+
+function normalizeRuntimeTile(t) {
   const id = t.id ?? t.tileId ?? TileId.Air;
   return {
     id,
@@ -246,6 +271,14 @@ function normalizeTile(t) {
     fluid: t.fluid ?? 0,
     metadata: t.metadata ?? 0,
   };
+}
+
+function legacyToRuntimeTileId(legacyId) {
+  const runtimeId = LEGACY_TO_RUNTIME_TILE_ID[legacyId];
+  if (runtimeId === undefined) {
+    throw new Error(`Unknown tile-space/v1 tile id ${legacyId}`);
+  }
+  return runtimeId;
 }
 
 export function getTile(space, x, y) {
@@ -288,7 +321,11 @@ export function exportMcpToSpace(inputPath, outputPath) {
     yMax: space.yMax,
     tiles: [...space.tiles.entries()].map(([key, tile]) => {
       const [x, y] = key.split(',').map(Number);
-      return { x, y, ...tile };
+      const legacyId = RUNTIME_TO_LEGACY_TILE_ID.get(tile.id);
+      if (legacyId === undefined) {
+        throw new Error(`Runtime tile id ${tile.id} has no tile-space/v1 mapping`);
+      }
+      return { x, y, ...tile, id: legacyId };
     }),
   };
   fs.mkdirSync(path.dirname(path.resolve(outputPath)), { recursive: true });

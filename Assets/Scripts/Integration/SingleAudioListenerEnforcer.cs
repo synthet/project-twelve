@@ -33,6 +33,17 @@ public sealed class SingleAudioListenerEnforcer : MonoBehaviour
             FindObjectsInactive.Include,
             FindObjectsSortMode.None);
 
+        Enforce(listeners);
+    }
+
+    /// <summary>Deterministic seam for validating listener selection without scene-global test state.</summary>
+    internal static void Enforce(AudioListener[] listeners)
+    {
+        if (listeners == null)
+        {
+            throw new System.ArgumentNullException(nameof(listeners));
+        }
+
         if (listeners.Length <= 1)
         {
             return;

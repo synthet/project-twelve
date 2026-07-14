@@ -9,7 +9,7 @@ namespace ProjectTwelve.Visual.AutotileDebug
     public static class AutotileBaselineCompare
     {
         /// <summary>
-        /// Maps registry runtime tile index to legacy tile-viz id (0–7).
+        /// Maps registry runtime tile index to stable tile-space/v1 id (0–10).
         /// </summary>
         public static int ToLegacyTileId(int runtimeIndex)
         {

@@ -14,53 +14,67 @@ import { clamp01, lerp } from './mathf.js';
 // Runtime tile ids MUST match the engine registry's frozen indices
 // (ContentRegistry.Freeze): the empty tile `core:air` is pinned to 0, and every
 // other id is assigned by ordinal (lexicographic) string sort. For the current
-// core tile set that is: air 0, copper_ore 1, dirt 2, gold_ore 3, grass 4,
-// iron_ore 5, silver_ore 6, stone 7. The golden fixture stores these indices, so
-// the offline tool must use the same numbering to stay parity-correct.
+// core tile set that is: air 0, bricks_a 1, bricks_b 2, bricks_c 3, bricks_d 4,
+// dirt 5, frozen 6, grass 7, magma 8, sand 9, stone 10. (The former "ore" tiles were renamed to match the
+// vendor BricksA–D art they always rendered with.) The golden fixture stores
+// these indices, so the offline tool must use the same numbering to stay
+// parity-correct — regenerate the fixture after any registry ID change.
 export const TileId = Object.freeze({
   Air: 0,
-  CopperOre: 1,
-  Dirt: 2,
-  GoldOre: 3,
-  Grass: 4,
-  IronOre: 5,
-  SilverOre: 6,
-  Stone: 7,
+  BricksA: 1,
+  BricksB: 2,
+  BricksC: 3,
+  BricksD: 4,
+  Dirt: 5,
+  Frozen: 6,
+  Grass: 7,
+  Magma: 8,
+  Sand: 9,
+  Stone: 10,
 });
 
 export const TILE_NAMES = Object.freeze({
   0: 'Air',
-  1: 'CopperOre',
-  2: 'Dirt',
-  3: 'GoldOre',
-  4: 'Grass',
-  5: 'IronOre',
-  6: 'SilverOre',
-  7: 'Stone',
+  1: 'BricksA',
+  2: 'BricksB',
+  3: 'BricksC',
+  4: 'BricksD',
+  5: 'Dirt',
+  6: 'Frozen',
+  7: 'Grass',
+  8: 'Magma',
+  9: 'Sand',
+  10: 'Stone',
 });
 
 // Single ASCII glyph per tile id for the text dump.
 export const TILE_GLYPHS = Object.freeze({
   0: '.',
-  1: 'c',
-  2: '#',
-  3: 'g',
-  4: '"',
-  5: 'i',
-  6: 's',
-  7: '%',
+  1: 'A',
+  2: 'B',
+  3: 'C',
+  4: 'D',
+  5: '#',
+  6: 'F',
+  7: '"',
+  8: 'M',
+  9: '~',
+  10: '%',
 });
 
 // Base [r, g, b] (0-255) per tile id before light shading.
 const BASE_COLORS = Object.freeze({
   0: [135, 206, 235], // Air  -> sky blue (rendered unshaded as background)
-  1: [184, 115, 51], // CopperOre -> copper
-  2: [134, 96, 67], // Dirt -> brown
-  3: [212, 175, 55], // GoldOre -> gold
-  4: [83, 160, 60], // Grass -> green
-  5: [120, 124, 134], // IronOre -> cool steel
-  6: [205, 210, 220], // SilverOre -> bright silver
-  7: [128, 128, 128], // Stone -> gray
+  1: [132, 132, 144], // BricksA -> grey masonry
+  2: [72, 92, 132], // BricksB -> blue masonry
+  3: [62, 68, 98], // BricksC -> slate masonry
+  4: [182, 84, 52], // BricksD -> red masonry
+  5: [134, 96, 67], // Dirt -> brown
+  6: [152, 194, 214], // Frozen -> pale blue ice
+  7: [83, 160, 60], // Grass -> green
+  8: [224, 80, 32], // Magma -> hot orange
+  9: [214, 188, 120], // Sand -> warm tan
+  10: [128, 128, 128], // Stone -> gray
 });
 
 /**

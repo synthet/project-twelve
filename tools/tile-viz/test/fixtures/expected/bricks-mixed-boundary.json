@@ -1,9 +1,9 @@
 {
-  "name": "ore-dirt-boundary",
+  "name": "bricks-mixed-boundary",
   "tiles": [
     {
       "x": 0,
-      "y": 2,
+      "y": 1,
       "ground": {
         "tileset": "BricksA",
         "materialGroup": "BricksA",
@@ -137,8 +137,8 @@
           ],
           [
             0,
-            1,
-            1
+            5,
+            5
           ]
         ],
         "resolved": true
@@ -150,10 +150,10 @@
     },
     {
       "x": 1,
-      "y": 2,
+      "y": 1,
       "ground": {
-        "tileset": "Humus",
-        "materialGroup": "Humus",
+        "tileset": "BricksB",
+        "materialGroup": "BricksB",
         "visualMask": [
           [
             0,
@@ -279,300 +279,8 @@
           ],
           [
             0,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "reason": "Cover renders only on grass tiles."
-      }
-    },
-    {
-      "x": 0,
-      "y": 1,
-      "ground": {
-        "tileset": "BricksA",
-        "materialGroup": "BricksA",
-        "visualMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "solidMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ]
-        ],
-        "connectivityMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "rawMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "normalizedMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "mask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "normalization": {
-          "stairInterior": false,
-          "cavityUnderside": false,
-          "materialBoundary": false,
-          "innerCavity": false
-        },
-        "matchingSpriteIds": [
-          "21"
-        ],
-        "matchedRuleId": "21",
-        "spriteId": "21",
-        "flipX": false,
-        "finalSpriteId": "21",
-        "partnerSubstitution": false,
-        "neighborTileIds": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            4,
-            4,
-            4
-          ],
-          [
-            1,
-            1,
-            1
-          ]
-        ],
-        "resolved": true
-      },
-      "cover": {
-        "rendered": false,
-        "reason": "Cover renders only on grass tiles."
-      }
-    },
-    {
-      "x": 1,
-      "y": 1,
-      "ground": {
-        "tileset": "Humus",
-        "materialGroup": "Humus",
-        "visualMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "solidMask": [
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "connectivityMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "rawMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "normalizedMask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "mask": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "normalization": {
-          "stairInterior": false,
-          "cavityUnderside": false,
-          "materialBoundary": false,
-          "innerCavity": false
-        },
-        "matchingSpriteIds": [
-          "21"
-        ],
-        "matchedRuleId": "21",
-        "spriteId": "21",
-        "flipX": false,
-        "finalSpriteId": "21",
-        "partnerSubstitution": false,
-        "neighborTileIds": [
-          [
-            4,
-            4,
-            4
-          ],
-          [
-            1,
-            1,
-            1
+            5,
+            5
           ],
           [
             0,
@@ -722,8 +430,8 @@
             0
           ],
           [
-            1,
-            1,
+            5,
+            5,
             0
           ]
         ],
@@ -738,8 +446,8 @@
       "x": 1,
       "y": 0,
       "ground": {
-        "tileset": "Humus",
-        "materialGroup": "Humus",
+        "tileset": "BricksB",
+        "materialGroup": "BricksB",
         "visualMask": [
           [
             0,
@@ -864,8 +572,8 @@
             0
           ],
           [
-            1,
-            1,
+            5,
+            5,
             0
           ],
           [

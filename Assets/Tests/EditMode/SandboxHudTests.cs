@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public sealed class SandboxHudTests
 {
     [Test]
-    public void CreativeHotbar_DefaultsToFourCreativeTilesAndDirtSelected()
+    public void CreativeHotbar_DefaultsToAllTenGroundMaterialsAndDirtSelected()
     {
         SandboxCreativeHotbarState state = new SandboxCreativeHotbarState();
 
@@ -15,14 +15,20 @@ public sealed class SandboxHudTests
         Assert.AreEqual("core:dirt", state.SelectedTileId);
         Assert.AreEqual("core:grass", state.Slots[1].TileId);
         Assert.AreEqual("core:stone", state.Slots[2].TileId);
-        Assert.AreEqual("core:copper_ore", state.Slots[3].TileId);
-        Assert.IsFalse(state.Slots[4].IsPopulated);
+        Assert.AreEqual("core:bricks_a", state.Slots[3].TileId);
+        Assert.AreEqual("core:bricks_b", state.Slots[4].TileId);
+        Assert.AreEqual("core:bricks_c", state.Slots[5].TileId);
+        Assert.AreEqual("core:bricks_d", state.Slots[6].TileId);
+        Assert.AreEqual("core:frozen", state.Slots[7].TileId);
+        Assert.AreEqual("core:magma", state.Slots[8].TileId);
+        Assert.AreEqual("core:sand", state.Slots[9].TileId);
     }
 
     [Test]
     public void CreativeHotbar_DirectSelectionAllowsEmptySlot()
     {
         SandboxCreativeHotbarState state = new SandboxCreativeHotbarState();
+        state.SetSlot(9, default);
 
         Assert.IsTrue(state.Select(9));
         Assert.AreEqual(9, state.SelectedIndex);
@@ -36,15 +42,32 @@ public sealed class SandboxHudTests
     {
         SandboxCreativeHotbarState state = new SandboxCreativeHotbarState();
 
-        state.Select(3);
+        state.SetSlot(9, default);
+        state.Select(9);
         Assert.IsTrue(state.CyclePopulated(1));
         Assert.AreEqual(0, state.SelectedIndex);
         Assert.IsTrue(state.CyclePopulated(-1));
-        Assert.AreEqual(3, state.SelectedIndex);
+        Assert.AreEqual(8, state.SelectedIndex);
 
-        state.Select(8);
+        state.SetSlot(4, default);
+        state.Select(3);
         Assert.IsTrue(state.CyclePopulated(1));
-        Assert.AreEqual(0, state.SelectedIndex);
+        Assert.AreEqual(5, state.SelectedIndex);
+    }
+
+    [Test]
+    public void Hotbar_RuntimeSlotContentDrivesSelectionAndCycling()
+    {
+        SandboxCreativeHotbarState state = new SandboxCreativeHotbarState();
+        state.SetSlot(4, new SandboxCreativeHotbarState.Slot("core:bricks_d", "Bricks D"));
+        state.Select(3);
+
+        Assert.IsTrue(state.CyclePopulated(1));
+        Assert.AreEqual(4, state.SelectedIndex);
+        Assert.AreEqual("core:bricks_d", state.SelectedTileId);
+
+        state.SetSlot(4, default);
+        Assert.IsFalse(state.SelectedSlot.IsPopulated);
     }
 
     [Test]
@@ -152,7 +175,7 @@ public sealed class SandboxHudTests
             Assert.IsNotNull(serialized.FindProperty("dirtIcon").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("grassIcon").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("stoneIcon").objectReferenceValue);
-            Assert.IsNotNull(serialized.FindProperty("copperOreIcon").objectReferenceValue);
+            Assert.IsNotNull(serialized.FindProperty("bricksIcon").objectReferenceValue);
             Assert.IsNotNull(serialized.FindProperty("pixelFont").objectReferenceValue);
 
             Sprite slotSprite = serialized.FindProperty("slotSprite").objectReferenceValue as Sprite;

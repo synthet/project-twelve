@@ -104,7 +104,7 @@ function buildTilesetLookup(manifest, tables) {
     lookup.set('Humus', { name: 'Humus', spriteCount: GROUND_SPRITE_COUNT, rules: tables.ground.rules, layer: 'ground' });
     lookup.set('Rocks', { name: 'Rocks', spriteCount: GROUND_SPRITE_COUNT, rules: tables.ground.rules, layer: 'ground' });
     lookup.set('GrassA', { name: 'GrassA', spriteCount: 6, rules: tables.cover.rules, layer: 'cover' });
-    for (const name of ['BricksA', 'BricksB', 'BricksC', 'BricksD']) {
+    for (const name of ['BricksA', 'BricksB', 'BricksC', 'BricksD', 'Frozen', 'Magma', 'Sand']) {
       lookup.set(name, { name, spriteCount: GROUND_SPRITE_COUNT, rules: tables.ground.rules, layer: 'ground' });
     }
     return lookup;

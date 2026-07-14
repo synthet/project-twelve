@@ -125,5 +125,23 @@ namespace ProjectTwelve.Sandbox.Inventory
             float dy = targetY - playerY;
             return dx * dx + dy * dy <= maxRange * maxRange;
         }
+
+        public static SandboxInventoryEditResult ValidateControllerRequest(
+            float playerX,
+            float playerY,
+            float targetX,
+            float targetY,
+            float maxRange,
+            bool playerOccluded)
+        {
+            if (!IsWithinReach(playerX, playerY, targetX, targetY, maxRange))
+            {
+                return SandboxInventoryEditResult.OutOfRange;
+            }
+
+            return playerOccluded
+                ? SandboxInventoryEditResult.PlayerOccluded
+                : SandboxInventoryEditResult.Success;
+        }
     }
 }

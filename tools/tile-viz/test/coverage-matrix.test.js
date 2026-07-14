@@ -62,8 +62,8 @@ test('cover-cliff-step-nook uses cover sprite 2 (neighbor mask value 2)', () => 
   assert.deepEqual(cover?.mask?.[2], [0, 2, 0]);
 });
 
-test('ore-dirt-boundary keeps copper and dirt as separate exterior caps', () => {
-  const { byKey } = reportAt('ore-dirt-boundary');
+test('bricks-dirt-boundary keeps Bricks A and dirt as separate exterior caps', () => {
+  const { byKey } = reportAt('bricks-dirt-boundary');
   const copper = byKey.get('0,2')?.autotile?.ground;
   const dirt = byKey.get('1,2')?.autotile?.ground;
   assert.equal(copper?.spriteId, '28');
@@ -72,8 +72,8 @@ test('ore-dirt-boundary keeps copper and dirt as separate exterior caps', () => 
   assert.equal(dirt?.tileset, 'Humus');
 });
 
-test('ore-mixed-boundary keeps copper and iron in separate tilesets', () => {
-  const { byKey } = reportAt('ore-mixed-boundary');
+test('bricks-mixed-boundary keeps Bricks A and Bricks B in separate tilesets', () => {
+  const { byKey } = reportAt('bricks-mixed-boundary');
   assert.equal(byKey.get('0,1')?.autotile?.ground?.tileset, 'BricksA');
   assert.equal(byKey.get('1,1')?.autotile?.ground?.tileset, 'BricksB');
 });

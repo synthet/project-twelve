@@ -137,13 +137,20 @@ flowchart TB
 
 | Sandbox tile ID | Ground tileset | Cover tileset |
 |-----------------|----------------|---------------|
-| Dirt | Humus | — |
-| Grass | Humus | GrassA |
-| Stone | Rocks | — |
-| CopperOre | BricksA | — |
-| IronOre | BricksB | — |
-| SilverOre | BricksC | — |
-| GoldOre | BricksD | — |
+| `core:dirt` | Humus | — |
+| `core:grass` | Humus | GrassA |
+| `core:stone` | Rocks | — |
+| `core:bricks_a` | BricksA | — |
+| `core:bricks_b` | BricksB | — |
+| `core:bricks_c` | BricksC | — |
+| `core:bricks_d` | BricksD | — |
+| `core:frozen` | Frozen | — |
+| `core:magma` | Magma | — |
+| `core:sand` | Sand | — |
+
+All ten materials are placeable through the prototype inventory and hotbar. Frozen, Magma, and
+Sand are currently manual building materials; biome generation and biome-specific cover selection
+remain tracked by P2-VISUAL-004.
 
 ## Local setup
 

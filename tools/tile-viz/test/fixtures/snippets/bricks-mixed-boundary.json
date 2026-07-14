@@ -1,8 +1,8 @@
 {
   "format": "project-twelve/tile-space/v1",
   "kind": "snippet",
-  "name": "ore-mixed-boundary",
-  "note": "Copper (BricksA) and iron (BricksB) ore columns do not connect.",
+  "name": "bricks-mixed-boundary",
+  "note": "Bricks A and Bricks B columns do not connect.",
   "origin": {
     "x": 0,
     "y": 0

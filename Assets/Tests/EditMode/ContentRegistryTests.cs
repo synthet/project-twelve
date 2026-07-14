@@ -125,7 +125,7 @@ public sealed class ContentRegistryTests
         Assert.AreEqual(SandboxCoreContent.AirTileId, tiles.Get(0).Id);
         Assert.AreEqual(0, tiles.GetIndex(SandboxCoreContent.AirTileId));
         Assert.IsFalse(tiles.Get(0).Solid);
-        Assert.AreEqual(8, tiles.Count);
+        Assert.AreEqual(11, tiles.Count);
     }
 
     [Test]
@@ -192,20 +192,50 @@ public sealed class ContentRegistryTests
         // registry runtime indices now, not this numbering.
         IReadOnlyList<string> legacy = SandboxCoreContent.LegacyTileIdToStringId;
 
-        Assert.AreEqual(8, legacy.Count);
+        Assert.AreEqual(11, legacy.Count);
         Assert.AreEqual("core:air", legacy[0]);
         Assert.AreEqual("core:dirt", legacy[1]);
         Assert.AreEqual("core:grass", legacy[2]);
         Assert.AreEqual("core:stone", legacy[3]);
-        Assert.AreEqual("core:copper_ore", legacy[4]);
-        Assert.AreEqual("core:iron_ore", legacy[5]);
-        Assert.AreEqual("core:silver_ore", legacy[6]);
-        Assert.AreEqual("core:gold_ore", legacy[7]);
+        Assert.AreEqual("core:bricks_a", legacy[4]);
+        Assert.AreEqual("core:bricks_b", legacy[5]);
+        Assert.AreEqual("core:bricks_c", legacy[6]);
+        Assert.AreEqual("core:bricks_d", legacy[7]);
+        Assert.AreEqual("core:frozen", legacy[8]);
+        Assert.AreEqual("core:magma", legacy[9]);
+        Assert.AreEqual("core:sand", legacy[10]);
 
         ContentRegistry<TileDefinition> tiles = SandboxCoreContent.CreateTileRegistry();
         foreach (string id in legacy)
         {
             Assert.IsTrue(tiles.TryGet(id, out _), $"Legacy string ID '{id}' must resolve in the core tile registry.");
+        }
+    }
+
+    [Test]
+    public void CoreRegistry_RuntimeIndicesMatchOrdinalStringOrdering()
+    {
+        ContentRegistry<TileDefinition> tiles = SandboxCoreContent.CreateTileRegistry();
+
+        string[] expected =
+        {
+            "core:air",
+            "core:bricks_a",
+            "core:bricks_b",
+            "core:bricks_c",
+            "core:bricks_d",
+            "core:dirt",
+            "core:frozen",
+            "core:grass",
+            "core:magma",
+            "core:sand",
+            "core:stone",
+        };
+
+        Assert.AreEqual(expected.Length, tiles.Count);
+        for (int i = 0; i < expected.Length; i++)
+        {
+            Assert.AreEqual(expected[i], tiles.Get(i).Id);
         }
     }
 
@@ -218,11 +248,29 @@ public sealed class ContentRegistryTests
         Assert.AreEqual(tiles.GetIndex("core:dirt"), SandboxTileIds.Dirt);
         Assert.AreEqual(tiles.GetIndex("core:grass"), SandboxTileIds.Grass);
         Assert.AreEqual(tiles.GetIndex("core:stone"), SandboxTileIds.Stone);
-        Assert.AreEqual(tiles.GetIndex("core:copper_ore"), SandboxTileIds.CopperOre);
-        Assert.AreEqual(tiles.GetIndex("core:iron_ore"), SandboxTileIds.IronOre);
-        Assert.AreEqual(tiles.GetIndex("core:silver_ore"), SandboxTileIds.SilverOre);
-        Assert.AreEqual(tiles.GetIndex("core:gold_ore"), SandboxTileIds.GoldOre);
+        Assert.AreEqual(tiles.GetIndex("core:bricks_a"), SandboxTileIds.BricksA);
+        Assert.AreEqual(tiles.GetIndex("core:bricks_b"), SandboxTileIds.BricksB);
+        Assert.AreEqual(tiles.GetIndex("core:bricks_c"), SandboxTileIds.BricksC);
+        Assert.AreEqual(tiles.GetIndex("core:bricks_d"), SandboxTileIds.BricksD);
         Assert.AreEqual(0, SandboxTileIds.Air, "Air must stay pinned to runtime index 0.");
+    }
+
+    [Test]
+    public void RenamedOreIds_ResolveAsAliasesInTileAndItemRegistries()
+    {
+        // Pre-rename saves persisted the retired "ore" string IDs in tile palettes and
+        // inventory slots; the alias table must keep them loading as the brick tiles.
+        ContentRegistry<TileDefinition> tiles = SandboxCoreContent.CreateTileRegistry();
+        ContentRegistry<ItemDefinition> items = SandboxCoreContent.CreateItemRegistry();
+
+        foreach (KeyValuePair<string, string> alias in SandboxCoreContent.RenamedTileIdAliases)
+        {
+            Assert.AreEqual(tiles.GetIndex(alias.Value), tiles.GetIndex(alias.Key),
+                $"Tile alias '{alias.Key}' must resolve to '{alias.Value}'.");
+            Assert.AreEqual(tiles.Get(alias.Value), tiles.Get(alias.Key));
+            Assert.AreEqual(items.GetIndex(alias.Value), items.GetIndex(alias.Key),
+                $"Item alias '{alias.Key}' must resolve to '{alias.Value}'.");
+        }
     }
 
     [Test]
@@ -249,12 +297,33 @@ public sealed class ContentRegistryTests
     }
 
     [Test]
-    public void CoreGoldOre_ProvidesPrototypeEmissiveSource()
+    public void CoreMagma_ProvidesPrototypeEmissiveSourceAndBricksDDoesNot()
     {
-        TileDefinition gold = SandboxCoreContent.CreateTileRegistry().Get("core:gold_ore");
+        TileDefinition magma = SandboxCoreContent.CreateTileRegistry().Get("core:magma");
+        TileDefinition bricksD = SandboxCoreContent.CreateTileRegistry().Get("core:bricks_d");
 
-        Assert.AreEqual((byte)12, gold.LightEmission);
-        Assert.AreEqual((byte)3, gold.LightAttenuation);
+        Assert.AreEqual((byte)12, magma.LightEmission);
+        Assert.AreEqual((byte)3, magma.LightAttenuation);
+        Assert.Zero(bricksD.LightEmission);
+    }
+
+    [TestCase("core:frozen", "Frozen", 2f)]
+    [TestCase("core:magma", "Magma", 2f)]
+    [TestCase("core:sand", "Sand", 1f)]
+    public void AdditionalGroundMaterials_AreSelfDroppingPlaceables(
+        string id,
+        string tileset,
+        float hardness)
+    {
+        TileDefinition tile = SandboxCoreContent.CreateTileRegistry().Get(id);
+        ItemDefinition item = SandboxCoreContent.CreateItemRegistry().Get(id);
+
+        Assert.IsTrue(tile.Solid);
+        Assert.IsTrue(tile.Opaque);
+        Assert.AreEqual(tileset, tile.AtlasSprite);
+        Assert.AreEqual(id, tile.DropItemId);
+        Assert.AreEqual(hardness, tile.Hardness);
+        Assert.AreEqual(id, item.PlacesTileId);
     }
 
     [Test]

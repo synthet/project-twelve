@@ -8,6 +8,20 @@ using UnityEngine;
 
 public sealed class SandboxInventoryTests
 {
+    private static readonly string[] PrototypeHotbarItems =
+    {
+        "core:dirt",
+        "core:grass",
+        "core:stone",
+        "core:bricks_a",
+        "core:bricks_b",
+        "core:bricks_c",
+        "core:bricks_d",
+        "core:frozen",
+        "core:magma",
+        "core:sand",
+    };
+
     [TearDown]
     public void TearDown()
     {
@@ -32,6 +46,19 @@ public sealed class SandboxInventoryTests
     }
 
     [Test]
+    public void PrototypeLoadout_FillsHotbarWithEveryGroundMaterial()
+    {
+        SandboxInventory inventory = SandboxInventory.CreatePrototypeLoadout(SandboxRegistries.Items);
+
+        for (int i = 0; i < PrototypeHotbarItems.Length; i++)
+        {
+            SandboxInventory.Slot slot = inventory.GetSlot(i);
+            Assert.AreEqual(PrototypeHotbarItems[i], slot.ItemId, $"Unexpected item in hotbar slot {i}.");
+            Assert.AreEqual(SandboxInventoryConstants.PrototypeStartingStack, slot.Count);
+        }
+    }
+
+    [Test]
     public void Add_FullInventoryReturnsRemainderWithoutLosingDrop()
     {
         SandboxInventory inventory = new SandboxInventory(SandboxRegistries.Items, 10);
@@ -42,6 +69,27 @@ public sealed class SandboxInventoryTests
 
         Assert.AreEqual(1, inventory.Add("core:dirt", 1));
         Assert.Zero(inventory.CountItem("core:dirt"));
+    }
+
+    [Test]
+    public void Break_WithFullInventoryLeavesRegistryDropUnconsumed()
+    {
+        SandboxInventory inventory = new SandboxInventory(SandboxRegistries.Items, 10);
+        for (int i = 0; i < inventory.SlotCount; i++)
+        {
+            inventory.SetSlot(i, "core:stone", SandboxRegistries.Items.Get("core:stone").MaxStack);
+        }
+
+        FakeInventoryWorld world = new FakeInventoryWorld();
+        world.Seed(3, 4, SandboxRegistries.Tiles.GetIndex("core:dirt"));
+
+        Assert.AreEqual(
+            SandboxInventoryEditResult.Success,
+            CreateService().TryBreak(world, 3, 4, out SandboxItemStack drop));
+        Assert.AreEqual("core:dirt", drop.ItemId);
+        Assert.AreEqual(1, inventory.Add(drop.ItemId, drop.Count),
+            "The pickup remainder must stay in the world when every slot is full.");
+        Assert.AreEqual(SandboxRegistries.AirIndex, world.GetTileId(3, 4));
     }
 
     [Test]
@@ -119,11 +167,26 @@ public sealed class SandboxInventoryTests
     }
 
     [Test]
+    public void OutOfRangePlacementRequest_DoesNotConsumeOrMutate()
+    {
+        SandboxInventory inventory = new SandboxInventory(SandboxRegistries.Items, 10);
+        inventory.SetSlot(0, "core:dirt", 2);
+        FakeInventoryWorld world = new FakeInventoryWorld();
+
+        SandboxInventoryEditResult validation = SandboxInventoryEditService.ValidateControllerRequest(
+            0f, 0f, 6.1f, 0f, SandboxInventoryConstants.EditRange, playerOccluded: false);
+
+        Assert.AreEqual(SandboxInventoryEditResult.OutOfRange, validation);
+        Assert.AreEqual(2, inventory.GetSlot(0).Count);
+        Assert.AreEqual(SandboxRegistries.AirIndex, world.GetTileId(6, 0));
+    }
+
+    [Test]
     public void InventorySaveData_RoundTripsExactSlotOrderAndCounts()
     {
         SandboxInventory original = new SandboxInventory(SandboxRegistries.Items, 10);
         original.SetSlot(0, "core:dirt", 17);
-        original.SetSlot(7, "core:gold_ore", 3);
+        original.SetSlot(7, "core:bricks_d", 3);
 
         string json = JsonUtility.ToJson(original.ToSaveData());
         SandboxInventorySaveData serialized = JsonUtility.FromJson<SandboxInventorySaveData>(json);
@@ -133,8 +196,29 @@ public sealed class SandboxInventoryTests
         Assert.AreEqual("core:dirt", loaded.GetSlot(0).ItemId);
         Assert.AreEqual(17, loaded.GetSlot(0).Count);
         Assert.IsTrue(loaded.GetSlot(1).IsEmpty);
-        Assert.AreEqual("core:gold_ore", loaded.GetSlot(7).ItemId);
+        Assert.AreEqual("core:bricks_d", loaded.GetSlot(7).ItemId);
         Assert.AreEqual(3, loaded.GetSlot(7).Count);
+    }
+
+    [Test]
+    public void InventorySlots_CanonicalizeRetiredItemIdsFromOldSaves()
+    {
+        // Inventories saved before the ore → bricks rename carry the retired IDs;
+        // every inventory ingress resolves them through the registry alias.
+        SandboxInventory inventory = new SandboxInventory(SandboxRegistries.Items, 10);
+        inventory.SetSlot(0, "core:gold_ore", 5);
+        Assert.Zero(inventory.Add("core:gold_ore", 2));
+        Assert.AreEqual("core:bricks_d", inventory.GetSlot(0).ItemId);
+        Assert.AreEqual(7, inventory.CountItem("core:gold_ore"));
+
+        SandboxInventorySaveData legacy = new SandboxInventorySaveData();
+        legacy.slots.Add(new SandboxInventorySlotSaveData(1, "core:copper_ore", 3));
+        inventory.LoadFromSaveData(legacy);
+
+        Assert.AreEqual("core:bricks_a", inventory.GetSlot(1).ItemId);
+        Assert.AreEqual(3, inventory.GetSlot(1).Count);
+        Assert.AreEqual(3, inventory.CountItem("core:copper_ore"));
+        Assert.AreEqual(3, inventory.CountItem("core:bricks_a"));
     }
 
     [Test]
@@ -148,7 +232,7 @@ public sealed class SandboxInventoryTests
         {
             SandboxInventory source = new SandboxInventory(SandboxRegistries.Items);
             source.SetSlot(0, "core:dirt", 12);
-            source.SetSlot(11, "core:gold_ore", 4);
+            source.SetSlot(11, "core:bricks_d", 4);
             SandboxWorld sourceWorld = sourceObject.AddComponent<SandboxWorld>();
             sourceWorld.SetPlayerInventory(source);
             sourceWorld.SaveToPath(path);
@@ -161,7 +245,7 @@ public sealed class SandboxInventoryTests
 
             Assert.AreEqual("core:dirt", target.GetSlot(0).ItemId);
             Assert.AreEqual(12, target.GetSlot(0).Count);
-            Assert.AreEqual("core:gold_ore", target.GetSlot(11).ItemId);
+            Assert.AreEqual("core:bricks_d", target.GetSlot(11).ItemId);
             Assert.AreEqual(4, target.GetSlot(11).Count);
         }
         finally

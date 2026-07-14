@@ -132,7 +132,7 @@ it is not drawn.
 Cover is **grass gameplay state**, not a material-agnostic overlay: the green cover renders only on a
 `core:grass` tile with an exposed top. `ShouldRenderGrassCover` gates on
 `tileId == GrassIndex && !tileAbove.IsSolid`, and `TryGetCoverTileset` returns the configured cover
-tileset only for grass. Bare dirt, stone, and ores stay uncovered even when exposed — grass is grown
+tileset only for grass. Bare dirt, stone, bricks, Frozen, Magma, and Sand stay uncovered even when exposed — grass is grown
 onto them by `SandboxGrassSimulator` (see `docs/VISUAL_BEHAVIOR_SPEC.md` § Grass growth simulation).
 Buried grass (a tile with solid ground directly above it) goes uncovered — so on a grassed
 stair-stepped slope the treads cover, never the risers.

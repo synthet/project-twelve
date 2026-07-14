@@ -8,7 +8,10 @@
     "4": "BricksA",
     "5": "BricksB",
     "6": "BricksC",
-    "7": "BricksD"
+    "7": "BricksD",
+    "8": "Frozen",
+    "9": "Magma",
+    "10": "Sand"
   },
   "grassCoverTileset": "GrassA",
   "tilesets": [
@@ -18,6 +21,9 @@
     {"name":"BricksA","path":"Ground/BricksA.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
     {"name":"BricksB","path":"Ground/BricksB.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
     {"name":"BricksC","path":"Ground/BricksC.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
-    {"name":"BricksD","path":"Ground/BricksD.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32}
+    {"name":"BricksD","path":"Ground/BricksD.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"Frozen","path":"Ground/Frozen.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"Magma","path":"Ground/Magma.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32},
+    {"name":"Sand","path":"Ground/Sand.png","layer":"ground","cellSize":16,"columns":8,"spriteCount":32}
   ]
 }

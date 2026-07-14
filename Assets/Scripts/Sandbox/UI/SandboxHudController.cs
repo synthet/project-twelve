@@ -4,6 +4,7 @@ using ProjectTwelve.Sandbox.Inventory;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -50,17 +51,21 @@ public sealed class SandboxHudController : MonoBehaviour
     [SerializeField] private Sprite dirtIcon;
     [SerializeField] private Sprite grassIcon;
     [SerializeField] private Sprite stoneIcon;
-    [SerializeField] private Sprite copperOreIcon;
+    [FormerlySerializedAs("copperOreIcon")]
+    [SerializeField] private Sprite bricksIcon;
 
     private readonly List<Image> heartFills = new List<Image>();
     private readonly List<GameObject> hotbarSelections = new List<GameObject>();
     private readonly List<RectTransform> hotbarSlots = new List<RectTransform>();
+    private readonly List<Image> hotbarIcons = new List<Image>();
+    private readonly List<Image> hotbarCoverIcons = new List<Image>();
     private readonly List<Text> hotbarQuantities = new List<Text>();
     private Image selectedItemLabel;
     private Text selectedItemText;
     private Text worldInfoText;
     private GameObject worldInfoPanel;
     private SandboxCreativeHotbarState hotbar;
+    private SandboxInventory subscribedInventory;
     private float selectedItemLabelHideAt;
     private Vector2Int lastWorldTile = new Vector2Int(int.MinValue, int.MinValue);
 
@@ -75,10 +80,7 @@ public sealed class SandboxHudController : MonoBehaviour
         BuildView();
         hotbar.SelectionChanged += OnHotbarSelectionChanged;
 
-        if (playerController?.Inventory != null)
-        {
-            playerController.Inventory.Changed += OnInventoryChanged;
-        }
+        EnsureInventoryBinding();
 
         if (playerVitals != null)
         {
@@ -103,9 +105,9 @@ public sealed class SandboxHudController : MonoBehaviour
             playerVitals.Changed -= OnVitalsChanged;
         }
 
-        if (playerController?.Inventory != null)
+        if (subscribedInventory != null)
         {
-            playerController.Inventory.Changed -= OnInventoryChanged;
+            subscribedInventory.Changed -= OnInventoryChanged;
         }
     }
 
@@ -117,6 +119,7 @@ public sealed class SandboxHudController : MonoBehaviour
         }
 
         HandleHotbarInput();
+        EnsureInventoryBinding();
         UpdateSelectedItemLabelVisibility();
         RefreshWorldInfo(force: false);
     }
@@ -207,15 +210,15 @@ public sealed class SandboxHudController : MonoBehaviour
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             icon.preserveAspect = true;
             icon.enabled = iconSprite != null;
+            hotbarIcons.Add(icon);
 
             // Grass renders as ground + cover overlay in the world; mirror that in the icon.
             Sprite coverSprite = ResolveTileCoverSprite(hotbar.Slots[i].TileId);
-            if (coverSprite != null)
-            {
-                Image iconCover = CreateImage("IconCover", icon.rectTransform, coverSprite, Color.white);
-                SetStretch(iconCover.rectTransform, 0f, 0f, 0f, 0f);
-                iconCover.preserveAspect = true;
-            }
+            Image iconCover = CreateImage("IconCover", icon.rectTransform, coverSprite, Color.white);
+            SetStretch(iconCover.rectTransform, 0f, 0f, 0f, 0f);
+            iconCover.preserveAspect = true;
+            iconCover.enabled = coverSprite != null;
+            hotbarCoverIcons.Add(iconCover);
 
             string keyLabel = i == 9 ? "0" : (i + 1).ToString();
             Text key = CreateText("Key", slot.rectTransform, keyLabel, 13, TextAnchor.UpperLeft, Silver);
@@ -409,12 +412,51 @@ public sealed class SandboxHudController : MonoBehaviour
     {
         for (int i = 0; i < hotbarQuantities.Count; i++)
         {
+            SandboxInventory.Slot inventorySlot = subscribedInventory.GetSlot(i);
+            SandboxCreativeHotbarState.Slot presentationSlot = default;
+            if (!inventorySlot.IsEmpty
+                && SandboxRegistries.Items.TryGet(inventorySlot.ItemId, out ItemDefinition item)
+                && !string.IsNullOrEmpty(item.PlacesTileId))
+            {
+                presentationSlot = new SandboxCreativeHotbarState.Slot(
+                    item.PlacesTileId,
+                    FormatItemName(inventorySlot.ItemId));
+            }
+
+            hotbar.SetSlot(i, presentationSlot);
             hotbarQuantities[i].text = GetInventoryQuantity(i);
+            Sprite icon = GetIcon(i);
+            hotbarIcons[i].sprite = icon;
+            hotbarIcons[i].enabled = icon != null;
+            Sprite cover = ResolveTileCoverSprite(presentationSlot.TileId);
+            hotbarCoverIcons[i].sprite = cover;
+            hotbarCoverIcons[i].enabled = cover != null;
         }
 
         if (playerController != null && hotbar != null)
         {
             playerController.SelectInventorySlot(hotbar.SelectedIndex);
+        }
+    }
+
+    private void EnsureInventoryBinding()
+    {
+        SandboxInventory current = playerController?.Inventory;
+        if (ReferenceEquals(current, subscribedInventory))
+        {
+            return;
+        }
+
+        if (subscribedInventory != null)
+        {
+            subscribedInventory.Changed -= OnInventoryChanged;
+        }
+
+        subscribedInventory = current;
+        if (subscribedInventory != null)
+        {
+            subscribedInventory.Changed += OnInventoryChanged;
+            OnInventoryChanged();
         }
     }
 
@@ -506,14 +548,30 @@ public sealed class SandboxHudController : MonoBehaviour
             return tileSprite;
         }
 
-        return index switch
+        return hotbar.Slots[index].TileId switch
         {
-            0 => dirtIcon,
-            1 => grassIcon,
-            2 => stoneIcon,
-            3 => copperOreIcon,
+            "core:dirt" => dirtIcon,
+            "core:grass" => grassIcon,
+            "core:stone" => stoneIcon,
+            "core:bricks_a" => bricksIcon,
             _ => null,
         };
+    }
+
+    private static string FormatItemName(string itemId)
+    {
+        int colon = itemId.IndexOf(':');
+        string value = colon >= 0 ? itemId.Substring(colon + 1) : itemId;
+        string[] words = value.Split('_');
+        for (int i = 0; i < words.Length; i++)
+        {
+            if (words[i].Length > 0)
+            {
+                words[i] = char.ToUpperInvariant(words[i][0]) + words[i].Substring(1);
+            }
+        }
+
+        return string.Join(" ", words);
     }
 
     /// <summary>

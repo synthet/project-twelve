@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -1065,14 +1066,23 @@ public sealed class AutotileVisualTests
     }
 
     [Test]
-    public void SandboxTileVisualCatalog_OreTilesDoNotShareGroundGroup()
+    public void SandboxTileVisualCatalog_BrickTilesDoNotShareGroundGroup()
     {
         SandboxTileVisualCatalog catalog = ScriptableObject.CreateInstance<SandboxTileVisualCatalog>();
 
-        Assert.IsTrue(catalog.SharesGroundAutotileGroup(SandboxTileIds.CopperOre, SandboxTileIds.CopperOre));
-        Assert.IsFalse(catalog.SharesGroundAutotileGroup(SandboxTileIds.CopperOre, SandboxTileIds.IronOre));
-        Assert.IsFalse(catalog.SharesGroundAutotileGroup(SandboxTileIds.IronOre, SandboxTileIds.SilverOre));
-        Assert.IsTrue(catalog.SharesGroundAutotileGroup(SandboxTileIds.GoldOre, SandboxTileIds.GoldOre));
+        Assert.IsTrue(catalog.SharesGroundAutotileGroup(SandboxTileIds.BricksA, SandboxTileIds.BricksA));
+        Assert.IsFalse(catalog.SharesGroundAutotileGroup(SandboxTileIds.BricksA, SandboxTileIds.BricksB));
+        Assert.IsFalse(catalog.SharesGroundAutotileGroup(SandboxTileIds.BricksB, SandboxTileIds.BricksC));
+        Assert.IsTrue(catalog.SharesGroundAutotileGroup(SandboxTileIds.BricksD, SandboxTileIds.BricksD));
+
+        int frozen = SandboxRegistries.Tiles.GetIndex("core:frozen");
+        int magma = SandboxRegistries.Tiles.GetIndex("core:magma");
+        int sand = SandboxRegistries.Tiles.GetIndex("core:sand");
+        Assert.IsTrue(catalog.SharesGroundAutotileGroup(frozen, frozen));
+        Assert.IsTrue(catalog.SharesGroundAutotileGroup(magma, magma));
+        Assert.IsTrue(catalog.SharesGroundAutotileGroup(sand, sand));
+        Assert.IsFalse(catalog.SharesGroundAutotileGroup(frozen, magma));
+        Assert.IsFalse(catalog.SharesGroundAutotileGroup(magma, sand));
     }
 
     [Test]

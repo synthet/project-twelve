@@ -56,7 +56,7 @@ Full rationale: [`hud-redesign-pixellab.md`](hud-redesign-pixellab.md).
 | Dirt icon | `hud_tile_dirt.png` | 32×32 | Simple | Slot 1 content |
 | Grass icon | `hud_tile_grass.png` | 32×32 | Simple | Slot 2 content |
 | Stone icon | `hud_tile_stone.png` | 32×32 | Simple | Slot 3 content |
-| Copper ore icon | `hud_tile_copper_ore.png` | 32×32 | Simple | Slot 4 content |
+| Bricks fallback icon | `hud_tile_bricks.png` | 32×32 | Simple | Slot 4 fallback; live slots resolve vendor ground sprites |
 | Cursor | `hud_cursor.png` | 16×16 | Simple | Optional HUD pointer with top-left hotspot |
 
 Every asset has a structured generation prompt in the JSON file. Those prompts are suitable for an image model, but generated results must still be resized or rejected to match the exact dimensions and alpha contract before Unity import.

@@ -371,14 +371,14 @@
       "prompt": {"primary_request": "A 32x32 cool gray stone block icon with chunky irregular facets and small highlights.", "constraints": ["single centered square block", "transparent outside the block"]}
     },
     {
-      "id": "tile_copper_ore",
-      "file": "hud_tile_copper_ore.png",
+      "id": "tile_bricks",
+      "file": "hud_tile_bricks.png",
       "role": "tile_icon",
       "source_size_px": [32, 32],
       "display_size_px": [32, 32],
       "scale": 1,
       "slice_border_px": [0, 0, 0, 0],
-      "prompt": {"primary_request": "A 32x32 dark gray stone block icon with several readable copper-orange ore clusters.", "constraints": ["single centered square block", "transparent outside the block", "ore remains visible at HUD size"]}
+      "prompt": {"primary_request": "A 32x32 gray masonry block icon with a readable staggered brick pattern.", "constraints": ["single centered square block", "transparent outside the block", "brick pattern remains visible at HUD size"]}
     },
     {
       "id": "hud_cursor",

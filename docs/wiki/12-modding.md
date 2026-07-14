@@ -112,13 +112,18 @@ version-1 saves and tile-viz `tile-space/v1` fixtures still load through:
 | 1 | `core:dirt` |
 | 2 | `core:grass` |
 | 3 | `core:stone` |
-| 4 | `core:copper_ore` |
-| 5 | `core:iron_ore` |
-| 6 | `core:silver_ore` |
-| 7 | `core:gold_ore` |
+| 4 | `core:bricks_a` |
+| 5 | `core:bricks_b` |
+| 6 | `core:bricks_c` |
+| 7 | `core:bricks_d` |
+| 8 | `core:frozen` |
+| 9 | `core:magma` |
+| 10 | `core:sand` |
 
 `SandboxCoreContent.LegacyTileIdToStringId` encodes this table; existing P1 saves load through it
 (`SandboxWorld.LoadFromPath` maps legacy ids when the save carries no palette).
+Retired IDs `core:copper_ore`, `core:iron_ore`, `core:silver_ore`, and `core:gold_ore` resolve as
+aliases of Bricks A–D so pre-rename palette saves and inventories remain loadable.
 New code must not add content `enum`s or `switch`es over tile IDs — bind to definitions instead.
 
 - `Tile.id` (the int in [Data Models](02-data-models.md)) **is a runtime index** assigned at

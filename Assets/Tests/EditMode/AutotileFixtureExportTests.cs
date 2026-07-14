@@ -69,7 +69,10 @@ public sealed class AutotileFixtureExportTests
         sb.Append("    \"4\": \"BricksA\",\n");
         sb.Append("    \"5\": \"BricksB\",\n");
         sb.Append("    \"6\": \"BricksC\",\n");
-        sb.Append("    \"7\": \"BricksD\"\n");
+        sb.Append("    \"7\": \"BricksD\",\n");
+        sb.Append("    \"8\": \"Frozen\",\n");
+        sb.Append("    \"9\": \"Magma\",\n");
+        sb.Append("    \"10\": \"Sand\"\n");
         sb.Append("  },\n");
         sb.Append("  \"grassCoverTileset\": \"GrassA\",\n");
         sb.Append("  \"tilesets\": [\n");
@@ -86,6 +89,12 @@ public sealed class AutotileFixtureExportTests
         AppendTileset(sb, ci, "BricksC", "Ground/BricksC.png", "ground", 32);
         sb.Append(",\n");
         AppendTileset(sb, ci, "BricksD", "Ground/BricksD.png", "ground", 32);
+        sb.Append(",\n");
+        AppendTileset(sb, ci, "Frozen", "Ground/Frozen.png", "ground", 32);
+        sb.Append(",\n");
+        AppendTileset(sb, ci, "Magma", "Ground/Magma.png", "ground", 32);
+        sb.Append(",\n");
+        AppendTileset(sb, ci, "Sand", "Ground/Sand.png", "ground", 32);
         sb.Append("\n  ]\n}\n");
         Directory.CreateDirectory(DataDir());
         File.WriteAllText(Path.Combine(DataDir(), "tileset-manifest.json"), sb.ToString());

@@ -22,7 +22,10 @@ spec_references:
 
 ## Open knowledge summary
 
-This ticket extends `SandboxTileVisualCatalog` beyond the current seven-tile mapping (Dirt, Grass, Stone, four ores) to consume the remaining licensed autotile sets in `Assets/_Licensed`: Frozen, Magma, and Sand ground tilesets; Ice, Snow, Moss, Carpet, WoodenFloor, Lianas, and Icicles cover tilesets. It defines how new or extended `SandboxTileIds` (or biome metadata) map to tilesets and how P2-GEN-001 biome generation selects them per biome.
+The ground-material portion is implemented: Dirt, Grass, Stone, Bricks A–D, Frozen, Magma, and Sand
+are registered placeable tiles and resolve the matching licensed ground sheets. This open ticket now
+tracks biome selection plus Ice, Snow, Moss, Carpet, WoodenFloor, Lianas, Icicles, and the remaining
+Grass/Sand cover variants.
 
 ## GitHub project linkage
 
@@ -38,7 +41,7 @@ As a developer working on the P2 milestone, I want biome-specific ground and cov
 
 ### Functional requirements
 
-1. Document the unused licensed autotile inventory (ground: Frozen, Magma, Sand; cover: Ice, Snow, Moss, Carpet, WoodenFloor, Lianas, Icicles, and remaining Grass/Sand cover variants).
+1. Document the licensed autotile inventory (implemented ground: Frozen, Magma, Sand; unused cover: Ice, Snow, Moss, Carpet, WoodenFloor, Lianas, Icicles, and remaining Grass/Sand variants).
 2. Extend `SandboxTileVisualCatalog` with mappings for new tile IDs or biome-driven tileset selection.
 3. Define how P2-GEN-001 biome generation passes select tile IDs per biome (cross-link required).
 4. Preserve autotile rule-matching invariants from `VISUAL_BEHAVIOR_SPEC.md` sections 1–2 (mask construction, connectivity groups, cover cliff rules).
@@ -46,7 +49,7 @@ As a developer working on the P2 milestone, I want biome-specific ground and cov
 ### Non-functional requirements
 
 1. Simulation continues to store tile IDs only; visuals resolve at render time.
-2. Existing seven-tile mapping (Humus, Rocks, BricksA–D, GrassA) must remain backward-compatible for current seeds.
+2. Existing Humus, Rocks, BricksA–D, and GrassA mapping must remain backward-compatible for current seeds.
 3. No licensed art blobs in the public repo; tileset sources remain in `Assets/_Licensed`.
 
 ## Acceptance criteria
@@ -85,6 +88,17 @@ As a developer working on the P2 milestone, I want biome-specific ground and cov
 | Forest (extended) | Humus | Moss or GrassB/C |
 
 Final mapping subject to spec review and generation pass design.
+
+## Progress log
+
+### 2026-07-13 — manual ground-material wiring
+
+- Registered `core:frozen`, `core:magma`, and `core:sand` with matching vendor ground tilesets and
+  exposed all ten ground materials through the inventory-backed hotbar.
+- Preserved the stable numeric interchange table and old ore-ID aliases while updating runtime and
+  offline visualizer mappings. Magma now owns the prototype emission previously attached to the
+  misnamed Gold Ore/Bricks D material.
+- Biome generation and additional cover pairings remain unimplemented, so this ticket stays open.
 
 ### Verification plan
 

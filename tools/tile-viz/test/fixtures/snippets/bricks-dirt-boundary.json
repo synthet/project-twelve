@@ -1,8 +1,8 @@
 {
   "format": "project-twelve/tile-space/v1",
   "kind": "snippet",
-  "name": "ore-dirt-boundary",
-  "note": "Copper ore (BricksA) does not share ground autotile group with dirt (Humus).",
+  "name": "bricks-dirt-boundary",
+  "note": "Bricks A does not share its ground autotile group with dirt (Humus).",
   "origin": {
     "x": 0,
     "y": 0

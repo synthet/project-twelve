@@ -7,41 +7,41 @@ public sealed class SingleAudioListenerEnforcerTests
     public void Enforce_KeepsMainCameraListener_WhenDuplicateExists()
     {
         GameObject mainCameraObject = new GameObject("Main Camera");
-        mainCameraObject.tag = "MainCamera";
-        mainCameraObject.AddComponent<Camera>();
-        AudioListener mainListener = mainCameraObject.AddComponent<AudioListener>();
-
         GameObject extraObject = new GameObject("Extra Listener");
-        extraObject.AddComponent<AudioListener>();
+        try
+        {
+            mainCameraObject.tag = "MainCamera";
+            mainCameraObject.AddComponent<Camera>();
+            AudioListener mainListener = mainCameraObject.AddComponent<AudioListener>();
+            AudioListener extraListener = extraObject.AddComponent<AudioListener>();
 
-        SingleAudioListenerEnforcer.Enforce();
+            SingleAudioListenerEnforcer.Enforce(new[] { mainListener, extraListener });
 
-        AudioListener[] listeners = Object.FindObjectsByType<AudioListener>(
-            FindObjectsInactive.Include,
-            FindObjectsSortMode.None);
-
-        Assert.AreEqual(1, listeners.Length);
-        Assert.AreSame(mainListener, listeners[0]);
-
-        Object.DestroyImmediate(extraObject);
-        Object.DestroyImmediate(mainCameraObject);
+            Assert.IsNotNull(mainListener);
+            Assert.IsTrue(extraListener == null, "The duplicate listener component must be removed.");
+        }
+        finally
+        {
+            Object.DestroyImmediate(extraObject);
+            Object.DestroyImmediate(mainCameraObject);
+        }
     }
 
     [Test]
     public void Enforce_NoOp_WhenOnlyOneListenerExists()
     {
         GameObject cameraObject = new GameObject("Camera");
-        AudioListener listener = cameraObject.AddComponent<AudioListener>();
+        try
+        {
+            AudioListener listener = cameraObject.AddComponent<AudioListener>();
 
-        SingleAudioListenerEnforcer.Enforce();
+            SingleAudioListenerEnforcer.Enforce(new[] { listener });
 
-        AudioListener[] listeners = Object.FindObjectsByType<AudioListener>(
-            FindObjectsInactive.Include,
-            FindObjectsSortMode.None);
-
-        Assert.AreEqual(1, listeners.Length);
-        Assert.AreSame(listener, listeners[0]);
-
-        Object.DestroyImmediate(cameraObject);
+            Assert.IsNotNull(listener);
+        }
+        finally
+        {
+            Object.DestroyImmediate(cameraObject);
+        }
     }
 }

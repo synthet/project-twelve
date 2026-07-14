@@ -57,10 +57,16 @@ namespace ProjectTwelve.Sandbox.Inventory
 
         public int CountItem(string itemId)
         {
+            if (!registry.TryGet(itemId, out ItemDefinition definition))
+            {
+                return 0;
+            }
+
+            string canonicalId = definition.Id;
             int total = 0;
             for (int i = 0; i < itemIds.Length; i++)
             {
-                if (string.Equals(itemIds[i], itemId, StringComparison.Ordinal))
+                if (string.Equals(itemIds[i], canonicalId, StringComparison.Ordinal))
                 {
                     total += counts[i];
                 }
@@ -87,7 +93,8 @@ namespace ProjectTwelve.Sandbox.Inventory
                     $"Item '{itemId}' stack exceeds max {definition.MaxStack}.");
             }
 
-            itemIds[index] = itemId;
+            // Store the canonical ID so retired aliases from old saves normalize on load.
+            itemIds[index] = definition.Id;
             counts[index] = count;
             Changed?.Invoke();
         }
@@ -101,12 +108,13 @@ namespace ProjectTwelve.Sandbox.Inventory
             }
 
             ItemDefinition definition = registry.Get(itemId);
+            string canonicalId = definition.Id;
             int remaining = count;
             bool changed = false;
 
             for (int i = 0; i < itemIds.Length && remaining > 0; i++)
             {
-                if (!string.Equals(itemIds[i], itemId, StringComparison.Ordinal)
+                if (!string.Equals(itemIds[i], canonicalId, StringComparison.Ordinal)
                     || counts[i] >= definition.MaxStack)
                 {
                     continue;
@@ -126,7 +134,7 @@ namespace ProjectTwelve.Sandbox.Inventory
                 }
 
                 int moved = Math.Min(remaining, definition.MaxStack);
-                itemIds[i] = itemId;
+                itemIds[i] = canonicalId;
                 counts[i] = moved;
                 remaining -= moved;
                 changed = true;
@@ -193,7 +201,7 @@ namespace ProjectTwelve.Sandbox.Inventory
                             $"Saved stack '{slot.itemId}' count {slot.count} is outside 1-{definition.MaxStack}.");
                     }
 
-                    itemIds[slot.index] = slot.itemId;
+                    itemIds[slot.index] = definition.Id;
                     counts[slot.index] = slot.count;
                 }
             }
@@ -207,7 +215,13 @@ namespace ProjectTwelve.Sandbox.Inventory
             inventory.SetSlot(0, "core:dirt", SandboxInventoryConstants.PrototypeStartingStack);
             inventory.SetSlot(1, "core:grass", SandboxInventoryConstants.PrototypeStartingStack);
             inventory.SetSlot(2, "core:stone", SandboxInventoryConstants.PrototypeStartingStack);
-            inventory.SetSlot(3, "core:copper_ore", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(3, "core:bricks_a", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(4, "core:bricks_b", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(5, "core:bricks_c", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(6, "core:bricks_d", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(7, "core:frozen", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(8, "core:magma", SandboxInventoryConstants.PrototypeStartingStack);
+            inventory.SetSlot(9, "core:sand", SandboxInventoryConstants.PrototypeStartingStack);
             return inventory;
         }
 

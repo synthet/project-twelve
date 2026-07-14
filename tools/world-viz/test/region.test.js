@@ -78,7 +78,7 @@ test('different seeds produce different worlds', () => {
 
 test('save edits overlay at the correct world coordinate and win over generation', () => {
   const chunks = [
-    { x: 1, y: -1, edits: [{ localX: 3, localY: 4, tile: { id: TileId.GoldOre, light: 9, fluid: 0, metadata: 0 } }] },
+    { x: 1, y: -1, edits: [{ localX: 3, localY: 4, tile: { id: TileId.BricksD, light: 9, fluid: 0, metadata: 0 } }] },
   ];
   const edits = editsFromChunks(chunks);
   const expectedX = 1 * CHUNK_SIZE + 3; // 35
@@ -87,7 +87,7 @@ test('save edits overlay at the correct world coordinate and win over generation
 
   const world = new World(new TerrainGenerator({ seed: 1337 }), edits);
   const tile = world.tileAt(expectedX, expectedY);
-  assert.equal(tile.id, TileId.GoldOre);
+  assert.equal(tile.id, TileId.BricksD);
   assert.equal(tile.light, 9);
 });
 

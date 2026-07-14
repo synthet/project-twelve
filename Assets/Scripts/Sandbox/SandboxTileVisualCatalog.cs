@@ -49,7 +49,7 @@ public sealed class SandboxTileVisualCatalog : ScriptableObject
         tileset = null;
         // Grass-growth model (see docs/VISUAL_BEHAVIOR_SPEC.md § Cover): the green cover is gameplay
         // state, not a material-agnostic overlay, so only the grass tile carries a cover tileset.
-        // Dirt, stone, and ores are bare even when exposed until grass grows onto them.
+        // Dirt and every non-grass ground material stay bare even when exposed until grass grows.
         if (autotileCatalog == null
             || tileId != SandboxRegistries.GrassIndex
             || string.IsNullOrEmpty(grassCoverTileset))

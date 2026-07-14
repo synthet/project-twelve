@@ -3,7 +3,7 @@ type: Task
 id: P2-INV-001
 title: "[P2-INV-001] Specify inventory-backed placement and pickup rules."
 description: Item-consuming tile placement and drop-yielding tile breaking through the SetTile choke point, with stack, reach, and hotbar rules.
-status: claimed
+status: done
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/36"
@@ -126,9 +126,67 @@ server-authoritative in P3.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket (verified 2026-07-13).
 - [ ] Inventory contract documented in `gameplay-systems.md` before implementation.
-- [ ] Consistency, stack, and failure-path EditMode tests pass.
-- [ ] Play-mode placement checklist executed with notes.
-- [ ] Follow-up tasks created for crafting/tools, inventory UI, and drop ownership in multiplayer.
+- [x] Consistency, stack, and failure-path pure EditMode cases pass (13 inventory invocations via
+      Unity Mono against the compiled EditMode assembly on 2026-07-13).
+- [x] Play-mode placement checklist executed with user-provided evidence on 2026-07-13.
+- [x] Follow-up ownership already exists: crafting/tools in P4-CONTENT-001 (#44), production
+      inventory UI in P4-UX-001 (#48), and authoritative drop ownership in P3-NET-001 (#40).
+
+## Progress log
+
+### 2026-07-13 — implementation pass
+
+- Added the pure fixed-slot `SandboxInventory`, registry-backed stack validation, deterministic
+  merge/overflow behavior, save DTOs, and `SandboxInventoryEditService` transaction rules under
+  `Assets/Scripts/Sandbox/Inventory/`.
+- Routed gameplay placement/breaking through `SandboxWorld.SetTile`; controller-bound validation
+  now enforces a 6-tile reach, player-body exclusion, and 0.10-second cadence. Successful breaks
+  create magnetized pickups with a 2.5-tile radius and 120-second lifetime; full inventories retain
+  the uncollected remainder.
+- Replaced HUD infinity markers with live counts, added the missing `core:grass` placeable item,
+  and joined ordered inventory contents to the existing world save payload without breaking legacy
+  saves that lack the new field.
+- Verification so far: runtime and EditMode assemblies compile with zero errors via `dotnet build`;
+  12 engine-independent focused inventory cases pass. Two Unity-native serialization/world cases
+  are compiled but remain pending in-engine execution because the active Unity MCP connection is
+  revoked and the open Editor locks canonical batch runs.
+- During the pass, an external release workflow committed the initial implementation as `82e4530`
+  and follow-up HUD/test coverage as `b927b8a` and `beb791a`; this agent did not stage or create
+  those commits. The ticket therefore moved to `in_progress`. A canonical focused Unity command
+  was attempted without `-quit`, but the locked project produced neither test XML nor a test log.
+- Resume verification after concurrent registry renames found and fixed alias ingress so retired
+  ore IDs canonicalize during slot writes, pickup merges, counts, and legacy save loading instead
+  of splitting stacks. Pickup radius, collect distance, and movement speed now scale from tile
+  units through `SandboxWorld.TileSize`. The current runtime and EditMode assemblies compile with
+  zero errors; 13 pure inventory invocations plus the live-hotbar state case pass against the
+  compiled EditMode assembly. Unity-native save integration and the Play-mode checklist remain
+  pending because the Unity MCP connection is revoked, the open Editor locks a second batch run,
+  and no runtime MCP endpoint is listening on port 8765.
+- User-run Unity Test Runner evidence on 2026-07-13 confirms all 15
+  `SandboxInventoryTests` pass in-engine, including exact inventory serialization and registered
+  world save/load integration. The same full-suite screenshot exposed six non-inventory failures:
+  a stale HUD prefab field, three locale-sensitive save-pose JSON fixtures, and two audio tests
+  coupled to scene-global listeners. Those fixtures and isolation seams were corrected; a fresh
+  full-suite rerun is still pending. The inventory Play-mode checklist remains outstanding.
+- User-provided Play Mode evidence shows the live ten-slot HUD with the migrated bricks icon,
+  finite quantities changed from the 100-item prototype loadout (`114` dirt and `95` grass), a
+  visible pickup near the player, and a successful save log. This covers the visual
+  dig/pickup/place counter flow. Out-of-range no-op behavior and pickup-radius boundaries are not
+  independently visible in the screenshot and remain pending explicit confirmation.
+- Final user-run Unity EditMode evidence is fully green: `408/408` tests passed with zero failures,
+  including all 15 inventory tests, 29 HUD tests, 15 save/load tests, and the audio isolation
+  coverage. The repair used `JsonUtility`-generated save fixtures, serialized-field migration for
+  `copperOreIcon` → `bricksIcon`, and deterministic listener arrays with guaranteed cleanup.
+- The user confirmed the remaining Play Mode checklist complete. Final evidence shows placement
+  across multiple registered tile types, finite hotbar counts, save/load restoration in the
+  console, and the requested out-of-range no-op check. All acceptance behavior is verified; ticket
+  status was moved to `done` on the user's explicit completion instruction. GitHub issue #36
+  remains open for the eventual completing PR to close with `Closes #36`.
+- The licensed Ground-material follow-up fills the full hotbar with Dirt, Grass, Stone, Bricks A–D,
+  Frozen, Magma, and Sand. Registry-backed item definitions, finite starting stacks, HUD names/icons,
+  stable save IDs, and offline visualizer mappings cover all ten materials. The original inventory
+  acceptance contract remains complete; expanded-material Play Mode evidence is tracked with the
+  visual follow-up rather than reopening this ticket.
