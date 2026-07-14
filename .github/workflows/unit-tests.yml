@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -14,6 +14,9 @@ permissions:
 
 env:
   HAS_UNITY_LICENSE: ${{ secrets.UNITY_LICENSE != '' || secrets.UNITY_SERIAL != '' }}
+  # Fork PRs never receive repository secrets, so a real Unity run is impossible
+  # there; everywhere else a missing license is a configuration error.
+  IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork }}
 
 jobs:
   editmode-tests:
@@ -25,6 +28,19 @@ jobs:
         with:
           lfs: true
 
+      - name: Fail when Unity license secret is missing
+        if: env.HAS_UNITY_LICENSE != 'true' && env.IS_FORK_PR != 'true'
+        run: |
+          echo "::error::Unity EditMode tests cannot run: neither UNITY_LICENSE nor UNITY_SERIAL repository secret is configured."
+          echo "This job intentionally fails instead of passing as a silent no-op (P2-QA-001)."
+          echo "See docs/wiki/quality-gates.md § 'Unity EditMode tests in CI' for how to provision the license secret."
+          exit 1
+
+      - name: Skip note (fork PR without secrets)
+        if: env.HAS_UNITY_LICENSE != 'true' && env.IS_FORK_PR == 'true'
+        run: |
+          echo "::warning::Fork PRs do not receive repository secrets; Unity EditMode tests were skipped. A maintainer must re-run them from a branch in this repository before merge."
+
       - name: Cache Unity Library
         if: env.HAS_UNITY_LICENSE == 'true'
         uses: actions/cache@v5
@@ -35,11 +51,12 @@ jobs:
             Library-${{ runner.os }}-
             Library-
 
-      - name: Explain skipped Unity tests
-        if: env.HAS_UNITY_LICENSE != 'true'
-        run: |
-          echo "Unity EditMode tests were skipped because neither UNITY_LICENSE nor UNITY_SERIAL is configured."
-          echo "Add one of those repository secrets to enable GameCI test execution."
+      # Delete the committed terrain golden fixture so the parity step below can
+      # only pass against a fixture re-authored by TerrainFixtureExportTests in
+      # THIS run (C# → JS terrain parity, P2-GEN-001 / P2-QA-001).
+      - name: Remove committed terrain fixture (force CI re-export)
+        if: env.HAS_UNITY_LICENSE == 'true'
+        run: rm -f tools/world-viz/test/fixtures/surface.seed1337.json
 
       - name: Run EditMode unit tests
         if: env.HAS_UNITY_LICENSE == 'true'
@@ -63,3 +80,11 @@ jobs:
           name: unity-editmode-test-results
           path: test-results
           if-no-files-found: error
+
+      - name: world-viz parity vs CI-authored fixture
+        if: env.HAS_UNITY_LICENSE == 'true'
+        working-directory: tools/world-viz
+        run: |
+          test -f test/fixtures/surface.seed1337.json || {
+            echo "::error::TerrainFixtureExportTests did not re-export tools/world-viz/test/fixtures/surface.seed1337.json"; exit 1; }
+          node --test
