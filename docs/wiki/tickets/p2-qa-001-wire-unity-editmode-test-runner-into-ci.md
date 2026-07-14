@@ -3,14 +3,14 @@ type: Task
 id: P2-QA-001
 title: "[P2-QA-001] Wire a real Unity EditMode test runner into CI."
 description: Run Unity EditMode tests against a real editor in CI so test/source drift and C#/JS parity regressions fail the build instead of hiding until a local run.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/117"
 github_issue_status: created
 resource: wiki/tickets/p2-qa-001-wire-unity-editmode-test-runner-into-ci.md
 tags: [docs, wiki, ticket, ci, testing, p2]
-timestamp: 2026-07-11T00:00:00Z
+timestamp: 2026-07-13T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/quality-gates.md"
@@ -89,8 +89,14 @@ happens to run the suite locally.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [ ] EditMode tests run on a real Unity in CI and fail the build on failure (scratch-PR proof).
-- [ ] NUnit results surfaced from the CI run.
-- [ ] `docs/wiki/quality-gates.md` documents the runner and its license secret.
+      *2026-07-13: workflow wired (`.github/workflows/unit-tests.yml`) — missing license now
+      **fails** same-repo runs instead of passing as a no-op; `push` trigger fixed from `main`
+      to `master`. Blocked on the maintainer adding the `UNITY_LICENSE` (+`UNITY_EMAIL`/
+      `UNITY_PASSWORD`) repository secret, then a scratch-PR red proof.*
+- [ ] NUnit results surfaced from the CI run. *(Artifact upload + `githubToken` check
+      annotation are wired; needs the license secret for a live run.)*
+- [x] `docs/wiki/quality-gates.md` documents the runner and its license secret
+      (§ "Unity EditMode tests in CI (GameCI)", incl. fixture-parity step and CI budget).
