@@ -128,8 +128,8 @@ system misbehaves instead of inferring it from symptoms.
 - [ ] Overlay screenshots and editor smoke-test notes attached — deferred to
       [P2-TOOL-002](p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md) with the
       overlay implementation.
-- [ ] MCP dispatcher EditMode tests pass for new tools (`RuntimeMcpChunkDebugToolsTests`; verified
-      by the enforced CI EditMode run on the PR).
+- [x] MCP dispatcher EditMode tests pass for new tools (`RuntimeMcpChunkDebugToolsTests`; local
+      isolated-worktree run: 107/107 passed, plus the enforced CI EditMode run on the PR).
 - [x] Follow-up tasks created: [P2-TOOL-002](p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md)
       (overlays, windows, console, stripping/profiler evidence; GitHub issue pending
       `sync_wiki_tickets_to_github.py`); network/pathfinding overlays stay with P3 / P2-AI-001 per spec.
