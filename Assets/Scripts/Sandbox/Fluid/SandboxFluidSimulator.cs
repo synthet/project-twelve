@@ -35,6 +35,15 @@ namespace ProjectTwelve.Sandbox.Fluid
         /// <summary>Number of cells awake and scheduled for the next tick. Zero means fully settled.</summary>
         public int ActiveCount => active.Count;
 
+        /// <summary>
+        /// Whether the cell is awake (scheduled for the next tick). Read-only active-set membership
+        /// for the fluid debug overlay and `fluid_at` MCP tool (P2-TOOL-001).
+        /// </summary>
+        public bool IsAwake(int x, int y)
+        {
+            return active.Contains(new Vector2Int(x, y));
+        }
+
         /// <summary>Ticks elapsed. Feeds the seeded per-row scan direction so runs are reproducible.</summary>
         public long Tick => tick;
 

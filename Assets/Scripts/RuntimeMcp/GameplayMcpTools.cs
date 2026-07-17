@@ -219,6 +219,8 @@ namespace ProjectTwelve.RuntimeMcp
                     };
                 }));
 
+            RegisterChunkDebugTools(dispatcher);
+
             dispatcher.RegisterTool(new McpTool(
                 "perf",
                 "Read smoothed FPS and frame time.",
@@ -238,6 +240,142 @@ namespace ProjectTwelve.RuntimeMcp
                         ["frameTimeMs"] = delta * 1000f
                     };
                 }));
+        }
+
+        private static void RegisterChunkDebugTools(McpDispatcher dispatcher)
+        {
+            dispatcher.RegisterTool(new McpTool(
+                "chunk_info",
+                "Read a chunk's dirty flags, renderer state, and nav version. Never generates the chunk.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["chunkX"] = new JObject { ["type"] = "integer", ["description"] = "Chunk X coordinate." },
+                        ["chunkY"] = new JObject { ["type"] = "integer", ["description"] = "Chunk Y coordinate." },
+                        ["x"] = new JObject { ["type"] = "integer", ["description"] = "World tile X (alternative to chunkX/chunkY)." },
+                        ["y"] = new JObject { ["type"] = "integer", ["description"] = "World tile Y (alternative to chunkX/chunkY)." }
+                    }
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    Vector2Int chunkCoord = ResolveChunkCoord(args);
+
+                    JObject result = new JObject
+                    {
+                        ["chunkX"] = chunkCoord.x,
+                        ["chunkY"] = chunkCoord.y
+                    };
+
+                    if (!world.TryGetChunkDebugState(chunkCoord, out SandboxChunkDebugState state))
+                    {
+                        result["generated"] = false;
+                        return result;
+                    }
+
+                    result["generated"] = true;
+                    result["rendererLoaded"] = state.RendererLoaded;
+                    result["needsRenderRebuild"] = state.NeedsRenderRebuild;
+                    result["needsColliderRebuild"] = state.NeedsColliderRebuild;
+                    result["saveDirty"] = state.IsSaveDirty;
+                    result["hasEdits"] = state.HasEdits;
+                    result["navVersion"] = state.NavVersion;
+                    return result;
+                }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "light_at",
+                "Read the light value at world tile coordinates. Never generates chunks.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["x"] = new JObject { ["type"] = "integer" },
+                        ["y"] = new JObject { ["type"] = "integer" }
+                    },
+                    ["required"] = new JArray("x", "y")
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    int x = args["x"]?.Value<int>() ?? 0;
+                    int y = args["y"]?.Value<int>() ?? 0;
+
+                    JObject result = new JObject { ["x"] = x, ["y"] = y };
+                    if (world.TryGetExistingTile(x, y, out SandboxTile tile))
+                    {
+                        result["generated"] = true;
+                        result["light"] = tile.light;
+                    }
+                    else
+                    {
+                        result["generated"] = false;
+                    }
+
+                    return result;
+                }));
+
+            dispatcher.RegisterTool(new McpTool(
+                "fluid_at",
+                "Read the fluid amount and active-set membership at world tile coordinates. Never generates chunks.",
+                new JObject
+                {
+                    ["type"] = "object",
+                    ["properties"] = new JObject
+                    {
+                        ["x"] = new JObject { ["type"] = "integer" },
+                        ["y"] = new JObject { ["type"] = "integer" }
+                    },
+                    ["required"] = new JArray("x", "y")
+                },
+                args =>
+                {
+                    SandboxWorld world = RequireWorld();
+                    int x = args["x"]?.Value<int>() ?? 0;
+                    int y = args["y"]?.Value<int>() ?? 0;
+
+                    JObject result = new JObject { ["x"] = x, ["y"] = y };
+                    if (world.TryGetExistingTile(x, y, out SandboxTile tile))
+                    {
+                        result["generated"] = true;
+                        result["fluid"] = tile.fluid;
+                    }
+                    else
+                    {
+                        result["generated"] = false;
+                    }
+
+                    ProjectTwelve.Sandbox.Fluid.SandboxFluidController fluidController =
+                        Object.FindAnyObjectByType<ProjectTwelve.Sandbox.Fluid.SandboxFluidController>();
+                    ProjectTwelve.Sandbox.Fluid.SandboxFluidSimulator simulator =
+                        fluidController != null ? fluidController.Simulator : null;
+                    result["awake"] = simulator != null ? (JToken)simulator.IsAwake(x, y) : JValue.CreateNull();
+                    result["activeCellCount"] = simulator != null ? (JToken)simulator.ActiveCount : JValue.CreateNull();
+                    return result;
+                }));
+        }
+
+        private static Vector2Int ResolveChunkCoord(JObject args)
+        {
+            JToken chunkX = args["chunkX"];
+            JToken chunkY = args["chunkY"];
+            if (chunkX != null && chunkY != null)
+            {
+                return new Vector2Int(chunkX.Value<int>(), chunkY.Value<int>());
+            }
+
+            JToken tileX = args["x"];
+            JToken tileY = args["y"];
+            if (tileX != null && tileY != null)
+            {
+                return SandboxWorld.WorldToChunkCoord(tileX.Value<int>(), tileY.Value<int>());
+            }
+
+            throw new System.InvalidOperationException(
+                "chunk_info requires either chunkX/chunkY or world tile x/y.");
         }
 
         private static void RegisterTileDebugTools(McpDispatcher dispatcher)

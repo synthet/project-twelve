@@ -3,7 +3,7 @@ type: Task
 id: P2-TOOL-001
 title: "[P2-TOOL-001] Specify debug tooling for chunks, generation, lighting, and saves."
 description: Toggleable debug overlays, chunk inspector, generation tuning window, and console commands layered on the existing Runtime MCP surface.
-status: open
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/39"
@@ -121,9 +121,15 @@ system misbehaves instead of inferring it from symptoms.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Tooling inventory documented in `13-tooling-testing.md` before implementation.
-- [ ] Overlay screenshots and editor smoke-test notes attached.
-- [ ] MCP dispatcher EditMode tests pass for new tools.
-- [ ] Follow-up tasks created for network/pathfinding overlays and release-build stripping checks.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Tooling inventory documented in `13-tooling-testing.md` before implementation
+      (§ "Debug tooling contract (P2-TOOL-001)").
+- [ ] Overlay screenshots and editor smoke-test notes attached — deferred to
+      [P2-TOOL-002](p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md) with the
+      overlay implementation.
+- [ ] MCP dispatcher EditMode tests pass for new tools (`RuntimeMcpChunkDebugToolsTests`; verified
+      by the enforced CI EditMode run on the PR).
+- [x] Follow-up tasks created: [P2-TOOL-002](p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md)
+      (overlays, windows, console, stripping/profiler evidence; GitHub issue pending
+      `sync_wiki_tickets_to_github.py`); network/pathfinding overlays stay with P3 / P2-AI-001 per spec.
