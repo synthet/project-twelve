@@ -1,8 +1,17 @@
+---
+capability: "plan agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
+---
+
 > **Claude Code:** Same intent as Cursor `/plan`. When customizing, keep in sync with `.cursor/commands/plan.md`.
 
 # /plan — Implementation plan
 
-Use after a spec exists (or for small tasks, a verbal agreement). Prefer **plan mode** or explicit user approval before large edits.
+Use after a spec exists (or for small tasks, a verbal agreement). Prefer **plan mode** or explicit user approval before large edits. Keep the Spec Kit separation of concerns: the spec states what/why, while this plan records how the approved behavior will be built and verified.
 
 ## Inputs
 
@@ -11,16 +20,20 @@ Use after a spec exists (or for small tasks, a verbal agreement). Prefer **plan 
 
 ## Output
 
-1. **Goal** — What “done” means.
-2. **Files / areas to touch** — Paths or components.
+1. **Goal** — What "done" means.
+2. **Files / areas to touch** — Paths or components (include Unity `.meta` when assets change).
 3. **Approach** — Steps in order; call out risky changes.
-4. **Tests** — What to run or add (map to AGENTS.md commands).
-5. **Rollback / flags** — If feature-flagged or migratory.
+4. **Constitution check** — Confirm alignment with `AGENTS.md`, `.agent/SAFETY.md`, `docs/PAID_ASSETS.md`, security rules, package boundaries, and Unity/autotile conventions.
+5. **Tests** — Failing test stubs to write *before* touching implementation, derived from spec acceptance criteria. List test file paths and assertion names (Unity EditMode, tile-viz/world-viz npm test, or docs lint as appropriate).
+6. **Task breakdown handoff** — Note whether `/tasks` is required before implementation; use it for multi-step or multi-agent work.
+7. **Rollback / flags** — If feature-flagged or migratory.
 
 ## Done when
 
 - Another developer could execute the plan without guessing.
-- Test plan matches project conventions.
+- Failing test stubs are identified and ready to write before implementation begins.
+- Test plan maps back to `AC-n` IDs and project conventions.
+- Any skipped `/tasks` gate is explicitly justified as trivial/single-step work.
 
 ## Note
 

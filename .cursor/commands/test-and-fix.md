@@ -1,3 +1,12 @@
+---
+capability: "test-and-fix agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
+---
+
 > **Claude Code:** Same intent as Cursor `/test-and-fix`. When customizing, keep in sync with `.cursor/commands/test-and-fix.md`.
 
 # /test-and-fix — Run tests and repair failures
@@ -11,9 +20,10 @@ Use when CI is red, tests fail locally, or the user asks for a test pass.
 
 ## Steps
 
-1. Run the **unit test** command from AGENTS.md (then integration/E2E if relevant).
+1. Run the narrowest test command from AGENTS.md for the changed area (Unity EditMode, tile-viz/world-viz npm test, docs lint, etc.).
 2. For each failure: locate root cause, fix **minimal** code or test expectation.
-3. Re-run until green or blocked; if blocked, document what is needed (data, env, flaky test).
+3. Re-run until green or blocked; if blocked, document what is needed (data, env, Unity unavailable, flaky test).
+4. If the root cause was non-obvious, append a row to the **RCA / Failure Log** in AGENTS.md.
 
 ## Done when
 

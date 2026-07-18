@@ -189,7 +189,7 @@ Endpoint: `https://api.pixellab.ai/mcp` (Bearer token via `PIXELLAB_API_KEY` env
 
 ## Common workflows
 
-`/spec → /plan → /implement → /test-and-fix → /pr-ready`. See
+`/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready`. See
 [`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asset map and loop, and
 [`.agent/workflows/`](.agent/workflows/) for playbooks.
 

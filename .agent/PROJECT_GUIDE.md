@@ -33,8 +33,7 @@
 ## SDLC
 
 ```
-/spec → /plan → /implement → /test-and-fix → /pr-ready
+/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready
 ```
 
-Slash commands: `.claude/commands/` (canonical). Cursor mirror: `.cursor/commands/` (generated).
-Codex skills: `.agents/skills/` (generated); project defaults: `.codex/config.toml`.
+Spec Kit mapping: [`.agent/SPEC_KIT_ADOPTION.md`](SPEC_KIT_ADOPTION.md). Slash commands: `.claude/commands/` (canonical). Cursor mirror: `.cursor/commands/` (generated).

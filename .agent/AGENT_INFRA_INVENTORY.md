@@ -1,6 +1,8 @@
 # Agent infrastructure inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-10. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+**Last reviewed:** 2026-07-16. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+
+Generated command/skill/subagent index: [`docs/agent-asset-inventory.md`](../docs/agent-asset-inventory.md) (`python scripts/generate_agent_asset_inventory.py`).
 
 Keep this table current as the single catalog of every agent-facing asset. `.claude/` is canonical;
 `.cursor/` and `.agents/skills/` are generated from it.
@@ -16,7 +18,10 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [.agent/SKILL_CHANGE_AST10_REVIEW.md](SKILL_CHANGE_AST10_REVIEW.md) | PR checklist guarding skill drift | governance | active |
 | [.agent/ai_edit_spec.md](ai_edit_spec.md) | Minimal-diff editing conventions | coding | active |
 | [.agent/subagents/README.md](subagents/README.md) | Logical roles ↔ subagents; allowed/forbidden edits | coding | active |
+| [.agent/SPEC_KIT_ADOPTION.md](SPEC_KIT_ADOPTION.md) | Spec Kit quality-gate mapping | workflow | active |
 | [.agent/workflows/*.md](workflows/) | Reusable SDLC + safety playbooks | workflow | active |
+| [agent-policy.yaml](../agent-policy.yaml) | External-export / review-only policy | governance | active |
+| [docs/agent-asset-inventory.md](../docs/agent-asset-inventory.md) | Generated command/skill/subagent index | docs | generated |
 | [.claude/commands/*.md](../.claude/commands/) | Slash commands | workflow | active |
 | [.claude/skills/*/SKILL.md](../.claude/skills/) | Skills | coding | active |
 | [.claude/agents/*.md](../.claude/agents/) | Subagents | coding | active |
@@ -37,6 +42,11 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [scripts/check_paid_assets.py](../scripts/check_paid_assets.py) | Block licensed paths on commit/push | governance | active |
 | [scripts/check_markdown_links.py](../scripts/check_markdown_links.py) | Markdown link checker | docs | active |
 | [scripts/sync_assistant_trees.py](../scripts/sync_assistant_trees.py) | Regenerate `.cursor/` and `.agents/skills/` from `.claude/` | agents | active |
+| [scripts/generate_agent_asset_inventory.py](../scripts/generate_agent_asset_inventory.py) | Generate `docs/agent-asset-inventory.md` | agents | active |
+| [scripts/agent_policy/validate_export.py](../scripts/agent_policy/validate_export.py) | Pre-export policy gate for external reviews | governance | active |
+| [scripts/ci/secret_detection.py](../scripts/ci/secret_detection.py) | Shared secret scan helpers | governance | active |
+| [scripts/validate_cli_skills.py](../scripts/validate_cli_skills.py) | CLI skill structure gate | agents | active |
+| [scripts/ci/check_agent_frontmatter.py](../scripts/ci/check_agent_frontmatter.py) | Agent asset frontmatter gate | agents | active |
 
 ## Drift watchlist
 

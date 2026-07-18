@@ -1,12 +1,26 @@
+---
+capability: "pr-ready agent asset workflow"
+side_effect_level: remote_write
+approval_required: true
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
+---
+
 > **Claude Code:** Same intent as Cursor `/pr-ready`. When customizing, keep in sync with `.cursor/commands/pr-ready.md`.
 
 # /pr-ready — Prepare for pull request
 
 Use when implementation is complete and you want a merge-ready PR.
 
+This is the **definition-of-done** check: merge readiness (checks green, hygiene, issue linkage).
+Spec satisfaction is a separate question — run the `validate-implementation` skill first for
+per-criterion verification; do not conflate "meets spec" with "mergeable".
+
 ## Inputs
 
 - Diff or branch state; **AGENTS.md**; optional issue link.
+- Validation report from `validate-implementation` if a spec with acceptance criteria exists.
 
 ## Output
 
@@ -19,7 +33,16 @@ Use when implementation is complete and you want a merge-ready PR.
 ## Self-review
 
 - Scan diff for **debug code**, **TODOs** that should be issues, and **accidental files**.
-- Confirm no secrets or large binaries.
+- Confirm no secrets, licensed art blobs, or large binaries.
+- Run `python3 scripts/check_paid_assets.py --staged` before commit.
+
+## Definition of done
+
+- Lint/test commands from **AGENTS.md** ran and are green (state actual results; never "probably green").
+- Spec ACs are Verified per `validate-implementation`, or open Unknowns/Failures are listed explicitly.
+- PR includes `Closes #<N>` for the linked GitHub issue; wiki ticket `Stage = Review` when applicable.
+- If `.claude/` changed, `python scripts/sync_assistant_trees.py --check` passes.
+- Diff is clean: no debug code, secrets, large binaries, or unrelated refactors.
 
 ## Done when
 
@@ -27,4 +50,4 @@ Use when implementation is complete and you want a merge-ready PR.
 
 ## Optional
 
-- For long-running PR hygiene (comments, CI loops), use a dedicated “babysit PR” skill in your personal skills directory if configured.
+- For long-running PR hygiene (comments, CI loops), use the `pr-ready-hygiene` subagent or a dedicated babysit skill if configured.

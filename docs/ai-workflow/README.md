@@ -4,7 +4,7 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-07-11T17:10:00Z
+timestamp: 2026-07-16T04:20:00Z
 okf_version: 0.1
 ---
 
@@ -37,8 +37,10 @@ Validate CLI tooling skills with `python scripts/validate_cli_skills.py` (see [`
 ## The SDLC loop
 
 ```
-/spec → /plan → /implement → /test-and-fix → /pr-ready → (optional) /subagent-review → /release-notes
+/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready → (optional) /subagent-review → /release-notes
 ```
+
+Spec Kit mapping: [`.agent/SPEC_KIT_ADOPTION.md`](../../.agent/SPEC_KIT_ADOPTION.md).
 
 ### Phase gates
 
@@ -48,7 +50,10 @@ is unnecessary (trivial fix), say so explicitly.
 | Phase | Artifact produced | Gate to pass before the next phase |
 |-------|-------------------|-------------------------------------|
 | `/spec` | Spec with EARS `AC-n` acceptance criteria | User approves; no criterion is AMBIGUOUS |
+| `/clarify` | Clarification summary, assumptions, spec patch notes | Planning readiness is `Ready` or `Ready with assumptions` |
 | `/plan` | Implementation plan (files, approach, tests, rollback) | User approves the plan |
+| `/tasks` | Traceable `T-n` task list with verification commands | Every `AC-n` mapped; tasks executable without guessing |
+| `/analyze` | Coverage matrix and consistency findings | Implementation readiness is `Ready` (blockers fixed) |
 | `/implement` | Minimal-diff change set with tests | Lint + narrowest tests green |
 | `/test-and-fix` | Green test run (or written blocker); RCA log entry for non-obvious failures | Tests pass or blocker documented |
 | `validate-implementation` (skill) | Per-AC Verified/Failed/Unknown report with evidence | Every AC Verified, or open items accepted by the user |

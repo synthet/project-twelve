@@ -41,6 +41,7 @@ CLI tools on PATH: see [`.claude/skills/cli-tools-overview/references/agent-envi
 python scripts/sync_assistant_trees.py --check
 python scripts/validate_cli_skills.py
 python scripts/ci/check_agent_frontmatter.py
+python scripts/generate_agent_asset_inventory.py --check
 python3 scripts/check_markdown_links.py
 python3 scripts/check_paid_assets.py --staged
 # Unity EditMode — see .claude/skills/unity-tests/SKILL.md

@@ -2,6 +2,10 @@
 
 Append-only log of documentation ingest, lint, and structural changes.
 
+## [2026-07-16] adopted | synthet-code-framework agent upgrades (Spec Kit gates)
+
+Cherry-picked from `synthet-code-framework`: `/clarify`, `/tasks`, `/analyze` commands and workflows; refreshed SDLC command bodies; six skills (`karpathy-guidelines`, `systematic-debugging`, `test-driven-development`, `verification-before-completion`, `skill-authoring`, `commit-and-push`); `karpathy-coding` rule; `/critical-commit-audit` command; `agent-policy.yaml` + export validator; `generate_agent_asset_inventory.py`. See [`.agent/SPEC_KIT_ADOPTION.md`](../.agent/SPEC_KIT_ADOPTION.md).
+
 ## [2026-06-28] adopt | synthet-code-framework agent infrastructure
 
 Adopted full agent scaffolding from synthet-code-framework: `.claude/`, `.cursor/` mirror, `.agent-memory/`, OKF lint scripts, and CI agent checks. Backlog adapted to wiki-tickets + GitHub issues workflow.
