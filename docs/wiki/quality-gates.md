@@ -4,7 +4,7 @@ title: Quality Gates
 description: Required automated and manual verification steps before merge — tests, link hygiene, deterministic checks, and profiler targets.
 resource: wiki/quality-gates.md
 tags: [docs, wiki, quality, ci, testing]
-timestamp: 2026-07-13T00:00:00Z
+timestamp: 2026-07-18T01:00:00Z
 okf_version: 0.1
 ---
 
@@ -12,7 +12,7 @@ okf_version: 0.1
 
 > **Status:** Active baseline.
 > **Decisions:** Automated tests validate data contracts; deterministic checks prove reproducibility; manual Unity checks catch performance and integration bugs.
-> **Invariants:** Every merge must pass: edit-mode tests, link hygiene, asset validation, and Unity build validation.
+> **Invariants:** Every merge must pass: local edit-mode tests (when Unity is available), link hygiene, asset validation, and Unity build validation. CI does **not** run Unity EditMode (no Actions license).
 
 ## Overview
 
@@ -35,9 +35,9 @@ Every commit should run the full EditMode test suite. Tests must validate:
 | **Network serialization** | Tile-delta encode/decode round-trips; sequence ordering preserved | (included in EditMode suite) | — |
 | **Visual invariants** | Character sheet clip rows/keys match spec; autotile pick is deterministic, weighted, flip-aware | (included in EditMode suite) | — |
 
-**When to run:** Before every push; part of CI/CD.
+**When to run:** Locally before every push that touches C# / visual behavior. Not run in GitHub Actions (no Unity license).
 
-**CI command (batch mode):**
+**Local command (batch mode):**
 ```bash
 Unity -batchmode -quit -projectPath . -runTests -testPlatform EditMode \
   -testResults TestResults/editmode.xml -logFile Logs/unity-editmode-tests.log
@@ -47,12 +47,16 @@ On failure: Fix the test or the code; commit the fix; re-run before push.
 
 #### Unity EditMode tests in CI (GameCI)
 
-The **Unity Unit Tests** workflow (`.github/workflows/unit-tests.yml`, job `EditMode tests`) runs
-the full EditMode suite on a real Unity **6000.5.1f1** editor via
-[`game-ci/unity-test-runner`](https://game.ci/docs/github/test-runner) on every pull request,
-push to `master`, and manual dispatch (P2-QA-001, [#117](https://github.com/synthet/project-twelve/issues/117)).
+**Policy:** this repository does **not** provision a Unity license for GitHub Actions.
+EditMode is a **local** gate (developer machine / Unity Editor). The GameCI workflow
+(`.github/workflows/unit-tests.yml`, P2-QA-001 / [#117](https://github.com/synthet/project-twelve/issues/117))
+stays wired for optional activation but **skips with a notice** when
+`UNITY_LICENSE` / `UNITY_SERIAL` are absent — it must not fail the PR check for a missing secret.
 
-**License secrets (repository → Settings → Secrets and variables → Actions):**
+**CI gates that do run without Unity:** `agent-checks` (docs links, OKF, paid-assets,
+assistant-tree sync) and offline `tools/tile-viz` / `tools/world-viz` npm tests where configured.
+
+**If secrets are ever added** (repository → Settings → Secrets and variables → Actions):
 
 | Secret | When | Contents |
 |--------|------|----------|
@@ -60,33 +64,20 @@ push to `master`, and manual dispatch (P2-QA-001, [#117](https://github.com/synt
 | `UNITY_EMAIL` / `UNITY_PASSWORD` | Both | Unity account credentials used for activation |
 | `UNITY_SERIAL` | Pro/Plus license | Serial key (instead of `UNITY_LICENSE`) |
 
-No license file is ever committed; the runner activates from secrets at job start.
+No license file is ever committed; the runner would activate from secrets at job start.
 
 **Enforcement semantics:**
 
-- License secret present → tests run; **any test failure fails the check** (non-zero exit).
-- License secret missing on a same-repo run → the job **fails fast with a configuration error**
-  (it must never pass as a silent no-op — that previously hid red tests on `master`).
-- Fork PRs never receive secrets → the job skips with a warning; a maintainer re-runs from a
-  same-repo branch before merge.
+- License secret absent (current policy) → job posts a notice and **succeeds** (skip, not fail).
+- License secret present → GameCI runs EditMode; **any test failure fails the check**.
+  Terrain parity: CI deletes `tools/world-viz/test/fixtures/surface.seed1337.json` so
+  `TerrainFixtureExportTests` must re-author it; then `node --test` in `tools/world-viz`
+  verifies against that fixture.
 
-**Results:** NUnit XML is uploaded as the `unity-editmode-test-results` artifact, and the runner
-publishes a check annotation via `githubToken`.
+**Note on `Assets/_Licensed`:** public CI never mounts the private submodule. Runtime code and
+EditMode tests must not hard-depend on licensed assets (see `docs/PAID_ASSETS.md`).
 
-**Terrain parity (C# ↔ JS):** before the Unity step, CI deletes
-`tools/world-viz/test/fixtures/surface.seed1337.json` so `TerrainFixtureExportTests` must
-re-author it inside the run; afterwards `node --test` in `tools/world-viz` verifies the JS
-generator against that CI-authored fixture. A missing re-export fails the job.
-
-**Note on `Assets/_Licensed`:** CI checks out the public repo only (no private submodule).
-Runtime code and EditMode tests must not hard-depend on licensed assets; if a test can only pass
-with the submodule present, that is a test bug (see `docs/PAID_ASSETS.md`).
-
-**CI budget:** first (cold-cache) run imports the Library and is expected to take roughly
-15–25 minutes; warm runs with the `Library-*` cache should stay under ~10 minutes. Revisit the
-budget here if warm runs regress past that.
-
-**Local reproduction:**
+**Local reproduction (required before merge when C# / visual behavior changes):**
 
 ```bash
 # Windows: omit -quit when combined with -runTests (see .claude/skills/unity-tests/SKILL.md)
