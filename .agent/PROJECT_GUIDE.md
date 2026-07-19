@@ -20,6 +20,8 @@
 | `SAFETY.md` | Hard safety rules |
 | `COMMANDS.md` | Verified command cheat sheet |
 | `AGENT_INFRA_INVENTORY.md` | Full asset catalog |
+| `SKILL_INVENTORY.md` | Skill tiers and notes |
+| `SKILL_COMPILATION.md` | When/how to compile skills into harnesses |
 | `workflows/` | SDLC playbooks |
 | `subagents/` | Subagent role matrix |
 

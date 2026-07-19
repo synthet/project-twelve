@@ -3,70 +3,41 @@ name: pick-next-task
 description: Recommend the next open wiki ticket to work on, ranked by phase then priority, without claiming or mutating anything. Use when the user asks "what's next", to pick the next task, or to start work without a specific ticket in hand.
 ---
 
-# Pick next task (ProjectTwelve fork)
+# Pick next task (compiled harness)
 
-> **ProjectTwelve adaptation:** The canonical task queue is **wiki tickets** at
-> [`docs/wiki/tickets/README.md`](../../../docs/wiki/tickets/README.md), each with frontmatter linking to a GitHub issue.
-> This skill only **recommends** the next ticket. Claiming is the separate, explicit `/task-claim <N>` step.
-> This fork does not use GitHub Project Stage fields.
+> Wiki tickets at [`docs/wiki/tickets/`](../../../docs/wiki/tickets/) are the queue.
+> This skill **recommends** only. Claiming is `/task-claim <N>`.
+> Runner: [`scripts/pick_next_task.py`](../../../scripts/pick_next_task.py).
 
 ## When to use
 
-- The user asks "what's next", "pick the next task", or "what should I work on".
-- Work is starting but no specific ticket/issue has been chosen yet.
-- You need a ranked shortlist of workable backlog items.
+- User asks "what's next", "pick the next task", or starts work without a ticket.
+- Need a ranked shortlist of open backlog items.
 
-Do **not** use this to claim, assign, or edit tickets — that is `/task-claim` and the
-[`backlog-queue`](../backlog-queue/SKILL.md) contract.
+Do **not** claim or edit tickets here — that is `/task-claim` and [`backlog-queue`](../backlog-queue/SKILL.md).
 
-## Contract (read-only)
-
-### 1. Sync (recommended)
-
-Refresh the backlog before ranking if the tree may be stale:
+## Run (repo root)
 
 ```bash
-python scripts/fetch_remotes.py --fetch-only
+python scripts/pick_next_task.py
+python scripts/pick_next_task.py --phase P2
+python scripts/pick_next_task.py --tag ux
+python scripts/pick_next_task.py --json
+python scripts/pick_next_task.py --fetch-only   # refresh remotes first, then rank
 ```
 
-### 2. Read the ticket index and files
+The harness filters `status: open`, ranks by phase (`P0`→`P5`) then ticket id, prints the
+recommendation + alternates, and flags tickets missing `github_issue` as unclaimable.
 
-Read [`docs/wiki/tickets/README.md`](../../../docs/wiki/tickets/README.md) and the ticket
-markdown under `docs/wiki/tickets/`. Status is in YAML frontmatter:
-`status: open | claimed | in_progress | blocked | implemented | done`.
+## After the script
 
-### 3. Filter to workable tickets
-
-Keep only `status: open`. Exclude every other status. Honor optional filters:
-- `--phase <Pn>` — a single phase (e.g. `P1`).
-- `--tag <tag>` — tickets whose frontmatter `tags` include `<tag>`.
-
-### 4. Rank
-
-Sort ascending by phase (`P0 → P5`), then by ticket ID within the phase (lexical).
-The first entry is the recommendation; keep 2–3 alternates.
-
-### 5. Recommend (no mutation)
-
-Report:
-- **Recommended:** ID, title, `status`, phase, linked issue `#N`.
-- **Why:** lowest open phase/priority (plus any filters).
-- **Alternates:** next 2–3 candidates.
-- **Next step:** `Run /task-claim <N>.`
-
-If nothing qualifies, stop and say so. **Do not invent work.** Suggest filing a ticket
-(see [`backlog-queue`](../backlog-queue/SKILL.md)) or relaxing filters. A ticket lacking a
-`github_issue` link is not claimable — flag it and suggest
-`python3 scripts/sync_wiki_tickets_to_github.py`.
-
-## Guardrails
-
-- **Read-only.** No `gh` edits, no frontmatter writes, no board Stage moves.
-- **Never invent work** not represented by an open ticket.
-- Claiming and status transitions belong to `/task-claim` and `backlog-queue`.
+Present the script output to the user. **Next step:** `/task-claim <N>` when claimable.
+If nothing qualifies, stop — do not invent work. Suggest filing via backlog-queue or
+`python scripts/sync_wiki_tickets_to_github.py` when the issue link is missing.
 
 ## Related
 
-- Slash command: [`/pick-next-task`](../../../.claude/commands/pick-next-task.md).
-- Claim step: [`/task-claim`](../../../.claude/commands/task-claim.md).
-- Full contract: [`docs/project/00-backlog-workflow.md`](../../../docs/project/00-backlog-workflow.md).
+- Slash command: [`/pick-next-task`](../../../.claude/commands/pick-next-task.md)
+- Claim: [`/task-claim`](../../../.claude/commands/task-claim.md)
+- Contract: [`docs/project/00-backlog-workflow.md`](../../../docs/project/00-backlog-workflow.md)
+- Compilation policy: [`.agent/SKILL_COMPILATION.md`](../../../.agent/SKILL_COMPILATION.md)

@@ -1,14 +1,16 @@
 # Skill inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-16
+**Last reviewed:** 2026-07-19
+
+Compilation policy: [SKILL_COMPILATION.md](./SKILL_COMPILATION.md).
 
 | Skill | Path | Tier | Notes |
 |-------|------|------|-------|
-| unity-tests | `.claude/skills/unity-tests/SKILL.md` | L1 | Unity 6000.5.1f1 batch load, EditMode/PlayMode, `.env` paths |
-| agent-memory | `.claude/skills/agent-memory/SKILL.md` | L1 | Session log → dream → promote |
-| backlog-queue | `.claude/skills/backlog-queue/SKILL.md` | L1 | ProjectTwelve fork: wiki tickets + issues |
-| pick-next-task | `.claude/skills/pick-next-task/SKILL.md` | L1 | Read-only next-ticket recommendation |
-| repo-sync | `.claude/skills/repo-sync/SKILL.md` | L1 | Main repo + assets submodule sync |
+| unity-tests | `.claude/skills/unity-tests/SKILL.md` | L1 | Compiled: `scripts/run_unity_tests.py` (Unity 6000.5.1f1) |
+| agent-memory | `.claude/skills/agent-memory/SKILL.md` | L1 | Compiled bootloader over `scripts/agent-memory/*` |
+| backlog-queue | `.claude/skills/backlog-queue/SKILL.md` | L1 | Pick step uses `pick_next_task.py`; claim/PR still prose |
+| pick-next-task | `.claude/skills/pick-next-task/SKILL.md` | L1 | Compiled: `scripts/pick_next_task.py` (read-only rank) |
+| repo-sync | `.claude/skills/repo-sync/SKILL.md` | L1 | Compiled bootloader over `scripts/fetch_remotes.py` |
 | assets-submodule-publish | `.claude/skills/assets-submodule-publish/SKILL.md` | L1 | Commit assets submodule + bump gitlink |
 | commit-conventions | `.claude/skills/commit-conventions/SKILL.md` | L1 | Commit message conventions |
 | commit-and-push | `.claude/skills/commit-and-push/SKILL.md` | L2 | Stage/commit/push with paid-assets guard |

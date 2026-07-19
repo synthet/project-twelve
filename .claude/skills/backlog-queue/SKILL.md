@@ -24,9 +24,14 @@ Every contributor (human or AI) follows the same five steps.
 
 ### 1. Pick from open wiki tickets
 
-Browse [`docs/wiki/tickets/README.md`](../../../docs/wiki/tickets/README.md) and individual ticket files under `docs/wiki/tickets/`.
-Pick an open ticket sorted by phase (P0 → P5) and priority within the phase. If nothing is ready,
-stop and ask the maintainer. **Do not invent new work.**
+Run the compiled recommender (or use [`pick-next-task`](../pick-next-task/SKILL.md)):
+
+```bash
+python scripts/pick_next_task.py
+```
+
+It ranks open tickets by phase (P0 → P5) then ticket id. If nothing is ready, stop and ask the
+maintainer. **Do not invent new work.**
 
 ### 2. Claim the linked GitHub issue
 
