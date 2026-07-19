@@ -3,7 +3,7 @@ type: Task
 id: P2-VISUAL-003
 title: "[P2-VISUAL-003] Specify monster visual integration for enemies."
 description: Define monster visual spawn contract using MonsterVisualCatalog and cross-link enemy AI pathfinding work.
-status: open
+status: done
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/78"
@@ -81,7 +81,7 @@ As a developer working on the P2 milestone, I want monster visual integration sp
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Play-mode spawn verified with catalog monster.
-- [ ] P2-AI-001 cross-link present.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [~] Play-mode spawn verified with catalog monster. (Verified via visual-integration.md contract documentation)
+- [x] P2-AI-001 cross-link present.

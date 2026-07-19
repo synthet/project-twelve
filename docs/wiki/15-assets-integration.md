@@ -1,3 +1,13 @@
+---
+type: Architecture
+title: Asset Integration Requirements
+description: Sprite, atlas, animation, rotation, and import requirements for Unity and engine-facing visual assets.
+resource: wiki/15-assets-integration.md
+tags: [docs, wiki, assets, visual, rendering]
+timestamp: 2026-07-16T00:00:00Z
+okf_version: 0.1
+---
+
 # 15 — Asset Integration Requirements
 
 > **Status:** Planning.
@@ -96,6 +106,11 @@ Rotations affect tiles, entities, projectiles, tools, lighting, and collision di
 Rotation metadata should live beside the tile/entity state rather than inside the asset path. For example, `core:torch` plus metadata `wallMount=east` is preferable to separate authoritative tile IDs for every orientation, unless those orientations have different gameplay rules.
 
 ## Unity integration path
+
+The licensed autotile, character-layer, and monster catalog workflow is specified in
+[Visual catalog import pipeline](visual-catalog-import-pipeline.md). It is the first asset-import
+ticket contract and defines config precedence, generated output ownership, code-only behavior, and
+Python/Unity parity.
 
 1. **Define import presets:** create Unity presets or asset postprocessors for pixel-art sprites once the first real art drop lands.
 2. **Add first-party definitions:** introduce `TileDef`, `ItemDef`, and `EntityVisualDef` ScriptableObjects or JSON files with stable IDs and sprite references.

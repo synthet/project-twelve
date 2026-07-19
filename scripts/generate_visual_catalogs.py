@@ -10,7 +10,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SUBMODULE_ROOT = REPO_ROOT / "Assets" / "_Licensed"
-CONFIG_PATH = SUBMODULE_ROOT / "config" / "visual-import.txt"
+LOCAL_OVERRIDE_PATH = REPO_ROOT / "config" / "visual-import.local-only.txt"
+SUBMODULE_CONFIG_PATH = SUBMODULE_ROOT / "config" / "visual-import.txt"
 OUTPUT_DIR = SUBMODULE_ROOT / "Settings" / "Visual"
 SCRIPTS_ROOT = REPO_ROOT / "Assets" / "Scripts"
 
@@ -18,15 +19,39 @@ EXCLUDED_PREFABS_FOLDER = "Common/Prefabs"
 GUID_PATTERN = re.compile(r"^[0-9a-f]{32}$")
 
 
-def read_config() -> dict[str, str]:
+def resolve_config_path() -> Path:
+    """Match LocalImportConfig: a local override replaces the submodule config."""
+    if LOCAL_OVERRIDE_PATH.is_file():
+        return LOCAL_OVERRIDE_PATH
+    return SUBMODULE_CONFIG_PATH
+
+
+def read_config(config_path: Path) -> dict[str, str]:
     config: dict[str, str] = {}
-    for line in CONFIG_PATH.read_text(encoding="utf-8").splitlines():
+    for line in config_path.read_text(encoding="utf-8").splitlines():
         stripped = line.strip()
         if not stripped or stripped.startswith("#") or "=" not in stripped:
             continue
         key, value = stripped.split("=", 1)
         config[key.strip()] = value.strip().replace("\\", "/")
     return config
+
+
+def validate_catalog_inputs(config: dict[str, str]) -> None:
+    required_roots = ("tile_sprites_root", "hero_sprites_root", "monster_prefabs_root")
+    missing_keys = [key for key in required_roots if not config.get(key)]
+    if missing_keys:
+        raise SystemExit(f"Missing required visual import keys: {', '.join(missing_keys)}")
+
+    missing_roots = [
+        f"{key}={config[key]}"
+        for key in required_roots
+        if not resolve_asset_path(config[key]).is_dir()
+    ]
+    if missing_roots:
+        raise SystemExit(
+            "Missing visual catalog source directories:\n  - " + "\n  - ".join(missing_roots)
+        )
 
 
 def read_guid(meta_path: Path) -> str:
@@ -36,6 +61,13 @@ def read_guid(meta_path: Path) -> str:
             validate_guid(guid, meta_path)
             return guid
     raise ValueError(f"guid not found in {meta_path}")
+
+
+def read_asset_guid(asset_path: Path) -> str:
+    meta_path = asset_path.with_suffix(asset_path.suffix + ".meta")
+    if not meta_path.is_file():
+        raise FileNotFoundError(f"Missing Unity metadata for visual source: {meta_path}")
+    return read_guid(meta_path)
 
 
 def validate_guid(guid: str, source: Path) -> None:
@@ -125,11 +157,8 @@ def generate_autotile_catalog(tiles_root: str) -> None:
         if not folder.is_dir():
             continue
         for png in sorted(folder.glob("*.png")):
-            asset_path = png.relative_to(REPO_ROOT).as_posix()
             meta_path = png.with_suffix(png.suffix + ".meta")
-            if not meta_path.is_file():
-                continue
-            texture_guid = read_guid(meta_path)
+            texture_guid = read_asset_guid(png)
             sprite_ids = read_sprite_file_ids(meta_path)
             if subfolder == "Ground" and len(sprite_ids) != GROUND_AUTOTILE_SPRITE_COUNT:
                 ground_sprite_errors.append(
@@ -200,10 +229,7 @@ def generate_character_layer_catalog(sprites_root: str, extra_roots: list[str]) 
             return
         textures: list[str] = []
         for png in sorted(layer_dir.glob("*.png")):
-            meta_path = png.with_suffix(png.suffix + ".meta")
-            if not meta_path.is_file():
-                continue
-            texture_guid = read_guid(meta_path)
+            texture_guid = read_asset_guid(png)
             textures.append(f"    - {unity_ref(2800000, texture_guid)}")
         if not textures:
             return
@@ -259,14 +285,11 @@ def generate_monster_catalog(monsters_root: str) -> None:
         rel = prefab.relative_to(REPO_ROOT).as_posix()
         if EXCLUDED_PREFABS_FOLDER in rel.replace("\\", "/"):
             continue
-        meta_path = prefab.with_suffix(prefab.suffix + ".meta")
-        if not meta_path.is_file():
-            continue
         monster_id = prefab.stem
         if monster_id in seen:
             continue
         seen.add(monster_id)
-        prefab_guid = read_guid(meta_path)
+        prefab_guid = read_asset_guid(prefab)
         entries.append(
             f"  - monsterId: {monster_id}\n"
             f"    prefab: {unity_ref(100100000, prefab_guid)}"
@@ -299,9 +322,15 @@ def generate_monster_catalog(monsters_root: str) -> None:
 
 
 def main() -> None:
-    if not CONFIG_PATH.is_file():
-        raise SystemExit(f"Missing config: {CONFIG_PATH}")
-    config = read_config()
+    config_path = resolve_config_path()
+    if not config_path.is_file():
+        raise SystemExit(
+            "Missing visual import config: expected "
+            f"{LOCAL_OVERRIDE_PATH} or {SUBMODULE_CONFIG_PATH}"
+        )
+    config = read_config(config_path)
+    validate_catalog_inputs(config)
+    print(f"Using visual import config: {config_path.relative_to(REPO_ROOT)}")
     generate_autotile_catalog(config["tile_sprites_root"])
     extra_layers = [value for key, value in config.items() if key.startswith("hero_extra_layer")]
     generate_character_layer_catalog(config["hero_sprites_root"], extra_layers)

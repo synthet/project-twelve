@@ -85,6 +85,7 @@ Project-owned rendering, player avatar, creature, and effect systems. Local sour
 | Page | Scope |
 |------|-------|
 | [Visual integration](visual-integration.md) | Tile mapping, avatar factory, vendor parity, creature/effect touchpoints |
+| [Visual catalog import pipeline](visual-catalog-import-pipeline.md) | Config precedence, deterministic autotile/character/monster catalog regeneration, and code-only behavior |
 | [Licensed assets reference](licensed-assets-reference.md) | Public contracts vs private submodule inventory; regen checklist |
 | [Visual behavior spec](../VISUAL_BEHAVIOR_SPEC.md) | Autotile masks, sprite sheets, animator API |
 | [Asset integration requirements](15-assets-integration.md) | Sprites, atlases, animation schema (Set B reference) |

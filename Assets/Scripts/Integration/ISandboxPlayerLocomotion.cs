@@ -4,6 +4,7 @@
 public interface ISandboxPlayerLocomotion
 {
     void Idle();
+    void Walk();
     void Run();
     void Jump();
     void Fall();

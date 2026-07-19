@@ -7,6 +7,7 @@ using UnityEngine;
 public sealed class SandboxPlayerAvatarAnimation : MonoBehaviour
 {
     private const float MoveThreshold = 0.1f;
+    private const float RunThreshold = 4.0f;
     private const float VerticalRiseThreshold = 0.1f;
 
     [SerializeField] private SandboxPlayerController controller;
@@ -82,9 +83,14 @@ public sealed class SandboxPlayerAvatarAnimation : MonoBehaviour
     {
         if (grounded)
         {
-            if (Mathf.Abs(velocity.x) > MoveThreshold)
+            float absX = Mathf.Abs(velocity.x);
+            if (absX > RunThreshold)
             {
                 locomotion.Run();
+            }
+            else if (absX > MoveThreshold)
+            {
+                locomotion.Walk();
             }
             else
             {

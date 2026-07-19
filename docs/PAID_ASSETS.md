@@ -45,6 +45,9 @@ Import paths are read from `Assets/_Licensed/config/visual-import.txt` in the su
 
 ## Regenerate visual catalogs
 
+The canonical config precedence, per-catalog inputs, deterministic ordering, failure behavior, and
+verification steps are defined in [Visual catalog import pipeline](wiki/visual-catalog-import-pipeline.md).
+
 In Unity 6.0.5.1f1 with the submodule initialized:
 
 1. **ProjectTwelve → Visual → Import Autotile Catalog from Local Source**

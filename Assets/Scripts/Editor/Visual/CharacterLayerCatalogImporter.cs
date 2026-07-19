@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
 
+using System;
+
 using System.Collections.Generic;
 
 using System.IO;
@@ -109,7 +111,9 @@ namespace ProjectTwelve.Editor.Visual
         private static List<CharacterLayerEntry> BuildLayers(string spritesRoot, IReadOnlyList<string> extraLayerRoots)
         {
             List<CharacterLayerEntry> layers = new List<CharacterLayerEntry>();
-            string[] layerDirs = Directory.GetDirectories(spritesRoot);
+            string[] layerDirs = Directory.GetDirectories(spritesRoot)
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .ToArray();
             for (int i = 0; i < layerDirs.Length; i++)
             {
                 TryAddLayerFromDirectory(layerDirs[i], layers);
@@ -137,6 +141,7 @@ namespace ProjectTwelve.Editor.Visual
             layerPath = layerPath.Replace('\\', '/');
             string layerName = Path.GetFileName(layerPath.TrimEnd('/'));
             List<Texture2D> textures = Directory.GetFiles(layerPath, "*.png", SearchOption.TopDirectoryOnly)
+                .OrderBy(path => path, StringComparer.Ordinal)
                 .Select(path => AssetDatabase.LoadAssetAtPath<Texture2D>(path.Replace('\\', '/')))
                 .Where(texture => texture != null)
                 .ToList();

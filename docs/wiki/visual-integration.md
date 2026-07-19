@@ -133,6 +133,18 @@ flowchart TB
 3. `LayeredCharacterVisual.ApplySpriteLibrary` assigns the library to the body `SpriteLibrary` component.
 4. `SandboxPlayerAvatarAnimation` reads `SandboxPlayerController` velocity and calls `ISandboxPlayerLocomotion` methods on `CharacterLocomotionDriver`.
 
+## Monster spawn and locomotion
+
+Monster visuals use a catalog-driven spawn API:
+
+1. `MonsterVisualCatalog` maps string IDs (e.g., `"PurpleBat"`) to local monster prefabs.
+2. `MonsterSpawnHelper.Spawn(catalog, id, position)` instantiates the prefab and ensures `MonsterVisual` and `MonsterLocomotionDriver` are attached.
+3. `MonsterLocomotionDriver` wraps the underlying animator with explicit state methods:
+   - Bool parameters (exclusive): `Idle`, `Ready`, `Walk`, `Run`, `Jump`, `Die`.
+   - Triggers: `Attack`, `Hit`, `Fire`.
+   - **Note:** `driver.Run()` maps to `Walk=true` in the animator (vendor behavior parity).
+4. See [P2-AI-001](tickets/p2-ai-001-specify-enemy-spawn-and-pathfinding-rules.md) for how the enemy AI connects its pathfinding states to this visual contract.
+
 ## Default tile mapping
 
 | Sandbox tile ID | Ground tileset | Cover tileset |

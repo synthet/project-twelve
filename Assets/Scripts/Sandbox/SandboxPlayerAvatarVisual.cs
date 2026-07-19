@@ -1,4 +1,5 @@
 using ProjectTwelve.Visual.Characters;
+using ProjectTwelve.Visual.Effects;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,7 @@ public sealed class SandboxPlayerAvatarVisual : MonoBehaviour
 
     [SerializeField] private GameObject avatarPrefab;
     [SerializeField] private CharacterLayerCatalog layerCatalog;
+    [SerializeField] private EffectCatalog effectCatalog;
     [SerializeField] private Vector3 avatarLocalPosition = Vector3.zero;
     [SerializeField] private int bodySortingOrder = 10;
 
@@ -38,6 +40,7 @@ public sealed class SandboxPlayerAvatarVisual : MonoBehaviour
                 layerCatalog,
                 avatarLocalPosition,
                 bodySortingOrder,
+                effectCatalog,
                 out avatarTransform,
                 out locomotion))
         {

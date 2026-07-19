@@ -6,8 +6,8 @@ description: Overlay renderer with runtime toggles, chunk inspector and generati
 status: open
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
-github_issue: null
-github_issue_status: pending-creation
+github_issue: "https://github.com/synthet/project-twelve/issues/121"
+github_issue_status: created
 resource: wiki/tickets/p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md
 tags: [docs, wiki, ticket, tooling, debug, p2]
 timestamp: 2026-07-16T00:00:00Z
