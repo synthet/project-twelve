@@ -3,7 +3,7 @@ type: Task
 id: P2-VISUAL-001
 title: "[P2-VISUAL-001] Specify visual catalog import pipeline contract."
 description: Define the visual catalog import pipeline for autotile, character, and monster catalogs via submodule and scripts.
-status: open
+status: done
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/76"
@@ -28,7 +28,7 @@ This ticket defines the single specification for visual catalog generation: subm
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation via `scripts/sync_wiki_tickets_to_github.py`.
+- **Issue:** [#76](https://github.com/synthet/project-twelve/issues/76).
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
@@ -84,7 +84,7 @@ As a developer working on the P2 milestone, I want a documented visual catalog i
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
-- [ ] Catalog regen verified on submodule-enabled machine.
-- [ ] Paid-asset guard documented in pipeline section.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
+- [x] Catalog regen verified on submodule-enabled machine (9 ground, 16 cover, 16 character layers, 99 monsters; no catalog diff).
+- [x] Paid-asset guard documented in pipeline section.

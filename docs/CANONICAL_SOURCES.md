@@ -60,6 +60,7 @@ okf_version: 0.1
 | Ground autotile 32 rules | `docs/wiki/ground-autotile-32-rules.md` | PixelFantasy mask table, mirrored scenarios, acceptance checks. |
 
 | Visual machine setup | `docs/VISUAL_SETUP.md` | Local catalog import and inspector wiring. |
+| Visual catalog import pipeline | `docs/wiki/visual-catalog-import-pipeline.md` | Config precedence, generated catalog contracts, code-only behavior, and Unity/Python parity. |
 
 | Safety rules | `.agent/SAFETY.md` | Secret handling, git hygiene, and destructive-operation rules. |
 

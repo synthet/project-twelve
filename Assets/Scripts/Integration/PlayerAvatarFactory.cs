@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ProjectTwelve.Visual.Characters;
 using ProjectTwelve.Visual.Creatures;
+using ProjectTwelve.Visual.Effects;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -30,6 +31,7 @@ public static class PlayerAvatarFactory
         CharacterLayerCatalog layerCatalog,
         Vector3 localPosition,
         int bodySortingOrder,
+        EffectCatalog effectCatalog,
         out Transform avatarRoot,
         out ISandboxPlayerLocomotion locomotion)
     {
@@ -84,6 +86,8 @@ public static class PlayerAvatarFactory
         composer.Rebuild();
 
         CharacterLocomotionDriver driver = GetOrAddComponent<CharacterLocomotionDriver>(instance);
+        driver.Catalog = effectCatalog;
+
         if (visual.Body != null)
         {
             visual.Body.sortingOrder = bodySortingOrder;
@@ -204,6 +208,21 @@ public static class PlayerAvatarFactory
         {
             visual.Body = bodyTransform.GetComponent<SpriteRenderer>();
             visual.BodyLibrary = bodyTransform.GetComponent<UnityEngine.U2D.Animation.SpriteLibrary>();
+        }
+
+        Transform firearmTransform = root.transform.Find("Firearm");
+        if (firearmTransform != null)
+        {
+            SpriteRenderer firearmRenderer = firearmTransform.GetComponent<SpriteRenderer>();
+            Transform muzzle = firearmTransform.Find("FireMuzzle");
+            if (muzzle == null)
+            {
+                muzzle = new GameObject("FireMuzzle").transform;
+                muzzle.SetParent(firearmTransform, false);
+                // Documented muzzle socket: defaults to (0.5, 0) locally if not present in prefab
+                muzzle.localPosition = new Vector3(0.5f, 0f, 0f);
+            }
+            visual.Firearm.Wire(firearmRenderer, muzzle, true);
         }
 
         visual.Animator = root.GetComponent<Animator>();

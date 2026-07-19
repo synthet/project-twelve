@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using ProjectTwelve.Visual.Monsters;
@@ -58,6 +59,7 @@ namespace ProjectTwelve.Editor.Visual
             List<MonsterVisualCatalog.Entry> entries = new List<MonsterVisualCatalog.Entry>();
             HashSet<string> seenIds = new HashSet<string>();
             string[] prefabFiles = Directory.GetFiles(monstersRoot, "*.prefab", SearchOption.AllDirectories);
+            Array.Sort(prefabFiles, StringComparer.Ordinal);
             for (int i = 0; i < prefabFiles.Length; i++)
             {
                 string assetPath = prefabFiles[i].Replace('\\', '/');

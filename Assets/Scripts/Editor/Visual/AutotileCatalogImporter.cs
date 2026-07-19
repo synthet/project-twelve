@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -74,7 +75,9 @@ namespace ProjectTwelve.Editor.Visual
                 return true;
             }
 
-            string[] pngFiles = Directory.GetFiles(folder, "*.png", SearchOption.TopDirectoryOnly);
+            string[] pngFiles = Directory.GetFiles(folder, "*.png", SearchOption.TopDirectoryOnly)
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .ToArray();
             for (int i = 0; i < pngFiles.Length; i++)
             {
                 string assetPath = pngFiles[i].Replace('\\', '/');

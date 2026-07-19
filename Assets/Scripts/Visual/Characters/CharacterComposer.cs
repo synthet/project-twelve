@@ -31,6 +31,7 @@ namespace ProjectTwelve.Visual.Characters
         public string Cape;
         public string Back;
         public string Mask;
+        public string Horns;
 
         private Texture2D texture;
         private Dictionary<string, Sprite> sprites;
@@ -104,10 +105,12 @@ namespace ProjectTwelve.Visual.Characters
                 TryAddLayer(layers, "Arms", Body);
             }
 
-            TryAddLayer(layers, "Head", Head);
+            bool shiftHead = !string.IsNullOrEmpty(Firearm);
+
+            TryAddLayer(layers, "Head", Head, null, shiftHead);
             if (string.IsNullOrEmpty(Helmet) || Helmet.Contains("[ShowEars]"))
             {
-                TryAddLayer(layers, "Ears", Ears);
+                TryAddLayer(layers, "Ears", Ears, null, shiftHead);
             }
 
             TryAddLayer(layers, "Armor", Armor);
@@ -116,12 +119,13 @@ namespace ProjectTwelve.Visual.Characters
                 TryAddLayer(layers, "Bracers", Armor);
             }
 
-            TryAddLayer(layers, "Eyes", Eyes);
-            TryAddLayer(layers, "Hair", Hair, layers.ContainsKey("Head") ? layers["Head"] : null);
+            TryAddLayer(layers, "Eyes", Eyes, null, shiftHead);
+            TryAddLayer(layers, "Hair", Hair, layers.ContainsKey("Head") ? layers["Head"] : null, shiftHead);
             TryAddLayer(layers, "Cape", Cape);
-            TryAddLayer(layers, "Helmet", Helmet);
+            TryAddLayer(layers, "Helmet", Helmet, null, shiftHead);
             TryAddLayer(layers, "Weapon", Weapon);
-            TryAddLayer(layers, "Mask", Mask);
+            TryAddLayer(layers, "Mask", Mask, null, shiftHead);
+            TryAddLayer(layers, "Horns", Horns, null, shiftHead);
 
             return layers;
         }
@@ -172,7 +176,8 @@ namespace ProjectTwelve.Visual.Characters
             Dictionary<string, Color32[]> layers,
             string layerName,
             string layerData,
-            Color32[] mask = null)
+            Color32[] mask = null,
+            bool shiftUp = false)
         {
             if (string.IsNullOrEmpty(layerData) || !layerCatalog.TryGetLayer(layerName, out CharacterLayerEntry entry))
             {
@@ -186,7 +191,24 @@ namespace ProjectTwelve.Visual.Characters
                 mask);
             if (pixels != null)
             {
-                layers[layerName] = pixels;
+                if (shiftUp)
+                {
+                    Color32[] shifted = new Color32[pixels.Length];
+                    int width = CharacterSheetLayout.Width;
+                    int height = CharacterSheetLayout.Height;
+                    for (int y = 1; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            shifted[x + y * width] = pixels[x + (y - 1) * width];
+                        }
+                    }
+                    layers[layerName] = shifted;
+                }
+                else
+                {
+                    layers[layerName] = pixels;
+                }
             }
         }
 

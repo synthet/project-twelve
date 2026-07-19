@@ -36,6 +36,8 @@ namespace ProjectTwelve.Visual.Characters
         };
 
         private CreatureVisual creature;
+        
+        public EffectCatalog Catalog { get; set; }
 
         private void Awake()
         {
@@ -44,6 +46,7 @@ namespace ProjectTwelve.Visual.Characters
         }
 
         public void Idle() => SetState(CharacterLocomotionState.Idle);
+        public void Walk() => SetState(CharacterLocomotionState.Walk);
 
         public void Ready()
         {
@@ -142,7 +145,14 @@ namespace ProjectTwelve.Visual.Characters
 
         private void SpawnEffect(string clipName)
         {
-            EffectCatalog.Instance?.CreateSpriteEffect(creature, clipName);
+            if (Catalog != null)
+            {
+                Catalog.CreateSpriteEffect(creature, clipName);
+            }
+            else
+            {
+                EffectCatalog.Instance?.CreateSpriteEffect(creature, clipName);
+            }
         }
     }
 }

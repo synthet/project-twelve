@@ -3,7 +3,7 @@ type: Task
 id: P2-VISUAL-002
 title: "[P2-VISUAL-002] Specify extended character presentation (effects, firearms, locomotion)."
 description: Specify and implement extended character VFX, detached firearms, and locomotion gaps vs vendor reference behavior.
-status: open
+status: claimed
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/77"

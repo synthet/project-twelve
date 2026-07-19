@@ -1,3 +1,13 @@
+---
+type: Guide
+title: Visual Setup
+description: Machine setup and scene wiring for the private visual-assets submodule and generated catalogs.
+resource: VISUAL_SETUP.md
+tags: [docs, visual, setup, assets]
+timestamp: 2026-07-16T00:00:00Z
+okf_version: 0.1
+---
+
 # Visual setup (assets submodule)
 
 ProjectTwelve renders terrain, player avatars, and monsters from catalogs under `Assets/_Licensed/Settings/Visual/` in the private assets submodule. Simulation code and public tile mappings stay in the main repo.
@@ -16,7 +26,7 @@ ProjectTwelve renders terrain, player avatars, and monsters from catalogs under 
    git submodule update --init --recursive
    ```
 
-2. Open the **repository root** (the clone folder) in Unity 6.0.5.1f1. Import paths load from `Assets/_Licensed/config/visual-import.txt` automatically. Import keys and catalog regeneration: [Licensed assets reference](wiki/licensed-assets-reference.md) (public index) and `Assets/_Licensed/docs/integration/catalogs-config.md` in the submodule.
+2. Open the **repository root** (the clone folder) in Unity 6.0.5.1f1. Import paths load from `Assets/_Licensed/config/visual-import.txt` automatically unless the gitignored `config/visual-import.local-only.txt` override exists. The complete precedence, input, output, and failure contract is [Visual catalog import pipeline](wiki/visual-catalog-import-pipeline.md).
 
 3. If catalogs are missing or stale, regenerate them:
    - **ProjectTwelve → Visual → Import Autotile Catalog from Local Source**
@@ -31,7 +41,7 @@ ProjectTwelve renders terrain, player avatars, and monsters from catalogs under 
 
 ## Code-only checkout
 
-Without the submodule, the sandbox prototype still runs with vertex-color terrain. Avatar and autotile visuals log warnings until `Assets/_Licensed` is initialized.
+Without the submodule, the sandbox prototype still runs: terrain uses the legacy atlas/vertex-color path, the licensed avatar child is skipped with warnings, and catalog-backed monsters do not spawn. Import menu items warn and leave their catalogs unchanged; the offline generator exits nonzero. See [Visual catalog import pipeline](wiki/visual-catalog-import-pipeline.md#failure-behavior-and-code-only-checkout).
 
 ## Unity / MCP follow-up (when Editor is open)
 

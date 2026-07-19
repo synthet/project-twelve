@@ -17,6 +17,13 @@ namespace ProjectTwelve.Visual.Characters
         public bool Detached => detached;
         public Vector2 FireMuzzlePosition { get; set; }
 
+        public void Wire(SpriteRenderer r, Transform muzzle, bool isDetached)
+        {
+            renderer = r;
+            fireMuzzle = muzzle;
+            detached = isDetached;
+        }
+
         public void SetDetachedActive(bool active)
         {
             if (renderer != null)
