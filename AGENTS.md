@@ -154,6 +154,8 @@ Antigravity uses the local `.agents/mcp_config.json`.
 | `chunk_info` | read | Chunk dirty flags, renderer state, save-diff status, nav version at `{ chunkX, chunkY }` (or world tile `{ x, y }`); never generates the chunk. |
 | `light_at` | read | Light value at `{ x, y }`; never generates chunks. |
 | `fluid_at` | read | Fluid amount + active-set membership at `{ x, y }`; never generates chunks. |
+| `debug_overlay_set` | write | Toggle or set one debug overlay (`overlay` name; optional `enabled`). Editor/dev builds only. |
+| `debug_overlay_state` | read | Enabled flags for every debug overlay plus `anyEnabled`. Editor/dev builds only. |
 | `tiles_area` | read | Rectangular tile dump with ASCII grid; bounds via `xMin`…`yMax` or `centerX`/`centerY` + `radius`, optional `aroundPlayer`. |
 | `tile_autotile` | read | Autotile masks, neighbor connectivity, matching rule ids, and resolved ground/cover sprites at `{ x, y }`. |
 | `tiles_autotile_area` | read | Same autotile debug as `tile_autotile` for each solid tile in a region (`maxCells` default 400). |

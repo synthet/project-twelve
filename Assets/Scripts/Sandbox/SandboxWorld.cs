@@ -50,6 +50,7 @@ public sealed class SandboxWorld : MonoBehaviour
     private readonly Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay> debugOverlays =
         new Dictionary<Vector2Int, SandboxGroundAutotileDebugOverlay>();
     private readonly List<Vector2Int> rebuildScratch = new List<Vector2Int>();
+    private readonly HashSet<Vector2Int> colliderRebuiltThisFrame = new HashSet<Vector2Int>();
     private readonly AutotileVisualOverrideMap autotileVisualOverrides = new AutotileVisualOverrideMap();
     private float nextChunkRefreshTime;
     private SandboxWorldLightGrid lightGrid;
@@ -92,6 +93,12 @@ public sealed class SandboxWorld : MonoBehaviour
     /// only these so growth is bounded to the loaded set and never generates chunks on query.
     /// </summary>
     public IEnumerable<Vector2Int> LoadedChunkCoords => renderers.Keys;
+
+    /// <summary>True when the selected chunk's collider was rebuilt during the latest world update.</summary>
+    public bool WasColliderRebuiltThisFrame(Vector2Int chunkCoord)
+    {
+        return colliderRebuiltThisFrame.Contains(chunkCoord);
+    }
 
     /// <summary>Build/runtime gate for tile-edit overrides, debug persistence shortcuts, and MCP writes.</summary>
     public static bool CanUseDebugOverrides(bool requested)
@@ -1049,12 +1056,14 @@ public sealed class SandboxWorld : MonoBehaviour
 
     private void RebuildDirtyChunks()
     {
+        colliderRebuiltThisFrame.Clear();
         rebuildScratch.Clear();
         rebuildScratch.AddRange(GetChunksNeedingRebuild(renderers.Keys, chunks));
         foreach (Vector2Int coord in rebuildScratch)
         {
             SandboxChunk chunk = chunks[coord];
             SandboxChunkRenderer renderer = renderers[coord];
+            bool rebuiltCollider = chunk.NeedsColliderRebuild;
             renderer.Rebuild(
                 chunk,
                 tileSize,
@@ -1063,6 +1072,11 @@ public sealed class SandboxWorld : MonoBehaviour
                 GetTile,
                 autotileVisualOverrides,
                 autotileExposureFloorY);
+
+            if (rebuiltCollider)
+            {
+                colliderRebuiltThisFrame.Add(coord);
+            }
 
             if (debugOverlays.TryGetValue(coord, out SandboxGroundAutotileDebugOverlay overlay))
             {

@@ -5,6 +5,9 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using ProjectTwelve.Sandbox.Debug;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,6 +36,11 @@ namespace ProjectTwelve.RuntimeMcp
         /// <summary>Shared dispatcher for tests and gameplay tool registration.</summary>
         public McpDispatcher Dispatcher => dispatcher;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>Overlay state shared by MCP, hotkeys, console, and the runtime renderer.</summary>
+        public SandboxDebugOverlayState OverlayState => SandboxDebugRuntime.OverlayState;
+#endif
+
         /// <summary>Smoothed frame time in seconds for the perf tool.</summary>
         public float SmoothedDeltaTime => smoothedDeltaTime;
 
@@ -59,6 +67,9 @@ namespace ProjectTwelve.RuntimeMcp
             Application.runInBackground = true;
             GameplayMcpTools.Register(dispatcher, this);
             VisualOverrideMcpTools.Register(dispatcher);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DebugOverlayMcpTools.Register(dispatcher, OverlayState);
+#endif
             StartListener();
 #if UNITY_EDITOR
             EditorApplication.update += PumpPendingRequests;

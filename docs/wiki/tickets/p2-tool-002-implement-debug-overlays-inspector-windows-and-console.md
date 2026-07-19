@@ -3,7 +3,7 @@ type: Task
 id: P2-TOOL-002
 title: "[P2-TOOL-002] Implement debug overlays, inspector windows, and console per P2-TOOL-001 contract."
 description: Overlay renderer with runtime toggles, chunk inspector and generation tuning windows, console commands, and zero-cost/stripping evidence.
-status: open
+status: claimed
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/121"
@@ -32,7 +32,7 @@ This ticket builds the visual and interactive surfaces on those accessors.
 ## GitHub project linkage
 
 - **Project:** [synthet project 2](https://github.com/users/synthet/projects/2)
-- **Issue:** Pending creation via `scripts/sync_wiki_tickets_to_github.py`.
+- **Issue:** [synthet/project-twelve#121](https://github.com/synthet/project-twelve/issues/121)
 - **Backlink requirement:** The GitHub issue body must link back to this markdown ticket.
 
 ## User story
@@ -106,8 +106,8 @@ state is visible at a glance.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [ ] Overlay screenshots and editor smoke-test notes attached.
 - [ ] MCP dispatcher EditMode tests pass for toggle tools.
 - [ ] Profiler zero-cost evidence recorded.

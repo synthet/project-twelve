@@ -72,6 +72,11 @@ console (`overlay <name> [on|off|toggle]`), and Runtime MCP `debug_overlay_set` 
 Toggle overlays, teleport, set/get tile, force-generate chunk, dump chunk data, save/load to a
 named slot, spawn item/enemy (as those systems land).
 
+P2-TOOL-002 implements the currently available minimum as backtick-console commands:
+`overlay`, `teleport`, `set_tile`, `get_tile`, `generate_chunk`, `dump_chunk`, `save`, and `load`.
+Read commands use non-generating snapshot APIs. Mutating commands require the existing
+`SandboxWorld` debug-override gate; named save slots accept only letters, digits, `-`, and `_`.
+
 ### Editor windows
 
 - **Chunk inspector:** select a chunk by coordinate or click; view its tile array
@@ -81,6 +86,11 @@ named slot, spawn item/enemy (as those systems land).
   into a **scratch world** — never mutating a live save.
 - Unity's **Tile Palette / Scene View** remains the tool for hand-authored set-pieces; most of the
   world is procedural and tested in Play Mode.
+
+P2-TOOL-002 exposes these as **Project Twelve → Debug → Chunk Inspector** and
+**Project Twelve → Debug → Generation Tuning**. The inspector consumes
+`SandboxChunkDebugState`/`TryGetExistingTile`; the tuning window previews a standalone
+`SandboxTerrainGenerator` in memory and never references the live `SandboxWorld`.
 
 ### Runtime MCP debug tools
 
