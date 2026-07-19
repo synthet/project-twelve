@@ -151,6 +151,9 @@ Antigravity uses the local `.agents/mcp_config.json`.
 | `player_state` | read | Player position, velocity, grounded, tile coord. |
 | `world_info` | read | Seed, tile size, player position/chunk, loaded chunk count. |
 | `tile_at` | read | Tile id/solid/light/fluid at `{ x, y }`. |
+| `chunk_info` | read | Chunk dirty flags, renderer state, save-diff status, nav version at `{ chunkX, chunkY }` (or world tile `{ x, y }`); never generates the chunk. |
+| `light_at` | read | Light value at `{ x, y }`; never generates chunks. |
+| `fluid_at` | read | Fluid amount + active-set membership at `{ x, y }`; never generates chunks. |
 | `tiles_area` | read | Rectangular tile dump with ASCII grid; bounds via `xMin`…`yMax` or `centerX`/`centerY` + `radius`, optional `aroundPlayer`. |
 | `tile_autotile` | read | Autotile masks, neighbor connectivity, matching rule ids, and resolved ground/cover sprites at `{ x, y }`. |
 | `tiles_autotile_area` | read | Same autotile debug as `tile_autotile` for each solid tile in a region (`maxCells` default 400). |
@@ -186,7 +189,7 @@ Endpoint: `https://api.pixellab.ai/mcp` (Bearer token via `PIXELLAB_API_KEY` env
 
 ## Common workflows
 
-`/spec → /plan → /implement → /test-and-fix → /pr-ready`. See
+`/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready`. See
 [`docs/ai-workflow/README.md`](docs/ai-workflow/README.md) for the full asset map and loop, and
 [`.agent/workflows/`](.agent/workflows/) for playbooks.
 

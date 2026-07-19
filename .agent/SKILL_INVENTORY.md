@@ -1,6 +1,6 @@
 # Skill inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-11
+**Last reviewed:** 2026-07-16
 
 | Skill | Path | Tier | Notes |
 |-------|------|------|-------|
@@ -9,7 +9,14 @@
 | backlog-queue | `.claude/skills/backlog-queue/SKILL.md` | L1 | ProjectTwelve fork: wiki tickets + issues |
 | pick-next-task | `.claude/skills/pick-next-task/SKILL.md` | L1 | Read-only next-ticket recommendation |
 | repo-sync | `.claude/skills/repo-sync/SKILL.md` | L1 | Main repo + assets submodule sync |
+| assets-submodule-publish | `.claude/skills/assets-submodule-publish/SKILL.md` | L1 | Commit assets submodule + bump gitlink |
 | commit-conventions | `.claude/skills/commit-conventions/SKILL.md` | L1 | Commit message conventions |
+| commit-and-push | `.claude/skills/commit-and-push/SKILL.md` | L2 | Stage/commit/push with paid-assets guard |
+| karpathy-guidelines | `.claude/skills/karpathy-guidelines/SKILL.md` | L1 | Assumptions, simplicity, surgical diffs |
+| systematic-debugging | `.claude/skills/systematic-debugging/SKILL.md` | L1 | Evidence-first RCA loop |
+| test-driven-development | `.claude/skills/test-driven-development/SKILL.md` | L1 | Red-green-refactor; Unity/tile-viz seams |
+| verification-before-completion | `.claude/skills/verification-before-completion/SKILL.md` | L1 | Fresh command proof before "done" |
+| skill-authoring | `.claude/skills/skill-authoring/SKILL.md` | L2 | First-party skill quality / triggering |
 | search-tool-selection | `.claude/skills/search-tool-selection/SKILL.md` | L1 | When to use fd, rg, grep, ast-grep, fzf |
 | safe-command-patterns | `.claude/skills/safe-command-patterns/SKILL.md` | L1 | Bounded, safe command workflows |
 | search-and-navigation | `.claude/skills/search-and-navigation/SKILL.md` | L1 | rg, fd, fzf, tree, bat |

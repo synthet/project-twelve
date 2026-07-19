@@ -4,7 +4,7 @@ title: Tooling, Testing & Profiling
 description: Debug visualizations, editor tools, automated test priorities, and profiling targets for the sandbox.
 resource: wiki/13-tooling-testing.md
 tags: [docs, wiki, testing, tooling, profiling]
-timestamp: 2026-07-01T00:00:00Z
+timestamp: 2026-07-16T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -29,33 +29,73 @@ review surface. The intent is a lightweight world microscope for loading seeds, 
 captures, and autotile reports with pan/zoom, tile inspection, overlay toggles, and shareable evidence
 exports while keeping Unity as the authoritative runtime.
 
-## Debug visualizations (build these early)
+## Debug tooling contract (P2-TOOL-001)
 
-Most sandbox bugs are invisible without overlays. Add toggleable gizmos/overlays for:
+Most sandbox bugs are invisible without overlays. This section is the specified contract for
+[P2-TOOL-001](tickets/p2-tool-001-specify-debug-tooling-for-chunks-generation-lighting-and-sav.md)
+(issue [#39](https://github.com/synthet/project-twelve/issues/39)); it binds every debug surface —
+overlays, windows, console, and Runtime MCP.
 
-- **Chunk borders** and load/unload radius.
-- **Tile IDs / solidity** (which tiles count as solid — verifies collision & nav agree).
-- **Light values** (heatmap over the grid) — verifies [Lighting](06-lighting.md) propagation.
-- **Fluid amounts and the active set** — verifies [Liquids](08-liquids.md) wake/sleep.
-- **Collider rebuild regions** — confirms rebuilds are chunk-local, not global.
-- **Network chunk subscriptions** and applied-delta sequence — for [Multiplayer](10-multiplayer.md).
-- **Pathfinding** open/closed sets and final path — for [Pathfinding](09-pathfinding.md).
+### Cross-cutting invariants
 
-Plus an in-game **console/cheats**: spawn items, toggle overlays, teleport to test far regions,
-force-generate a chunk, dump a chunk's data.
+- **Read-only guarantee.** Debug reads never mutate simulation state and never generate chunks on
+  query (`SandboxWorld.TryGetExistingTile` / `TryGetChunkDebugState`, not `GetTile`). Mutating
+  commands (teleport, set tile) route through the same public APIs gameplay uses
+  (`SandboxWorld.SetTile`, `TrySetDebugOverrideTile`) — tooling must not create a second edit path.
+  Inspectors receive copy-by-value snapshots (`SandboxChunkDebugState`), never the live
+  `SandboxChunk`.
+- **Zero cost when disabled.** Overlays and inspectors allocate nothing and draw nothing unless
+  toggled; debug assemblies/classes are excluded or stripped from release builds. MCP writes are
+  already gated by `SandboxWorld.CanUseDebugOverrides` (Editor / development builds only).
+- **Coordinate correctness.** Every overlay and inspector must render/report correctly across
+  chunk borders and at negative chunk coordinates.
 
-**Runtime MCP (implemented):** while Play Mode or a desktop build is running, agents can connect to
-`http://127.0.0.1:8765/mcp` (`project-twelve-ingame-mcp` in `.cursor/mcp.json`) to read debug state
-(`player_state`, `world_info`, `tile_at`, `perf`) and drive the player (`player_move`, `player_jump`,
-`player_teleport`, `world_set_tile`). Loopback-only; see [AGENTS.md](../../AGENTS.md) § In-game runtime MCP.
+### In-game overlays (toggleable at runtime: hotkeys + console)
 
-## Editor tools
+| Overlay | Shows | Verifies |
+|---------|-------|----------|
+| Chunk borders | Chunk grid + load/unload radius | Streaming window ([Architecture](01-architecture.md)) |
+| Tile solidity | Which tiles count as solid | Collision & nav agree ([Collision](05-collision-physics.md)) |
+| Light heatmap | Per-tile light values | [Lighting](06-lighting.md) propagation (P2-LIGHT-001) |
+| Fluid | Amount + active-set membership | [Liquids](08-liquids.md) wake/sleep (P2-FLUID-001) |
+| Collider rebuild flashes | Regions rebuilt this frame | Rebuilds are chunk-local, not global |
+| Dirty flags | Per-chunk render/collider/save flags | Dirty-flag bookkeeping |
+| Network chunk subscriptions | Applied-delta sequence | [Multiplayer](10-multiplayer.md) — lands in P3 |
+| Pathfinding sets | Open/closed sets + final path | [Pathfinding](09-pathfinding.md) — lands with P2-AI-001 |
 
-- Use Unity's **Tile Palette / Scene View** for hand-authored set-pieces and prototyping; most of
-  the world is procedural and tested in Play Mode.
-- **Custom editor windows** for generation parameter tuning (seed, noise scales, biome weights)
-  with live regenerate.
-- A **chunk inspector** window to view a chunk's tiles/light/fluid arrays.
+Each overlay toggles individually; toggles are also exposed as Runtime MCP tools once the overlay
+framework lands (see below).
+
+### Console commands (minimum set)
+
+Toggle overlays, teleport, set/get tile, force-generate chunk, dump chunk data, save/load to a
+named slot, spawn item/enemy (as those systems land).
+
+### Editor windows
+
+- **Chunk inspector:** select a chunk by coordinate or click; view its tile array
+  (id/light/fluid/metadata), dirty flags, and save-diff status — including negative-coordinate
+  chunks.
+- **Generation tuning:** seed + pass parameters (P2-GEN-001 settings object) with live regenerate
+  into a **scratch world** — never mutating a live save.
+- Unity's **Tile Palette / Scene View** remains the tool for hand-authored set-pieces; most of the
+  world is procedural and tested in Play Mode.
+
+### Runtime MCP debug tools
+
+While Play Mode or a desktop build is running, agents connect to `http://127.0.0.1:8765/mcp`
+(`project-twelve-ingame-mcp`). Loopback-only; new tools follow the `McpDispatcher`/`McpTool`
+registration pattern and are covered by `RuntimeMcpDispatcherTests.cs`-style EditMode tests.
+See [AGENTS.md](../../AGENTS.md) § In-game runtime MCP for the full tool table.
+
+- **Implemented reads:** `player_state`, `world_info`, `tile_at`, `tiles_area`, `perf`, autotile
+  debug tools, and the P2-TOOL-001 extensions `chunk_info` (flags + save-diff status, never
+  generates), `light_at`, `fluid_at` (amount + active-set membership via
+  `SandboxFluidController.Simulator`).
+- **Implemented writes (debug-override gated):** `player_move`, `player_jump`, `player_teleport`,
+  `world_set_tile`.
+- **Specified, pending overlay framework:** overlay toggle/state tools mirroring the hotkey
+  toggles.
 
 ## Automated tests (Unity Test Runner / NUnit)
 

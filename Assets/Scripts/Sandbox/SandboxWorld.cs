@@ -636,6 +636,40 @@ public sealed class SandboxWorld : MonoBehaviour
         return chunks.TryGetValue(chunkCoord, out SandboxChunk chunk) ? chunk.NavVersion : 0;
     }
 
+    /// <summary>
+    /// Non-generating tile read for debug tooling (P2-TOOL-001). Returns false when the containing
+    /// chunk was never generated; unlike <see cref="GetTile"/> it never creates chunks, so debug
+    /// reads cannot mutate world state.
+    /// </summary>
+    public bool TryGetExistingTile(int x, int y, out SandboxTile tile)
+    {
+        return TryGetExistingTileForLighting(x, y, out tile);
+    }
+
+    /// <summary>
+    /// Copies a generated chunk's bookkeeping flags into a read-only snapshot for debug tooling
+    /// (P2-TOOL-001). Returns false when the chunk was never generated; never creates chunks and
+    /// never hands out the live <see cref="SandboxChunk"/>, so tooling cannot flip flags.
+    /// </summary>
+    public bool TryGetChunkDebugState(Vector2Int chunkCoord, out SandboxChunkDebugState state)
+    {
+        if (!chunks.TryGetValue(chunkCoord, out SandboxChunk chunk))
+        {
+            state = default;
+            return false;
+        }
+
+        state = new SandboxChunkDebugState(
+            chunk.Coord,
+            renderers.ContainsKey(chunkCoord),
+            chunk.NeedsRenderRebuild,
+            chunk.NeedsColliderRebuild,
+            chunk.IsDirty,
+            chunk.HasEdits,
+            chunk.NavVersion);
+        return true;
+    }
+
 
     public void SaveToPath(string path)
     {

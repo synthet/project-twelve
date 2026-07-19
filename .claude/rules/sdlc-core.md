@@ -13,4 +13,4 @@ alwaysApply: true
 - **Don't invent contracts.** Check [`docs/CANONICAL_SOURCES.md`](../../docs/CANONICAL_SOURCES.md)
   before using an API path, config key, schema name, or status value.
 - **PRs reference issues** with `Closes #<N>`; keep the written contract and code in agreement.
-- **Loop:** `/spec → /plan → /implement → /test-and-fix → /pr-ready`.
+- **Loop:** `/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready`.

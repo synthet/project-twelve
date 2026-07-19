@@ -63,7 +63,7 @@ cd tools/tile-viz && npm test
 ## SDLC loop
 
 ```
-/spec → /plan → /implement → /test-and-fix → /pr-ready → (optional) /subagent-review → /release-notes
+/spec → /clarify → /plan → /tasks → /analyze → /implement → /test-and-fix → /pr-ready → (optional) /subagent-review → /release-notes
 ```
 
 Slash commands live under `.claude/commands/` (canonical); Cursor mirrors them under

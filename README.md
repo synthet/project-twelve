@@ -83,14 +83,17 @@ The previous hex-grid click demo and generated scene artifacts have been removed
 
 ## Continuous Integration
 
-GitHub Actions runs the Unity EditMode unit-test suite on pushes to `main`, pull requests, and manual workflow dispatches via `.github/workflows/unit-tests.yml`.
+GitHub Actions runs docs/agent hygiene checks on pull requests. The Unity EditMode workflow
+(`.github/workflows/unit-tests.yml`) is present but **skipped** unless `UNITY_LICENSE` or
+`UNITY_SERIAL` is configured — this repo does not provision a Unity license on Actions.
+Run EditMode locally before merge (see `docs/wiki/quality-gates.md`).
 
-The workflow uses GameCI's Unity Test Runner. It skips the Unity execution step when no Unity license secret is configured, which keeps pull requests from failing before CI credentials are installed. Configure either `UNITY_LICENSE` for a personal license file or `UNITY_SERIAL` for a serial-based license to enable test execution. If using a serial-based license, also configure:
+Optional: if you later add GameCI secrets (`UNITY_LICENSE` or `UNITY_SERIAL`, plus
+`UNITY_EMAIL` / `UNITY_PASSWORD` for serial activation), the same workflow runs the full
+EditMode suite via [game-ci/unity-test-runner](https://game.ci/docs/github/test-runner).
 
-- `UNITY_EMAIL`
-- `UNITY_PASSWORD`
-
-Local test coverage starts in `Assets/Tests/EditMode` and currently validates core tile, chunk, and coordinate-conversion behavior.
+Local test coverage starts in `Assets/Tests/EditMode` and validates core tile, chunk, and
+coordinate-conversion behavior.
 
 ## Agent / AI workflow
 
