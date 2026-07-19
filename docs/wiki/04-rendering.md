@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 04 Rendering
+description: Documentation for 04 Rendering.
+resource: docs/wiki/04-rendering.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 04 — Rendering
 
 > **Status:** Planning.

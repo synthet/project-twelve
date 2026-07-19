@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Readme
+description: Documentation for Readme.
+resource: docs/unity-reference/README.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Unity 6.5 Offline Documentation — Wiki Index
 
 Local mirror of Unity **6000.5.1f1 (Unity 6.5 Beta)** English documentation.

@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Architecture Blueprint
+description: Documentation for Architecture Blueprint.
+resource: docs/wiki/architecture-blueprint.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Architecture Blueprint (translated from the visual canvas)
 
 > **Source:** the *Architecture Blueprint* artifact, delivered as a bundled HTML canvas

@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 03 Chunking
+description: Documentation for 03 Chunking.
+resource: docs/wiki/03-chunking.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 03 — Chunking
 
 > **Status:** Planning.

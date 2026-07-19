@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Generation And Saving
+description: Documentation for Generation And Saving.
+resource: docs/wiki/generation-and-saving.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Generation and Saving
 
 ## Generation Pipeline

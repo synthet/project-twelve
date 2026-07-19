@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Unity Scriptreference Index
+description: Documentation for Unity Scriptreference Index.
+resource: docs/unity-reference/unity-scriptreference-index.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Unity Scripting API — Table of Contents
 
 Unity **6000.5.1f1 (Unity 6.5 Beta)** ScriptReference. Documentation root: `D:/Soft/Unity/Hub/Editor/6000.5.1f1/Editor/Data/Documentation/en`.

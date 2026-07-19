@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Terraria Like Unity Design Detailed
+description: Documentation for Terraria Like Unity Design Detailed.
+resource: docs/terraria-like-unity-design-detailed.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Unity 2D Sandbox Architecture — Detailed Design Reference
 
 > This is an expanded companion to [`terraria-like-unity-design.md`](./terraria-like-unity-design.md).

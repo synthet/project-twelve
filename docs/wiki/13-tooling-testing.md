@@ -4,7 +4,7 @@ title: Tooling, Testing & Profiling
 description: Debug visualizations, editor tools, automated test priorities, and profiling targets for the sandbox.
 resource: wiki/13-tooling-testing.md
 tags: [docs, wiki, testing, tooling, profiling]
-timestamp: 2026-07-16T00:00:00Z
+timestamp: 2026-07-19T01:30:00Z
 okf_version: 0.1
 ---
 
@@ -63,8 +63,9 @@ overlays, windows, console, and Runtime MCP.
 | Network chunk subscriptions | Applied-delta sequence | [Multiplayer](10-multiplayer.md) — lands in P3 |
 | Pathfinding sets | Open/closed sets + final path | [Pathfinding](09-pathfinding.md) — lands with P2-AI-001 |
 
-Each overlay toggles individually; toggles are also exposed as Runtime MCP tools once the overlay
-framework lands (see below).
+Each overlay toggles individually via hotkeys (see MCP section for the key map), the backtick
+console (`overlay <name> [on|off|toggle]`), and Runtime MCP `debug_overlay_set` /
+`debug_overlay_state`.
 
 ### Console commands (minimum set)
 
@@ -94,8 +95,11 @@ See [AGENTS.md](../../AGENTS.md) § In-game runtime MCP for the full tool table.
   `SandboxFluidController.Simulator`).
 - **Implemented writes (debug-override gated):** `player_move`, `player_jump`, `player_teleport`,
   `world_set_tile`.
-- **Specified, pending overlay framework:** overlay toggle/state tools mirroring the hotkey
-  toggles.
+- **Implemented overlay framework (editor / development builds):** `debug_overlay_set`,
+  `debug_overlay_state`, shared `SandboxDebugOverlayState`, Play Mode hotkeys, and backtick
+  console `overlay` command. Canonical names: `chunk_borders` (F4), `tile_solidity` (F7),
+  `light_heatmap` (F10), `fluid` (F11), `collider_rebuilds` (F12), `dirty_flags` (F2).
+  Stripped from non-development player builds via `UNITY_EDITOR || DEVELOPMENT_BUILD`.
 
 ## Automated tests (Unity Test Runner / NUnit)
 

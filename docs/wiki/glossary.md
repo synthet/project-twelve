@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Glossary
+description: Documentation for Glossary.
+resource: docs/wiki/glossary.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Glossary
 
 Shared vocabulary for the [wiki](README.md). Terms link to the page that owns them.

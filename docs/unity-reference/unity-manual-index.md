@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Unity Manual Index
+description: Documentation for Unity Manual Index.
+resource: docs/unity-reference/unity-manual-index.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Unity User Manual — Table of Contents
 
 Unity **6000.5.1f1 (Unity 6.5 Beta)** offline manual. Documentation root: `D:/Soft/Unity/Hub/Editor/6000.5.1f1/Editor/Data/Documentation/en`.

@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 01 Architecture
+description: Documentation for 01 Architecture.
+resource: docs/wiki/01-architecture.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 01 — Architecture
 
 > **Status:** Planning.

@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Project Brief
+description: Documentation for Project Brief.
+resource: docs/wiki/project-brief.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Project Brief
 
 ## Vision

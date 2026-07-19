@@ -1,3 +1,13 @@
+---
+type: Concept
+title: Roadmap And Tasks
+description: Documentation for Roadmap And Tasks.
+resource: docs/wiki/roadmap-and-tasks.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # Roadmap and Tasks
 
 This page keeps near-term prototype work in an open knowledge format: milestones describe outcomes, tasks define scoped implementation work, and validation notes explain how contributors can confirm completion.

@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 05 Collision Physics
+description: Documentation for 05 Collision Physics.
+resource: docs/wiki/05-collision-physics.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 05 — Collision & Physics
 
 > **Status:** Planning.

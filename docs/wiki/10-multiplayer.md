@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 10 Multiplayer
+description: Documentation for 10 Multiplayer.
+resource: docs/wiki/10-multiplayer.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 10 — Multiplayer
 
 > **Status:** Planning (build last; see [Roadmap](14-roadmap.md)).

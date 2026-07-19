@@ -1,3 +1,13 @@
+---
+type: Concept
+title: 14 Roadmap
+description: Documentation for 14 Roadmap.
+resource: docs/wiki/14-roadmap.md
+tags: [docs, wiki]
+timestamp: 2026-07-19T01:28:50Z
+okf_version: 0.1
+---
+
 # 14 — Roadmap
 
 > **Status:** Planning.
