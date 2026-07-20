@@ -8,7 +8,9 @@
 
         "Unity.InputSystem",
 
-        "Unity.ugui"
+        "Unity.ugui",
+
+        "ProjectTwelve.UI"
 
     ],
 

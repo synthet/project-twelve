@@ -3,6 +3,7 @@
     "references": [
         "ProjectTwelve.Runtime",
         "ProjectTwelve.RuntimeMcp",
+        "ProjectTwelve.UI",
         "Unity.ugui"
     ],
     "optionalUnityReferences": [

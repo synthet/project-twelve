@@ -1,15 +1,10 @@
 {
-    "name": "ProjectTwelve.Editor",
-    "rootNamespace": "",
+    "name": "ProjectTwelve.UI",
     "references": [
-        "ProjectTwelve.Runtime",
-        "ProjectTwelve.UI",
         "Unity.ugui",
         "Unity.InputSystem"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

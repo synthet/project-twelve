@@ -57,6 +57,7 @@ okf_version: 0.1
 | Asset integration requirements | `docs/wiki/15-assets-integration.md` | Sprites, atlases, animations, rotations, and Unity/engine asset seams. |
 
 | Visual behavior | `docs/VISUAL_BEHAVIOR_SPEC.md` | Autotile, character sheet, animation API contracts. |
+| HUD/UI framework | `docs/wiki/flexible-hud-framework.md` | Reusable uGUI HUD/UI framework: design tokens, scaling, layers, focus/input, inventory view-model boundary. |
 | Ground autotile 32 rules | `docs/wiki/ground-autotile-32-rules.md` | PixelFantasy mask table, mirrored scenarios, acceptance checks. |
 
 | Visual machine setup | `docs/VISUAL_SETUP.md` | Local catalog import and inspector wiring. |
