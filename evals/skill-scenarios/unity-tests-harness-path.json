@@ -1,0 +1,12 @@
+{
+  "id": "unity-tests-harness-path",
+  "description": "Protect unity-tests compiled harness entry point.",
+  "target_asset": ".claude/skills/unity-tests/SKILL.md",
+  "linked_docs": [],
+  "must_contain": [
+    "scripts/run_unity_tests.py"
+  ],
+  "must_not_contain": [
+    "Assembly.LoadFrom"
+  ]
+}

@@ -1,6 +1,12 @@
 ---
 name: pick-next-task
 description: Recommend the next open wiki ticket to work on, ranked by phase then priority, without claiming or mutating anything. Use when the user asks "what's next", to pick the next task, or to start work without a specific ticket in hand.
+capability: "pick-next-task agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # Pick next task (compiled harness)

@@ -12,8 +12,24 @@ Many upstream checks assume **untrusted registry skills** (signing, SBOM, contai
 
 ## Supply chain and sync (AST02, AST07, AST10)
 
-- [ ] **Canonical copy:** Author under `.claude/skills/<name>/SKILL.md` (canonical); run `python scripts/sync_assistant_trees.py` and commit the `.cursor/` and `.agents/skills/` mirrors in the **same PR** (see [AGENTS.md](../AGENTS.md)).
+- [ ] **Canonical copy:** Author under `.claude/skills/<name>/SKILL.md` (canonical); run `python scripts/sync_assistant_trees.py` and commit the `.cursor/`, `.agents/skills/`, and `.codex/agents/` mirrors in the **same PR** (see [AGENTS.md](../AGENTS.md)).
 - [ ] **Inventory:** [SKILL_INVENTORY.md](./SKILL_INVENTORY.md) updated (new row or **Last reviewed** date).
+- [ ] **Frontmatter contract:** `capability`, `side_effect_level`, `approval_required`, `requires_tools`, `output_schema`, `risk_class` present; run `python scripts/ci/check_agent_frontmatter.py`.
+
+## Anthropic-style skill quality
+
+- [ ] **Triggering description:** `description` says both what the skill does and when to use it.
+  Be explicit enough to avoid under-triggering, including common user phrases and adjacent cases
+  where this skill should win.
+- [ ] **Lean body:** Keep `SKILL.md` under 500 lines. Move optional details into direct
+  `references/`, reusable code into `scripts/`, and output templates/assets into `assets/`.
+- [ ] **Progressive disclosure:** Every bundled reference is linked from `SKILL.md` with guidance
+  on when to read it; relative Markdown links resolve from the skill directory.
+- [ ] **Actionable workflow:** Prefer imperative steps, quick starts, report/output templates, and
+  examples over abstract prose. Explain why important constraints exist instead of relying on
+  unexplained all-caps rules.
+- [ ] **Evaluation hooks:** For materially new or changed skills, add or update eval fixtures under
+  `evals/` (or document why qualitative review is enough).
 
 ## Privilege and scope (AST03)
 

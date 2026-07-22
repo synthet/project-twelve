@@ -232,3 +232,6 @@ id_ed25519.pub
 
 # Local PixelLab upload crops (licensed source derivatives; do not commit)
 tools/pixellab-ref/
+
+# Graphify knowledge graph (local-only; each machine builds its own)
+graphify-out/

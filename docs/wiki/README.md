@@ -72,6 +72,7 @@ A deeper, decision-oriented reference. Each page opens with a **Status / Decisio
 | 14 | [Roadmap](14-roadmap.md) | Milestones, sequencing, implementation priorities |
 | 15 | [Asset Integration Requirements](15-assets-integration.md) | Sprites, atlases, animations, rotations, and Unity/engine asset seams |
 | 16 | [Architectural Risks](16-architectural-risks.md) | High-impact technical risks with mitigations, owners, decision deadlines |
+| — | [Enemy Navigation & Spawn Rules](enemy-nav-and-spawn.md) | P2 spec for grid A* platformer pathfinding and enemy spawning rules |
 | — | [Flexible HUD Framework](flexible-hud-framework.md) | uGUI layers, theming, scale, focus, inventory presentation, and migration contract |
 | — | [Quality Gates](quality-gates.md) | Required checks: automated tests, link hygiene, deterministic verification, profiler targets |
 | — | [Save/Load Format Spec](save-load-format.md) | P2-SAVE-001 spec: versioned header, dirty-chunk diffs, atomic writes, corruption fail-safe, migration |

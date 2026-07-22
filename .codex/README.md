@@ -32,6 +32,14 @@ TOML and command-line arguments. Restart Codex after adding or changing the key.
 
 Token: [pixellab.ai/mcp](https://www.pixellab.ai/mcp). Skill: [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md).
 
+## Graphify MCP
+
+Portable stdio entry `[mcp_servers.project-twelve-graphify-mcp]` runs
+`node scripts/start-graphify-mcp.js`. Build a local graph first (`uv tool install "graphifyy[mcp]"` then
+`graphify extract . --code-only`). The launcher exits with a clear error if `graphify-out/graph.json`
+is missing. `graphify-out/` is gitignored. Skill: [`.claude/skills/graphify/SKILL.md`](../.claude/skills/graphify/SKILL.md).
+Do not run `graphify codex install` — edit `.claude/` and sync instead.
+
 ## Unity Editor MCP
 
 The Unity relay path and absolute project path are machine-specific, so they belong in the user-level

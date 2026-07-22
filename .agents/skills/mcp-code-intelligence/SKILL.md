@@ -1,6 +1,12 @@
 ---
 name: mcp-code-intelligence
-description: Compare MCP code intelligence tiers — CLI wrappers, ast-grep, Serena, Zoekt, fff file search, embeddings. Prefer text search before heavy indexes.
+description: Compare MCP code intelligence tiers — CLI wrappers, ast-grep, Serena, Zoekt, fff file search, Graphify knowledge graph, embeddings. Prefer text search before heavy indexes; use Graphify for relationship/architecture queries.
+capability: "mcp-code-intelligence agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # MCP code intelligence
@@ -56,6 +62,7 @@ Compare:
 |-------|----------|
 | CLI rg/fd | Fast text, gitignore-aware |
 | fff MCP | Indexed repo search, multi-pattern grep |
+| Graphify CLI / MCP | Architecture edges, path/explain between concepts |
 | ast-grep MCP / sg | Structural patterns |
 | Serena / ctags | Symbols, refs |
 | Zoekt | Large org code search |
@@ -68,6 +75,7 @@ In addition to generic tiers above:
 - **Unity MCP** (`project-twelve-unity-mcp`) — Editor bridge when Unity is open; see [AGENTS.md](../../../AGENTS.md).
 - **In-game runtime MCP** (`project-twelve-ingame-mcp`) — Play Mode / desktop build at loopback.
 - **fff MCP** (`project-twelve-fff-mcp`) — indexed file search; use `--no-warmup` and explicit repo path per [`.cursor/mcp.example.json`](../../../.cursor/mcp.example.json).
+- **Graphify MCP** (`project-twelve-graphify-mcp`) — local knowledge-graph query after `graphify extract . --code-only`; see [graphify](../graphify/SKILL.md).
 - **PixelLab MCP** (`pixellab`) — async pixel art generation (characters, tilesets, UI panels); see [pixellab-mcp](../pixellab-mcp/SKILL.md).
 
 ## Agent-Safe Patterns

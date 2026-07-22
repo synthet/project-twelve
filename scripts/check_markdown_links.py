@@ -7,10 +7,12 @@ import sys
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+import os
+
 ROOT = Path(__file__).resolve().parents[1]
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#")
-SKIP_DIR_PARTS = {".git", "Library", "node_modules"}
+SKIP_DIR_PARTS = {".git", "Library", "node_modules", "obj", "Logs", ".vs", "Temp", "tmp", ".dotnet-tests-out"}
 SKIP_RELATIVE_PREFIXES = (
     Path(".agent/scratch"),
     Path(".agent-memory/dreams"),
@@ -22,14 +24,17 @@ LICENSED_SUBMODULE = ROOT / "Assets" / "_Licensed"
 
 
 def markdown_files() -> list[Path]:
-    return sorted(
-        path
-        for path in ROOT.rglob("*.md")
-        if not SKIP_DIR_PARTS.intersection(path.parts)
-        and not any(
-            path.is_relative_to(ROOT / prefix) for prefix in SKIP_RELATIVE_PREFIXES
-        )
-    )
+    files_found: list[Path] = []
+    for root, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIR_PARTS]
+        for f in files:
+            if f.endswith(".md"):
+                path = Path(root) / f
+                if not any(
+                    path.is_relative_to(ROOT / prefix) for prefix in SKIP_RELATIVE_PREFIXES
+                ):
+                    files_found.append(path)
+    return sorted(files_found)
 
 
 def is_licensed_submodule_target(resolved: Path) -> bool:

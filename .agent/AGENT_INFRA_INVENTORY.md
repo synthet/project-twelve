@@ -1,11 +1,14 @@
 # Agent infrastructure inventory — ProjectTwelve
 
-**Last reviewed:** 2026-07-16. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+**Last reviewed:** 2026-07-22. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
+
+**Framework sync:** last cherry-pick from `synthet-code-framework` @ `ee11310` (2026-07-19) —
+compiled skill harnesses, `evals/`, `.codex/agents` sync, stricter frontmatter CI.
 
 Generated command/skill/subagent index: [`docs/agent-asset-inventory.md`](../docs/agent-asset-inventory.md) (`python scripts/generate_agent_asset_inventory.py`).
 
 Keep this table current as the single catalog of every agent-facing asset. `.claude/` is canonical;
-`.cursor/` and `.agents/skills/` are generated from it.
+`.cursor/`, `.agents/skills/`, and `.codex/agents/` are generated from it.
 
 | Path | Purpose | Scope | Status |
 |------|---------|-------|--------|
@@ -28,6 +31,10 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [.claude/rules/*.md](../.claude/rules/) | Always-on rules | governance | active |
 | [.cursor/](../.cursor/) | Generated mirror of `.claude/` + `mcp.example.json` | mirror | generated |
 | [.codex/](../.codex/) | Codex project config and setup guide | configuration | active |
+| [.codex/agents/*.toml](../.codex/agents/) | Generated Codex custom agents from `.claude/agents/` | mirror | generated |
+| [evals/](../evals/) | Static agent eval fixtures (guardrail regression) | testing | active |
+| [scripts/skill_harness/](../scripts/skill_harness/) | Shared helpers for compiled skill harnesses | tooling | active |
+| [.agent/SKILL_COMPILATION.md](SKILL_COMPILATION.md) | When/how to compile skills into harnesses | docs | active |
 | [.agents/mcp_config.example.json](../.agents/mcp_config.example.json) | Antigravity project config template | configuration | active |
 | [.agents/README.md](../.agents/README.md) | Antigravity environment setup guide | docs | active |
 | [.agents/AGENTS.md](../.agents/AGENTS.md) | Antigravity project rules | mirror | generated |
@@ -41,6 +48,9 @@ Keep this table current as the single catalog of every agent-facing asset. `.cla
 | [docs/ai-workflow/README.md](../docs/ai-workflow/README.md) | Asset map + SDLC loop | workflow | active |
 | [scripts/check_paid_assets.py](../scripts/check_paid_assets.py) | Block licensed paths on commit/push | governance | active |
 | [scripts/check_markdown_links.py](../scripts/check_markdown_links.py) | Markdown link checker | docs | active |
+| [scripts/start-pixellab-mcp.js](../scripts/start-pixellab-mcp.js) | Codex/stdio PixelLab MCP bridge | tooling | active |
+| [scripts/start-graphify-mcp.js](../scripts/start-graphify-mcp.js) | Graphify local knowledge-graph MCP launcher | tooling | active |
+| [.graphifyignore](../.graphifyignore) | Extra ignore patterns for Graphify AST extract | configuration | active |
 | [scripts/sync_assistant_trees.py](../scripts/sync_assistant_trees.py) | Regenerate `.cursor/` and `.agents/skills/` from `.claude/` | agents | active |
 | [scripts/generate_agent_asset_inventory.py](../scripts/generate_agent_asset_inventory.py) | Generate `docs/agent-asset-inventory.md` | agents | active |
 | [scripts/agent_policy/validate_export.py](../scripts/agent_policy/validate_export.py) | Pre-export policy gate for external reviews | governance | active |
