@@ -42,6 +42,24 @@ If the harness fails, diagnose from the printed failed names and the log path it
 
 Do **not** re-derive Unity flags by hand — re-run or extend the harness.
 
+## Anti-pattern: PowerShell reflection smoke (Windows Defender)
+
+**Never** verify Runtime MCP (or other managed game assemblies) by launching `pwsh` /
+`powershell` that `[System.Reflection.Assembly]::LoadFrom(...)` Unity/`Temp\bin\Debug`
+DLLs and invokes types via reflection.
+
+Windows Security commonly classifies that pattern as `Trojan:Win32/Steanoz.Z!MTB` (false
+positive on agent-generated one-liners). Quarantine does not mean the project was infected.
+
+**Use instead:**
+
+```bash
+python scripts/run_unity_tests.py editmode --filter RuntimeMcpOverlayToolsTests
+# or the matching *Mcp* EditMode filter for the tools under change
+```
+
+If Unity is unavailable, report that blocker — do not invent an offline `LoadFrom` harness.
+
 ## Related
 
 - [`AGENTS.md`](../../../AGENTS.md) test vocabulary

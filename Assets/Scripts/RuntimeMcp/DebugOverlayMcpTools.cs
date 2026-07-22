@@ -39,23 +39,41 @@ namespace ProjectTwelve.RuntimeMcp
                             ["description"] = "Desired state. Omit to toggle."
                         }
                     },
-                    ["required"] = new JArray("overlay")
+                    ["required"] = new JArray("overlay"),
+                    ["additionalProperties"] = false
                 },
                 args =>
                 {
-                    string name = args["overlay"]?.Value<string>() ?? string.Empty;
-                    if (!SandboxDebugOverlayState.TryParseName(name, out SandboxDebugOverlay overlay))
+                    ValidateArguments(args, "overlay", "enabled");
+
+                    JToken overlayToken = args["overlay"];
+                    if (overlayToken == null || overlayToken.Type != JTokenType.String)
+                    {
+                        throw new InvalidOperationException("overlay must be a string");
+                    }
+
+                    string name = overlayToken.Value<string>();
+                    if (!SandboxDebugOverlayState.TryParseName(name, out SandboxDebugOverlay overlay) ||
+                        !string.Equals(
+                            name,
+                            SandboxDebugOverlayState.GetName(overlay),
+                            StringComparison.Ordinal))
                     {
                         throw new InvalidOperationException($"Unknown overlay: {name}");
                     }
 
                     JToken enabledToken = args["enabled"];
-                    if (enabledToken == null || enabledToken.Type == JTokenType.Null)
+                    if (enabledToken == null)
                     {
                         state.Toggle(overlay);
                     }
                     else
                     {
+                        if (enabledToken.Type != JTokenType.Boolean)
+                        {
+                            throw new InvalidOperationException("enabled must be a boolean");
+                        }
+
                         state.SetEnabled(overlay, enabledToken.Value<bool>());
                     }
 
@@ -73,9 +91,35 @@ namespace ProjectTwelve.RuntimeMcp
                 new JObject
                 {
                     ["type"] = "object",
-                    ["properties"] = new JObject()
+                    ["properties"] = new JObject(),
+                    ["additionalProperties"] = false
                 },
-                _ => BuildState(state)));
+                args =>
+                {
+                    ValidateArguments(args);
+                    return BuildState(state);
+                }));
+        }
+
+        private static void ValidateArguments(JObject arguments, params string[] allowedNames)
+        {
+            foreach (JProperty property in arguments.Properties())
+            {
+                bool isAllowed = false;
+                foreach (string allowedName in allowedNames)
+                {
+                    if (string.Equals(property.Name, allowedName, StringComparison.Ordinal))
+                    {
+                        isAllowed = true;
+                        break;
+                    }
+                }
+
+                if (!isAllowed)
+                {
+                    throw new InvalidOperationException($"Unexpected argument: {property.Name}");
+                }
+            }
         }
 
         private static JArray BuildOverlayNames()
