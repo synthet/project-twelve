@@ -4,7 +4,7 @@ title: Canonical Sources
 description: Authority map for project, agent, tooling, documentation, and asset configuration sources.
 resource: CANONICAL_SOURCES.md
 tags: [docs, governance, agents]
-timestamp: 2026-07-12T06:10:00Z
+timestamp: 2026-07-19T22:57:02Z
 okf_version: 0.1
 ---
 
@@ -43,6 +43,7 @@ okf_version: 0.1
 | Unity configuration | `ProjectSettings/` and `Packages/manifest.json` | Unity-owned project configuration. |
 
 | Architecture docs | `docs/wiki/` | Implementation-facing design details. |
+| Runtime HUD/UI architecture | `docs/wiki/flexible-hud-framework.md` | uGUI technology decision, theme/scale/focus contracts, inventory boundary, and migration plan. |
 
 | OKF adoption | `docs/OKF_ADOPTION.md` | Incremental frontmatter and docs bundle policy. |
 

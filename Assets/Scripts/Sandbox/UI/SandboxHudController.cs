@@ -118,7 +118,11 @@ public sealed class SandboxHudController : MonoBehaviour
             return;
         }
 
-        HandleHotbarInput();
+        if (!SandboxUiInputGate.IsGameplayInputBlocked)
+        {
+            HandleHotbarInput();
+        }
+
         EnsureInventoryBinding();
         UpdateSelectedItemLabelVisibility();
         RefreshWorldInfo(force: false);
@@ -150,9 +154,16 @@ public sealed class SandboxHudController : MonoBehaviour
             return;
         }
 
-        BuildVitalsPanel(canvasRect);
-        BuildHotbar(canvasRect);
-        BuildWorldPanel(canvasRect);
+        SandboxUiRoot uiRoot = GetComponent<SandboxUiRoot>();
+        if (uiRoot != null)
+        {
+            uiRoot.EnsureLayers();
+        }
+
+        RectTransform parent = uiRoot != null ? uiRoot.PersistentHudLayer : canvasRect;
+        BuildVitalsPanel(parent);
+        BuildHotbar(parent);
+        BuildWorldPanel(parent);
     }
 
     private void BuildVitalsPanel(RectTransform parent)
@@ -549,6 +560,31 @@ public sealed class SandboxHudController : MonoBehaviour
         }
 
         return hotbar.Slots[index].TileId switch
+        {
+            "core:dirt" => dirtIcon,
+            "core:grass" => grassIcon,
+            "core:stone" => stoneIcon,
+            "core:bricks_a" => bricksIcon,
+            _ => null,
+        };
+    }
+
+    public Sprite ResolveInventoryIcon(string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId) ||
+            !SandboxRegistries.Items.TryGet(itemId, out ItemDefinition item) ||
+            string.IsNullOrEmpty(item.PlacesTileId))
+        {
+            return null;
+        }
+
+        Sprite tileSprite = ResolveTileGroundSprite(item.PlacesTileId);
+        if (tileSprite != null)
+        {
+            return tileSprite;
+        }
+
+        return item.PlacesTileId switch
         {
             "core:dirt" => dirtIcon,
             "core:grass" => grassIcon,
