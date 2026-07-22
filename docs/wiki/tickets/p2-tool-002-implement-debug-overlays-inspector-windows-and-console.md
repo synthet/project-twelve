@@ -3,14 +3,14 @@ type: Task
 id: P2-TOOL-002
 title: "[P2-TOOL-002] Implement debug overlays, inspector windows, and console per P2-TOOL-001 contract."
 description: Overlay renderer with runtime toggles, chunk inspector and generation tuning windows, console commands, and zero-cost/stripping evidence.
-status: claimed
+status: in_progress
 phase: "Phase P2 — Core systems alpha"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/121"
 github_issue_status: created
 resource: wiki/tickets/p2-tool-002-implement-debug-overlays-inspector-windows-and-console.md
 tags: [docs, wiki, ticket, tooling, debug, p2]
-timestamp: 2026-07-16T00:00:00Z
+timestamp: 2026-07-21T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/13-tooling-testing.md"
@@ -109,5 +109,7 @@ state is visible at a glance.
 - [x] GitHub issue URL is recorded in this ticket.
 - [x] GitHub issue links back to this markdown ticket.
 - [ ] Overlay screenshots and editor smoke-test notes attached.
-- [ ] MCP dispatcher EditMode tests pass for toggle tools.
+- [x] MCP dispatcher EditMode tests pass after strict-input hardening (closed `additionalProperties`
+      schemas, rejecting non-canonical overlay names, non-boolean `enabled`, and unexpected
+      arguments): `RuntimeMcpOverlayToolsTests` + `SandboxDebugConsoleTests`, 22/22, 2026-07-21.
 - [ ] Profiler zero-cost evidence recorded.

@@ -106,6 +106,12 @@ entry in [`.cursor/mcp.example.json`](.cursor/mcp.example.json); Codex uses the 
 
 **Smoke test:** call `player_state` or `world_info` while Play Mode is active.
 
+**Contract / tool logic:** cover with EditMode tests (e.g. `RuntimeMcpOverlayToolsTests`,
+`RuntimeMcpDispatcherTests`) via `python scripts/run_unity_tests.py editmode --filter …`.
+Do **not** smoke-test by PowerShell `Assembly.LoadFrom` of `Temp\bin\Debug` or Unity
+Managed DLLs — Windows Defender false-positives that pattern as malware (see
+[`.claude/skills/unity-tests/SKILL.md`](.claude/skills/unity-tests/SKILL.md)).
+
 **Gateway Timeout:** the game must be in **Play Mode** (console log: `Runtime MCP listening on …`).
 `initialize` / `tools/list` respond on the HTTP thread; `tools/call` needs the main thread — unpause
 the Editor if Play Mode is paused.

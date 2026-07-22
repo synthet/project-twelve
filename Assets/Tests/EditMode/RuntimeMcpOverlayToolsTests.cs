@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using ProjectTwelve.RuntimeMcp;
 using ProjectTwelve.Sandbox.Debug;
@@ -35,6 +36,20 @@ public sealed class RuntimeMcpOverlayToolsTests
 
         StringAssert.Contains("\"name\":\"debug_overlay_set\"", response);
         StringAssert.Contains("\"name\":\"debug_overlay_state\"", response);
+    }
+
+    [Test]
+    public void ToolsList_DeclaresClosedInputSchemas()
+    {
+        string response = dispatcher
+            .HandleMessage("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}")
+            .ResponseJson;
+        JArray tools = (JArray)JObject.Parse(response)["result"]["tools"];
+
+        foreach (JObject tool in tools.Children<JObject>())
+        {
+            Assert.AreEqual(false, tool["inputSchema"]["additionalProperties"]?.Value<bool>());
+        }
     }
 
     [Test]
@@ -98,10 +113,43 @@ public sealed class RuntimeMcpOverlayToolsTests
     }
 
     [Test]
-    public void OverlaySet_CaseInsensitiveName_Parses()
+    public void OverlaySet_NonCanonicalName_ReturnsToolErrorWithoutMutation()
     {
-        CallTool("debug_overlay_set", "{\"overlay\":\"CHUNK_BORDERS\",\"enabled\":true}");
-        Assert.IsTrue(state.IsEnabled(SandboxDebugOverlay.ChunkBorders));
+        string response = CallTool("debug_overlay_set", "{\"overlay\":\"CHUNK_BORDERS\",\"enabled\":true}");
+
+        StringAssert.Contains("\"isError\":true", response);
+        Assert.IsFalse(state.AnyEnabled);
+    }
+
+    [Test]
+    public void OverlaySet_NonBooleanEnabled_ReturnsToolErrorWithoutMutation()
+    {
+        string response = CallTool("debug_overlay_set", "{\"overlay\":\"fluid\",\"enabled\":\"true\"}");
+
+        StringAssert.Contains("\"isError\":true", response);
+        StringAssert.Contains("enabled must be a boolean", response);
+        Assert.IsFalse(state.AnyEnabled);
+    }
+
+    [Test]
+    public void OverlaySet_UnexpectedArgument_ReturnsToolErrorWithoutMutation()
+    {
+        string response = CallTool(
+            "debug_overlay_set",
+            "{\"overlay\":\"fluid\",\"enabled\":true,\"extra\":\"ignored\"}");
+
+        StringAssert.Contains("\"isError\":true", response);
+        StringAssert.Contains("Unexpected argument: extra", response);
+        Assert.IsFalse(state.AnyEnabled);
+    }
+
+    [Test]
+    public void OverlayState_UnexpectedArgument_ReturnsToolError()
+    {
+        string response = CallTool("debug_overlay_state", "{\"extra\":true}");
+
+        StringAssert.Contains("\"isError\":true", response);
+        StringAssert.Contains("Unexpected argument: extra", response);
     }
 
     private string CallTool(string name, string argumentsJson)
