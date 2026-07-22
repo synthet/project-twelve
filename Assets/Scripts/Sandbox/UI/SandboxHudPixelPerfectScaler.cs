@@ -12,9 +12,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasScaler))]
 public sealed class SandboxHudPixelPerfectScaler : MonoBehaviour
 {
+    [SerializeField, Min(1)] private int pixelModule = 1;
+    [SerializeField, Min(0f)] private float requestedScale;
+
     private CanvasScaler scaler;
     private int lastScreenWidth;
     private int lastScreenHeight;
+
+    public float CurrentScale => scaler != null ? scaler.scaleFactor : 1f;
+    public float RequestedScale => requestedScale;
 
     public static int ComputeScaleFactor(float screenWidth, float screenHeight, Vector2 referenceResolution)
     {
@@ -43,9 +49,39 @@ public sealed class SandboxHudPixelPerfectScaler : MonoBehaviour
 
     private void Apply()
     {
+        if (scaler == null)
+        {
+            scaler = GetComponent<CanvasScaler>();
+        }
+
         lastScreenWidth = Screen.width;
         lastScreenHeight = Screen.height;
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-        scaler.scaleFactor = ComputeScaleFactor(lastScreenWidth, lastScreenHeight, scaler.referenceResolution);
+        scaler.scaleFactor = SandboxUiScalePolicy.ComputeScale(
+            lastScreenWidth,
+            lastScreenHeight,
+            scaler.referenceResolution,
+            pixelModule,
+            requestedScale);
+    }
+
+    public void AdjustRequestedScale(int direction)
+    {
+        int stepDirection = direction < 0 ? -1 : direction > 0 ? 1 : 0;
+        if (stepDirection == 0)
+        {
+            return;
+        }
+
+        float quantum = 1f / Mathf.Max(1, pixelModule);
+        float start = requestedScale > 0f ? requestedScale : CurrentScale;
+        requestedScale = Mathf.Max(1f, start + stepDirection * quantum);
+        Apply();
+    }
+
+    public void UseAutomaticScale()
+    {
+        requestedScale = 0f;
+        Apply();
     }
 }

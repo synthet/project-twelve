@@ -1,3 +1,12 @@
+---
+capability: "publish-assets-submodule agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
+---
+
 # /publish-assets-submodule — Commit assets repo and bump gitlink
 
 Commit and push changes in **project-twelve-assets** (`Assets/_Licensed/`), then record the new submodule pointer in **project-twelve**.

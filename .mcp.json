@@ -33,6 +33,13 @@
       }
     }
   },
+  "_graphifyMcpTemplate": {
+    "project-twelve-graphify-mcp": {
+      "_note": "Local Graphify knowledge-graph MCP. Requires graphify-out/graph.json (run: graphify extract . --code-only). Install: uv tool install \"graphifyy[mcp]\". Skill: .claude/skills/graphify/SKILL.md",
+      "command": "node",
+      "args": ["scripts/start-graphify-mcp.js"]
+    }
+  },
   "mcpServers": {
     "project-twelve-unity-mcp": {
       "command": "C:\\Users\\dmnsy\\.unity\\relay\\relay_win.exe",

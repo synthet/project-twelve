@@ -1,0 +1,14 @@
+{
+  "id": "commit-and-push-blocks-licensed-paths",
+  "description": "Protect commit-and-push paid-asset and licensed-path gates for the public repo.",
+  "target_asset": ".claude/skills/commit-and-push/SKILL.md",
+  "linked_docs": ["docs/PAID_ASSETS.md"],
+  "must_contain": [
+    "check_paid_assets.py --staged",
+    "Assets/_Licensed/",
+    "Assets/PixelFantasy/"
+  ],
+  "must_not_contain": [
+    "git add -A without checking paid assets"
+  ]
+}

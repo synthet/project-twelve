@@ -235,6 +235,12 @@ public sealed class SandboxPlayerController : MonoBehaviour
     private void Update()
     {
         UpdateExternalMoveInput();
+        if (SandboxUiInputGate.IsGameplayInputBlocked)
+        {
+            horizontalInput = 0f;
+            return;
+        }
+
         horizontalInput = ReadHorizontalInput();
         if (Mathf.Approximately(horizontalInput, 0f))
         {

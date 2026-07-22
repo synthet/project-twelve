@@ -4,13 +4,14 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-07-16T04:20:00Z
+timestamp: 2026-07-22T04:00:00Z
 okf_version: 0.1
 ---
 
 # AI workflow & asset map
 
-ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
+ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`
+(last cherry-pick: `ee11310` / 2026-07-19 — compiled harnesses, evals, Codex agent sync).
 
 ## Where agent assets live
 
@@ -23,6 +24,8 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Cursor mirror | `.cursor/{rules,commands,skills,agents}` | **Generated** from `.claude/` — do not edit by hand |
 | Codex config | `.codex/config.toml` | Trusted-project sandbox, agent, and portable MCP defaults |
 | Codex skills | `.agents/skills/*/SKILL.md` | **Generated** from `.claude/skills/` — do not edit by hand |
+| Codex subagents | `.codex/agents/*.toml` | **Generated** from `.claude/agents/` — do not edit by hand |
+| Eval fixtures | `evals/` | Static guardrail regression (`scripts/run_agent_eval_fixtures.py`) |
 | MCP configuration | `.cursor/mcp.example.json`, `.mcp.json`, `.codex/config.toml` | Surface-specific project server definitions |
 | Agent governance | `.agent/` | Safety, inventory, subagent role matrix, workflow playbooks |
 | Project memory | `.agent-memory/` | **Session start:** read `memory.md`; log → dream → promote (see `CURSOR_USAGE.md`; rule: `.claude/rules/agent-memory.md`) |
@@ -31,8 +34,10 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`.
 | Unity C# rules (supplementary) | `.cursorrules` | Long-form Unity coding spec |
 
 **Single source of truth:** edit assets under `.claude/` + `.agent/`, then run
-`python scripts/sync_assistant_trees.py` to regenerate the `.cursor/` and `.agents/skills/` mirrors.
-Validate CLI tooling skills with `python scripts/validate_cli_skills.py` (see [`.agent/cli-tools-skills-spec.md`](../../.agent/cli-tools-skills-spec.md)).
+`python scripts/sync_assistant_trees.py` to regenerate `.cursor/`, `.agents/skills/`, and
+`.codex/agents/`. Validate CLI tooling skills with `python scripts/validate_cli_skills.py`
+(see [`.agent/cli-tools-skills-spec.md`](../../.agent/cli-tools-skills-spec.md)).
+Compiled skill policy: [`.agent/SKILL_COMPILATION.md`](../../.agent/SKILL_COMPILATION.md).
 
 ## The SDLC loop
 
@@ -90,6 +95,10 @@ When the Unity Editor is open, agents can call Editor tools (scenes, assets, con
 ## FFF file search MCP
 
 Optional [FFF](https://github.com/dmtrKovalenko/fff) server for fast, frecency-ranked repo search (`fffind`, `ffgrep`, `fff-multi-grep`). Setup: `AGENTS.md` → **FFF file search MCP**; template key `project-twelve-fff-mcp` in `.cursor/mcp.example.json` and portable Codex definition in `.codex/config.toml`.
+
+## Graphify knowledge graph
+
+Optional [Graphify](https://github.com/Graphify-Labs/graphify) local AST knowledge graph for architecture / relationship queries. Skill: [`.claude/skills/graphify/SKILL.md`](../../.claude/skills/graphify/SKILL.md). MCP key `project-twelve-graphify-mcp` (launcher `scripts/start-graphify-mcp.js`). `graphify-out/` is gitignored — each machine runs `graphify extract . --code-only`. Setup: `AGENTS.md` → **Graphify knowledge graph**. Do not run vendor `graphify cursor|antigravity|codex install` (generated trees).
 
 ## Safety
 

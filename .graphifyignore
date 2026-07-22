@@ -1,0 +1,24 @@
+# Unity editor / build caches (also usually covered by .gitignore)
+Library/
+Temp/
+Logs/
+Obj/
+Build/
+Builds/
+UserSettings/
+MemoryCaptures/
+Recordings/
+
+# Package / tool node_modules
+**/node_modules/
+
+# Licensed art submodule — do not index paid blobs into the local graph
+Assets/_Licensed/
+
+# Agent run artifacts and caches
+.agent-runs/
+.agent-memory/raw-sessions/
+.agent-memory/dreams/
+
+# Generated / large binary-ish trees agents rarely need as graph nodes
+Assets/Sprites/Tiles/Generated/

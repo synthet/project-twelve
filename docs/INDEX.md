@@ -29,6 +29,7 @@ This index groups the repository documentation by purpose. For the recommended r
 ## Agent and contributor workflow
 
 - [ai-workflow/README.md](ai-workflow/README.md) — agent asset map and SDLC loop.
+- [agent-asset-inventory.md](agent-asset-inventory.md) — generated inventory of mirrored agent skills, commands, and subagents.
 - [EXTERNAL_CLI_REVIEWS.md](EXTERNAL_CLI_REVIEWS.md) — optional review-only external CLI setup.
 - [project/00-backlog-workflow.md](project/00-backlog-workflow.md) — backlog, ticket, and board workflow.
 
@@ -80,6 +81,7 @@ This index groups the repository documentation by purpose. For the recommended r
 ## Implementation wiki: supporting pages
 
 - [wiki/architecture-blueprint.md](wiki/architecture-blueprint.md) — text translation of the visual architecture blueprint.
+- [wiki/enemy-nav-and-spawn.md](wiki/enemy-nav-and-spawn.md) — P2 spec for grid A* platformer pathfinding and enemy spawning rules.
 - [wiki/glossary.md](wiki/glossary.md) — shared vocabulary.
 - [wiki/spec-driven-development-tasks.md](wiki/spec-driven-development-tasks.md) — phase-by-phase backlog and verification gates.
 

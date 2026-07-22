@@ -154,6 +154,8 @@ public sealed class SandboxHudTests
         Assert.AreEqual(CanvasScaler.ScaleMode.ConstantPixelSize, scaler.uiScaleMode);
         Assert.IsNotNull(prefab.GetComponent<SandboxHudPixelPerfectScaler>(),
             "Pixel-art HUD needs the integer scale driver to avoid fractional resampling.");
+        Assert.IsNotNull(prefab.GetComponent<SandboxUiRoot>(),
+            "Reusable HUD layers and focus/input ownership belong to the shared UI root.");
 
         GameObject instance = Object.Instantiate(prefab);
         try
@@ -185,9 +187,16 @@ public sealed class SandboxHudTests
             Assert.AreEqual(16f, slotSprite.border.x / slotSprite.pixelsPerUnit * 100f, 0.001f);
             Assert.AreEqual(16f, slotSprite.border.y / slotSprite.pixelsPerUnit * 100f, 0.001f);
 
-            RectTransform vitals = instance.transform.Find("Vitals") as RectTransform;
-            RectTransform hotbar = instance.transform.Find("CreativeHotbar") as RectTransform;
-            RectTransform telemetry = instance.transform.Find("WorldInfo") as RectTransform;
+            Transform persistentHud = instance.transform.Find("SafeArea/PersistentHudLayer");
+            Assert.IsNotNull(persistentHud);
+            Assert.IsNotNull(instance.transform.Find("SafeArea/WindowLayer"));
+            Assert.IsNotNull(instance.transform.Find("PopupLayer"));
+            Assert.IsNotNull(instance.transform.Find("DragLayer"));
+            Assert.IsNotNull(instance.transform.Find("TooltipLayer"));
+            Assert.IsNotNull(instance.transform.Find("ModalLayer"));
+            RectTransform vitals = persistentHud.Find("Vitals") as RectTransform;
+            RectTransform hotbar = persistentHud.Find("CreativeHotbar") as RectTransform;
+            RectTransform telemetry = persistentHud.Find("WorldInfo") as RectTransform;
             Assert.IsNotNull(vitals);
             Assert.IsNotNull(hotbar);
             Assert.IsNotNull(telemetry);
@@ -198,8 +207,8 @@ public sealed class SandboxHudTests
             Assert.LessOrEqual(telemetry.rect.width, 160f);
             Assert.LessOrEqual(telemetry.rect.height, 62f);
 
-            RectTransform firstSlot = instance.transform.Find("CreativeHotbar/Slot1") as RectTransform;
-            RectTransform secondSlot = instance.transform.Find("CreativeHotbar/Slot2") as RectTransform;
+            RectTransform firstSlot = persistentHud.Find("CreativeHotbar/Slot1") as RectTransform;
+            RectTransform secondSlot = persistentHud.Find("CreativeHotbar/Slot2") as RectTransform;
             Assert.IsNotNull(firstSlot);
             Assert.IsNotNull(secondSlot);
             // Slots stay put on selection — a vertical pop reads as misalignment
@@ -228,7 +237,7 @@ public sealed class SandboxHudTests
                 Assert.IsNotNull(selectedFrame.Find("MarkerRight"));
             }
 
-            Assert.IsNull(instance.transform.Find("Vitals/HealthValue"));
+            Assert.IsNull(persistentHud.Find("Vitals/HealthValue"));
 
             hud.SetDebugTelemetryVisible(false);
             Assert.IsFalse(hud.DebugTelemetryVisible);
@@ -288,9 +297,10 @@ public sealed class SandboxHudTests
             float canvasWidth = screenWidth / scale;
             float canvasHeight = screenHeight / scale;
 
-            RectTransform vitals = instance.transform.Find("Vitals") as RectTransform;
-            RectTransform hotbar = instance.transform.Find("CreativeHotbar") as RectTransform;
-            RectTransform telemetry = instance.transform.Find("WorldInfo") as RectTransform;
+            Transform persistentHud = instance.transform.Find("SafeArea/PersistentHudLayer");
+            RectTransform vitals = persistentHud.Find("Vitals") as RectTransform;
+            RectTransform hotbar = persistentHud.Find("CreativeHotbar") as RectTransform;
+            RectTransform telemetry = persistentHud.Find("WorldInfo") as RectTransform;
             Assert.GreaterOrEqual(canvasWidth, hotbar.rect.width + 32f);
             Assert.GreaterOrEqual(canvasWidth, vitals.rect.width + telemetry.rect.width + 48f);
             Assert.GreaterOrEqual(canvasHeight, vitals.rect.height + hotbar.rect.height + 96f);

@@ -10,9 +10,9 @@ build/test/run and which tools they may use.
 ## Authoring & skill source of truth
 
 - **Canonical** assets are authored under `.claude/` (+ `.agent/`).
-- The **`.cursor/`** tree (rules/commands/skills/agents) and Codex/Antigravity-native **`.agents/`** tree
-  are **generated** by `python scripts/sync_assistant_trees.py` — do not hand-edit them; edit
-  `.claude/` and re-run sync.
+- The **`.cursor/`** tree (rules/commands/skills/agents), Codex/Antigravity-native **`.agents/`** tree,
+  and **`.codex/agents/*.toml`** are **generated** by `python scripts/sync_assistant_trees.py` — do not
+  hand-edit them; edit `.claude/` and re-run sync.
 - When you change a skill/command/agent, run the sync and commit the canonical and generated trees in the **same PR**
   (see [`.agent/SKILL_CHANGE_AST10_REVIEW.md`](.agent/SKILL_CHANGE_AST10_REVIEW.md)).
 
@@ -141,6 +141,30 @@ Antigravity uses the local `.agents/mcp_config.json`.
 **Agent guidance:** for file search or grep in the current git-indexed directory, prefer FFF MCP tools
 (`fffind`, `ffgrep`, `fff-multi-grep`) over built-in search when available.
 
+### Graphify knowledge graph
+
+[Graphify](https://github.com/Graphify-Labs/graphify) builds a local AST knowledge graph you can query
+for architecture and relationship questions. Skill: [`.claude/skills/graphify/SKILL.md`](.claude/skills/graphify/SKILL.md).
+
+**One-time setup (per machine):**
+
+```bash
+uv tool install "graphifyy[mcp]"
+uv tool update-shell   # if `graphify` is missing from PATH
+graphify extract . --code-only
+```
+
+`graphify-out/` is **gitignored** (local-only). Default builds use `--code-only` so no API key is
+required for code indexing. Respect [`.graphifyignore`](.graphifyignore) (Unity caches, licensed art).
+
+**Do not** run `graphify cursor install`, `graphify antigravity install`, or `graphify codex install`
+in this repo — those write into generated trees. Author under `.claude/` and sync instead.
+
+**Optional MCP:** copy `project-twelve-graphify-mcp` from [`.cursor/mcp.example.json`](.cursor/mcp.example.json)
+`_optionalServers` (or the Codex/Antigravity templates) into the local MCP config after the graph
+exists. Launcher: [`scripts/start-graphify-mcp.js`](scripts/start-graphify-mcp.js). Prefer Graphify for
+“how does X connect to Y”; keep FFF/`rg` for literal search.
+
 ## Available tools
 
 <!-- BEGIN MCP TOOL INVENTORY -->
@@ -180,6 +204,24 @@ Endpoint: `http://127.0.0.1:8765/mcp` (override port with `PROJECTTWELVE_MCP_POR
 | `fff-multi-grep` | read | Multi-pattern OR content search in one call. |
 
 Upstream: [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff). Binary: `fff-mcp`.
+
+### project-twelve-graphify-mcp (local knowledge graph)
+
+| Tool | Kind | Description |
+|------|------|-------------|
+| `query_graph` | read | Scoped subgraph for a plain-language question against `graphify-out/graph.json`. |
+| `get_node` | read | Node detail for a named concept. |
+| `get_neighbors` | read | Neighbor edges for a node (EXTRACTED / INFERRED tags). |
+| `get_community` | read | Community / subsystem membership for a node. |
+| `god_nodes` | read | Highest-degree hub concepts. |
+| `graph_stats` | read | Node, edge, and community counts. |
+| `shortest_path` | read | Shortest path between two named concepts. |
+| `list_prs` / `get_pr_impact` / `triage_prs` | read | Optional PR dashboard helpers when GitHub context is available. |
+
+Requires a prior `graphify extract . --code-only` (graph is gitignored). Launcher:
+[`scripts/start-graphify-mcp.js`](scripts/start-graphify-mcp.js). Skill:
+[`.claude/skills/graphify/SKILL.md`](.claude/skills/graphify/SKILL.md). Upstream:
+[Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify).
 
 ### pixellab (pixel art generation, remote HTTP)
 
@@ -259,6 +301,16 @@ Recent fix history shows recurring agent mistakes that must be checked before co
 - **Documentation:** update `README.md`, `docs/wiki/`, or `docs/CANONICAL_SOURCES.md` when changing architecture, workflows, or public conventions.
 - **Prohibited:** committing secrets, disabling/weakening tests to go green, drive-by reformatting, inventing API paths / config keys / schema names (check [`docs/CANONICAL_SOURCES.md`](docs/CANONICAL_SOURCES.md)).
 
+## RCA / Failure Log
+
+Append-only record of **non-obvious failures** and their root causes, so the next agent does not
+re-debug them. Add an entry after `/test-and-fix` (or any debugging session) uncovers something
+that was not obvious from the error message. Keep entries short: date, symptom, root cause, fix.
+
+| Date | Symptom | Root cause | Fix / guard |
+|------|---------|------------|-------------|
+| _(none yet)_ | | | |
+
 ## AI workspace assets
 
 | Asset | Location |
@@ -268,6 +320,7 @@ Recent fix history shows recurring agent mistakes that must be checked before co
 | Claude commands/skills/agents | `.claude/` (canonical) |
 | Cursor mirror | `.cursor/` (generated) |
 | Codex project config | `.codex/config.toml` + `.codex/README.md` |
+| Codex subagents (generated) | `.codex/agents/*.toml` |
 | Antigravity project config | `.agents/mcp_config.example.json` + `.agents/README.md` |
 | Codex & Antigravity skill mirror | `.agents/skills/` (generated) |
 | Antigravity project rules | `.agents/AGENTS.md` (generated) |
