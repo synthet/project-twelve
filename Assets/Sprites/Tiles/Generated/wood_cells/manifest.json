@@ -1,0 +1,293 @@
+{
+  "source": "d:\\Projects\\project-twelve\\Assets\\_Licensed\\PixelFantasy\\PixelTileEngine\\Tiles\\Ground\\BricksC.png",
+  "tile": 16,
+  "cells": [
+    {
+      "index": 0,
+      "row": 0,
+      "col": 0,
+      "solid_pixels": 193,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_0.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_0_32.png"
+    },
+    {
+      "index": 1,
+      "row": 0,
+      "col": 1,
+      "solid_pixels": 193,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_1.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_1_32.png"
+    },
+    {
+      "index": 2,
+      "row": 0,
+      "col": 2,
+      "solid_pixels": 190,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_2.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_2_32.png"
+    },
+    {
+      "index": 3,
+      "row": 0,
+      "col": 3,
+      "solid_pixels": 172,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_3.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_3_32.png"
+    },
+    {
+      "index": 4,
+      "row": 0,
+      "col": 4,
+      "solid_pixels": 180,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_4.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_4_32.png"
+    },
+    {
+      "index": 5,
+      "row": 0,
+      "col": 5,
+      "solid_pixels": 165,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_5.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_5_32.png"
+    },
+    {
+      "index": 6,
+      "row": 0,
+      "col": 6,
+      "solid_pixels": 206,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_6.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_6_32.png"
+    },
+    {
+      "index": 7,
+      "row": 0,
+      "col": 7,
+      "solid_pixels": 190,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_7.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_0_7_32.png"
+    },
+    {
+      "index": 8,
+      "row": 1,
+      "col": 0,
+      "solid_pixels": 134,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_0.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_0_32.png"
+    },
+    {
+      "index": 9,
+      "row": 1,
+      "col": 1,
+      "solid_pixels": 0,
+      "empty": true
+    },
+    {
+      "index": 10,
+      "row": 1,
+      "col": 2,
+      "solid_pixels": 88,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_2.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_2_32.png"
+    },
+    {
+      "index": 11,
+      "row": 1,
+      "col": 3,
+      "solid_pixels": 149,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_3.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_3_32.png"
+    },
+    {
+      "index": 12,
+      "row": 1,
+      "col": 4,
+      "solid_pixels": 164,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_4.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_4_32.png"
+    },
+    {
+      "index": 13,
+      "row": 1,
+      "col": 5,
+      "solid_pixels": 103,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_5.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_5_32.png"
+    },
+    {
+      "index": 14,
+      "row": 1,
+      "col": 6,
+      "solid_pixels": 199,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_6.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_6_32.png"
+    },
+    {
+      "index": 15,
+      "row": 1,
+      "col": 7,
+      "solid_pixels": 186,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_7.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_1_7_32.png"
+    },
+    {
+      "index": 16,
+      "row": 2,
+      "col": 0,
+      "solid_pixels": 162,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_0.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_0_32.png"
+    },
+    {
+      "index": 17,
+      "row": 2,
+      "col": 1,
+      "solid_pixels": 127,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_1.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_1_32.png"
+    },
+    {
+      "index": 18,
+      "row": 2,
+      "col": 2,
+      "solid_pixels": 86,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_2.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_2_32.png"
+    },
+    {
+      "index": 19,
+      "row": 2,
+      "col": 3,
+      "solid_pixels": 142,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_3.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_3_32.png"
+    },
+    {
+      "index": 20,
+      "row": 2,
+      "col": 4,
+      "solid_pixels": 155,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_4.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_4_32.png"
+    },
+    {
+      "index": 21,
+      "row": 2,
+      "col": 5,
+      "solid_pixels": 155,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_5.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_5_32.png"
+    },
+    {
+      "index": 22,
+      "row": 2,
+      "col": 6,
+      "solid_pixels": 169,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_6.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_6_32.png"
+    },
+    {
+      "index": 23,
+      "row": 2,
+      "col": 7,
+      "solid_pixels": 198,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_7.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_2_7_32.png"
+    },
+    {
+      "index": 24,
+      "row": 3,
+      "col": 0,
+      "solid_pixels": 181,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_0.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_0_32.png"
+    },
+    {
+      "index": 25,
+      "row": 3,
+      "col": 1,
+      "solid_pixels": 202,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_1.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_1_32.png"
+    },
+    {
+      "index": 26,
+      "row": 3,
+      "col": 2,
+      "solid_pixels": 167,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_2.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_2_32.png"
+    },
+    {
+      "index": 27,
+      "row": 3,
+      "col": 3,
+      "solid_pixels": 184,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_3.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_3_32.png"
+    },
+    {
+      "index": 28,
+      "row": 3,
+      "col": 4,
+      "solid_pixels": 158,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_4.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_4_32.png"
+    },
+    {
+      "index": 29,
+      "row": 3,
+      "col": 5,
+      "solid_pixels": 148,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_5.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_5_32.png"
+    },
+    {
+      "index": 30,
+      "row": 3,
+      "col": 6,
+      "solid_pixels": 163,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_6.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_6_32.png"
+    },
+    {
+      "index": 31,
+      "row": 3,
+      "col": 7,
+      "solid_pixels": 167,
+      "empty": false,
+      "path": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_7.png",
+      "path32": "d:\\Projects\\project-twelve\\Assets\\Sprites\\Tiles\\Generated\\wood_cells\\cell_3_7_32.png"
+    }
+  ],
+  "solid_count": 31
+}
