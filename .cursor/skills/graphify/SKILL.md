@@ -52,7 +52,7 @@ See [references/mcp-tools.md](references/mcp-tools.md) for the tool list and ena
 
 ## Enable MCP (Cursor, once)
 
-Local config is gitignored [`.cursor/mcp.json`](../../../.cursor/mcp.json). Add:
+Local config is gitignored `.cursor/mcp.json` (copy from the example below). Add:
 
 ```json
 "project-twelve-graphify-mcp": {
