@@ -26,6 +26,13 @@
       "headers": {
         "Authorization": "Bearer ${env:PIXELLAB_API_KEY}"
       }
+    },
+    "project-twelve-graphify-mcp": {
+      "_note": "Requires graphify-out/graph.json. Install: uv tool install \"graphifyy[mcp]\"; build: graphify extract . --code-only.",
+      "command": "node",
+      "args": [
+        "scripts/start-graphify-mcp.js"
+      ]
     }
   }
 }

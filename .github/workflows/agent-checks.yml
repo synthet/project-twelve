@@ -40,6 +40,9 @@ jobs:
       - name: CLI skills structure
         run: python scripts/validate_cli_skills.py
 
+      - name: Agent eval fixtures
+        run: python scripts/run_agent_eval_fixtures.py
+
       - name: Check Markdown links
         run: python3 scripts/check_markdown_links.py
 
@@ -47,7 +50,9 @@ jobs:
         run: python3 scripts/check_paid_assets.py --push
 
       - name: Compile agent Python scripts
-        run: python -m py_compile scripts/*.py scripts/ci/*.py scripts/agent-memory/*.py scripts/agent_memory/*.py
+        run: |
+          python -m py_compile scripts/*.py scripts/ci/*.py scripts/agent-memory/*.py scripts/agent_memory/*.py scripts/skill_harness/*.py
+          python -c "from pathlib import Path; import py_compile; [py_compile.compile(str(p), doraise=True) for p in Path('.claude/skills').glob('*/scripts/*.py')]"
 
       - name: OKF lint changed docs (PR)
         if: github.event_name == 'pull_request'

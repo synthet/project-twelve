@@ -3,7 +3,7 @@ type: Task
 id: P4-UX-001
 title: "[P4-UX-001] Specify production UI flows for inventory, crafting, settings, and multiplayer."
 description: Screen inventory and interaction flows for inventory, crafting, settings, and multiplayer with keyboard/mouse plus controller-ready navigation.
-status: open
+status: claimed
 phase: "Phase P4 — Feature complete and beta"
 github_project: "https://github.com/users/synthet/projects/2"
 github_issue: "https://github.com/synthet/project-twelve/issues/48"
@@ -111,6 +111,25 @@ gameplay rules.
 - Unity UI stack choice (uGUI vs UI Toolkit) — decision recorded in this ticket at
   implementation time with rationale.
 
+### First framework vertical slice (2026-07-19)
+
+The runtime technology decision is **uGUI**. It preserves the existing Canvas/prefab, point-sprite,
+pixel-scale, and EditMode-test investment while providing built-in `Selectable` navigation. A
+parallel UI Toolkit foundation would introduce a second focus/theme/render stack before it solved
+a production flow. The detailed rationale and migration contract are recorded in
+[Flexible HUD Framework](../flexible-hud-framework.md).
+
+This claimed slice implements the shared root/layers, safe-area anchoring, theme tokens, reusable
+controls, scale policy, one Input System `EventSystem`, a modal screen stack and gameplay-input
+gate, targeted inventory view updates, tooltips, and a read-only 5x8 Backpack demonstration. The
+keyboard mapping for this slice is `I` to toggle Backpack and `Esc` to dismiss the top screen;
+mouse interaction and deterministic directional focus are supported by the same uGUI controls.
+
+This is partial evidence for issue #48, not completion of the ticket. Production inventory
+transactions (drag/drop, split, quick-move, hotbar binding), crafting, settings/rebinding,
+multiplayer, pause/death flows, centralized localization, controller bindings, UX review, and the
+three-aspect screenshot matrix remain open.
+
 ### Verification plan
 
 - Per-screen UX review checklist + focus-traversal audit.
@@ -125,9 +144,20 @@ gameplay rules.
 
 ## Exit evidence checklist
 
-- [ ] GitHub issue URL is recorded in this ticket.
-- [ ] GitHub issue links back to this markdown ticket.
+- [x] GitHub issue URL is recorded in this ticket.
+- [x] GitHub issue links back to this markdown ticket.
 - [ ] Screen inventory and flow specs documented before implementation.
 - [ ] Focus-traversal audit passes (controller-ready).
 - [ ] Screenshot matrix attached.
 - [ ] Follow-up tasks created for controller bindings, localization, and accessibility.
+
+### Vertical-slice verification evidence
+
+- Runtime assembly source compilation: passed with 0 errors using the generated Unity project plus
+  temporary compile includes for the newly added scripts.
+- Targeted Unity EditMode execution: `SandboxUiFrameworkTests` passed 17/17. Coverage includes
+  scale, clamp/resize math, grid navigation, targeted adapter diffs, modal input/focus state, drag
+  rejection/cancel restoration, tooltip delay, and theme fallback. Existing `SandboxHudTests`
+  parity coverage passed 29/29 after the prefab hierarchy and scaler changes.
+- Repository documentation validation passed: 382 local Markdown files resolved, OKF lint reported
+  0 errors/0 warnings, and wiki lint reported no missing or broken links.

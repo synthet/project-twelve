@@ -78,6 +78,7 @@ Install only when the linked skill's task requires it:
 | `gitleaks` | [git-and-diff-workflows](../../git-and-diff-workflows/SKILL.md) | Secret scan before sharing diffs |
 | `ctags` / `tree-sitter` | structural-code-search | Repeated def/ref across sessions |
 | `fff-mcp` | [mcp-code-intelligence](../../mcp-code-intelligence/SKILL.md), [search-tool-selection](../../search-tool-selection/SKILL.md) | Opt-in project MCP — see [AGENTS.md](../../../../AGENTS.md) |
+| `graphifyy[mcp]` | [graphify](../../graphify/SKILL.md) | Local knowledge graph + optional MCP — `uv tool install "graphifyy[mcp]"` |
 | `Unity` | [unity-tests](../../unity-tests/SKILL.md) | Unity 6.0.5.1f1 batch validation / EditMode tests |
 
 ## ProjectTwelve verification (after install)

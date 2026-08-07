@@ -1,62 +1,46 @@
 ---
 name: validate-implementation
-description: Verify an implementation against its spec's acceptance criteria, marking each AC Verified, Failed, or Unknown with concrete evidence. Use after /implement or /test-and-fix, before /pr-ready, or when the user asks whether the spec is actually satisfied.
+description: Use after /implement or /test-and-fix, before /pr-ready, or whenever the user asks whether a spec is actually satisfied. Verifies implementation against acceptance criteria and marks each AC Verified, Failed, or Unknown with concrete evidence.
+capability: "validate-implementation agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "python .claude/skills/validate-implementation/scripts/harness.py; project test commands"
+output_schema: "Validation report markdown with AC verdicts and evidence"
+risk_class: medium
 ---
 
-# Validate implementation against spec
+# Validate implementation (compiled harness)
 
-Answers one question: **does the implementation satisfy the spec's acceptance criteria?**
-This is *not* merge readiness — CI status, review hygiene, and issue linkage belong to `/pr-ready`
-(definition of done). Keep the two checks separate.
+Answers: **does the implementation satisfy the spec's acceptance criteria?**
+Not merge readiness — that is `/pr-ready`.
 
-## Inputs
+For generic “are we done?” without an AC matrix, use `verification-before-completion`.
 
-- The spec with numbered `AC-n` acceptance criteria (from `/spec`). If no spec exists, reconstruct
-  the criteria from the issue/user request and confirm them with the user first.
-- The current diff/branch state and the project's test commands from **AGENTS.md**.
+## Invoke
 
-## Procedure
+```bash
+# Parse ACs and emit Unknown skeleton
+python .claude/skills/validate-implementation/scripts/harness.py \
+  --spec path/to/spec.md --skeleton
 
-For **each** acceptance criterion, assign exactly one verdict:
-
-| Verdict | Meaning | Required evidence |
-|---------|---------|-------------------|
-| **Verified** | Observed behavior matches the criterion | A test run, command output, or reproducible manual check — cite the command and result |
-| **Failed** | Observed behavior contradicts the criterion | The failing output or observed divergence |
-| **Unknown** | Could not be checked in this environment | Why it could not be checked and what would be needed |
-
-Rules:
-
-- **Evidence or it didn't happen.** "Looks done", "should work", or "probably green" are not
-  verdicts. Reading the code is supporting context, not sufficient evidence on its own — prefer
-  running the narrowest relevant test or command.
-- **Unknown is never an implicit pass.** Report Unknowns explicitly; the user decides whether they
-  block. Do not round Unknown up to Verified.
-- **Do not weaken the criteria.** If an AC turns out to be untestable as written, flag it and
-  propose a rewrite — do not quietly substitute a weaker check.
-- **Minimal fixes only.** If an AC fails and the fix is obvious and small, fix it and re-verify;
-  otherwise report the failure.
-
-## ProjectTwelve test vocabulary
-
-Prefer the narrowest gate from **AGENTS.md**:
-
-- Unity C# / autotile: EditMode tests; `cd tools/tile-viz && npm test` when resolver/visual logic changed
-- Terrain: `cd tools/world-viz && npm test`
-- Docs: `python3 scripts/check_markdown_links.py`, OKF lint when `docs/` changed
-- Agent assets: `python scripts/sync_assistant_trees.py --check`, `validate_cli_skills.py`
-
-## Output
-
-```
-## Validation report — <spec/feature name>
-
-| AC | Criterion (short) | Verdict | Evidence |
-|----|-------------------|---------|----------|
-| AC-1 | … | Verified | `pytest tests/test_x.py::test_y` passed |
-| AC-2 | … | Unknown  | needs Unity Editor in PATH |
-
-Overall: N verified / N failed / N unknown. <Blockers or next steps.>
+# After checks, fill verdicts (evidence required for Verified)
+python .claude/skills/validate-implementation/scripts/harness.py \
+  --spec path/to/spec.md \
+  --verdict 'AC-1=Verified|pytest tests/test_x.py::test_y passed' \
+  --verdict 'AC-2=Unknown|needs staging credentials'
 ```
 
-Only claim the spec is satisfied when **every** AC is Verified.
+## LLM judgment slots
+
+For each AC, assign **Verified**, **Failed**, or **Unknown** with evidence:
+
+- Reading code alone is not enough — prefer the narrowest relevant test/command
+  (Unity EditMode filter, `tile-viz`/`world-viz` npm test, script gate).
+- Unknown is never an implicit pass.
+- Do not weaken criteria; propose a rewrite if untestable.
+
+## Rules enforced by harness
+
+- Verdict enum only: Verified | Failed | Unknown
+- **Verified requires non-empty evidence** (fails otherwise)
+- Only claim the spec satisfied when every AC is Verified (`all_verified` in `--json`)

@@ -1,6 +1,12 @@
 ---
 name: unity-tests
 description: Run ProjectTwelve Unity batch validation and EditMode/PlayMode test suites via Unity 6000.5.1f1. Use when the user or ticket asks to run Unity tests, EditMode fixtures, batchmode validation, or verify test results from TestResults/*.xml.
+capability: "unity-tests agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # Unity tests (compiled harness)

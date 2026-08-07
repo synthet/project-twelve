@@ -1,6 +1,12 @@
 ---
 name: pixellab-mcp
 description: Generate and manage pixel-art game assets through PixelLab's MCP server, including characters, animations, sidescroller and top-down tilesets, isometric tiles, map objects, UI panels, and fonts. Use when the user asks for PixelLab/Vibe Coding, pixel-art sprites or animations, game tilesets, HUD art, or other PixelLab-generated assets; also use to poll, download, review, list, or delete PixelLab jobs and assets.
+capability: "pixellab-mcp agent asset workflow"
+side_effect_level: read_only
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: low
 ---
 
 # PixelLab MCP

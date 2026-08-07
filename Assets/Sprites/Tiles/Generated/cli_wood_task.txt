@@ -1,0 +1,17 @@
+Create a warm oak wood remake of this exact ground tiles sprite sheet.
+
+Input (read-only): Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles/Ground/BricksC.png
+- Size: 128x64
+- Grid: 8x4 of 16x16 tiles
+- Keep the SAME solid vs void silhouette per pixel (near-black stays transparent/void)
+
+Write and run a Python script (Pillow) that:
+1. Loads BricksC.png
+2. For every solid pixel, paints horizontal wood-plank shading (3-4 plank bands per 16x16 cell) using a warm brown palette (no blue/purple)
+3. Preserves empty/void pixels as transparent
+4. Saves EXACTLY 128x64 PNG to: Assets/Sprites/Tiles/Generated/WoodPlatform_cli_<NAME>.png
+5. Also saves a nearest-neighbor 8x preview: Assets/Sprites/Tiles/Generated/WoodPlatform_cli_<NAME>_preview.png
+
+Replace <NAME> with a short model tag (e.g. gemini or codex).
+Do not modify anything under Assets/_Licensed/.
+Print the output paths and pixel nonempty count when done.

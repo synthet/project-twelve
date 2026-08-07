@@ -1,0 +1,34 @@
+{
+  "0_0": {
+    "object_id": "7cd1abdb-ad8e-4d59-aaf0-a74e4903a635",
+    "nonempty16": 0,
+    "size": [
+      32,
+      32
+    ]
+  },
+  "0_3": {
+    "object_id": "213d5e72-bd17-453d-9c2d-61c154cb81f4",
+    "nonempty16": 196,
+    "size": [
+      32,
+      32
+    ]
+  },
+  "1_0": {
+    "object_id": "9fddbcc7-7865-4411-bff0-a340b5a85cf5",
+    "nonempty16": 164,
+    "size": [
+      32,
+      32
+    ]
+  },
+  "2_6": {
+    "object_id": "403216d1-6e6f-4e3b-a1ca-5b3961f7ca22",
+    "nonempty16": 156,
+    "size": [
+      32,
+      32
+    ]
+  }
+}

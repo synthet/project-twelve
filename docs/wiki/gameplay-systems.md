@@ -47,8 +47,12 @@ using the same coordinate conversion as world streaming and debug tools. The tel
 independent visibility API and is suppressed by default in non-development player builds.
 
 The HUD is presentation over `SandboxInventory`; placement consumption, pickup merging, and save
-persistence remain in simulation/data layers. Crafting, drag/drop inventory screens, mana, and
-time-of-day remain outside this prototype and production UI flows belong to P4-UX-001.
+persistence remain in simulation/data layers. Pressing `I` opens the first flexible-UI vertical
+slice: a read-only 5x8 Backpack window with targeted slot refreshes, explicit grid navigation,
+delayed tooltips, theme and scale controls, and a focus-trapped modal. `Esc` closes the top screen.
+Blocking screens suppress movement, hotbar selection, and world editing through a shared input
+gate. Production drag/drop, crafting, mana, time-of-day, and the remaining production flows stay
+under P4-UX-001; inventory mutations must continue to use domain-owned APIs.
 
 The HUD frame and fallback theme use the repo-owned sprites in `Assets/Sprites/UI/Generated`.
 In the live scene, tile icons resolve the isolated autotile sprite from each registered vendor

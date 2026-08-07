@@ -17,6 +17,8 @@ This directory (`.agents/`) serves as the Workspace Customizations Root for the 
 2. Edit `.agents/mcp_config.json`:
    - Replace `RELAY_PATH` with the path to your Unity MCP relay (e.g., `%USERPROFILE%\.unity\relay\relay_win.exe`).
    - Replace `ABSOLUTE_PATH_TO_THIS_REPO` with the absolute path to this project checkout.
+   - Optional Graphify MCP (`project-twelve-graphify-mcp`): install `uv tool install "graphifyy[mcp]"`, run
+     `graphify extract . --code-only`, then keep the example entry (launcher `scripts/start-graphify-mcp.js`).
 
 Keep secrets and machine-specific configurations out of version control. The `.agents/mcp_config.json` file is explicitly ignored in `.gitignore`.
 
@@ -24,3 +26,4 @@ Keep secrets and machine-specific configurations out of version control. The `.a
 
 - Author rules, commands, and skills under `.claude/`.
 - Run `python scripts/sync_assistant_trees.py` to regenerate all mirrors, including `.cursor/`, `.agents/skills/`, and `.agents/AGENTS.md`.
+- Do not run `graphify antigravity install` — it writes outside the sync pipeline.

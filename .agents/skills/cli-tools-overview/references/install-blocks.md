@@ -26,6 +26,8 @@ uv tool install pyright
 
 Optional file-search MCP: install [fff-mcp](https://github.com/dmtrKovalenko/fff) to `%LOCALAPPDATA%\fff-mcp\bin` and add to PATH.
 
+Optional knowledge-graph CLI/MCP: `uv tool install "graphifyy[mcp]"` then `uv tool update-shell` if needed — see [graphify](../../graphify/SKILL.md).
+
 ## WSL2 Ubuntu
 
 ```bash
@@ -40,6 +42,8 @@ npm i -g @ast-grep/cli
 cargo install just 2>/dev/null || sudo apt install -y just
 ```
 
+Optional knowledge-graph CLI/MCP: `uv tool install "graphifyy[mcp]"` — see [graphify](../../graphify/SKILL.md).
+
 ## macOS (Homebrew)
 
 ```bash
@@ -48,3 +52,5 @@ brew install ast-grep
 brew install uv
 uv tool install ruff pyright
 ```
+
+Optional knowledge-graph CLI/MCP: `uv tool install "graphifyy[mcp]"` — see [graphify](../../graphify/SKILL.md).

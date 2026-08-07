@@ -1,3 +1,12 @@
+---
+capability: "task-claim agent asset workflow"
+side_effect_level: remote_write
+approval_required: true
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
+---
+
 > **Claude Code:** Same intent as Cursor `/task-claim`. ProjectTwelve fork — issue-only claim (no GitHub Project Stage moves).
 
 # /task-claim — claim a backlog issue (wiki-ticket workflow)

@@ -25,6 +25,7 @@ python scripts/install_githooks.py    # optional: paid-asset + submodule sync ho
 python scripts/fetch_remotes.py       # sync main repo + Assets/_Licensed submodule
 cp .cursor/mcp.example.json .cursor/mcp.json   # then set RELAY_PATH + UNITY_PROJECT_PATH
 # Optional: install FFF file search MCP — see AGENTS.md § FFF file search MCP
+# Optional: Graphify — uv tool install "graphifyy[mcp]" && graphify extract . --code-only; see AGENTS.md § Graphify
 codex doctor --summary              # Codex install/auth/config health
 # Codex project setup and machine-local Unity MCP: .codex/README.md
 ```

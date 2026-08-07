@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 100002}
   - component: {fileID: 100003}
   - component: {fileID: 5040911387945628499}
+  - component: {fileID: 100005}
   - component: {fileID: 100004}
   m_Layer: 5
   m_Name: SandboxHUD
@@ -73,7 +74,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
@@ -130,3 +131,15 @@ MonoBehaviour:
   grassIcon: {fileID: 21300000, guid: d4f6a8c0b2e34179bdf13579ace02468, type: 3}
   stoneIcon: {fileID: 21300000, guid: e5a7c9b1d3f44280ace13579bdf02468, type: 3}
   bricksIcon: {fileID: 21300000, guid: f6b8d0a2c4e54391bdf24680ace13579, type: 3}
+--- !u!114 &100005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a0470b964e469aa62aaf99bb1def10, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: ProjectTwelve.Runtime::SandboxUiRoot

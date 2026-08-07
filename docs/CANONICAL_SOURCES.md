@@ -4,7 +4,7 @@ title: Canonical Sources
 description: Authority map for project, agent, tooling, documentation, and asset configuration sources.
 resource: CANONICAL_SOURCES.md
 tags: [docs, governance, agents]
-timestamp: 2026-07-12T06:10:00Z
+timestamp: 2026-07-22T04:00:00Z
 okf_version: 0.1
 ---
 
@@ -43,6 +43,7 @@ okf_version: 0.1
 | Unity configuration | `ProjectSettings/` and `Packages/manifest.json` | Unity-owned project configuration. |
 
 | Architecture docs | `docs/wiki/` | Implementation-facing design details. |
+| Runtime HUD/UI architecture | `docs/wiki/flexible-hud-framework.md` | uGUI technology decision, theme/scale/focus contracts, inventory boundary, and migration plan. |
 
 | OKF adoption | `docs/OKF_ADOPTION.md` | Incremental frontmatter and docs bundle policy. |
 
@@ -76,6 +77,8 @@ okf_version: 0.1
 | Unity MCP (Codex) | `~/.codex/config.toml` (local) | Machine-specific relay bridge; setup in `.codex/README.md`. |
 
 | FFF file search MCP | [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) | Optional agent file search; wired via `project-twelve-fff-mcp` in `.cursor/mcp.example.json`, `.mcp.json`, and `.codex/config.toml`. |
+
+| Graphify knowledge graph | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | Local AST graph + optional MCP; skill [`.claude/skills/graphify/SKILL.md`](../.claude/skills/graphify/SKILL.md); server key `project-twelve-graphify-mcp`; launcher `scripts/start-graphify-mcp.js`; `graphify-out/` is gitignored. |
 
 | PixelLab MCP (Vibe Coding) | [pixellab.ai/mcp](https://www.pixellab.ai/mcp) | Optional pixel art generation; skill [`.claude/skills/pixellab-mcp/SKILL.md`](../.claude/skills/pixellab-mcp/SKILL.md); template in `.cursor/mcp.example.json` `_optionalServers.pixellab`. |
 | PixelLab REST API v2 | [api.pixellab.ai/v2/llms.txt](https://api.pixellab.ai/v2/llms.txt) | HTTP/SDK endpoint index; local skill copy [`.claude/skills/pixellab-mcp/references/api-v2-llms.md`](../.claude/skills/pixellab-mcp/references/api-v2-llms.md). Prefer MCP when connected. |

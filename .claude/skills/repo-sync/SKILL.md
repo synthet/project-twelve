@@ -1,6 +1,12 @@
 ---
 name: repo-sync
 description: Sync project-twelve with the Assets/_Licensed submodule via fetch_remotes.py, git hooks, and /fetch-remotes. Use at session start, before picking backlog work, or when the user asks to sync repos or get latest.
+capability: "repo-sync agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # Repo sync (compiled harness)

@@ -21,7 +21,9 @@ public static class SandboxHudPrefabBuilder
             typeof(RectTransform),
             typeof(Canvas),
             typeof(CanvasScaler),
+            typeof(GraphicRaycaster),
             typeof(SandboxHudPixelPerfectScaler),
+            typeof(SandboxUiRoot),
             typeof(SandboxHudController));
 
         try

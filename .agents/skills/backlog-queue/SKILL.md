@@ -1,6 +1,12 @@
 ---
 name: backlog-queue
 description: Wiki tickets under docs/wiki/tickets/ are the canonical task queue, each linked to a GitHub issue. Use when picking work, claiming an issue, or preparing PR references.
+capability: "backlog-queue agent asset workflow"
+side_effect_level: remote_write
+approval_required: true
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # Backlog queue (ProjectTwelve fork)

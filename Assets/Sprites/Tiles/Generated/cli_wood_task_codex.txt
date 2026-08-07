@@ -1,0 +1,6 @@
+Create a warm oak wood remake of BricksC ground tiles.
+Input read-only: Assets/_Licensed/PixelFantasy/PixelTileEngine/Tiles/Ground/BricksC.png (128x64, 8x4 of 16x16). Keep the SAME solid vs void silhouette.
+Write and RUN a Python Pillow script that paints horizontal wood planks on solid pixels with warm browns only, transparent voids. Save:
+- Assets/Sprites/Tiles/Generated/WoodPlatform_cli_codex.png (exactly 128x64)
+- Assets/Sprites/Tiles/Generated/WoodPlatform_cli_codex_preview.png (8x nearest-neighbor)
+Do not modify Assets/_Licensed/. Print output paths and nonempty pixel count.

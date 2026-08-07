@@ -1,6 +1,12 @@
 ---
 name: assets-submodule-publish
 description: Commit and push changes in Assets/_Licensed (project-twelve-assets), then bump the submodule gitlink in project-twelve. Use after editing licensed docs, catalogs, or art; pairs with repo-sync for fetch/pull.
+capability: "assets-submodule-publish agent asset workflow"
+side_effect_level: local_write
+approval_required: false
+requires_tools: "See asset body for tool requirements."
+output_schema: "Markdown report or documented command output."
+risk_class: medium
 ---
 
 # Publish assets submodule (project-twelve-assets → project-twelve)

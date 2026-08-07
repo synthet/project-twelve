@@ -34,6 +34,11 @@
       "headers": {
         "Authorization": "Bearer ${env:PIXELLAB_API_KEY}"
       }
+    },
+    "project-twelve-graphify-mcp": {
+      "_note": "Local Graphify knowledge-graph MCP. Build graphify-out/graph.json first: uv tool install \"graphifyy[mcp]\" && graphify extract . --code-only. Launcher fails clearly if the graph is missing. Skill: .claude/skills/graphify/SKILL.md",
+      "command": "node",
+      "args": ["scripts/start-graphify-mcp.js"]
     }
   },
   "_platformRelayPaths": {
