@@ -4,7 +4,7 @@ title: Visual Behavior Specification
 description: Behavioral contract for autotile masks, rule matching, character composition, creature animation, and effects.
 resource: VISUAL_BEHAVIOR_SPEC.md
 tags: [docs, visual, autotile, rendering]
-timestamp: 2026-07-10T00:00:00Z
+timestamp: 2026-08-08T00:00:00Z
 ---
 
 # Visual Behavior Specification
@@ -298,6 +298,8 @@ Given mount base texture and character layer pixels:
 
 Editor importers read paths from `Assets/_Licensed/config/visual-import.txt` (submodule) and populate catalogs under `Assets/_Licensed/Settings/Visual/`.
 
+The table above covers licensed art only. First-party generated props under `Assets/Sprites/Props/Generated/` are 32×32 / 64×64 at **PPU 32**, so they keep the same 1- and 2-tile world footprints at higher pixel density; see that folder's `README.md` and `docs/specs/props-assets.json`.
+
 ---
 
 ## 11. Play Mode ground autotile debug overlay
@@ -343,6 +345,55 @@ The operation order is intentionally not commutative. For asymmetric sprites, `f
 If Play Mode labels match tile-viz but art still diverges on asymmetric sprites, route autotile quads through `AppendFixedCellQuad` (full 16×16 cell UV span) as a parity fallback. No remap is applied unless the Phase 3 gate fails (labels match, pixels differ).
 
 Ground autotile sheets must be 128×64 with 32 sprites named `0`…`31` in canonical row-major layout. Validate via **ProjectTwelve → Visual → Validate Ground Autotile Sheets** (`AutotileGroundSheetValidator`); import fails on layout errors via `AutotileGroundSheetLayout`.
+
+---
+
+## 12. Decorative prop placement
+
+First-party props from `Assets/Sprites/Props/Generated/` are placed by `SandboxPropPlacement` and
+drawn as a third chunk-mesh layer by `SandboxChunkRenderer`.
+
+**Presentation only.** Placement writes no tile data, adds no colliders, and is not persisted. A prop
+is a pure function of the world seed, the world coordinate, and the *live* tile state around it —
+the same derived-at-rebuild model grass cover uses. Editing the ground under a prop removes it on the
+next rebuild; nothing needs to clean up after it.
+
+`SandboxGenPass.Props` (8) supplies the sub-seed. It is not a terrain pass and is deliberately **not**
+mirrored in `tools/world-viz`: no generated tile changes, so terrain parity fixtures are unaffected.
+
+### Site rules
+
+A cell is a candidate only when it is air and the cell below is solid.
+
+| Above the cell | Tile below | Site |
+|---|---|---|
+| Open sky within the scan cap | `core:grass` | **Surface** |
+| Open sky within the scan cap | anything else | none — bare ground stays bare, matching § Cover |
+| Solid ceiling within the scan cap | any solid | **Cave** |
+
+### Draws
+
+All draws are `SandboxHash.Hash(seed, 8, key(x, y))` with a salted coordinate key, so they are
+coordinate-addressable and independent of which chunk rebuild visits the cell first:
+
+| Draw | Salt | Purpose |
+|---|---|---|
+| Density | none | whether a small prop occupies the cell |
+| Selection | `0x9E3779B9` | weighted pick within the site's candidate set |
+| Flip | `0x85EBCA6B` | horizontal mirror, so repeats read as variations |
+| Lane | `0xC2B2AE35` | which single column of each `propLargeSpacing`-wide lane may host a large prop |
+
+A lane never picks its final column: lanes draw independently, so allowing it would let one lane win
+its last column while the next wins its first, overlapping two two-tile-wide props.
+
+Large props (two tiles wide and tall) claim a cell before small ones and require a clear footprint
+over solid ground, so a tree never straddles a ledge. A prop is emitted only from its anchor cell, so
+one overhanging a chunk border is drawn once — by the chunk owning its left column.
+
+### Draw order
+
+Ground `z = 0`, grass cover `z = -0.01`, props `z = -0.02`. Props are tinted by the light value of
+the air cell they occupy.
 
 ---
 

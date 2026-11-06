@@ -344,6 +344,10 @@ MonoBehaviour:
   tileMaterial: {fileID: 2100000, guid: 5d8e1b3a4c9f6abccf3d4e5f6a7b8c9d, type: 2}
   tileVisualCatalog: {fileID: 11400000, guid: 2b3c4d5e6f7a4890b1c2d3e4f5a6b7c8, type: 2}
   tileSize: 1
+  propCatalog: {fileID: 11400000, guid: 6e1b93f47a2c48d5b09fe3a1c85d7204, type: 2}
+  propDensity: 0.35
+  propLargeSpacing: 7
+  propSkyScanCap: 64
   groundAutotileDebugMode: 0
   debugOverrideModeEnabled: 1
   autotileExposureFloorY: 0

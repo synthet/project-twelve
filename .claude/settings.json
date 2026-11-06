@@ -19,13 +19,23 @@
       "Bash(git log:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(gh pr:*)",
-      "Bash(gh issue:*)",
-      "Bash(gh project:*)",
       "WebSearch"
+    ],
+    "ask": [
+      "Bash(git add -A:*)",
+      "Bash(git add .:*)",
+      "Bash(git add --all:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets.json)",
+      "Read(~/.ssh/**)"
     ],
     "additionalDirectories": []
   },
   "enabledMcpjsonServers": [],
-  "disabledMcpjsonServers": []
+  "disabledMcpjsonServers": [
+    "pixellab"
+  ]
 }

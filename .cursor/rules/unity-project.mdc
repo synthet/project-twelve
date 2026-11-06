@@ -1,6 +1,13 @@
 ---
 description: Unity project conventions for ProjectTwelve agents
-alwaysApply: true
+alwaysApply: false
+globs: Assets/**,Packages/**,ProjectSettings/**,tools/tile-viz/**,tools/world-viz/**
+paths:
+  - "Assets/**"
+  - "Packages/**"
+  - "ProjectSettings/**"
+  - "tools/tile-viz/**"
+  - "tools/world-viz/**"
 ---
 
 # Unity project rules (ProjectTwelve)

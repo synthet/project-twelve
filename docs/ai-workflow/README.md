@@ -4,7 +4,7 @@ title: AI Workflow & Asset Map
 description: Where every agent asset lives (rules, commands, skills, agents, memory, workflows) and the SDLC loop they support.
 resource: ai-workflow/README.md
 tags: [docs, agents, workflow]
-timestamp: 2026-07-22T04:00:00Z
+timestamp: 2026-09-27T00:00:00Z
 okf_version: 0.1
 ---
 
@@ -20,7 +20,7 @@ ProjectTwelve follows a spec-first loop adapted from `synthet-code-framework`
 | Claude commands | `.claude/commands/*.md` | **Canonical** authoring source |
 | Claude skills | `.claude/skills/*/SKILL.md` | **Canonical** authoring source; includes **CLI tooling** skills (`search-tool-selection`, `safe-command-patterns`, …) and project skills (`backlog-queue`, `repo-sync`, …) |
 | Claude subagents | `.claude/agents/*.md` | **Canonical** authoring source |
-| Claude rules | `.claude/rules/*.md` | Always-on guidance |
+| Claude rules | `.claude/rules/*.md` | Always-on or path-scoped (`paths:`) guidance |
 | Cursor mirror | `.cursor/{rules,commands,skills,agents}` | **Generated** from `.claude/` — do not edit by hand |
 | Codex config | `.codex/config.toml` | Trusted-project sandbox, agent, and portable MCP defaults |
 | Codex skills | `.agents/skills/*/SKILL.md` | **Generated** from `.claude/skills/` — do not edit by hand |

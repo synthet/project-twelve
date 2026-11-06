@@ -4,6 +4,7 @@ using System.IO;
 using ProjectTwelve.Sandbox.Debug;
 using ProjectTwelve.Sandbox.Inventory;
 using ProjectTwelve.Sandbox.Lighting;
+using ProjectTwelve.Sandbox.Props;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.AutotileDebug;
 using ProjectTwelve.Visual.Tiles;
@@ -33,6 +34,16 @@ public sealed class SandboxWorld : MonoBehaviour
     [SerializeField] private Material tileMaterial;
     [SerializeField] private SandboxTileVisualCatalog tileVisualCatalog;
     [SerializeField] private float tileSize = 1f;
+
+    [Header("Props")]
+    [Tooltip("Decoration sprites placed on grass surfaces and cave floors. Leave empty to disable props.")]
+    [SerializeField] private PropCatalog propCatalog;
+    [Tooltip("Chance (0–1) that an eligible cell carries a small prop.")]
+    [SerializeField, Range(0f, 1f)] private float propDensity = 0.35f;
+    [Tooltip("Average columns between large props (trees, boulders). One per lane of this width.")]
+    [SerializeField] private int propLargeSpacing = 7;
+    [Tooltip("How many tiles the site check scans upward before treating the cell as open sky.")]
+    [SerializeField] private int propSkyScanCap = 64;
 
     [Header("Debug")]
     [SerializeField] private GroundAutotileDebugMode groundAutotileDebugMode;
@@ -1071,7 +1082,8 @@ public sealed class SandboxWorld : MonoBehaviour
                 tileVisualCatalog,
                 GetTile,
                 autotileVisualOverrides,
-                autotileExposureFloorY);
+                autotileExposureFloorY,
+                CreatePropRenderSettings());
 
             if (rebuiltCollider)
             {
@@ -1262,6 +1274,15 @@ public sealed class SandboxWorld : MonoBehaviour
         GameObject debugObject = new GameObject("GroundAutotileDebug");
         debugObject.transform.SetParent(chunkRenderer.transform, false);
         return debugObject.AddComponent<SandboxGroundAutotileDebugOverlay>();
+    }
+
+    /// <summary>
+    /// Bundles the decoration-layer inputs for a chunk rebuild. Props share the world seed so they
+    /// stay tied to the terrain they decorate.
+    /// </summary>
+    private PropRenderSettings CreatePropRenderSettings()
+    {
+        return new PropRenderSettings(propCatalog, seed, propDensity, propLargeSpacing, propSkyScanCap);
     }
 
     /// <summary>

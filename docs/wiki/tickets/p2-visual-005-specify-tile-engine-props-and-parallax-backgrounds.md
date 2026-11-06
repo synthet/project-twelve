@@ -10,7 +10,7 @@ github_issue: "https://github.com/synthet/project-twelve/issues/81"
 github_issue_status: created
 resource: wiki/tickets/p2-visual-005-specify-tile-engine-props-and-parallax-backgrounds.md
 tags: [docs, wiki, ticket, visual, terrain, props, p2]
-timestamp: 2026-07-01T05:00:00Z
+timestamp: 2026-08-08T00:00:00Z
 okf_version: 0.1
 spec_references:
   - "docs/wiki/visual-integration.md"
@@ -23,6 +23,12 @@ spec_references:
 ## Open knowledge summary
 
 This ticket integrates the remaining `PixelTileEngine` licensed content that has no current consumer in ProjectTwelve: approximately 97 decorative prop sprites, 5 bridge variants, ladder tiles, and 4 parallax background layers. It introduces a `PropCatalog` ScriptableObject and importer (mirroring `AutotileCatalogImporter`), documents bridge and ladder as distinct tile render rules, and specifies a `ParallaxBackgroundController` contract for scene-level backgrounds.
+
+> **Partially delivered ahead of this ticket.** A first-party `PropCatalog` and a derived, non-colliding
+> prop placement layer now ship for the 79 generated sprites under `Assets/Sprites/Props/Generated/`
+> (contract: `docs/VISUAL_BEHAVIOR_SPEC.md` § 12). That satisfies the "prop placed and visible" and
+> "props are non-colliding decoration" criteria for **first-party** art. Still open here: the licensed
+> `PixelTileEngine` prop/bridge/ladder inventory and importer, and the parallax background contract.
 
 ## GitHub project linkage
 

@@ -1,9 +1,12 @@
 ---
 description: OKF frontmatter validation — required metadata fields for docs/ concept files.
-alwaysApply: true
+alwaysApply: false
+globs: docs/**/*.md
+paths:
+  - "docs/**/*.md"
 ---
 
-# OKF Frontmatter Requirements (always on)
+# OKF Frontmatter Requirements (loads for docs/)
 
 `scripts/okf_lint.py` validates OKF (Open Knowledge Format) frontmatter for **concept files** in the `docs/` bundle: Markdown files under `docs/` except `log.md` files and paths skipped by configured `--exclude-prefix` values (default: `archive/`). Under the CI command (`--fail-on error`), a **missing `type` is the only field that blocks merge**; missing `description`, `resource`, `tags`, or `timestamp` are reported as warnings. Treat all six as required anyway — the warnings exist to keep docs discoverable and may be promoted to errors later.
 

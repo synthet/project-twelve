@@ -29,4 +29,11 @@ public enum SandboxGenPass
 
     /// <summary>Pass 7 — validation (spawn safety, overlap rejection).</summary>
     Validation = 7,
+
+    /// <summary>
+    /// Pass 8 — decorative props. Presentation only: it draws a sub-seed but writes no tile data,
+    /// so it changes no generated world and is deliberately not mirrored in <c>tools/world-viz</c>.
+    /// See <c>SandboxPropPlacement</c>.
+    /// </summary>
+    Props = 8,
 }

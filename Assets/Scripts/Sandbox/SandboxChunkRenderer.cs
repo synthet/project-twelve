@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProjectTwelve.Sandbox.Props;
 using ProjectTwelve.Sandbox.Registry;
 using ProjectTwelve.Visual.Tiles;
 using UnityEngine;
@@ -8,6 +9,9 @@ using UnityEngine;
 public sealed class SandboxChunkRenderer : MonoBehaviour
 {
     private const int TileAtlasColumns = 4;
+
+    /// <summary>Props draw in front of ground (0) and grass cover (-0.01).</summary>
+    private const float PropZOffset = -0.02f;
 
     private static readonly Rect DirtUv = GetLegacyAtlasUv(0);
     private static readonly Rect GrassUv = GetLegacyAtlasUv(1);
@@ -23,6 +27,12 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private static readonly int BricksCTileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_c");
     private static readonly int BricksDTileIndex = SandboxRegistries.Tiles.GetIndex("core:bricks_d");
     private static readonly HashSet<string> MissingOverrideSpriteWarnings = new HashSet<string>();
+
+    // One material per (template, texture) pair for the lifetime of the domain. Rebuilds run on
+    // every tile edit, so allocating a fresh Material each time would leak one per texture per edit
+    // — bounded before props, unbounded once a chunk can carry a dozen prop textures.
+    private static readonly Dictionary<(Material, Texture2D), Material> TextureMaterials =
+        new Dictionary<(Material, Texture2D), Material>();
 
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
@@ -40,7 +50,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides = null,
-        int autotileExposureFloorY = AutotileExposure.NoFloor)
+        int autotileExposureFloorY = AutotileExposure.NoFloor,
+        PropRenderSettings propSettings = default)
     {
         EnsureComponents();
 
@@ -53,7 +64,8 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
                 visualCatalog,
                 tileLookup,
                 visualOverrides,
-                autotileExposureFloorY);
+                autotileExposureFloorY,
+                propSettings);
         }
         else
         {
@@ -120,10 +132,12 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
         SandboxTileVisualCatalog visualCatalog,
         Func<int, int, SandboxTile> tileLookup,
         AutotileVisualOverrideMap visualOverrides,
-        int autotileExposureFloorY)
+        int autotileExposureFloorY,
+        PropRenderSettings propSettings)
     {
         Dictionary<Texture2D, MeshLayer> groundLayers = new Dictionary<Texture2D, MeshLayer>();
         Dictionary<Texture2D, MeshLayer> coverLayers = new Dictionary<Texture2D, MeshLayer>();
+        Dictionary<Texture2D, MeshLayer> propLayers = new Dictionary<Texture2D, MeshLayer>();
         bool skippedMissingSprite = false;
 
         for (int localX = 0; localX < SandboxChunk.Size; localX++)
@@ -161,7 +175,55 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             }
         }
 
-        ApplyLayeredMesh(groundLayers, coverLayers, material, chunk, tileSize, skippedMissingSprite);
+        if (propSettings.IsEnabled)
+        {
+            AddProps(propLayers, chunk, tileLookup, tileSize, propSettings);
+        }
+
+        ApplyLayeredMesh(groundLayers, coverLayers, propLayers, material, chunk, tileSize, skippedMissingSprite);
+    }
+
+    /// <summary>
+    /// Appends the chunk's decorative props. Every cell is evaluated as an anchor and a prop is
+    /// emitted only from its anchor, so a two-tile prop overhanging the chunk border is drawn once —
+    /// by the chunk that owns its left column — instead of twice or clipped.
+    /// </summary>
+    private static void AddProps(
+        Dictionary<Texture2D, MeshLayer> layers,
+        SandboxChunk chunk,
+        Func<int, int, SandboxTile> tileLookup,
+        float tileSize,
+        PropRenderSettings settings)
+    {
+        int grassTileIndex = SandboxRegistries.GrassIndex;
+
+        for (int localX = 0; localX < SandboxChunk.Size; localX++)
+        {
+            for (int localY = 0; localY < SandboxChunk.Size; localY++)
+            {
+                Vector2Int world = SandboxWorld.ChunkLocalToWorld(chunk.Coord, localX, localY);
+                if (!SandboxPropPlacement.TryResolveProp(
+                        tileLookup, world.x, world.y, settings, tileSize, grassTileIndex, out PropEntry entry))
+                {
+                    continue;
+                }
+
+                Sprite sprite = entry.Sprite;
+                MeshLayer meshLayer = GetOrCreateLayer(layers, sprite.texture);
+                AutotileSpriteMeshBuilder.AppendSprite(
+                    meshLayer.Vertices,
+                    meshLayer.Triangles,
+                    meshLayer.Uvs,
+                    meshLayer.Colors,
+                    localX,
+                    localY,
+                    tileSize,
+                    sprite,
+                    SandboxPropPlacement.FlipX(settings.Seed, world.x, world.y),
+                    GetTileLightColor(tileLookup(world.x, world.y)),
+                    PropZOffset);
+            }
+        }
     }
 
     private static bool AddGroundTile(
@@ -331,6 +393,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
     private void ApplyLayeredMesh(
         Dictionary<Texture2D, MeshLayer> groundLayers,
         Dictionary<Texture2D, MeshLayer> coverLayers,
+        Dictionary<Texture2D, MeshLayer> propLayers,
         Material material,
         SandboxChunk chunk,
         float tileSize,
@@ -365,6 +428,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
         AppendMeshLayers(groundLayers, material, vertices, uvs, colors, submeshTriangles, rebuildMaterials);
         AppendMeshLayers(coverLayers, material, vertices, uvs, colors, submeshTriangles, rebuildMaterials);
+        AppendMeshLayers(propLayers, material, vertices, uvs, colors, submeshTriangles, rebuildMaterials);
 
         mesh.SetVertices(vertices);
         mesh.SetUVs(0, uvs);
@@ -538,6 +602,11 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
 
     private static Material CreateMaterialForTexture(Material template, Texture2D texture)
     {
+        if (TextureMaterials.TryGetValue((template, texture), out Material cached) && cached != null)
+        {
+            return cached;
+        }
+
         Material material = template != null && template.shader != null && template.shader.isSupported
             ? new Material(template)
             : GetDefaultMaterial();
@@ -547,6 +616,7 @@ public sealed class SandboxChunkRenderer : MonoBehaviour
             material.SetTexture("_MainTex", texture);
         }
 
+        TextureMaterials[(template, texture)] = material;
         return material;
     }
 

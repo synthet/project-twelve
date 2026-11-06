@@ -333,3 +333,26 @@ that was not obvious from the error message. Keep entries short: date, symptom, 
 | Canonical sources | `docs/CANONICAL_SOURCES.md` |
 | Paid asset policy | `docs/PAID_ASSETS.md` |
 | Unity C# rules (supplementary) | `.cursorrules` |
+
+<!-- BEGIN FRAMEWORK SETUP -->
+
+## Shared agent setup
+
+Project-specific instructions in this file and nested instruction files govern this workspace.
+Reusable skills are authored in `.claude/skills/`; other harness trees are generated.
+Run installed helpers relative to their skill directory; run project checks from this workspace.
+Preserve user edits, credentials, model settings, permissions and unrelated configuration.
+Project build/test/lint commands were not detected; consult project documentation before executing checks.
+
+Installed library: 48 applicable skills. Synchronize explicitly; startup hooks never install updates.
+<!-- END FRAMEWORK SETUP -->
+
+<!-- FRAMEWORK RULE REFERENCES -->
+Read the always-on project rules before working:
+- `.claude/rules/agent-memory.md`
+- `.claude/rules/history-regression-guard.md`
+- `.claude/rules/karpathy-coding.md`
+- `.claude/rules/paid-assets.md`
+- `.claude/rules/safety-and-secrets.md`
+- `.claude/rules/sdlc-core.md`
+<!-- END FRAMEWORK RULE REFERENCES -->
