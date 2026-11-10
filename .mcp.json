@@ -42,7 +42,7 @@
   },
   "mcpServers": {
     "project-twelve-unity-mcp": {
-      "command": "C:\\Users\\dmnsy\\.unity\\relay\\relay_win.exe",
+      "command": "${USERPROFILE}\\.unity\\relay\\relay_win.exe",
       "args": [
         "--mcp"
       ],
@@ -56,7 +56,7 @@
     },
     "project-twelve-fff-mcp": {
       "type": "stdio",
-      "command": "C:\\Users\\dmnsy\\AppData\\Local\\fff-mcp\\bin\\fff-mcp.exe",
+      "command": "${LOCALAPPDATA}\\fff-mcp\\bin\\fff-mcp.exe",
       "args": ["--no-warmup", "D:\\Projects\\project-twelve"]
     },
     "pixellab": {
