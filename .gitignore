@@ -235,3 +235,14 @@ tools/pixellab-ref/
 
 # Graphify knowledge graph (local-only; each machine builds its own)
 graphify-out/
+
+# Session exports and local logs (hold machine paths and transcripts)
+/20??-??-??-*.txt
+/20??-??-??-*.md
+codex-session-*.md
+/logs/
+/.agent/scratch/*
+/.agent/workspaces/
+/.agent-memory/raw-sessions/*
+/.agent-memory/worklogs/
+/docs/_local/

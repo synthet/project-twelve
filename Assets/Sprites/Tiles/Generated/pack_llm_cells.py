@@ -5,9 +5,9 @@ from pathlib import Path
 
 from PIL import Image
 
-ASSETS = Path(r"C:/Users/dmnsy/.cursor/projects/d-Projects-project-twelve/assets")
-CELLS = Path(r"d:/Projects/project-twelve/Assets/Sprites/Tiles/Generated/wood_cells")
-GEN = Path(r"d:/Projects/project-twelve/Assets/Sprites/Tiles/Generated")
+ASSETS = Path.home() / ".cursor" / "projects" / "d-Projects-project-twelve" / "assets"
+GEN = Path(__file__).resolve().parent
+CELLS = GEN / "wood_cells"
 KEYS = ["0_0", "0_3", "1_0", "2_6"]
 
 
